@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
+import { computed } from 'mobx'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import LargeCard from '../elements/LargeCard'
 import Hamburger from '../elements/HamburgerButton'
@@ -78,6 +79,19 @@ export default class HomeScreen extends Component {
     } else {
       MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
     }
+  }
+
+  @computed get selectedWalletIndex() {
+    const wallet = MainStore.appState.selectedWallet
+    if (!wallet) return 0
+
+    let index = 0
+    MainStore.appState.wallets.forEach((w, i) => {
+      if (w.address === wallet.address) {
+        index = i
+      }
+    })
+    return index
   }
 
   _renderSendButton = () =>
@@ -254,6 +268,7 @@ export default class HomeScreen extends Component {
             inactiveSlideOpacity={1}
             keyExtractor={item => item.address}
             onSnapToItem={this.onSnapToItem}
+            firstItem={this.selectedWalletIndex}
           />
         </View>
         <View
