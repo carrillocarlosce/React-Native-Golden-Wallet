@@ -101,13 +101,14 @@ export default class HomeScreen extends Component {
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
+    let color = { backgroundColor: AppStyle.mainColor }
     if (currentNetwork === Config.networks.mainnet) {
-      return <View />
+      color = { backgroundColor: AppStyle.colorUp }
     }
     currentNetwork = currentNetwork.replace(/^\w/, c => c.toUpperCase())
     return (
       <View style={styles.networkField}>
-        <View style={styles.dot} />
+        <View style={[styles.dot, color]} />
         <Text style={styles.networkText}>{`Active Network: ${currentNetwork}`}</Text>
       </View>
     )
@@ -353,13 +354,12 @@ const styles = StyleSheet.create({
   dot: {
     width: 10,
     height: 10,
-    borderRadius: 5,
-    backgroundColor: AppStyle.mainColor
+    borderRadius: 5
   },
   networkText: {
     fontSize: 12,
     fontFamily: 'OpenSans-Semibold',
-    color: AppStyle.mainTextColor,
-    marginLeft: 4
+    marginLeft: 4,
+    color: AppStyle.mainTextColor
   }
 })
