@@ -166,6 +166,8 @@ export default class Wallet {
   }
 
   @action fetchingBalance(isRefresh = false, isBackground = false) {
+    if (this.isRefresh || this.isFetchingBalance) return
+
     this.isRefresh = isRefresh
     this.isFetchingBalance = !isRefresh && !isBackground
     api.fetchWalletInfo(this.address).then(async (res) => {

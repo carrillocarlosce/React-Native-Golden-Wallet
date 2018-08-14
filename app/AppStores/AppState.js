@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun } from 'mobx'
+import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import Config from './stores/Config'
 import Constants from '../commons/constant'
@@ -129,6 +129,7 @@ class AppState {
     }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.fetchWalletsBalance()
   }
 
   @computed get isShowSendButton() {
@@ -147,12 +148,15 @@ class AppState {
     return AppDS.saveAppData(this.toJSON())
   }
 
+  fetchWalletsBalance() {
+    if (this.internetConnection === 'online') {
+      this.wallets.forEach(w => w.fetchingBalance(false, true))
+    }
+  }
+
   async startCheckBalanceJob() {
     this.checkBalanceJobID = setTimeout(() => {
-      if (this.internetConnection === 'online') {
-        this.wallets.forEach(w => w.fetchingBalance(false, true))
-      }
-
+      this.fetchWalletsBalance()
       this.startCheckBalanceJob()
     }, AppState.TIME_INTERVAL)
   }
