@@ -33,7 +33,6 @@ class CreateWalletStore {
     return this.customTitle
   }
 
-  // {'{title}': 1}
   @computed get titleMap() {
     const { wallets } = MainStore.appState
     return wallets.reduce((rs, w) => {
