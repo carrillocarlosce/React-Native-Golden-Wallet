@@ -35,20 +35,20 @@ class AppState {
   currentWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
 
-  static TIME_INTERVAL = 15000
+  static TIME_INTERVAL = 20000
 
   constructor() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
-    // this.startCheckBalanceJob()
+    this.startCheckBalanceJob()
     this.getRateETHDollar()
   }
 
   @action setConfig = (cf) => { this.config = cf }
   @action setBackup = (isBackup) => { this.didBackup = isBackup }
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
-  @action setselectedToken = (t) => { this.selectedToken = t }
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
+  @action setselectedToken = (t) => { this.selectedToken = t }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
@@ -101,16 +101,11 @@ class AppState {
     this.currentWalletIndex = index
   }
 
-  @computed get isShowSendButton() {
-    const wallet = this.selectedWallet
-    if (!wallet) {
-      return false
-    }
-    return wallet.canSendTransaction
-  }
-
-  @computed get networkName() {
-    return this.config.network
+  @action async getRateETHDollar() {
+    setTimeout(async () => {
+      const rs = await api.fetchRateETHDollar()
+      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
+    }, 100)
   }
 
   @action async import(orgData) {
@@ -134,27 +129,36 @@ class AppState {
     }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.fetchWalletsBalance()
+  }
+
+  @computed get isShowSendButton() {
+    const wallet = this.selectedWallet
+    if (!wallet) {
+      return false
+    }
+    return wallet.canSendTransaction
+  }
+
+  @computed get networkName() {
+    return this.config.network
   }
 
   save() {
     return AppDS.saveAppData(this.toJSON())
   }
 
-  async startCheckBalanceJob() {
-    this.checkBalanceJobID = setTimeout(() => {
-      if (this.internetConnection === 'online') {
-        this.wallets.forEach(w => w.fetchingBalance(false, true))
-      }
-
-      this.startCheckBalanceJob()
-    }, AppState.TIME_INTERVAL)
+  fetchWalletsBalance() {
+    if (this.internetConnection === 'online') {
+      this.wallets.forEach(w => w.fetchingBalance(false, true))
+    }
   }
 
-  @action async getRateETHDollar() {
-    setTimeout(async () => {
-      const rs = await api.fetchRateETHDollar()
-      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
-    }, 100)
+  async startCheckBalanceJob() {
+    this.checkBalanceJobID = setTimeout(() => {
+      this.fetchWalletsBalance()
+      this.startCheckBalanceJob()
+    }, AppState.TIME_INTERVAL)
   }
 
   // for local storage: be careful with MobX observable
