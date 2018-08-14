@@ -33,7 +33,7 @@ NotificationListenter.registerKilledListener()
 export default class App extends Component {
   constructor(props) {
     super(props)
-    NotificationStore.setupNotification()
+    PushNotificationHelper.init()
   }
 
   async componentWillMount() {
@@ -43,11 +43,11 @@ export default class App extends Component {
   async componentDidMount() {
     NotificationListenter.setupInitNotification()
     AppState.addEventListener('change', this._handleAppStateChange)
-    PushNotificationHelper.setBadgeNumber(0)
+    // PushNotificationHelper.setBadgeNumber(0)
     if (Platform.OS === 'ios') {
       //
     } else {
-      PushNotificationHelper.removeAllDeliveredNotifications()
+      // PushNotificationHelper.removeAllDeliveredNotifications()
     }
     crashlytics.init()
     try {
