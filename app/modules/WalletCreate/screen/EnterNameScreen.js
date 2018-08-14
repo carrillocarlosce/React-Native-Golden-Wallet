@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   errorText: {
-    color: AppStyle.colorDown,
+    color: AppStyle.errorColor,
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
     marginTop: 10,
