@@ -166,8 +166,9 @@ export default class Wallet {
   }
 
   @action fetchingBalance(isRefresh = false, isBackground = false) {
-    if (this.isRefresh || this.isFetchingBalance) return
+    if (this.loading) return
 
+    this.loading = true
     this.isRefresh = isRefresh
     this.isFetchingBalance = !isRefresh && !isBackground
     api.fetchWalletInfo(this.address).then(async (res) => {
@@ -184,9 +185,11 @@ export default class Wallet {
       this.update()
       this.isFetchingBalance = false
       this.isRefresh = false
+      this.loading = false
     }).catch((e) => {
       this.isFetchingBalance = false
       this.isRefresh = false
+      this.loading = false
     })
   }
 
