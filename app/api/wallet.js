@@ -92,3 +92,7 @@ export const fetchRateETHDollar = () => {
   }
   return caller.get(`https://min-api.cryptocompare.com/data/pricemultifull`, data, true)
 }
+
+export const fetchGasPrice = () => {
+  return caller.get('https://ethgasstation.info/json/ethgasAPI.json')
+}

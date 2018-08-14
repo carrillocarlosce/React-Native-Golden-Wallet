@@ -48,6 +48,7 @@ export default class ConfirmScreen extends Component {
   }
 
   componentWillMount() {
+    MainStore.sendTransaction.confirmStore.setGasPriceEstimate()
     MainStore.sendTransaction.confirmStore.estimateGas()
     MainStore.sendTransaction.confirmStore.validateAmount()
   }
@@ -121,6 +122,7 @@ export default class ConfirmScreen extends Component {
   }
 
   _renderConfirmContent(ethAmount, usdAmount, from, to, fee) {
+    const { confirmStore } = MainStore.sendTransaction
     return (
       <View>
         <View
@@ -179,7 +181,7 @@ export default class ConfirmScreen extends Component {
                 style={styles.standard}
                 onPress={() => this.actionSheet.show()}
               >
-                <Text style={styles.standardText}>Standard</Text>
+                <Text style={styles.standardText}>{confirmStore.adjust}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -404,6 +406,7 @@ export default class ConfirmScreen extends Component {
   }
 
   _renderActionSheet() {
+    const { gasPriceEstimate } = MainStore.sendTransaction.confirmStore
     return (
       <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
         <View style={[styles.actionSheetItem, { borderTopLeftRadius: 5, borderTopRightRadius: 5 }]}>
@@ -412,21 +415,21 @@ export default class ConfirmScreen extends Component {
         </View>
         <TouchableOpacity
           style={styles.actionSheetItem}
-          onPress={() => this._onPressAction(2)}
+          onPress={() => this._onPressAction(gasPriceEstimate.slow, 'Low')}
         >
-          <Text style={styles.actionSheetText}>Slow (2 Gwei)</Text>
+          <Text style={styles.actionSheetText}>Slow ({gasPriceEstimate.slow} Gwei)</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionSheetItem}
-          onPress={() => this._onPressAction(10)}
+          onPress={() => this._onPressAction(gasPriceEstimate.standard, 'Standard')}
         >
-          <Text style={styles.actionSheetText}>Standard (10 Gwei)</Text>
+          <Text style={styles.actionSheetText}>Standard ({gasPriceEstimate.standard} Gwei)</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionSheetItem, { borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderBottomWidth: 0 }]}
-          onPress={() => this._onPressAction(60)}
+          onPress={() => this._onPressAction(gasPriceEstimate.fast, 'Fast')}
         >
-          <Text style={styles.actionSheetText}>Fast (60 Gwei)</Text>
+          <Text style={styles.actionSheetText}>Fast ({gasPriceEstimate.fast} Gwei)</Text>
         </TouchableOpacity>
       </ActionSheetCustom>
     )
@@ -522,8 +525,9 @@ export default class ConfirmScreen extends Component {
     this.actionSheet.hide()
   }
 
-  _onPressAction = (gasPrice) => {
+  _onPressAction = (gasPrice, adj) => {
     MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
+    MainStore.sendTransaction.confirmStore.setAdjust(adj)
     this.actionSheet.hide()
   }
 

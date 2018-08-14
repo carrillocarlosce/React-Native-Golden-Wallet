@@ -2,17 +2,26 @@ import { observable, action, computed } from 'mobx'
 import { BigNumber } from 'bignumber.js'
 import MainStore from '../../../AppStores/MainStore'
 import Helper from '../../../commons/Helper'
+import api from '../../../api'
 
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
   @observable gasLimit = new BigNumber('21000')
   @observable gasPrice = new BigNumber('1000000000')
-
+  @observable adjust = 'Standard'
   @observable.ref inputValue = null
-
+  @observable gasPriceEstimate = {
+    slow: 2,
+    standard: 10,
+    fast: 60
+  }
   // @action setToAddress(address) {
   //   this.transaction.to = address
   // }
+
+  @action setAdjust(value) {
+    this.adjust = value
+  }
 
   @action setValue(value) {
     this.inputValue = value
@@ -25,6 +34,37 @@ export default class ConfirmStore {
 
   @action setGasLimit(gasLimit) {
     this.gasLimit = new BigNumber(`${gasLimit}`)
+  }
+
+  @action gasPriceEstimateAPI() {
+    return new Promise((resolve, reject) => {
+      if (MainStore.appState.config.network == 'rinkeby') {
+        resolve({
+          safeLow: 20,
+          average: 100,
+          fastest: 600
+        })
+        return
+      }
+      api.fetchGasPrice().then((res) => {
+        resolve(res.data)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
+
+  @action async setGasPriceEstimate() {
+    const res = await this.gasPriceEstimateAPI()
+    this.setGasPrice(Math.floor(res.average / 10))
+    this.setAdjust('Standard')
+    this.gasPriceEstimate = {
+      slow: Math.floor(res.safeLow / 10),
+      standard: Math.floor(res.average / 10),
+      fast: Math.floor(res.fastest / 10)
+    }
+    this.estimateGas()
+    this.validateAmount()
   }
 
   @action setGasPrice(gasPrice) {

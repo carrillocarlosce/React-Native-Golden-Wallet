@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold'
   },
   actionButtons: {
-    marginBottom: 10,
+    marginBottom: 15,
     borderRadius: 5,
     backgroundColor: AppStyle.backgroundDarkBlue
   }
