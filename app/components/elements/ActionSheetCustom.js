@@ -26,7 +26,7 @@ export default class ActionSheetCustom extends PureComponent {
 
   constructor(props) {
     super(props)
-    this.bottom = isIPX ? 44 : 10
+    this.bottom = isIPX ? 54 : 20
     const buttonsLength = props.children.length
     this.initOffsetY = buttonsLength * 52 + 60 + this.bottom
     this.offsetY = new Animated.Value(-this.initOffsetY)

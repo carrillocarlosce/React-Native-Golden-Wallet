@@ -26,6 +26,7 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import Checker from '../../../Handler/Checker'
 import Helper from '../../../commons/Helper'
 import MainStore from '../../../AppStores/MainStore'
+import ActionSheetCustom from '../../../components/elements/ActionSheetCustom';
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
@@ -170,9 +171,17 @@ export default class ConfirmScreen extends Component {
             <Text style={styles.key}>
               Fee
             </Text>
-            <Text style={[styles.value, { fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular', fontSize: 14 }]}>
-              {fee}
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={[styles.value, { fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular', fontSize: 14 }]}>
+                {fee}
+              </Text>
+              <TouchableOpacity
+                style={styles.standard}
+                onPress={() => this.actionSheet.show()}
+              >
+                <Text style={styles.standardText}>Standard</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -394,6 +403,35 @@ export default class ConfirmScreen extends Component {
     )
   }
 
+  _renderActionSheet() {
+    return (
+      <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
+        <View style={[styles.actionSheetItem, { borderTopLeftRadius: 5, borderTopRightRadius: 5 }]}>
+          <Text style={[styles.actionSheetText, { fontSize: 10, color: '#8A8D97' }]}>Your transaction will process faster with a higher</Text>
+          <Text style={[styles.actionSheetText, { fontSize: 10, color: '#8A8D97' }]}>gas price.</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.actionSheetItem}
+          onPress={() => this._onPressAction(2)}
+        >
+          <Text style={styles.actionSheetText}>Slow (2 Gwei)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionSheetItem}
+          onPress={() => this._onPressAction(10)}
+        >
+          <Text style={styles.actionSheetText}>Standard (10 Gwei)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionSheetItem, { borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderBottomWidth: 0 }]}
+          onPress={() => this._onPressAction(60)}
+        >
+          <Text style={styles.actionSheetText}>Fast (60 Gwei)</Text>
+        </TouchableOpacity>
+      </ActionSheetCustom>
+    )
+  }
+
   _onDone = () => {
     const { advanceStore } = MainStore.sendTransaction
     const gasLimit = Number(advanceStore.gasLimit)
@@ -480,6 +518,15 @@ export default class ConfirmScreen extends Component {
     this.setState({ bottom: 0, borderRadius: 5 })
   }
 
+  _onCancelAction = () => {
+    this.actionSheet.hide()
+  }
+
+  _onPressAction = (gasPrice) => {
+    MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
+    this.actionSheet.hide()
+  }
+
   render() {
     const {
       translateX,
@@ -508,74 +555,77 @@ export default class ConfirmScreen extends Component {
     // const tmpFee = `${(gasLimit * gasGwei) / 1000000000}`
     // const wallet = sendStore.getWallet
     // console.log('wallet', wallet)
-    // const { ratio } = sendStore.wallet
+    // const {ratio} = sendStore.wallet
     // const tmpFeeUsd = numeral(tmpFee * ratio).format('0,0.[00]')
     // const eth = Helper.formatETH(value)
     // const usdAmount = Helper.formatUSD(value * ratio)
     const { address } = MainStore.appState.selectedWallet
     // const address = '0x0ai00a0a0a0'
     return (
-      <View
-        style={styles.container}
-      >
-        <Animated.View
-          style={[
-            styles.confirmContainer,
-            {
-            }
-          ]}
+      <TouchableWithoutFeedback onPress={this._onCancelAction}>
+        <View
+          style={styles.container}
         >
-          {this._renderConfirmHeader()}
-          {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, formatedFee)}
-          {this._renderSendBtn()}
-        </Animated.View>
-        {isShowAdvance &&
-          <View
-            style={[styles.advanceContainer]}
+          <Animated.View
+            style={[
+              styles.confirmContainer,
+              {
+              }
+            ]}
           >
-            <Animated.View
-              style={[
-                { flex: 1, backgroundColor: AppStyle.backgroundColor },
-                {
-                  transform: [
-                    { translateX }
-                  ],
-                  opacity
-                }
-              ]}
+            {this._renderConfirmHeader()}
+            {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, formatedFee)}
+            {this._renderSendBtn()}
+          </Animated.View>
+          {isShowAdvance &&
+            <View
+              style={[styles.advanceContainer]}
             >
-              <ScrollView
-                style={{ marginBottom: bottom }}
+              <Animated.View
+                style={[
+                  { flex: 1, backgroundColor: AppStyle.backgroundColor },
+                  {
+                    transform: [
+                      { translateX }
+                    ],
+                    opacity
+                  }
+                ]}
               >
-                <TouchableWithoutFeedback
-                  onPress={() => Keyboard.dismiss()}
+                <ScrollView
+                  style={{ marginBottom: bottom }}
                 >
-                  <View style={{ flex: 1 }}>
-                    {this._renderAdvanceHeader()}
-                    {this._renderAdvanceContent(isShowClearGasLimit, isShowClearGasPrice, gasLimit, gasPrice, formatedTmpFee, gasLimitErr, gasGweiErr, advanceStore)}
-                    {/* {this._renderDoneBtn()} */}
-                  </View>
-                </TouchableWithoutFeedback>
-              </ScrollView>
-            </Animated.View>
-            <Animated.View
-              style={[
-                {
-                  transform: [
-                    { translateY }
-                  ],
-                  paddingLeft: marginVertical,
-                  paddingRight: marginVertical,
-                  bottom: extraBottom !== 0 ? extraBottom : 20,
-                  backgroundColor: AppStyle.backgroundColor
-                }
-              ]}
-            >
-              {this._renderDoneBtn(advanceStore)}
-            </Animated.View>
-          </View>
-        }
-      </View>
+                  <TouchableWithoutFeedback
+                    onPress={() => Keyboard.dismiss()}
+                  >
+                    <View style={{ flex: 1 }}>
+                      {this._renderAdvanceHeader()}
+                      {this._renderAdvanceContent(isShowClearGasLimit, isShowClearGasPrice, gasLimit, gasPrice, formatedTmpFee, gasLimitErr, gasGweiErr, advanceStore)}
+                      {/* {this._renderDoneBtn()} */}
+                    </View>
+                  </TouchableWithoutFeedback>
+                </ScrollView>
+              </Animated.View>
+              <Animated.View
+                style={[
+                  {
+                    transform: [
+                      { translateY }
+                    ],
+                    paddingLeft: marginVertical,
+                    paddingRight: marginVertical,
+                    bottom: extraBottom !== 0 ? extraBottom : 20,
+                    backgroundColor: AppStyle.backgroundColor
+                  }
+                ]}
+              >
+                {this._renderDoneBtn(advanceStore)}
+              </Animated.View>
+            </View>
+          }
+          {this._renderActionSheet()}
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -716,5 +766,33 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontFamily: 'OpenSans-Semibold',
     fontSize: 12
+  },
+  standard: {
+    height: 30,
+    backgroundColor: AppStyle.backgroundDarkBlue,
+    borderRadius: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    paddingLeft: 11,
+    paddingRight: 11,
+    marginLeft: 10
+  },
+  standardText: {
+    color: '#4A90E2',
+    fontFamily: 'OpenSans-Semibold',
+    fontSize: 14
+  },
+  actionSheetItem: {
+    height: 50,
+    backgroundColor: AppStyle.backgroundDarkBlue,
+    borderBottomWidth: 1,
+    borderColor: AppStyle.borderLinesSetting,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  actionSheetText: {
+    fontSize: 16,
+    color: '#4A90E2',
+    fontFamily: 'OpenSans-Semibold'
   }
 })
