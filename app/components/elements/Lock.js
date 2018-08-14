@@ -256,8 +256,7 @@ export default class Lock extends Component {
       >
         <GoldenLoading
           ref={(ref) => { this.loading = ref }}
-          style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }}
-          isSpin={false}
+        // style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }
         />
         <Text style={styles.desText}>Unlock with your PIN</Text>
         <Animated.View
@@ -286,7 +285,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     width,
-    height: height + extraBottom,
+    height,
+    justifyContent: 'center',
     backgroundColor: AppStyle.backgroundColor,
     position: 'absolute'
   },
