@@ -40,8 +40,8 @@ class AppState {
   constructor() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
-    this.startCheckBalanceJob()
     this.getRateETHDollar()
+    this.startCheckBalanceJob()
   }
 
   @action setConfig = (cf) => { this.config = cf }
@@ -129,7 +129,7 @@ class AppState {
     }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar)
-    this.fetchWalletsBalance()
+    this.fetchWalletsBalance(false)
   }
 
   @computed get isShowSendButton() {
@@ -148,15 +148,15 @@ class AppState {
     return AppDS.saveAppData(this.toJSON())
   }
 
-  fetchWalletsBalance() {
+  fetchWalletsBalance(isRefeshing, isBg) {
     if (this.internetConnection === 'online') {
-      this.wallets.forEach(w => w.fetchingBalance(false, true))
+      this.wallets.forEach(w => w.fetchingBalance(isRefeshing, isBg))
     }
   }
 
   async startCheckBalanceJob() {
     this.checkBalanceJobID = setTimeout(() => {
-      this.fetchWalletsBalance()
+      this.fetchWalletsBalance(false, true)
       this.startCheckBalanceJob()
     }, AppState.TIME_INTERVAL)
   }

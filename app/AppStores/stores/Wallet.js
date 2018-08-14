@@ -174,12 +174,13 @@ export default class Wallet {
       const { data } = res.data
       const tokens = data.tokens.map(t => new WalletToken(t, this.address))
       const tokenETH = this.getTokenETH(data)
+      this.autoSetSelectedTokenIfNeeded([tokenETH, ...tokens])
       const totalTokenDollar = this.tokens.reduce((rs, item) => rs.plus(item.balanceInDollar), new BigNumber('0'))
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
-      this.setTokens([tokenETH, ...tokens])
-      this.autoSetSelectedTokenIfNeeded(tokens)
+
+      // this.setTokens([tokenETH, ...tokens])
       this.update()
       this.isFetchingBalance = false
       this.isRefresh = false
@@ -195,11 +196,16 @@ export default class Wallet {
 
   @action autoSetSelectedTokenIfNeeded(tokens) {
     const { selectedToken } = MainStore.appState
-    const needSetSelectedToken = selectedToken.belongsToWalletAddress === this.address
+    const needSetSelectedToken = selectedToken && selectedToken.belongsToWalletAddress === this.address
     if (needSetSelectedToken) {
-      const token = tokens.find(t => t.symbol === selectedToken.symbol)
-      token && MainStore.appState.setselectedToken(token)
+      for (let i = 0; i < tokens.length; i++) {
+        if (tokens[i].symbol === selectedToken.symbol) {
+          tokens[i] = selectedToken
+        }
+      }
     }
+
+    this.setTokens(tokens)
   }
 
   @action setHideValue(isHide) {
