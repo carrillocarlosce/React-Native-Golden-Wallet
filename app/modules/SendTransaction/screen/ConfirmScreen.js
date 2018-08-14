@@ -775,10 +775,10 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: AppStyle.backgroundDarkBlue,
     borderRadius: 20,
-    alignSelf: 'center',
     justifyContent: 'center',
     paddingLeft: 11,
     paddingRight: 11,
+    marginTop: 5,
     marginLeft: 10
   },
   standardText: {
