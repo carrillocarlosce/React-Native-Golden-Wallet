@@ -48,7 +48,7 @@ export default class ConfirmScreen extends Component {
   }
 
   componentWillMount() {
-    MainStore.sendTransaction.confirmStore.setGasPriceEstimate()
+    MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
     MainStore.sendTransaction.confirmStore.estimateGas()
     MainStore.sendTransaction.confirmStore.validateAmount()
   }
@@ -406,7 +406,7 @@ export default class ConfirmScreen extends Component {
   }
 
   _renderActionSheet() {
-    const { gasPriceEstimate } = MainStore.sendTransaction.confirmStore
+    const { gasPriceEstimate } = MainStore.appState
     return (
       <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
         <View style={[styles.actionSheetItem, { borderTopLeftRadius: 5, borderTopRightRadius: 5 }]}>

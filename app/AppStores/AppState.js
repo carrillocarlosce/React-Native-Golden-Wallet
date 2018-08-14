@@ -34,6 +34,11 @@ class AppState {
   @observable didBackup = false
   currentWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
+  @observable gasPriceEstimate = {
+    slow: 2,
+    standard: 10,
+    fast: 60
+  }
 
   static TIME_INTERVAL = 20000
 
@@ -42,6 +47,7 @@ class AppState {
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
     this.startCheckBalanceJob()
+    this.getGasPriceEstimate()
   }
 
   @action setConfig = (cf) => { this.config = cf }
@@ -105,6 +111,20 @@ class AppState {
     setTimeout(async () => {
       const rs = await api.fetchRateETHDollar()
       this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
+    }, 100)
+  }
+
+  @action async getGasPriceEstimate() {
+    setTimeout(async () => {
+      if (this.config.network != 'rinkeby') {
+        const res = await api.fetchGasPrice()
+        console.log(res.data)
+        this.gasPriceEstimate = {
+          slow: Math.floor(res.data.safeLow / 10),
+          standard: Math.floor(res.data.average / 10),
+          fast: Math.floor(res.data.fastest / 10)
+        }
+      }
     }, 100)
   }
 
@@ -175,7 +195,8 @@ class AppState {
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
-      didBackup: this.didBackup
+      didBackup: this.didBackup,
+      gasPriceEstimate: this.gasPriceEstimate
     }
   }
 }
