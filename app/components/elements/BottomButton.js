@@ -20,11 +20,13 @@ const extraBottom = LayoutUtils.getExtraBottom()
 export default class BottomButton extends Component {
   static propTypes = {
     onPress: PropTypes.func.isRequired,
-    text: PropTypes.string
+    text: PropTypes.string,
+    disable: PropTypes.bool
   }
 
   static defaultProps = {
-    text: constant.DONE
+    text: constant.DONE,
+    disable: false
   }
 
   state = {
@@ -89,7 +91,7 @@ export default class BottomButton extends Component {
   }
 
   render() {
-    const { onPress, text } = this.props
+    const { onPress, text, disable } = this.props
     return (
       <Animated.View style={{
         position: 'absolute',
@@ -102,13 +104,14 @@ export default class BottomButton extends Component {
       }}
       >
         <TouchableOpacity
+          disabled={disable}
           onPress={() => {
             Keyboard.dismiss()
             onPress()
           }}
           style={styles.saveButton}
         >
-          <Text style={{ fontSize: 16, color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>
+          <Text style={{ fontSize: 16, color: disable ? AppStyle.secondaryTextColor : AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>
             {text}
           </Text>
         </TouchableOpacity>
