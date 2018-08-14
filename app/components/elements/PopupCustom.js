@@ -8,7 +8,8 @@ import {
   Platform,
   TextInput,
   Keyboard,
-  Animated
+  Animated,
+  TouchableWithoutFeedback
 } from 'react-native'
 // import PropTypes from 'prop-types'
 import AppStyle from '../../commons/AppStyle'
@@ -173,42 +174,44 @@ export default class PopupCustom extends Component {
         visible={visible}
         onRequestClose={() => { }}
       >
-        <Animated.View
-          style={[styles.overlayPopup, {
-            transform: [
-              {
-                translateY: this.state.offsetY
-              }
-            ]
-          }]}
-        >
-          <View style={styles.popupCustom}>
-            <View style={[styles.contentField, contentPaddingVertical]}>
-              <Text style={[styles.titlePopup, titleColor]}>{title}</Text>
-              {content &&
-                renderContent
-              }
-              {type === 'input' &&
-                <TextInput
-                  autoFocus
-                  autoCorrect={false}
-                  style={styles.textInput}
-                  underlineColorAndroid="transparent"
-                  onChangeText={(text) => {
-                    this.setState({ valueInput: text })
-                  }}
-                  keyboardAppearance="dark"
-                  placeholder="Wallet Name"
-                  placeholderTextColor="#4A4A4A"
-                  value={valueInput}
-                />
-              }
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+          <Animated.View
+            style={[styles.overlayPopup, {
+              transform: [
+                {
+                  translateY: this.state.offsetY
+                }
+              ]
+            }]}
+          >
+            <View style={styles.popupCustom}>
+              <View style={[styles.contentField, contentPaddingVertical]}>
+                <Text style={[styles.titlePopup, titleColor]}>{title}</Text>
+                {content &&
+                  renderContent
+                }
+                {type === 'input' &&
+                  <TextInput
+                    autoFocus
+                    autoCorrect={false}
+                    style={styles.textInput}
+                    underlineColorAndroid="transparent"
+                    onChangeText={(text) => {
+                      this.setState({ valueInput: text })
+                    }}
+                    keyboardAppearance="dark"
+                    placeholder="Wallet Name"
+                    placeholderTextColor="#4A4A4A"
+                    value={valueInput}
+                  />
+                }
+              </View>
+              <View style={styles.buttonField}>
+                {this._renderButons()}
+              </View>
             </View>
-            <View style={styles.buttonField}>
-              {this._renderButons()}
-            </View>
-          </View>
-        </Animated.View>
+          </Animated.View>
+        </TouchableWithoutFeedback>
       </Modal>
     )
   }

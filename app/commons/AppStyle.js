@@ -52,5 +52,6 @@ export default {
   mainFontSemiBold: 'OpenSans-Semibold',
 
   swipeButtonBackground: '#1F2437',
-  borderLinesSetting: '#1D2137'
+  borderLinesSetting: '#1D2137',
+  errorColor: '#D0021B'
 }
