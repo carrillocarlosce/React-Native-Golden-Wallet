@@ -60,7 +60,7 @@ export default class EnterNameScreen extends Component {
   }
 
   render() {
-    const { title, loading } = this.createWalletStore
+    const { title, loading, isReadCreate } = this.createWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -83,6 +83,7 @@ export default class EnterNameScreen extends Component {
             />
             {this.renderErrorField()}
             <BottomButton
+              disable={!isReadCreate}
               text="Create"
               onPress={this.handleCreate}
             />
