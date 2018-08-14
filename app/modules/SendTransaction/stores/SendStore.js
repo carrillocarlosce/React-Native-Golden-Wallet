@@ -60,8 +60,8 @@ class SendStore {
     const transaction = {
       value: this.confirmStore.value,
       to: this.address,
-      gasLimit: this.confirmStore.gasLimit.toNumber(),
-      gasPrice: this.confirmStore.gasPrice.toNumber()
+      gasLimit: `0x${this.confirmStore.gasLimit.toString(16)}`,
+      gasPrice: `0x${this.confirmStore.gasPrice.toString(16)}`
     }
     // NavigationStore.showModal(ScreenID.UnlockScreen, {
     //   runUnlock: true,
@@ -143,27 +143,21 @@ class SendStore {
     return new Promise((resolve, reject) => {
       this.getPrivateKey(ds).then((privateKey) => {
         const wallet = this.getWalletSendTransaction(privateKey)
-        Starypto.ContractUtils.parseContract(token.address)
-          .then((contract) => {
-            const numberOfDecimals = contract.tokenInfo.decimals
-            // const numberOfTokens = Starypto.Units.parseUnits(`${valueSend}`, numberOfDecimals)
-            const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
-            const inf = new Starypto.Interface(contract.abi)
-            const transfer = inf.functions.transfer(to, numberOfTokens)
-            const unspentTransaction = {
-              data: transfer.data,
-              to: token.address,
-              gasLimit: transaction.gasLimit,
-              gasPrice: transaction.gasPrice
-            }
+        const numberOfDecimals = token.decimals
+        const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
+        const inf = new Starypto.Interface(abi)
+        const transfer = inf.functions.transfer(to, numberOfTokens)
+        const unspentTransaction = {
+          data: transfer.data,
+          to: token.address,
+          gasLimit: transaction.gasLimit,
+          gasPrice: transaction.gasPrice
+        }
 
-            wallet.sendTransaction(unspentTransaction).then((tx) => {
-              this.generatePendingTransaction(tx, transaction, this.isToken)
-              return resolve(tx)
-            }).catch(err => reject(err))
-          }).catch((err) => {
-            return reject(err)
-          })
+        return wallet.sendTransaction(unspentTransaction).then((tx) => {
+          this.generatePendingTransaction(tx, transaction, this.isToken)
+          return resolve(tx)
+        }).catch(err => reject(err))
       })
     })
   }
@@ -195,5 +189,7 @@ class SendStore {
     selectedToken.addUnspendTransaction(pendingTransaction)
   }
 }
+
+const abi = JSON.parse('[{ "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "stop", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "burn", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "stopped", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "start", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_name", "type": "string" }], "name": "setName", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowance", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [{ "name": "_addressFounder", "type": "address" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_from", "type": "address" }, { "indexed": true, "name": "_to", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_owner", "type": "address" }, { "indexed": true, "name": "_spender", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Approval", "type": "event" }]')
 
 export default SendStore
