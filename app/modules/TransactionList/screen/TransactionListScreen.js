@@ -56,8 +56,7 @@ export default class TransactionListScreen extends Component {
   }
 
   _renderEmptyList = () => {
-    if (!this.selectedToken.isLoading && !this.selectedToken.isRefreshing &&
-      this.selectedToken.transactions.length === 0) {
+    if (!this.selectedToken.isLoading) {
       return <EmptyList />
     }
 
@@ -83,10 +82,10 @@ export default class TransactionListScreen extends Component {
           }}
         />
         <FlatList
-          style={{ width }}
           data={transactions}
+          contentContainerStyle={[{}, transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
           ListEmptyComponent={this._renderEmptyList()}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${item.hash}-${item.from}-${index}`}
           refreshing={isRefreshing}
           onRefresh={this.onRefresh}
