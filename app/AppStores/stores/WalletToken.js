@@ -111,7 +111,7 @@ export default class WalletToken {
         startblock: 0,
         sort: 'desc',
         endblock: 99999999,
-        offset: 8,
+        offset: 16,
         apikey: 'SVUJNQSR2APDFX89JJ1VKQU4TKMB6W756M'
       }
     } else {
@@ -120,7 +120,7 @@ export default class WalletToken {
         action: 'tokentx',
         address,
         contractaddress: this.address,
-        offset: 8,
+        offset: 16,
         sort: 'desc',
         symbol: this.title
       }
