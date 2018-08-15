@@ -142,7 +142,7 @@ export default class ImportViaAddressScreen extends Component {
 
   render() {
     const {
-      address, title, loading, isErrorTitle, isErrorAddress, isReadyCreate
+      address, title, loading, isErrorTitle, errorAddress, isReadyCreate
     } = this.importAddressStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -183,8 +183,8 @@ export default class ImportViaAddressScreen extends Component {
                 styleTextInput={commonStyle.fontAddress}
                 value={address}
               />
-              {isErrorAddress &&
-                <Text style={styles.errorText}>Invalid Address.</Text>
+              {errorAddress !== '' &&
+                <Text style={styles.errorText}>{errorAddress}</Text>
               }
               <ActionButton
                 style={{ height: 40, marginTop: 30 }}
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
-    color: '#D0021B',
+    color: AppStyle.errorColor,
     alignSelf: 'flex-start',
     marginLeft: 20,
     marginTop: 10

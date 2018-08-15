@@ -46,6 +46,10 @@ class CreateWalletStore {
     const title = this.customTitle
     return !this.finished && this.titleMap[title]
   }
+
+  @computed get isReadCreate() {
+    return this.title !== '' && !this.isShowError
+  }
 }
 
 export default CreateWalletStore

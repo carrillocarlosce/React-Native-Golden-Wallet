@@ -19,9 +19,14 @@ export default class ImportPrivateKeyStore {
 
   @action async create() {
     this.loading = true
-    this.finished = true
     const ds = MainStore.secureStorage
     const w = Wallet.importPrivateKey(this.privateKey, this.title, ds)
+    if (this.addressMap[w.address]) {
+      NavStore.popupCustom.show('Existed Wallet')
+      this.loading = false
+      return
+    }
+    this.finished = true
     await w.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
@@ -38,6 +43,15 @@ export default class ImportPrivateKeyStore {
     return wallets.reduce((rs, w) => {
       const result = rs
       result[w.title] = 1
+      return result
+    }, {})
+  }
+
+  @computed get addressMap() {
+    const { wallets } = MainStore.appState
+    return wallets.reduce((rs, w) => {
+      const result = rs
+      result[w.address] = 1
       return result
     }, {})
   }
