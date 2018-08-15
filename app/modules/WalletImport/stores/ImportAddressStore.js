@@ -39,6 +39,15 @@ export default class ImportAddressStore {
     return this.addessWallet
   }
 
+  @computed get addressMap() {
+    const { wallets } = MainStore.appState
+    return wallets.reduce((rs, w) => {
+      const result = rs
+      result[w.address] = 1
+      return result
+    }, {})
+  }
+
   @computed get titleMap() {
     const { wallets } = MainStore.appState
     return wallets.reduce((rs, w) => {
@@ -53,14 +62,18 @@ export default class ImportAddressStore {
     return !this.finished && this.titleMap[title]
   }
 
-  @computed get isErrorAddress() {
-    if (this.address === '') {
-      return false
+  @computed get errorAddress() {
+    if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
+      return 'Invalid Address.'
     }
-    return !this.finished && !Checker.checkAddress(this.address)
+
+    if (!this.finished && this.addressMap[this.address]) {
+      return 'Existed Address'
+    }
+    return ''
   }
 
   @computed get isReadyCreate() {
-    return this.address !== '' && this.title !== '' && !this.isErrorTitle && !this.isErrorAddress
+    return this.address !== '' && this.title !== '' && this.errorAddress === '' && !this.isErrorTitle
   }
 }

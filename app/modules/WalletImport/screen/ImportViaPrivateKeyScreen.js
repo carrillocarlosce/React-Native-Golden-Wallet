@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
-    color: '#D0021B',
+    color: AppStyle.errorColor,
     alignSelf: 'flex-start',
     marginLeft: 20,
     marginTop: 10
