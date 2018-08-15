@@ -3,7 +3,6 @@ import constant from '../../commons/constant'
 import Helper from '../../commons/Helper'
 import MainStore from '../MainStore'
 import api from '../../api'
-import UnpendTransactionDS from '../DataSource/UnspendTransactionDS'
 
 const defaultData = {
   blockNumber: '0',

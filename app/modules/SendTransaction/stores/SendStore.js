@@ -112,19 +112,23 @@ class SendStore {
     const valueFormat = transaction.value ? transaction.value.times(new BigNumber(1e+18)).toString(16) : transaction.value
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
     return new Promise((resolve, reject) => {
-      this.getPrivateKey(ds).then((privateKey) => {
-        const wallet = this.getWalletSendTransaction(privateKey)
-        wallet.sendTransaction(transactionSend)
-          .then((tx) => {
-            this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
-            return resolve(tx)
-          })
-          .catch((err) => {
-            return reject(err)
-          })
-      }).catch((err) => {
-        reject(err)
-      })
+      try {
+        this.getPrivateKey(ds).then((privateKey) => {
+          const wallet = this.getWalletSendTransaction(privateKey)
+          wallet.sendTransaction(transactionSend)
+            .then((tx) => {
+              this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              return resolve(tx)
+            })
+            .catch((err) => {
+              return reject(err)
+            })
+        }).catch((err) => {
+          return reject(err)
+        })
+      } catch (e) {
+        return reject(e)
+      }
     })
   }
 
@@ -139,24 +143,28 @@ class SendStore {
       value
     } = transaction
     return new Promise((resolve, reject) => {
-      this.getPrivateKey(ds).then((privateKey) => {
-        const wallet = this.getWalletSendTransaction(privateKey)
-        const numberOfDecimals = token.decimals
-        const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
-        const inf = new Starypto.Interface(abi)
-        const transfer = inf.functions.transfer(to, numberOfTokens)
-        const unspentTransaction = {
-          data: transfer.data,
-          to: token.address,
-          gasLimit: transaction.gasLimit,
-          gasPrice: transaction.gasPrice
-        }
+      try {
+        this.getPrivateKey(ds).then((privateKey) => {
+          const wallet = this.getWalletSendTransaction(privateKey)
+          const numberOfDecimals = token.decimals
+          const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
+          const inf = new Starypto.Interface(abi)
+          const transfer = inf.functions.transfer(to, numberOfTokens)
+          const unspentTransaction = {
+            data: transfer.data,
+            to: token.address,
+            gasLimit: transaction.gasLimit,
+            gasPrice: transaction.gasPrice
+          }
 
-        return wallet.sendTransaction(unspentTransaction).then((tx) => {
-          this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
-          return resolve(tx)
-        }).catch(err => reject(err))
-      })
+          return wallet.sendTransaction(unspentTransaction).then((tx) => {
+            this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+            return resolve(tx)
+          }).catch(e => reject(e))
+        })
+      } catch (e) {
+        return reject(e)
+      }
     })
   }
 

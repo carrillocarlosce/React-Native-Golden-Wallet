@@ -36,7 +36,7 @@ export default class TransactionDetailScreen extends Component {
 
   get operator() {
     const { type, isSelf } = this.selectedTransaction
-    if (type == constant.SENT) {
+    if (type == constant.SENT || type == constant.PENDING) {
       return '-'
     }
     if (isSelf) {
