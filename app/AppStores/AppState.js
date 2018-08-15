@@ -118,7 +118,6 @@ class AppState {
     setTimeout(async () => {
       if (this.config.network != 'rinkeby') {
         const res = await api.fetchGasPrice()
-        console.log(res.data)
         this.gasPriceEstimate = {
           slow: Math.floor(res.data.safeLow / 10),
           standard: Math.floor(res.data.average / 10),
