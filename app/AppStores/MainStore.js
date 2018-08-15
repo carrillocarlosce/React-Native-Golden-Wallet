@@ -29,6 +29,7 @@ class MainStore {
   // Start
   @action async startApp() {
     await AppDS.readAppData()
+    appState.startAllServices()
   }
 
   goToSendTx() {

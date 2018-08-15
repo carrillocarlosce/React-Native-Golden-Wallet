@@ -42,9 +42,11 @@ class AppState {
     fast: 60
   }
 
-  static TIME_INTERVAL = 10000
+  static TIME_INTERVAL = 20000
 
-  constructor() {
+  // constructor() { }
+
+  startAllServices() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
@@ -182,6 +184,8 @@ class AppState {
   }
 
   async startCheckBalanceJob() {
+    if (this.checkBalanceJobID) clearTimeout(this.checkBalanceJobID)
+
     this.checkBalanceJobID = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
       this.startCheckBalanceJob()
@@ -189,6 +193,8 @@ class AppState {
   }
 
   async startCheckUnpendTransactionsJob() {
+    if (this.checkUnpendTransactionsJobID) clearTimeout(this.checkUnpendTransactionsJobID)
+
     this.checkUnpendTransactionsJobID = setTimeout(async () => {
       if (this.internetConnection === 'online') {
         const newUnpendTxs = []
