@@ -98,7 +98,12 @@ export const fetchGasPrice = () => {
 }
 
 export const checkTxHasBeenDroppedOrFailed = (txHash) => {
-  return caller.get(`https://etherscan.io/tx/${txHash}`)
+  let url = `https://etherscan.io/tx/${txHash}`
+  if (appState.config.network !== NetworkConfig.networks.mainnet) {
+    url = `https://api-${appState.config.network}.etherscan.io/tx/${txHash}`
+  }
+
+  return caller.get(url)
     .then((res) => {
       if (res.data && typeof res.data === 'string') {
         const htmlString = res.data
