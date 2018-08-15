@@ -18,6 +18,7 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import CreateWalletStore from '../CreateWalletStore'
 import Spinner from '../../../components/elements/Spinner'
+import constant from '../../../commons/constant'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTopAndroid()
@@ -54,7 +55,7 @@ export default class EnterNameScreen extends Component {
   renderErrorField = () => {
     const { isShowError } = this.createWalletStore
     if (isShowError) {
-      return <Text style={styles.errorText}>Name was exist. Choose another is better.</Text>
+      return <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
     }
     return <View />
   }
@@ -68,7 +69,7 @@ export default class EnterNameScreen extends Component {
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}
               headerItem={{
-                title: 'Type your wallet name',
+                title: 'Type Your Wallet Name',
                 icon: null,
                 button: images.closeButton
               }}
@@ -77,7 +78,6 @@ export default class EnterNameScreen extends Component {
             <InputWithAction
               autoFocus
               style={{ width: width - 40, marginTop: 25 }}
-              placeholder="Address Name"
               value={title}
               onChangeText={this.onChangeText}
             />

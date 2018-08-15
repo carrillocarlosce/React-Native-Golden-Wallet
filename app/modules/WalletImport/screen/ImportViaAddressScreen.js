@@ -167,17 +167,15 @@ export default class ImportViaAddressScreen extends Component {
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
-                placeholder="Wallet Name"
                 value={title}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
-                <Text style={styles.errorText}>Name was exist. Choose another is better</Text>
+                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
               <Text style={[styles.titleText, { marginTop: 20 }]}>Address</Text>
               <InputWithAction
                 style={{ width: width - 40, marginTop: 10 }}
-                placeholder="Your Address"
                 onChangeText={this.onChangeAddress}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}

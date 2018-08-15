@@ -16,7 +16,7 @@ export default {
   SUB_TITTLE_SEND_SUCCESS: 'The process may take up to some seconds. Please check your history for transaction status.',
   TEXT_VIEW_DETAIL: 'View Details',
   RETURN_WALLET: 'Return to wallet',
-  CREATE_NEW_WALLET: 'Create a new wallet',
+  CREATE_NEW_WALLET: 'Create A New Wallet',
   CONFIRM: 'Confirm',
   SCAN: 'Scan',
   UNLOCK_YOUR_WALLET: 'Unlock Your Wallet',
@@ -57,5 +57,10 @@ export default {
   CHOOSE_ADDRESS: 'Choose recipient',
   ADD_FROM_ALBUM: 'Add from album',
 
-  INFURA_API_KEY: 'qMZ7EIind33NY9Azu836'
+  INFURA_API_KEY: 'qMZ7EIind33NY9Azu836',
+  EXISTED_NAME: 'Name was existed',
+  INVALID_ADDRESS: 'Invalid Address',
+  INVALID_MNEMONIC: 'Invalid Mnemonic Phrase',
+  INVALID_PRIVATE_KEY: 'Invalid Private Key',
+  EXISTED_WALLET: 'Wallet was existed'
 }
