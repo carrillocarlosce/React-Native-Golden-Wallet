@@ -13,20 +13,15 @@ import {
   Keyboard,
   ScrollView
 } from 'react-native'
-import { NavigationActions } from 'react-navigation'
 import { observer } from 'mobx-react'
-import numeral from 'numeral'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import constant from '../../../commons/constant'
 // import WalletStore from '../../../stores/WalletStore'
 import NavStore from '../../../stores/NavStore'
-import HapticHandler from '../../../Handler/HapticHandler'
-import Checker from '../../../Handler/Checker'
-import Helper from '../../../commons/Helper'
 import MainStore from '../../../AppStores/MainStore'
-import ActionSheetCustom from '../../../components/elements/ActionSheetCustom';
+import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
@@ -213,7 +208,7 @@ export default class ConfirmScreen extends Component {
           style={styles.backBtn}
           onPress={() => this.hideAdvance()}
         >
-          <Image source={images.backButton} style={styles.backIcon} />
+          <Image source={images.backButton} style={styles.backIcon} resizeMode="contain" />
           <Text style={[styles.title]}>Advance</Text>
         </TouchableOpacity>
       </View>
@@ -237,7 +232,7 @@ export default class ConfirmScreen extends Component {
               style={styles.textInput}
               keyboardAppearance="dark"
               value={gasLimit}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               onChangeText={(t) => {
                 advanceStore.setGasLimit(t)
                 advanceStore.setGasLimitErr('')
@@ -267,7 +262,7 @@ export default class ConfirmScreen extends Component {
           <View>
             <TextInput
               ref={ref => (this.gasGwei = ref)}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               keyboardAppearance="dark"
               value={gasGwei}
               style={styles.textInput}
@@ -417,19 +412,19 @@ export default class ConfirmScreen extends Component {
           style={styles.actionSheetItem}
           onPress={() => this._onPressAction(gasPriceEstimate.slow, 'Low')}
         >
-          <Text style={styles.actionSheetText}>Slow ({gasPriceEstimate.slow} Gwei)</Text>
+          <Text style={styles.actionSheetText}>{`Slow (<30 minutes) ${gasPriceEstimate.slow} Gwei`}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionSheetItem}
           onPress={() => this._onPressAction(gasPriceEstimate.standard, 'Standard')}
         >
-          <Text style={styles.actionSheetText}>Standard ({gasPriceEstimate.standard} Gwei)</Text>
+          <Text style={styles.actionSheetText}>{`Standard (<5 minutes) ${gasPriceEstimate.standard} Gwei`}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionSheetItem, { borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderBottomWidth: 0 }]}
           onPress={() => this._onPressAction(gasPriceEstimate.fast, 'Fast')}
         >
-          <Text style={styles.actionSheetText}>Fast ({gasPriceEstimate.fast} Gwei)</Text>
+          <Text style={styles.actionSheetText}>{`Fast (<2 minutes) ${gasPriceEstimate.fast} Gwei`}</Text>
         </TouchableOpacity>
       </ActionSheetCustom>
     )
@@ -501,12 +496,12 @@ export default class ConfirmScreen extends Component {
 
   _keyboardDidShow(e) {
     if (this.gasLimit.isFocused() || this.gasGwei.isFocused()) {
-      let value = 500 + e.endCoordinates.height - height
+      const value = 500 + e.endCoordinates.height - height
       if (isIPX) {
         // value += 10
       }
       this.setState({ bottom: value + 20, borderRadius: 0 })
-      let extra = extraBottom === 0 ? -10 : -extraBottom
+      const extra = extraBottom === 0 ? -10 : -extraBottom
       if (isIPX) {
         // extra = -30
       }
@@ -712,7 +707,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: AppStyle.backgroundDarkBlue,
     borderRadius: 5,
-    bottom: extraBottom !== 0 ? extraBottom : 20,
+    bottom: 20,
     left: 20,
     right: 20,
     height: 50,
@@ -733,18 +728,6 @@ const styles = StyleSheet.create({
     color: AppStyle.secondaryTextColor,
     paddingLeft: 10,
     fontFamily: 'OpenSans-Semibold',
-    paddingRight: 10,
-    fontSize: 14
-  },
-  textArea: {
-    height: 80,
-    backgroundColor: '#14192d',
-    borderRadius: 5,
-    alignSelf: 'stretch',
-    marginTop: 10,
-    color: AppStyle.secondaryTextColor,
-    paddingLeft: 10,
-    fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
     paddingRight: 10,
     fontSize: 14
   },

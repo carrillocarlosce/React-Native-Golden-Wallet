@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     width,
-    height,
+    height: height + extraBottom,
     justifyContent: 'center',
     backgroundColor: AppStyle.backgroundColor,
     position: 'absolute'
