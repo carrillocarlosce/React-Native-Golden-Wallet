@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
-import { computed } from 'mobx'
+import SplashScreen from 'react-native-splash-screen'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import LargeCard from '../elements/LargeCard'
 import Hamburger from '../elements/HamburgerButton'
@@ -55,6 +55,7 @@ export default class HomeScreen extends Component {
   componentDidMount() {
     TickerStore.callApi()
     setTimeout(() => {
+      SplashScreen.hide()
       if (!NotificationStore.isInitFromNotification) {
         MainStore.gotoUnlock()
         this.props.navigation.navigate('UnlockScreen', {
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     height: 20
   },
   bottomField: {
-    marginTop: -20,
+    marginTop: -25,
     flex: 1,
     marginLeft: 36,
     marginRight: 20,

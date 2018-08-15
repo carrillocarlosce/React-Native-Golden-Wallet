@@ -13,7 +13,7 @@ import {
   Keyboard
 } from 'react-native'
 import crashlytics from 'react-native-fabric-crashlytics'
-import SplashScreen from 'react-native-splash-screen'
+// import SplashScreen from 'react-native-splash-screen'
 import Router from './app/Router'
 import currencyStore from './app/stores/CurrencyStore'
 import NavStore from './app/stores/NavStore'
@@ -37,7 +37,7 @@ export default class App extends Component {
   }
 
   async componentWillMount() {
-    await MainStore.startApp()
+    MainStore.startApp()
   }
 
   async componentDidMount() {
@@ -51,11 +51,11 @@ export default class App extends Component {
     }
     crashlytics.init()
     try {
-      SplashScreen.hide()
+      // SplashScreen.hide()
       await currencyStore.getCurrencyAPI()
     } catch (e) {
       NavStore.popupCustom.show(e.message)
-      SplashScreen.hide()
+      // SplashScreen.hide()
     }
   }
 
