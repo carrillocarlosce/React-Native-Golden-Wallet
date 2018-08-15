@@ -187,24 +187,22 @@ export default class ImportViaPrivateKeyScreen extends Component {
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
-                placeholder="Wallet Name"
                 value={title}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
-                <Text style={styles.errorText}>Name was exist. Choose another is better</Text>
+                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
               <Text style={[styles.titleText, { marginTop: 20 }]}>Private Key</Text>
               <InputWithAction
                 style={{ width: width - 40, marginTop: 10 }}
-                placeholder="Your Private Key"
                 onChangeText={this.onChangePrivKey}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={privateKey}
               />
               {isErrorPrivateKey &&
-                <Text style={styles.errorText}>Invalid Private Key.</Text>
+                <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
               }
               <ActionButton
                 style={{ height: 40, marginTop: 30 }}
