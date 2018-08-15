@@ -53,27 +53,21 @@ public class RNGoldenKeystoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void mnemonicIsValid(String mnemonic, Promise p) {
         try {
-            MnemonicValidator
-                    .ofWordList(English.INSTANCE)
-                    .validate(mnemonic);
-            p.resolve(true);
+            MnemonicValidator.ofWordList(English.INSTANCE).validate(mnemonic);
+            p.resolve(1);
         } catch (UnexpectedWhiteSpaceException e) {
-            p.reject(e);
+            p.resolve(0);
         } catch (InvalidWordCountException e) {
-            p.reject(e);
+            p.resolve(0);
         } catch (InvalidChecksumException e) {
-            p.reject(e);
+            p.resolve(0);
         } catch (WordNotFoundException e) {
-            p.reject(e);
+            p.resolve(0);
         }
     }
 
     @ReactMethod
-    public void createHDKeyPair(String mnemonic,
-                                String passphrase,
-                                String path,
-                                int index,
-                                Promise p) {
+    public void createHDKeyPair(String mnemonic, String passphrase, String path, int index, Promise p) {
         byte[] seed2 = new Mnemonic(mnemonic).GetSeed(passphrase);
         KeyDerivation key = KeyDerivation.createFromSeed(seed2);
         String pathFormated = path.replace("/index", "");
@@ -93,12 +87,7 @@ public class RNGoldenKeystoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createHDKeyPairs(String mnemonic,
-                                 String passphrase,
-                                 String path,
-                                 int from,
-                                 int to,
-                                 Promise p) {
+    public void createHDKeyPairs(String mnemonic, String passphrase, String path, int from, int to, Promise p) {
         byte[] seed2 = new Mnemonic(mnemonic).GetSeed(passphrase);
         KeyDerivation key = KeyDerivation.createFromSeed(seed2);
         String pathFormated = path.replace("/index", "");

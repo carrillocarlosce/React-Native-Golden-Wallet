@@ -3,6 +3,7 @@ import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import Checker from '../../../Handler/Checker'
+import constant from '../../../commons/constant'
 
 export default class ImportAddressStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -64,11 +65,11 @@ export default class ImportAddressStore {
 
   @computed get errorAddress() {
     if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
-      return 'Invalid Address.'
+      return constant.INVALID_ADDRESS
     }
 
     if (!this.finished && this.addressMap[this.address]) {
-      return 'Existed Address'
+      return constant.EXISTED_WALLET
     }
     return ''
   }

@@ -63,18 +63,18 @@ export default class ImportViaMnemonicScreen extends Component {
   }
 
   onChangeMnemonic = (text) => {
-    this.importMnemonicStore.setMnemonic(text)
+    this.importMnemonicStore.onChangeMnemonic(text)
   }
 
   onPaste = async () => {
     const content = await Clipboard.getString()
     if (content) {
-      this.importMnemonicStore.setMnemonic(content)
+      this.importMnemonicStore.onChangeMnemonic(content)
     }
   }
 
   returnData(codeScanned) {
-    this.importMnemonicStore.setMnemonic(codeScanned)
+    this.importMnemonicStore.onChangeMnemonic(codeScanned)
   }
 
   _runExtraHeight(toValue) {
@@ -114,7 +114,7 @@ export default class ImportViaMnemonicScreen extends Component {
   }
 
   clearText = () => {
-    this.importMnemonicStore.setMnemonic('')
+    this.importMnemonicStore.onChangeMnemonic('')
   }
 
   _renderClearButton() {
@@ -145,7 +145,7 @@ export default class ImportViaMnemonicScreen extends Component {
     const { navigation } = this.props
     setTimeout(() => {
       navigation.navigate('ScanQRCodeScreen', {
-        title: 'Scan Private Key',
+        title: 'Scan Mnemonic Phrase',
         marginTop,
         returnData: this.returnData.bind(this)
       })
@@ -154,7 +154,9 @@ export default class ImportViaMnemonicScreen extends Component {
 
   render() {
     const { navigation } = this.props
-    const { mnemonic, loading } = this.importMnemonicStore
+    const {
+      mnemonic, loading, errorMnemonic, isReadyCreate
+    } = this.importMnemonicStore
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -170,7 +172,7 @@ export default class ImportViaMnemonicScreen extends Component {
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
-                  title: 'Enter Mnemonic Phrases',
+                  title: 'Add Mnemonic Phrases',
                   icon: null,
                   button: images.backButton
                 }}
@@ -193,6 +195,9 @@ export default class ImportViaMnemonicScreen extends Component {
                 {mnemonic === '' && this._renderPasteButton()}
                 {mnemonic !== '' && this._renderClearButton()}
               </View>
+              {errorMnemonic &&
+                <Text style={styles.errorText}>{constant.INVALID_MNEMONIC}</Text>
+              }
               <View style={styles.actionButton}>
                 <ActionButton
                   style={{ height: 40, paddingHorizontal: 17 }}
@@ -208,6 +213,7 @@ export default class ImportViaMnemonicScreen extends Component {
               </View>
             </Animated.View>
             <BottomButton
+              disable={!isReadyCreate}
               onPress={this._handleConfirm}
             />
             {loading &&
@@ -248,5 +254,13 @@ const styles = StyleSheet.create({
     color: AppStyle.mainColor,
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginLeft: 20,
+    marginTop: 10
   }
 })
