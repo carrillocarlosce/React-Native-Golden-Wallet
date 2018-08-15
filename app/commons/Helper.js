@@ -51,7 +51,7 @@ export default class Helper {
       sameElse: 'MMMM DD, YYYY'
     })
   }
-  static formatETH(value, isAmountScreen = false) {
+  static formatETH(value, isAmountScreen = false, decimalAfterDot = 4) {
     if (value) {
       const dataSplit = value.toString().split('.')
       const integer = dataSplit[0]
@@ -62,8 +62,8 @@ export default class Helper {
       if (integer >= 1000 && !isAmountScreen) {
         return `${this.numberWithCommas(integer)}`
       }
-      if (decimal.length > 4) {
-        decimal = decimal.substring(0, 4)
+      if (decimal.length > decimalAfterDot) {
+        decimal = decimal.substring(0, decimalAfterDot)
         decimal = this.removeRedundantZeros(decimal)
       }
       const result = `${this.numberWithCommas(integer)}.${decimal}`
@@ -72,7 +72,7 @@ export default class Helper {
     return 0
   }
 
-  static formatUSD(value, isAmountScreen = false, option = million) {
+  static formatUSD(value, isAmountScreen = false, option = million, decimalAfterDot = 2) {
     if (value) {
       const dataSplit = value.toString().split('.')
       const integer = dataSplit[0]
@@ -83,8 +83,8 @@ export default class Helper {
       if (integer >= 10000 && !isAmountScreen) {
         return `${this.numberWithCommas(integer)}`
       }
-      if (decimal.length > 2) {
-        decimal = decimal.substring(0, 2)
+      if (decimal.length > decimalAfterDot) {
+        decimal = decimal.substring(0, decimalAfterDot)
         decimal = this.removeRedundantZeros(decimal)
       }
       const result = `${this.numberWithCommas(integer)}.${decimal}`

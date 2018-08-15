@@ -59,7 +59,6 @@ export default class TokenScreen extends Component {
 
   _renderFooter = (wallet) => {
     const { isFetchingBalance } = wallet
-    console.log(isFetchingBalance)
     return <ShimmerTokenItem visible={isFetchingBalance} />
   }
 

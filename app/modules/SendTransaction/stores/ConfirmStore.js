@@ -2,7 +2,6 @@ import { observable, action, computed } from 'mobx'
 import { BigNumber } from 'bignumber.js'
 import MainStore from '../../../AppStores/MainStore'
 import Helper from '../../../commons/Helper'
-import api from '../../../api'
 
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
@@ -60,19 +59,19 @@ export default class ConfirmStore {
   @computed get formatedFee() {
     // const fee = Starypto.Units.formatUnits(`${this.gasLimit.times(this.gasPrice)}`, 18)
     const fee = this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
-    return `${fee} ETH ($${Helper.formatUSD(Number(fee) * this.rate)})`
+    return `${Helper.formatETH(fee)} ETH ($${Helper.formatUSD(fee.times(this.rate))})`
   }
 
   @computed get formatedAmount() {
     Helper.formatETH()
-    return `${Helper.formatETH(this.value)} ${this.title}`
+    return `${Helper.formatETH(this.value, false, 7)} ${this.title}`
   }
 
   @computed get formatedDolar() {
     // TODO getRate
     const rate = MainStore.sendTransaction.isToken ? this.rateToken : this.rate
     const amountDolar = this.value.times(rate)
-    return `$${Helper.formatUSD(amountDolar)}`
+    return `$${Helper.formatUSD(amountDolar, false, 1000000, 6)}`
   }
   _onShowAdvance() {
     // const formatedGasPrice = Number(Starypto.Units.formatUnits(`${this.gasPrice}`, 9)).toFixed(0)

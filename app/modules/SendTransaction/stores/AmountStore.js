@@ -1,8 +1,8 @@
 import { observable, action, computed, toJS } from 'mobx'
+import { BigNumber } from 'bignumber.js'
 import HapticHandler from '../../../Handler/HapticHandler'
 import Helper from '../../../commons/Helper'
 import MainStore from '../../../AppStores/MainStore'
-import { BigNumber } from 'bignumber.js'
 
 class AmountStore {
   @observable amountText = {
@@ -74,8 +74,8 @@ class AmountStore {
   @computed get amountHeaderString() {
     const { isUSD } = this.amountText
     return isUSD
-      ? `${this.prefix}${Helper.formatUSD(this.amountUSDString, true)}`
-      : `${Helper.formatETH(this.amountCryptoString, true)} ${this.postfix}`
+      ? `${this.prefix}${Helper.formatUSD((this.amountUSD.minus(this.amountTextBigNum).toString(10)), true)}`
+      : `${Helper.formatETH((this.amountCrypto.minus(this.amountTextBigNum).toString(10)), true)} ${this.postfix}`
   }
 
   @computed get amountHeaderAddressInputScreen() {

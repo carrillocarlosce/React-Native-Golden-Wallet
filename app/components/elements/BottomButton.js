@@ -52,33 +52,34 @@ export default class BottomButton extends Component {
   }
 
   _runKeyboardAnim(toValue) {
+    const duration = Platform.OS === 'ios' ? 250 : 0
     Animated.parallel([
       Animated.timing(
         this.state.bottom,
         {
           toValue,
-          duration: 250
+          duration
         }
       ),
       Animated.timing(
         this.state.marginVertical,
         {
           toValue: toValue === 20 + extraBottom ? 20 : 0,
-          duration: 250
+          duration
         }
       ),
       Animated.timing(
         this.state.borderRadius,
         {
           toValue: toValue === 20 + extraBottom ? 5 : 0,
-          duration: 250
+          duration
         }
       )
     ]).start()
   }
 
   _keyboardDidShow(e) {
-    let value = e.endCoordinates.height + extraBottom
+    let value = Platform.OS === 'ios' ? e.endCoordinates.height + extraBottom : 0
 
     if (isIPX) {
       value -= 34
