@@ -102,7 +102,10 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
     .then((res) => {
       if (res.data && typeof res.data === 'string') {
         const htmlString = res.data
-        return htmlString.includes('{Dropped&Replaced}') || htmlString.includes('<font color="red">Fail</font>')
+        return htmlString.includes('Dropped&Replaced') ||
+          htmlString.includes('Dropped') ||
+          htmlString.includes('Replaced') ||
+          htmlString.includes('<font color="red">Fail</font>')
       }
       return true
     })
