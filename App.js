@@ -10,7 +10,8 @@ import {
   Platform,
   View,
   AppState,
-  Keyboard
+  Keyboard,
+  NetInfo
 } from 'react-native'
 import crashlytics from 'react-native-fabric-crashlytics'
 // import SplashScreen from 'react-native-splash-screen'
@@ -37,7 +38,11 @@ export default class App extends Component {
   }
 
   async componentWillMount() {
-    MainStore.startApp()
+    await MainStore.startApp()
+    NetInfo.addEventListener(
+      'connectionChange',
+      this.handleFirstConnectivityChange
+    )
   }
 
   async componentDidMount() {
@@ -61,6 +66,14 @@ export default class App extends Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
+  }
+
+  handleFirstConnectivityChange = (connection) => {
+    const connectionType = connection.type === 'none' ? 'offline' : 'online'
+    // if (connection.type === 'none') {
+    //   NavStore.showToastTop(connectionType, {}, { color: AppStyle.errorColor })
+    // }
+    MainStore.appState.setInternetConnection(connectionType)
   }
 
   appState = 'active'

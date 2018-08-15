@@ -74,6 +74,10 @@ class SendStore {
     //     }, 50)
     //   }
     // }, true)
+    if (MainStore.appState.internetConnection === 'offline') {
+      NavStore.popupCustom.show('No internet connection')
+      return
+    }
     NavStore.lockScreen({
       onUnlock: (pincode) => {
         NavStore.showLoading()
