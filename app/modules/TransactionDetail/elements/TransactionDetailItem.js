@@ -40,7 +40,7 @@ export default class TransactionDetailItem extends Component {
       fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
       color: AppStyle.secondaryTextColor
     }
-    if ((type === constant.SENT && title === 'Value') || isSelf) {
+    if ((type === constant.SENT && title === 'Value') || isSelf || type === constant.PENDING) {
       styleSubtitle = {
         fontSize: 18,
         fontFamily: 'OpenSans-Semibold',
