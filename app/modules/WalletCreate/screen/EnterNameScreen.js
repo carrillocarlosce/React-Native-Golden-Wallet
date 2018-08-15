@@ -18,6 +18,7 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import CreateWalletStore from '../CreateWalletStore'
 import Spinner from '../../../components/elements/Spinner'
+import constant from '../../../commons/constant'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTopAndroid()
@@ -54,13 +55,13 @@ export default class EnterNameScreen extends Component {
   renderErrorField = () => {
     const { isShowError } = this.createWalletStore
     if (isShowError) {
-      return <Text style={styles.errorText}>Name was exist. Choose another is better.</Text>
+      return <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
     }
     return <View />
   }
 
   render() {
-    const { title, loading } = this.createWalletStore
+    const { title, loading, isReadCreate } = this.createWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -68,7 +69,7 @@ export default class EnterNameScreen extends Component {
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}
               headerItem={{
-                title: 'Type your wallet name',
+                title: 'Type Your Wallet Name',
                 icon: null,
                 button: images.closeButton
               }}
@@ -77,12 +78,12 @@ export default class EnterNameScreen extends Component {
             <InputWithAction
               autoFocus
               style={{ width: width - 40, marginTop: 25 }}
-              placeholder="Address Name"
               value={title}
               onChangeText={this.onChangeText}
             />
             {this.renderErrorField()}
             <BottomButton
+              disable={!isReadCreate}
               text="Create"
               onPress={this.handleCreate}
             />
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   errorText: {
-    color: AppStyle.colorDown,
+    color: AppStyle.errorColor,
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
     marginTop: 10,

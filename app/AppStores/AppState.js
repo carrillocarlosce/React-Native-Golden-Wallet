@@ -34,21 +34,27 @@ class AppState {
   @observable didBackup = false
   currentWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
+  @observable gasPriceEstimate = {
+    slow: 2,
+    standard: 10,
+    fast: 60
+  }
 
-  static TIME_INTERVAL = 15000
+  static TIME_INTERVAL = 20000
 
   constructor() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
-    // this.startCheckBalanceJob()
     this.getRateETHDollar()
+    this.startCheckBalanceJob()
+    this.getGasPriceEstimate()
   }
 
   @action setConfig = (cf) => { this.config = cf }
   @action setBackup = (isBackup) => { this.didBackup = isBackup }
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
-  @action setselectedToken = (t) => { this.selectedToken = t }
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
+  @action setselectedToken = (t) => { this.selectedToken = t }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
@@ -101,6 +107,52 @@ class AppState {
     this.currentWalletIndex = index
   }
 
+  @action async getRateETHDollar() {
+    setTimeout(async () => {
+      const rs = await api.fetchRateETHDollar()
+      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
+    }, 100)
+  }
+
+  @action async getGasPriceEstimate() {
+    setTimeout(async () => {
+      if (this.config.network === Config.networks.mainnet) {
+        const res = await api.fetchGasPrice()
+        this.gasPriceEstimate = {
+          slow: Math.floor(res.data.safeLow / 10),
+          standard: Math.floor(res.data.average / 10),
+          fast: Math.floor(res.data.fastest / 10)
+        }
+      }
+    }, 0)
+  }
+
+  @action async import(orgData) {
+    const data = orgData
+    this.config = new Config(data.config.network, data.config.infuraKey)
+    this.hasPassword = data.hasPassword
+    this.currentWalletIndex = data.currentWalletIndex
+    const wallets = await WalletDS.getWallets()
+    const addressBooks = await AddressBookDS.getAddressBooks()
+    this.addressBooks = addressBooks
+    this.wallets = wallets
+
+    if (wallets.length > 0) {
+      this.setSelectedWallet(this.wallets[0])
+    }
+    // if (data.defaultWallet) {
+    //   this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
+    // }
+
+    // if (data.selectedWallet) {
+    //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
+    // }
+
+    this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.gasPriceEstimate = data.gasPriceEstimate
+    this.fetchWalletsBalance(false)
+  }
+
   @computed get isShowSendButton() {
     const wallet = this.selectedWallet
     if (!wallet) {
@@ -113,48 +165,21 @@ class AppState {
     return this.config.network
   }
 
-  @action async import(orgData) {
-    const data = orgData
-    this.config = new Config(data.config.network, data.config.infuraKey)
-    this.hasPassword = data.hasPassword
-    this.currentWalletIndex = data.currentWalletIndex
-    const wallets = await WalletDS.getWallets()
-    const addressBooks = await AddressBookDS.getAddressBooks()
-    this.addressBooks = addressBooks
-    this.wallets = wallets
-    if (wallets.length > 0) {
-      this.setSelectedWallet(this.wallets[0])
-    }
-    if (data.defaultWallet) {
-      this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
-    }
-
-    if (data.selectedWallet) {
-      this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
-    }
-
-    this.rateETHDollar = new BigNumber(data.rateETHDollar)
-  }
-
   save() {
     return AppDS.saveAppData(this.toJSON())
   }
 
-  async startCheckBalanceJob() {
-    this.checkBalanceJobID = setTimeout(() => {
-      if (this.internetConnection === 'online') {
-        this.wallets.forEach(w => w.fetchingBalance(false, true))
-      }
-
-      this.startCheckBalanceJob()
-    }, AppState.TIME_INTERVAL)
+  fetchWalletsBalance(isRefeshing, isBg) {
+    if (this.internetConnection === 'online') {
+      this.wallets.forEach(w => w.fetchingBalance(isRefeshing, isBg))
+    }
   }
 
-  @action async getRateETHDollar() {
-    setTimeout(async () => {
-      const rs = await api.fetchRateETHDollar()
-      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
-    }, 100)
+  async startCheckBalanceJob() {
+    this.checkBalanceJobID = setTimeout(() => {
+      this.fetchWalletsBalance(false, true)
+      this.startCheckBalanceJob()
+    }, AppState.TIME_INTERVAL)
   }
 
   // for local storage: be careful with MobX observable
@@ -171,7 +196,8 @@ class AppState {
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
-      didBackup: this.didBackup
+      didBackup: this.didBackup,
+      gasPriceEstimate: this.gasPriceEstimate
     }
   }
 }

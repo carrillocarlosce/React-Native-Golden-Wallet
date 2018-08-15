@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     color: '#D0021B',
     alignSelf: 'center',
     fontSize: 14,
+    marginTop: 10,
     fontFamily: 'OpenSans-Semibold'
   },
   textInit: {

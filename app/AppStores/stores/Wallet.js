@@ -166,24 +166,49 @@ export default class Wallet {
   }
 
   @action fetchingBalance(isRefresh = false, isBackground = false) {
+    if (this.loading) return
+
+    this.loading = true
     this.isRefresh = isRefresh
     this.isFetchingBalance = !isRefresh && !isBackground
     api.fetchWalletInfo(this.address).then(async (res) => {
       const { data } = res.data
-      const tokens = data.tokens.map(t => new WalletToken(t))
+      const tokens = data.tokens.map(t => new WalletToken(t, this.address))
       const tokenETH = this.getTokenETH(data)
-      this.tokens = [tokenETH, ...tokens]
+      this.autoSetSelectedTokenIfNeeded([tokenETH, ...tokens])
       const totalTokenDollar = this.tokens.reduce((rs, item) => rs.plus(item.balanceInDollar), new BigNumber('0'))
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
+
+      // this.setTokens([tokenETH, ...tokens])
       this.update()
       this.isFetchingBalance = false
       this.isRefresh = false
+      this.loading = false
     }).catch((e) => {
       this.isFetchingBalance = false
       this.isRefresh = false
+      this.loading = false
     })
+  }
+
+  @action setTokens(tokens) {
+    this.tokens = tokens
+  }
+
+  @action autoSetSelectedTokenIfNeeded(tokens) {
+    const { selectedToken } = MainStore.appState
+    const needSetSelectedToken = selectedToken && selectedToken.belongsToWalletAddress === this.address
+    if (needSetSelectedToken) {
+      for (let i = 0; i < tokens.length; i++) {
+        if (tokens[i].symbol === selectedToken.symbol) {
+          tokens[i] = selectedToken
+        }
+      }
+    }
+
+    this.setTokens(tokens)
   }
 
   @action setHideValue(isHide) {
@@ -230,10 +255,11 @@ export default class Wallet {
           rate: MainStore.appState.rateETHDollar.toString(10)
         }
       },
-      balance: Starypto.Units.parseUnits(`${data.ETH.balance}`, 18)._bn.toString(10)
+      // balance: Starypto.Units.parseUnits(`${data.ETH.balance}`, 18)._bn.toString(10)
+      balance: new BigNumber(data.ETH.balance).times(new BigNumber(1e+18)).toString(10)
     }
 
-    return new WalletToken(tokenETH)
+    return new WalletToken(tokenETH, this.address)
   }
 
   parseNumberToString(number) {

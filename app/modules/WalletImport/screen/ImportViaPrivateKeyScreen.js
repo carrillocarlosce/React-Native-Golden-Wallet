@@ -5,7 +5,6 @@ import {
   Text,
   Dimensions,
   Platform,
-  TextInput,
   Keyboard,
   Animated,
   TouchableWithoutFeedback,
@@ -27,6 +26,8 @@ import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
 import Spinner from '../../../components/elements/Spinner'
 import MainStore from '../../../AppStores/MainStore'
+import InputWithAction from '../../../components/elements/InputWithActionItem'
+import commonStyle from '../../../commons/commonStyles'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -64,6 +65,10 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   onChangePrivKey = (text) => {
     this.importPrivateKeyStore.setPrivateKey(text)
+  }
+
+  onChangeName = (text) => {
+    this.importPrivateKeyStore.setTitle(text)
   }
 
   _runExtraHeight(toValue) {
@@ -153,7 +158,9 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   render() {
     const { navigation } = this.props
-    const { privateKey, loading } = this.importPrivateKeyStore
+    const {
+      privateKey, loading, title, isErrorTitle, isErrorPrivateKey, isReadyCreate
+    } = this.importPrivateKeyStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -168,7 +175,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
-                  title: 'Enter Your Private Key',
+                  title: 'Add Private Key',
                   icon: null,
                   button: images.backButton
                 }}
@@ -176,37 +183,41 @@ export default class ImportViaPrivateKeyScreen extends Component {
                   navigation.goBack()
                 }}
               />
-              <View style={{ marginTop: 25 }}>
-                <TextInput
-                  underlineColorAndroid="transparent"
-                  keyboardAppearance="dark"
-                  autoCorrect={false}
-                  multiline
-                  style={[
-                    styles.textInput
-                  ]}
-                  numberOfLines={4}
-                  onChangeText={this.onChangePrivKey}
-                  value={privateKey}
-                />
-                {privateKey === '' && this._renderPasteButton()}
-                {privateKey !== '' && this._renderClearButton()}
-              </View>
-              <View style={styles.actionButton}>
-                <ActionButton
-                  style={{ height: 40, paddingHorizontal: 17 }}
-                  buttonItem={{
-                    name: constant.SCAN_QR_CODE,
-                    icon: images.iconQrCode,
-                    background: '#121734'
-                  }}
-                  styleText={{ color: AppStyle.mainTextColor }}
-                  styleIcon={{ tintColor: AppStyle.mainTextColor }}
-                  action={this.gotoScan}
-                />
-              </View>
+              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
+              <InputWithAction
+                ref={(ref) => { this.nameField = ref }}
+                style={{ width: width - 40, marginTop: 10 }}
+                value={title}
+                onChangeText={this.onChangeName}
+              />
+              {isErrorTitle &&
+                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
+              }
+              <Text style={[styles.titleText, { marginTop: 20 }]}>Private Key</Text>
+              <InputWithAction
+                style={{ width: width - 40, marginTop: 10 }}
+                onChangeText={this.onChangePrivKey}
+                needPasteButton
+                styleTextInput={commonStyle.fontAddress}
+                value={privateKey}
+              />
+              {isErrorPrivateKey &&
+                <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
+              }
+              <ActionButton
+                style={{ height: 40, marginTop: 30 }}
+                buttonItem={{
+                  name: constant.SCAN_QR_CODE,
+                  icon: images.iconQrCode,
+                  background: '#121734'
+                }}
+                styleText={{ color: AppStyle.mainTextColor }}
+                styleIcon={{ tintColor: AppStyle.mainTextColor }}
+                action={this.gotoScan}
+              />
             </Animated.View>
             <BottomButton
+              disable={!isReadyCreate}
               onPress={this._handleConfirm}
             />
             {loading &&
@@ -224,28 +235,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1
   },
-  textInput: {
-    height: 182,
-    width: width - 40,
-    backgroundColor: '#14192D',
-    borderRadius: 14,
-    color: AppStyle.secondaryTextColor,
-    fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
-    fontSize: 18,
-    paddingHorizontal: 27,
-    paddingTop: 50,
-    paddingBottom: 50,
-    textAlign: 'center'
-  },
-  actionButton: {
-    width,
-    alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: 20
-  },
   pasteText: {
     color: AppStyle.mainColor,
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16
+  },
+  titleText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Semibold',
+    color: 'white',
+    alignSelf: 'flex-start',
+    marginLeft: 20
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginLeft: 20,
+    marginTop: 10
   }
 })

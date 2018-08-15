@@ -26,10 +26,8 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 
-const { width, height } = Dimensions.get('window')
-const isSmallScreen = height < 569
+const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
-
 @observer
 export default class ImportViaAddressScreen extends Component {
   static propTypes = {
@@ -143,7 +141,9 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   render() {
-    const { address, title, loading } = this.importAddressStore
+    const {
+      address, title, loading, isErrorTitle, errorAddress, isReadyCreate
+    } = this.importAddressStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -157,38 +157,33 @@ export default class ImportViaAddressScreen extends Component {
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
-                  title: null,
+                  title: 'Add Address',
                   icon: null,
                   button: images.backButton
                 }}
                 action={this.goBack}
               />
-              <Text style={{
-                width,
-                paddingLeft: 20,
-                marginTop: isSmallScreen ? 15 : 30,
-                color: AppStyle.mainTextColor,
-                fontSize: 20,
-                fontFamily: 'OpenSans-Bold'
-              }}
-              >
-                Add your ETH Address
-              </Text>
+              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
-                style={{ width: width - 40, marginTop: isSmallScreen ? 30 : 60 }}
-                placeholder="Address Name"
+                style={{ width: width - 40, marginTop: 10 }}
                 value={title}
                 onChangeText={this.onChangeName}
               />
+              {isErrorTitle &&
+                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
+              }
+              <Text style={[styles.titleText, { marginTop: 20 }]}>Address</Text>
               <InputWithAction
                 style={{ width: width - 40, marginTop: 10 }}
-                placeholder="Your Address"
                 onChangeText={this.onChangeAddress}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={address}
               />
+              {errorAddress !== '' &&
+                <Text style={styles.errorText}>{errorAddress}</Text>
+              }
               <ActionButton
                 style={{ height: 40, marginTop: 30 }}
                 buttonItem={{
@@ -203,6 +198,7 @@ export default class ImportViaAddressScreen extends Component {
             </Animated.View>
             <BottomButton
               onPress={this.handleCreate}
+              disable={!isReadyCreate}
             />
             {loading &&
               <Spinner />
@@ -218,5 +214,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center'
+  },
+  titleText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Semibold',
+    color: 'white',
+    alignSelf: 'flex-start',
+    marginLeft: 20
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginLeft: 20,
+    marginTop: 10
   }
 })

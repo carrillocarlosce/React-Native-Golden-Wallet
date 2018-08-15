@@ -15,7 +15,7 @@ import images from '../../commons/images'
 import GoldenLoading from '../../components/elements/GoldenLoading'
 import MainStore from '../../AppStores/MainStore'
 
-const { width, height } = Dimensions.get('window')
+const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
 const dataNumber1 = [
   { number: '1' },
@@ -139,7 +139,7 @@ export default class UnlockScreen extends Component {
           hidden
         />
         <GoldenLoading
-          style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }}
+          // style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }}
           isSpin={false}
         />
         <Text style={styles.desText}>{unlockDescription}</Text>
@@ -168,7 +168,8 @@ export default class UnlockScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    width
+    flex: 1,
+    justifyContent: 'center'
   },
   desText: {
     color: 'white',
