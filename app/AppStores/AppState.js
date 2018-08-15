@@ -118,13 +118,14 @@ class AppState {
     setTimeout(async () => {
       if (this.config.network == 'mainnet') {
         const res = await api.fetchGasPrice()
+        console.log(res.data)
         this.gasPriceEstimate = {
           slow: Math.floor(res.data.safeLow / 10),
           standard: Math.floor(res.data.average / 10),
           fast: Math.floor(res.data.fastest / 10)
         }
       }
-    }, 100)
+    }, 0)
   }
 
   @action async import(orgData) {
@@ -148,6 +149,7 @@ class AppState {
     }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.gasPriceEstimate = data.gasPriceEstimate
     this.fetchWalletsBalance(false)
   }
 
