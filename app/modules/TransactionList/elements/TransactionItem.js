@@ -29,7 +29,7 @@ export default class TransactionsItem extends Component {
   get colorBalance() {
     const { transactionItem } = this.props
     const { type, isSelf } = transactionItem
-    if (type === constant.SENT || isSelf) {
+    if (type === constant.SENT || isSelf || type === constant.PENDING) {
       return { color: AppStyle.colorDown }
     }
     return { color: AppStyle.colorUp }
