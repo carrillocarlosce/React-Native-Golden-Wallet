@@ -13,7 +13,7 @@ export default class LayoutUtils {
   }
 
   static getExtraBottom() {
-    return this.isLongScreenAndroid() ? 48 : 0
+    return 0
   }
 
   static isLongScreenAndroid() {
