@@ -6,9 +6,7 @@ import AddressInputStore from './AddressInputStore'
 import ConfirmStore from './ConfirmStore'
 import AdvanceStore from './AdvanceStore'
 import Starypto from '../../../../Libs/react-native-starypto'
-import { toBigNumber, fromEther } from '../../../wallet/ethereum/txUtils'
 import MainStore from '../../../AppStores/MainStore'
-import constant from '../../../commons/constant'
 import NavStore from '../../../stores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import HapticHandler from '../../../Handler/HapticHandler'
@@ -118,7 +116,7 @@ class SendStore {
         const wallet = this.getWalletSendTransaction(privateKey)
         wallet.sendTransaction(transactionSend)
           .then((tx) => {
-            this.generatePendingTransaction(tx, transaction, this.isToken)
+            this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
             return resolve(tx)
           })
           .catch((err) => {
@@ -155,14 +153,14 @@ class SendStore {
         }
 
         return wallet.sendTransaction(unspentTransaction).then((tx) => {
-          this.generatePendingTransaction(tx, transaction, this.isToken)
+          this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
           return resolve(tx)
         }).catch(err => reject(err))
       })
     })
   }
 
-  generatePendingTransaction(txHash, transaction, isToken) {
+  async addAndUpdateGlobalUnpendTransactionInApp(txHash, transaction, isToken) {
     const { selectedToken, selectedWallet } = MainStore.appState
     const {
       to,
@@ -186,7 +184,8 @@ class SendStore {
       gasPrice
     }
 
-    selectedToken.addUnspendTransaction(pendingTransaction)
+    const unpendTxObj = await selectedToken.addUnspendTransaction(pendingTransaction)
+    MainStore.appState.setUnpendTransactions([unpendTxObj, ...MainStore.appState.unpendTransactions])
   }
 }
 
