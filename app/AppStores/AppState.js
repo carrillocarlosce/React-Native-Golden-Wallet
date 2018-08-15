@@ -6,6 +6,7 @@ import WalletDS from './DataSource/WalletDS'
 import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
+import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import api from '../api'
 
 // const defaultAppData = {
@@ -34,19 +35,21 @@ class AppState {
   @observable didBackup = false
   currentWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
+  @observable unpendTransactions = []
   @observable gasPriceEstimate = {
     slow: 2,
     standard: 10,
     fast: 60
   }
 
-  static TIME_INTERVAL = 20000
+  static TIME_INTERVAL = 10000
 
   constructor() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
     this.startCheckBalanceJob()
+    this.startCheckUnpendTransactionsJob()
     this.getGasPriceEstimate()
   }
 
@@ -55,6 +58,7 @@ class AppState {
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
+  @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
@@ -135,6 +139,8 @@ class AppState {
     const wallets = await WalletDS.getWallets()
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
+    const unspendTransactions = await UnspendTransactionDS.getTransactions()
+    this.unpendTransactions = unspendTransactions
     this.wallets = wallets
 
     if (wallets.length > 0) {
@@ -179,6 +185,23 @@ class AppState {
     this.checkBalanceJobID = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
       this.startCheckBalanceJob()
+    }, AppState.TIME_INTERVAL)
+  }
+
+  async startCheckUnpendTransactionsJob() {
+    this.checkUnpendTransactionsJobID = setTimeout(async () => {
+      if (this.internetConnection === 'online') {
+        const newUnpendTxs = []
+        for (let i = 0; i < this.unpendTransactions.length; i++) {
+          const ut = this.unpendTransactions[i]
+          const canRemove = await ut.canRemove()
+          if (!canRemove) newUnpendTxs.push(ut)
+        }
+
+        this.setUnpendTransactions(newUnpendTxs)
+        UnspendTransactionDS.saveTransactions(this.unpendTransactions)
+      }
+      this.startCheckUnpendTransactionsJob()
     }, AppState.TIME_INTERVAL)
   }
 

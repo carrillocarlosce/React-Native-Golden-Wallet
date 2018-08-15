@@ -15,7 +15,7 @@ export default class WalletToken {
 
   @observable transactions = []
   @observable.ref selectedTransaction = null
-  @observable unspendTransactions = []
+  // @observable unspendTransactions = []
   @observable txFetcherInfo = {
     isLoading: false,
     isRefreshing: false,
@@ -42,23 +42,16 @@ export default class WalletToken {
 
   @action setBalance = (v) => { this.balance = v }
 
-  @action addUnspendTransaction(obj) {
+  @action async addUnspendTransaction(obj) {
     const unspendTx = Transaction.generateUnspendTransaction(obj, this)
-    this.unspendTransactions = [unspendTx, ...this.unspendTransactions]
-    UnspendTransactionDS.addTransaction(unspendTx)
+    await UnspendTransactionDS.addTransaction(unspendTx)
+    return unspendTx
   }
 
-  @action checkAndRemoveSuccessUnspendTransaction(transactions) {
-    return transactions.filter(async (t) => {
-      const didRemove = await !t.removeWhenSuccess()
-      return didRemove
-    })
-  }
-
-  @action async loadUnspendTransactions() {
-    const transactions = await UnspendTransactionDS.getTransactions()
+  @computed get unspendTransactions() {
+    const transactions = appState.unpendTransactions
     const walletAddress = appState.selectedWallet.address.toLowerCase()
-    this.unspendTransactions = this.checkAndRemoveSuccessUnspendTransaction(transactions)
+    return transactions
       .filter((t) => {
         return (walletAddress === t.from.toLowerCase() || walletAddress === t.to.toLowerCase()) &&
           this.symbol === t.tokenSymbol
@@ -105,8 +98,6 @@ export default class WalletToken {
     } else {
       this.txFetcherInfo.isLoading = true
     }
-
-    if (this.isRefreshing || this.txFetcherInfo.page === 1) this.loadUnspendTransactions()
 
     let data = {}
 

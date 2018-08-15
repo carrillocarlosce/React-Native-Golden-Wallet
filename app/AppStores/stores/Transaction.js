@@ -104,18 +104,33 @@ export default class Transaction {
   }
 
   // Return true if it's status is success and removed from local storage
-  async removeWhenSuccess() {
+  async fetchToCheckHasSuccess() {
     try {
       const apiResponse = await api.checkStatusTransaction(this.hash)
-      if (apiResponse.data.result.status === '1') {
-        await UnpendTransactionDS.deleteTransaction(this.hash)
-        return true
-      }
-      return false
+      return true(apiResponse.data.result.status === '1')
     } catch (_) {
       // do nothing
       return false
     }
+  }
+
+  async fetchToCheckDroppedOrReplaced() {
+    try {
+      const result = await api.checkTxHasBeenDroppedOrFailed(this.hash)
+      return result
+    } catch (_) {
+      // do nothing
+      return false
+    }
+  }
+
+  // For unspend transation
+  async canRemove() {
+    return Promise.all([
+      this.fetchToCheckDroppedOrReplaced(),
+      this.fetchToCheckHasSuccess()
+    ])
+      .then(([replacedOrDropped, isSuccess]) => replacedOrDropped || isSuccess)
   }
 
   toJSON() {
