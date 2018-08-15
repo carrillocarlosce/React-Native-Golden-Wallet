@@ -1,6 +1,7 @@
 import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import MainStore from '../../../AppStores/MainStore'
+import Helper from '../../../commons/Helper'
 
 export default class AdvanceStore {
   @observable gasLimit = ''
@@ -33,7 +34,7 @@ export default class AdvanceStore {
   }
 
   @computed get rate() {
-    return MainStore.appState.rateETHDollar.toNumber()
+    return MainStore.appState.rateETHDollar
   }
 
   @computed get title() {
@@ -48,9 +49,12 @@ export default class AdvanceStore {
 
   @computed get formatedTmpFee() {
     // const gasLimit = Number(Starypto.Units.formatUnits(`${this.gasLimit}`, 9))
-    const gasLimit = new BigNumber(this.gasLimit).div(1e+9).toNumber()
-    const gasPrice = Number(this.gasPrice)
-    const fee = gasLimit * gasPrice
-    return `${fee} ${this.title} ($${fee * this.rate})`
+    const price = this.gasPrice !== '' ? this.gasPrice : 0
+    const gas = this.gasLimit !== '' ? this.gasLimit : 0
+    const gasLimit = new BigNumber(gas).div(1e+9)
+    const gasPrice = new BigNumber(price)
+    const fee = gasLimit.times(gasPrice)
+    const feeUSD = fee.times(this.rate)
+    return `${Helper.formatETH(fee.toString(10))} ${this.title} ($${Helper.formatUSD(feeUSD)})`
   }
 }

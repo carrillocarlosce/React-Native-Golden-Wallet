@@ -59,7 +59,7 @@ export default class ConfirmStore {
   @computed get formatedFee() {
     // const fee = Starypto.Units.formatUnits(`${this.gasLimit.times(this.gasPrice)}`, 18)
     const fee = this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
-    return `${fee} ETH ($${Helper.formatUSD(Number(fee) * this.rate)})`
+    return `${Helper.formatETH(fee)} ETH ($${Helper.formatUSD(fee.times(this.rate))})`
   }
 
   @computed get formatedAmount() {

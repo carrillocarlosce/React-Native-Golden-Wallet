@@ -16,7 +16,7 @@ import {
 import { observer } from 'mobx-react'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import PropTypes from 'prop-types'
-import Modal from '../../../../Libs/react-native-modalbox'
+import Modal from 'react-native-modalbox'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -26,6 +26,7 @@ import ChooseAddressScreen from './ChooseAddressScreen'
 import ConfirmScreen from './ConfirmScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
+import BottomButton from '../../../components/elements/BottomButton'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
@@ -45,10 +46,7 @@ export default class AdressInputScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      bottom: new Animated.Value(0 - extraBottom),
-      marginVertical: new Animated.Value(20),
-      extraHeight: new Animated.Value(0),
-      boderRadius: new Animated.Value(5)
+      extraHeight: new Animated.Value(0)
     }
   }
 
@@ -62,32 +60,6 @@ export default class AdressInputScreen extends Component {
   componentWillUnmount() {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
-  }
-
-  _runKeyboardAnim(toValue) {
-    Animated.parallel([
-      Animated.timing(
-        this.state.bottom,
-        {
-          toValue: -toValue,
-          duration: 250
-        }
-      ),
-      Animated.timing(
-        this.state.marginVertical,
-        {
-          toValue: toValue === extraBottom ? 20 : 0,
-          duration: 250
-        }
-      ),
-      Animated.timing(
-        this.state.boderRadius,
-        {
-          toValue: toValue === extraBottom ? 5 : 0,
-          duration: 250
-        }
-      )
-    ]).start()
   }
 
   _runExtraHeight(toValue) {
@@ -105,20 +77,14 @@ export default class AdressInputScreen extends Component {
   _keyboardDidShow(e) {
     this.confirm && this.confirm._keyboardDidShow(e)
     if (this.addressInput.isFocused()) {
-      let value = e.endCoordinates.height
       if (e.endCoordinates.screenY < 437 + marginTop) {
         this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
       }
-      if (isIPX) {
-        value -= 34
-      }
-      this._runKeyboardAnim(value - 20 + extraBottom)
     }
   }
 
   _keyboardDidHide(e) {
     this.confirm && this.confirm._keyboardDidHide(e)
-    this._runKeyboardAnim(0 + extraBottom)
     this._runExtraHeight(0)
   }
 
@@ -140,6 +106,17 @@ export default class AdressInputScreen extends Component {
         </TouchableOpacity>
       </View>
     )
+  }
+
+  handleConfirm = () => {
+    const { addressInputStore } = MainStore.sendTransaction
+    Keyboard.dismiss()
+    addressInputStore.onConfirm()
+    // if (Checker.checkAddress(address)) {
+    //   this.confirmModal && this.confirmModal.open()
+    // }
+    const { confirmModal } = MainStore.sendTransaction.addressInputStore
+    confirmModal && confirmModal.open()
   }
 
   clearText = () => {
@@ -436,37 +413,11 @@ export default class AdressInputScreen extends Component {
               }
               {this._renderButton()}
             </Animated.View>
-            <Animated.View
-              style={[
-                styles.confirm,
-                {
-                  transform: [
-                    { translateY: this.state.bottom }
-                  ],
-                  left: this.state.marginVertical,
-                  right: this.state.marginVertical,
-                  borderRadius: this.state.boderRadius
-                }
-              ]}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.confirmBtn
-                ]}
-                disabled={disableSend}
-                onPress={() => {
-                  Keyboard.dismiss()
-                  addressInputStore.onConfirm()
-                  // if (Checker.checkAddress(address)) {
-                  //   this.confirmModal && this.confirmModal.open()
-                  // }
-                  const { confirmModal } = MainStore.sendTransaction.addressInputStore
-                  confirmModal && confirmModal.open()
-                }}
-              >
-                <Text style={[styles.confirmText, { color: disableSend ? '#8a8d97' : AppStyle.mainColor }]}>{constant.CONFIRM}</Text>
-              </TouchableOpacity>
-            </Animated.View>
+            <BottomButton
+              onPress={this.handleConfirm}
+              disable={disableSend}
+              text="Confirm"
+            />
           </View>
         </TouchableWithoutFeedback>
         {this._renderAddressModal(addressInputStore)}
@@ -561,32 +512,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 10
   },
-  buttonIcon: {
-    width: 20,
-    height: 20,
-    marginLeft: 10
-  },
   buttonText: {
     color: '#4A90E2',
     fontSize: 14,
-    fontFamily: 'OpenSans-Semibold'
-  },
-  confirm: {
-    backgroundColor: AppStyle.backgroundDarkBlue,
-    position: 'absolute',
-    height: 50,
-    left: 20,
-    right: 20,
-    bottom: 20
-  },
-  confirmBtn: {
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  confirmText: {
-    color: AppStyle.mainColor,
-    fontSize: 18,
     fontFamily: 'OpenSans-Semibold'
   },
   line: {
