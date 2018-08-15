@@ -16,7 +16,6 @@ import PropTypes from 'prop-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import QRCode from 'react-native-qrcode'
 import FlipCard from '../../../../Libs/react-native-flip-card'
-import ActionButton from '../../../components/elements/ActionButton'
 import SyncBalance from './SyncBalance'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
@@ -25,7 +24,7 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import Helper from '../../../commons/Helper'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
-import HomePendingTransaction from './HomePendingTransaction'
+// import HomePendingTransaction from './HomePendingTransaction'
 
 const { width, height } = Dimensions.get('window')
 const isSmallScreen = height < 569
@@ -136,24 +135,25 @@ export default class LargeCard extends Component {
       totalBalanceETH,
       totalBalanceDollar,
       isFetchingBalance,
-      isHideValue,
-      unspendTransactions
+      isHideValue
+      // unspendTransactions
     } = wallet
 
     const isHide = isHideValue
     const backgroundCard = AppStyle.mode1
-    const numberOfPendingTransaction = unspendTransactions.length
+    // const numberOfPendingTransaction = unspendTransactions.length
 
-    const actionButton = (<ActionButton
-      buttonItem={{
-        name: constant.RECEIVE,
-        icon: images.iconQrCode,
-        background: '#0A0F24'
-      }}
-      action={() => {
-        this.setState({ isFlipped: !this.state.isFlipped })
-      }}
-    />)
+    const actionButton = (
+      <TouchableOpacity
+        onPress={() => {
+          this.setState({ isFlipped: !this.state.isFlipped })
+        }}
+      >
+        <Image
+          source={images.iconQrCode}
+        />
+      </TouchableOpacity>
+    )
 
     const balanceSecret = !isHide ? `${Helper.formatETH(totalBalanceETH.toString(10))} ETH` : constant.SECRET_WORK
     const balanceUSDSecret = !isHide
@@ -198,9 +198,9 @@ export default class LargeCard extends Component {
               </TouchableWithoutFeedback>
             }
           </View>
-          {numberOfPendingTransaction > 0 &&
+          {/* {numberOfPendingTransaction > 0 &&
             <HomePendingTransaction numberOfPending={numberOfPendingTransaction} style={styles.homePending} />
-          }
+          } */}
           <Image
             style={[
               styles.imgCard,
@@ -413,10 +413,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: isSmallScreen ? 15 : 26,
     paddingVertical: isSmallScreen ? 4 : 7,
     borderRadius: 16
-  },
-  homePending: {
-    alignSelf: 'flex-start',
-    marginLeft: 25,
-    marginTop: 10
   }
+  // homePending: {
+  //   alignSelf: 'flex-start',
+  //   marginLeft: 25,
+  //   marginTop: 10
+  // }
 })

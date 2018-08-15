@@ -5,7 +5,8 @@ import {
   Platform,
   Dimensions,
   Animated,
-  Clipboard
+  Clipboard,
+  Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
@@ -24,6 +25,9 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../stores/NavStore'
+import Config from '../../../AppStores/stores/Config'
+import Ticker from '../elements/Ticker'
+import TickerStore from '../stores/TickerStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -49,6 +53,7 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
+    TickerStore.callApi()
     setTimeout(() => {
       if (!NotificationStore.isInitFromNotification) {
         MainStore.gotoUnlock()
@@ -92,6 +97,21 @@ export default class HomeScreen extends Component {
       }
     })
     return index
+  }
+
+  _renderNetwork = () => {
+    let currentNetwork = MainStore.appState.config.network
+    let color = { backgroundColor: AppStyle.mainColor }
+    if (currentNetwork === Config.networks.mainnet) {
+      color = { backgroundColor: AppStyle.colorUp }
+    }
+    currentNetwork = currentNetwork.replace(/^\w/, c => c.toUpperCase())
+    return (
+      <View style={styles.networkField}>
+        <View style={[styles.dot, color]} />
+        <Text style={styles.networkText}>{`Active Network: ${currentNetwork}`}</Text>
+      </View>
+    )
   }
 
   _renderSendButton = () =>
@@ -210,7 +230,7 @@ export default class HomeScreen extends Component {
         address: '0'
       }]
     }
-    // const tickers = TickerStore.tickers.slice()
+    const tickers = TickerStore.tickers.slice()
 
     return (
       <View style={styles.container}>
@@ -237,12 +257,12 @@ export default class HomeScreen extends Component {
                 width: width - 77
               }}
             >
-              {/* <Ticker
+              <Ticker
                 data={tickers}
                 style={{
                   width: width - 77
                 }}
-              /> */}
+              />
             </Animated.View>
             <Animated.Text
               style={{
@@ -272,13 +292,9 @@ export default class HomeScreen extends Component {
           />
         </View>
         <View
-          style={{
-            marginTop: -20,
-            flex: 1,
-            alignItems: 'flex-end',
-            marginRight: 20
-          }}
+          style={styles.bottomField}
         >
+          {this._renderNetwork()}
           {this._renderSendButton()}
         </View>
         <Animated.View
@@ -321,5 +337,29 @@ const styles = StyleSheet.create({
     marginTop: marginTop + 20,
     paddingLeft: 10,
     paddingBottom: 15
+  },
+  networkField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 20
+  },
+  bottomField: {
+    marginTop: -20,
+    flex: 1,
+    marginLeft: 36,
+    marginRight: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5
+  },
+  networkText: {
+    fontSize: 12,
+    fontFamily: 'OpenSans-Semibold',
+    marginLeft: 4,
+    color: AppStyle.mainTextColor
   }
 })
