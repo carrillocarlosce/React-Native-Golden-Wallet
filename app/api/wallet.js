@@ -96,3 +96,14 @@ export const fetchRateETHDollar = () => {
 export const fetchGasPrice = () => {
   return caller.get('https://ethgasstation.info/json/ethgasAPI.json')
 }
+
+export const checkTxHasBeenDroppedOrFailed = (txHash) => {
+  return caller.get(`https://etherscan.io/tx/${txHash}`)
+    .then((res) => {
+      if (res.data && typeof res.data === 'string') {
+        const htmlString = res.data
+        return htmlString.includes('{Dropped&Replaced}') || htmlString.includes('<font color="red">Fail</font>')
+      }
+      return true
+    })
+}
