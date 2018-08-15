@@ -137,16 +137,17 @@ class AppState {
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     this.wallets = wallets
+
     if (wallets.length > 0) {
       this.setSelectedWallet(this.wallets[0])
     }
-    if (data.defaultWallet) {
-      this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
-    }
+    // if (data.defaultWallet) {
+    //   this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
+    // }
 
-    if (data.selectedWallet) {
-      this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
-    }
+    // if (data.selectedWallet) {
+    //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
+    // }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar)
     this.gasPriceEstimate = data.gasPriceEstimate

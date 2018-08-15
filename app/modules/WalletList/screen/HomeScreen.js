@@ -86,18 +86,20 @@ export default class HomeScreen extends Component {
     }
   }
 
-  @computed get selectedWalletIndex() {
-    const wallet = MainStore.appState.selectedWallet
-    if (!wallet) return 0
+  // @computed get selectedWalletIndex() {
+  //   const wallet = MainStore.appState.selectedWallet
+  //   if (!wallet) return 0
 
-    let index = 0
-    MainStore.appState.wallets.forEach((w, i) => {
-      if (w.address === wallet.address) {
-        index = i
-      }
-    })
-    return index
-  }
+  //   console.warn(wallet)
+  //   let index = 0
+  //   MainStore.appState.wallets.forEach((w, i) => {
+  //     if (w.address === wallet.address) {
+  //       index = i
+  //     }
+  //   })
+
+  //   setTimeout(() => this._carousel && this._carousel.snapToItem(index, true), 0)
+  // }
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
@@ -288,7 +290,7 @@ export default class HomeScreen extends Component {
             inactiveSlideOpacity={1}
             keyExtractor={item => item.address}
             onSnapToItem={this.onSnapToItem}
-            firstItem={this.selectedWalletIndex}
+          // firstItem={this.selectedWalletIndex}
           />
         </View>
         <View
