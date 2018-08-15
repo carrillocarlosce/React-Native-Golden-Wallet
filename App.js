@@ -20,9 +20,8 @@ import NavStore from './app/stores/NavStore'
 import BlindScreen from './app/components/screens/BlindScreen'
 import Lock from './app/components/elements/Lock'
 // import TickerStore from './app/stores/TickerStore'
-import NotificationStore from './app/stores/NotificationStore'
+// import NotificationStore from './app/stores/NotificationStore'
 import NotificationListenter from './app/NotificationListener'
-import PushNotificationHelper from './app/commons/PushNotificationHelper'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
 
@@ -31,11 +30,6 @@ console.ignoredYellowBox = ['Warning: isMounted']
 NotificationListenter.registerKilledListener()
 
 export default class App extends Component {
-  constructor(props) {
-    super(props)
-    PushNotificationHelper.init()
-  }
-
   async componentWillMount() {
     await MainStore.startApp()
   }
