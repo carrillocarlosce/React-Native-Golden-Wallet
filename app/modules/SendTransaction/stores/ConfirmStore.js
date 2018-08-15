@@ -2,17 +2,21 @@ import { observable, action, computed } from 'mobx'
 import { BigNumber } from 'bignumber.js'
 import MainStore from '../../../AppStores/MainStore'
 import Helper from '../../../commons/Helper'
+import api from '../../../api'
 
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
   @observable gasLimit = new BigNumber('21000')
   @observable gasPrice = new BigNumber('1000000000')
-
+  @observable adjust = 'Standard'
   @observable.ref inputValue = null
-
   // @action setToAddress(address) {
   //   this.transaction.to = address
   // }
+
+  @action setAdjust(value) {
+    this.adjust = value
+  }
 
   @action setValue(value) {
     this.inputValue = value
