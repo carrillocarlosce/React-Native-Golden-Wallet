@@ -3,6 +3,7 @@ import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
+import Checker from '../../../Handler/Checker';
 
 export default class ImportMnemonicStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -46,10 +47,21 @@ export default class ImportMnemonicStore {
     return mnemonicWallets
   }
 
+  get walletIsExisted() {
+    return MainStore.appState.wallets.find(w => w.address === this.selectedWallet.address)
+  }
+
   @action async unlockWallet() {
     if (!this.selectedWallet) {
-      NavStore.popupCustom.show('No wallet have not selected')
+      NavStore.popupCustom.show('No wallet have not selected.')
+      return
     }
+
+    if (this.walletIsExisted) {
+      NavStore.popupCustom.show('Wallet has been existed.')
+      return
+    }
+
     await this.selectedWallet.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
