@@ -58,6 +58,7 @@ export default {
   ADD_FROM_ALBUM: 'Add from album',
 
   INFURA_API_KEY: 'qMZ7EIind33NY9Azu836',
+  EMPTY_NAME: 'Name cannot be blank',
   EXISTED_NAME: 'Name was existed',
   INVALID_ADDRESS: 'Invalid Address',
   INVALID_MNEMONIC: 'Invalid Mnemonic Phrase',
