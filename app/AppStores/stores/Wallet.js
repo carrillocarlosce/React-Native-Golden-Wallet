@@ -92,6 +92,10 @@ export default class Wallet {
     }, secureDS)
   }
 
+  static async getWalletAtAddress(address) {
+    return await WalletDS.getWalletAtAddress(address)
+  }
+
   constructor(obj, secureDS) {
     this.secureDS = secureDS
     const initObj = Object.assign({}, defaultObjWallet, obj) // copy
@@ -154,6 +158,10 @@ export default class Wallet {
     await WalletDS.deleteWallet(this.address)
   }
 
+  getTokenAtAddress(address) {
+    return this.tokens.find(t => t.address === address)
+  }
+
   async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
@@ -181,7 +189,6 @@ export default class Wallet {
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
 
-      // this.setTokens([tokenETH, ...tokens])
       this.update()
       this.isFetchingBalance = false
       this.isRefresh = false

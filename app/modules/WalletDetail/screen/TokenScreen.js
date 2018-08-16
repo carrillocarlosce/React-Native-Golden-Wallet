@@ -48,9 +48,7 @@ export default class TokenScreen extends Component {
     MainStore.appState.setselectedToken(this.wallet.tokens[index])
     MainStore.goToSendTx()
     MainStore.sendTransaction.changeIsToken(MainStore.appState.selectedToken.symbol !== 'ETH')
-    navigation.navigate('TransactionListScreen', {
-      tokenAddr: this.wallet.tokens[index].address
-    })
+    navigation.navigate('TransactionListScreen')
   }
 
   get wallet() {

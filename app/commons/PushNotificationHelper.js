@@ -6,6 +6,7 @@ import FCM, {
 } from 'react-native-fcm'
 import { Platform } from 'react-native'
 import Permissions from 'react-native-permissions'
+import NotificationStore from '../AppStores/stores/Notification'
 
 class PushNotificationHelper {
   init() {
@@ -18,8 +19,7 @@ class PushNotificationHelper {
     })
 
     FCM.on(FCMEvent.Notification, (notif) => {
-      console.log(notif)
-
+      NotificationStore.setCurrentNotif(notif)
       if (Platform.OS === 'ios') {
         switch (notif._notificationType) {
           case NotificationType.Remote:
