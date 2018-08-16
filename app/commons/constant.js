@@ -59,7 +59,7 @@ export default {
 
   INFURA_API_KEY: 'qMZ7EIind33NY9Azu836',
   EMPTY_NAME: 'Name cannot be blank',
-  EXISTED_NAME: 'Name was existed',
+  EXISTED_NAME: 'Wallet name was existed',
   INVALID_ADDRESS: 'Invalid Address',
   INVALID_MNEMONIC: 'Invalid Mnemonic Phrase',
   INVALID_PRIVATE_KEY: 'Invalid Private Key',

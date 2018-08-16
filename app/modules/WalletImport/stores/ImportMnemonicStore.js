@@ -3,7 +3,7 @@ import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
-import Checker from '../../../Handler/Checker';
+import constant from '../../../commons/constant'
 
 export default class ImportMnemonicStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -50,7 +50,7 @@ export default class ImportMnemonicStore {
     }
 
     if (this.walletIsExisted) {
-      NavStore.popupCustom.show('Wallet has been existed.')
+      NavStore.popupCustom.show(constant.EXISTED_WALLET)
       return
     }
 
