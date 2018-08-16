@@ -44,6 +44,8 @@ export default class SwitchButton extends Component {
     const { onStateChange, enable } = this.props
     if (enable) {
       this._turnOn()
+    } else {
+      this._turnOff()
     }
     const animationTranslate = this.state.translateShape.interpolate({
       inputRange: [0, 1],

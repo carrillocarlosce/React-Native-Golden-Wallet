@@ -7,6 +7,7 @@ import UnlockStore from '../modules/Unlock/UnlockStore'
 import ImportStore from '../modules/WalletImport/stores/ImportStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import AddressBookStore from '../modules/AddressBook/AddressBookStore'
+import PushNotificationHelper from '../commons/PushNotificationHelper'
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
@@ -28,6 +29,7 @@ class MainStore {
 
   // Start
   @action async startApp() {
+    PushNotificationHelper.init()
     await AppDS.readAppData()
     appState.startAllServices()
   }

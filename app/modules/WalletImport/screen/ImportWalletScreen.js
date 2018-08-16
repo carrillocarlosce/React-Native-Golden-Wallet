@@ -66,7 +66,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
               title="Private Key"
-              subtitle="Golden will import your private key to unlock your wallet. We recommened that you back up the private key and save it in safe place for later recovery of your wallet."
+              subtitle="Scan or enter your Private Key to restore your wallet. Make sure to keep your Private Key safe after you are done."
               imageCard={images.iconPrivateKey}
               onPress={this.gotoImportPrivateKey}
               imageBackground="backgroundCard"
@@ -80,7 +80,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
               title="Mnemonic"
-              subtitle="Golden import your Mnemonic phrase to recovery your wallet."
+              subtitle="Enter your Mnemonic Phase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done."
               imageCard={images.iconMnemonic}
               onPress={this.gotoImportMnemonic}
               titleTextStyle={{ color: AppStyle.mainTextColor }}
@@ -92,7 +92,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ marginTop: 20, marginBottom: 20, height: 174 }}
               title="Address"
-              subtitle="Enter wallet address, you can check the balance and receive tokens, but cannot send token out. Therefore, your assetss will be absolutely safe."
+              subtitle="Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key."
               imageCard={images.iconAddress}
               onPress={this.gotoImportAddress}
               titleTextStyle={{ color: AppStyle.mainTextColor }}

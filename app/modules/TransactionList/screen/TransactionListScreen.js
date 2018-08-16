@@ -18,6 +18,8 @@ import Modal from '../../../../Libs/react-native-modalbox'
 
 import EmptyList from '../elements/EmptyList'
 import AppState from '../../../AppStores/AppState'
+import NotificationStore from '../../../AppStores/stores/Notification'
+import NavStore from '../../../stores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -32,15 +34,15 @@ export default class TransactionListScreen extends Component {
     navigation: {}
   }
 
-  state = {}
-
-  componentDidMount() {
-    this.selectedToken.fetchTransactions(false)
+  async componentDidMount() {
+    if (this.selectedToken) {
+      this.selectedToken.fetchTransactions(false)
+    }
   }
 
   onPressTxItem = (item) => {
     this.selectedToken.setSelectedTransaction(item)
-    this.transactionDetail.open()
+    NavStore.transactionDetail.open()
   }
 
   onRefresh = async () => {
@@ -55,8 +57,19 @@ export default class TransactionListScreen extends Component {
     return AppState.selectedToken
   }
 
-  _renderEmptyList = () => {
-    if (!this.selectedToken.isLoading) {
+  goBack = async () => {
+    const { navigation } = this.props
+    const { params } = navigation.state
+    const { notif } = NotificationStore
+    if (notif && params) {
+      await NotificationStore.resetSelectedAtAppState()
+      NotificationStore.setCurrentNotif(null)
+    }
+    navigation.goBack()
+  }
+
+  _renderEmptyList = (selectedToken) => {
+    if (!selectedToken.isLoading) {
       return <EmptyList />
     }
 
@@ -64,9 +77,11 @@ export default class TransactionListScreen extends Component {
   }
 
   render() {
-    const transactions = this.selectedToken.allTransactions
+    const defaultToken = { allTransactions: [], isRefreshing: false, isLoading: true }
+    const selectedToken = this.selectedToken ? this.selectedToken : defaultToken
+    const transactions = selectedToken.allTransactions
     const { navigation } = this.props
-    const { isRefreshing, isLoading } = this.selectedToken
+    const { isRefreshing, isLoading } = selectedToken
 
     return (
       <View style={styles.container}>
@@ -77,14 +92,12 @@ export default class TransactionListScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation && navigation.goBack()
-          }}
+          action={this.goBack}
         />
         <FlatList
           data={transactions}
           contentContainerStyle={[{}, transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
-          ListEmptyComponent={this._renderEmptyList()}
+          ListEmptyComponent={this._renderEmptyList(selectedToken)}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${item.hash}-${item.from}-${index}`}
           refreshing={isRefreshing}
@@ -113,7 +126,7 @@ export default class TransactionListScreen extends Component {
           onClosed={() => {
 
           }}
-          ref={(ref) => { this.transactionDetail = ref }}
+          ref={(ref) => { NavStore.transactionDetail = ref }}
         >
           <View style={{ height: height - marginTop - 68 }}>
             <View
@@ -129,7 +142,7 @@ export default class TransactionListScreen extends Component {
               }}
             />
             <TransactionDetail
-              onClose={() => { this.transactionDetail.close() }}
+              onClose={() => { NavStore.transactionDetail.close() }}
               onCheck={(txHash) => { navigation.navigate('TxHashWebViewScreen', { txHash }) }}
             />
           </View>

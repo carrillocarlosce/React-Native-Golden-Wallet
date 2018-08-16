@@ -4,6 +4,7 @@ import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
 import constant from '../../../commons/constant'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportMnemonicStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -59,7 +60,7 @@ export default class ImportMnemonicStore {
     const title = `My wallet ${MainStore.appState.wallets.length}`
     const ds = MainStore.secureStorage
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
-
+    NotificationStore.addWallet(title, wallet.address)
     await wallet.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()

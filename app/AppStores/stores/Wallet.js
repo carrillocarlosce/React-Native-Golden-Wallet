@@ -92,6 +92,10 @@ export default class Wallet {
     }, secureDS)
   }
 
+  static async getWalletAtAddress(address) {
+    return await WalletDS.getWalletAtAddress(address)
+  }
+
   static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
     const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
     const wallets = keys.map((k) => {
@@ -166,6 +170,10 @@ export default class Wallet {
     await WalletDS.deleteWallet(this.address)
   }
 
+  getTokenAtAddress(address) {
+    return this.tokens.find(t => t.address === address)
+  }
+
   async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
@@ -192,9 +200,8 @@ export default class Wallet {
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
-
-      // this.setTokens([tokenETH, ...tokens])
       this.update()
+      MainStore.appState.syncWallets()
       this.isFetchingBalance = false
       this.isRefresh = false
       this.loading = false

@@ -21,22 +21,14 @@ import NavStore from './app/stores/NavStore'
 import BlindScreen from './app/components/screens/BlindScreen'
 import Lock from './app/components/elements/Lock'
 // import TickerStore from './app/stores/TickerStore'
-import NotificationStore from './app/stores/NotificationStore'
-import NotificationListenter from './app/NotificationListener'
-import PushNotificationHelper from './app/commons/PushNotificationHelper'
+// import NotificationStore from './app/stores/NotificationStore'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
+import NotificationStore from './app/AppStores/stores/Notification'
 
 console.ignoredYellowBox = ['Warning: isMounted']
 
-NotificationListenter.registerKilledListener()
-
 export default class App extends Component {
-  constructor(props) {
-    super(props)
-    NotificationStore.setupNotification()
-  }
-
   async componentWillMount() {
     await MainStore.startApp()
     NetInfo.addEventListener(
@@ -46,13 +38,12 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    NotificationListenter.setupInitNotification()
     AppState.addEventListener('change', this._handleAppStateChange)
-    PushNotificationHelper.setBadgeNumber(0)
+    // PushNotificationHelper.setBadgeNumber(0)
     if (Platform.OS === 'ios') {
       //
     } else {
-      PushNotificationHelper.removeAllDeliveredNotifications()
+      // PushNotificationHelper.removeAllDeliveredNotifications()
     }
     crashlytics.init()
     try {
@@ -87,7 +78,11 @@ export default class App extends Component {
     if (nextAppState === 'inactive' || nextAppState === 'background') {
       Keyboard.dismiss()
     }
+    if (nextAppState === 'background') {
+      NotificationStore.appState = nextAppState
+    }
     if (nextAppState === 'active') {
+      setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
