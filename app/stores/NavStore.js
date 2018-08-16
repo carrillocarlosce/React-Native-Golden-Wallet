@@ -19,9 +19,7 @@ function getCurrentRouteName(navigationState) {
 
 class ObservableNavStore {
   @observable.ref sendModal = null
-  @observable.ref receiveModal1 = null
-  @observable.ref receiveModal2 = null
-  @observable.ref transactionInfoModal = null
+  @observable.ref transactionDetail = null
   @observable.ref createSuccessModal = null
   @observable.ref navigator = null
   @observable.ref popupCustom = null
@@ -104,12 +102,14 @@ class ObservableNavStore {
 
   @action closeAllModal() {
     this.sendModal && this.sendModal.close()
-    this.receiveModal1 && this.receiveModal1.close()
-    this.receiveModal2 && this.receiveModal2.close()
     this.transactionInfoModal && this.sendModal.close()
     this.popupCustom && this.popupCustom.hide()
     this.sendingAddress = ''
     this.createSuccessModal && this.createSuccessModal.close()
+  }
+
+  @action closeTransactionDetail() {
+    this.transactionDetail && this.transactionDetail.close()
   }
 }
 

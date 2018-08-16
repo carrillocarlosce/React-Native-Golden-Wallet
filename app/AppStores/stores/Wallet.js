@@ -200,8 +200,8 @@ export default class Wallet {
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
-
       this.update()
+      MainStore.appState.syncWallets()
       this.isFetchingBalance = false
       this.isRefresh = false
       this.loading = false

@@ -12,7 +12,6 @@ import HapticHandler from '../../Handler/HapticHandler'
 import NotificationStore from '../../AppStores/stores/Notification'
 import constant from '../../commons/constant'
 import AppStyle from '../../commons/AppStyle'
-import NavStore from '../../stores/NavStore'
 
 const { width } = Dimensions.get('window')
 @observer
@@ -24,8 +23,7 @@ export default class NotificationInApp extends Component {
 
   onPress = () => {
     this.hideToast()
-    NotificationStore.setTokenFromNotif()
-    NavStore.pushToScreen('TransactionListScreen', { fromNotif: true })
+    NotificationStore.gotoTransactionList()
   }
 
   get styleText() {
@@ -66,7 +64,7 @@ export default class NotificationInApp extends Component {
   render() {
     const { notif } = NotificationStore
     const { styleText, content } = this
-    if (notif) {
+    if (notif && NotificationStore.appState === 'active') {
       this.showToast()
     }
     return (

@@ -11,15 +11,21 @@ import NotificationStore from '../AppStores/stores/Notification'
 class PushNotificationHelper {
   init() {
     FCM.getFCMToken().then((token) => {
-      console.log(token)
+      NotificationStore.setDeviceToken(token)
     })
 
     FCM.getInitialNotification().then((notif) => {
-      console.log(notif)
+      if (notif.tx) {
+        NotificationStore.setCurrentNotif(notif)
+        NotificationStore.gotoTransactionList()
+      }
     })
 
     FCM.on(FCMEvent.Notification, (notif) => {
       NotificationStore.setCurrentNotif(notif)
+      if (notif && notif.opened_from_tray) {
+        NotificationStore.gotoTransactionList()
+      }
       if (Platform.OS === 'ios') {
         switch (notif._notificationType) {
           case NotificationType.Remote:
@@ -35,6 +41,7 @@ class PushNotificationHelper {
         }
       }
     })
+    FCM.removeAllDeliveredNotifications()
 
     FCM.requestPermissions({ badge: true, sound: true, alert: true })
   }

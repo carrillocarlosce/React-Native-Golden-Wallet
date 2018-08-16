@@ -20,7 +20,6 @@ import SettingScreen from '../../Setting/screen/SettingScreen'
 import HomeSendButton from '../elements/HomeSendButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import NotificationListenter from '../../../NotificationListener'
-import NotificationStore from '../../../stores/NotificationStore'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
@@ -56,17 +55,13 @@ export default class HomeScreen extends Component {
     TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
-      if (!NotificationStore.isInitFromNotification) {
-        MainStore.gotoUnlock()
-        this.props.navigation.navigate('UnlockScreen', {
-          isLaunchApp: true,
-          onUnlock: () => {
-            this._gotoCreateWallet()
-          }
-        })
-      } else {
-        this.props.navigation.navigate('TransactionDetailScreen', NotificationStore.transactionFromNotif)
-      }
+      MainStore.gotoUnlock()
+      this.props.navigation.navigate('UnlockScreen', {
+        isLaunchApp: true,
+        onUnlock: () => {
+          this._gotoCreateWallet()
+        }
+      })
     }, 100)
   }
 
@@ -82,27 +77,10 @@ export default class HomeScreen extends Component {
   onSnapToItem = (index) => {
     if (this.cards[index].address === '0') {
       MainStore.appState.setSelectedWallet(null)
-      MainStore.appState.setselectedToken(null)
     } else {
       MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
-      MainStore.appState.setselectedToken(MainStore.appState.selectedWallet.tokens[0])
     }
   }
-
-  // @computed get selectedWalletIndex() {
-  //   const wallet = MainStore.appState.selectedWallet
-  //   if (!wallet) return 0
-
-  //   console.warn(wallet)
-  //   let index = 0
-  //   MainStore.appState.wallets.forEach((w, i) => {
-  //     if (w.address === wallet.address) {
-  //       index = i
-  //     }
-  //   })
-
-  //   setTimeout(() => this._carousel && this._carousel.snapToItem(index, true), 0)
-  // }
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network

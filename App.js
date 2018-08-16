@@ -25,6 +25,7 @@ import Lock from './app/components/elements/Lock'
 import NotificationListenter from './app/NotificationListener'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
+import NotificationStore from './app/AppStores/stores/Notification'
 
 console.ignoredYellowBox = ['Warning: isMounted']
 
@@ -81,7 +82,11 @@ export default class App extends Component {
     if (nextAppState === 'inactive' || nextAppState === 'background') {
       Keyboard.dismiss()
     }
+    if (nextAppState === 'background') {
+      NotificationStore.appState = nextAppState
+    }
     if (nextAppState === 'active') {
+      setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {

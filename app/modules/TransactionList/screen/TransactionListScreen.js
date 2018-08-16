@@ -19,6 +19,7 @@ import Modal from '../../../../Libs/react-native-modalbox'
 import EmptyList from '../elements/EmptyList'
 import AppState from '../../../AppStores/AppState'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import NavStore from '../../../stores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -41,7 +42,7 @@ export default class TransactionListScreen extends Component {
 
   onPressTxItem = (item) => {
     this.selectedToken.setSelectedTransaction(item)
-    this.transactionDetail.open()
+    NavStore.transactionDetail.open()
   }
 
   onRefresh = async () => {
@@ -125,7 +126,7 @@ export default class TransactionListScreen extends Component {
           onClosed={() => {
 
           }}
-          ref={(ref) => { this.transactionDetail = ref }}
+          ref={(ref) => { NavStore.transactionDetail = ref }}
         >
           <View style={{ height: height - marginTop - 68 }}>
             <View
@@ -141,7 +142,7 @@ export default class TransactionListScreen extends Component {
               }}
             />
             <TransactionDetail
-              onClose={() => { this.transactionDetail.close() }}
+              onClose={() => { NavStore.transactionDetail.close() }}
               onCheck={(txHash) => { navigation.navigate('TxHashWebViewScreen', { txHash }) }}
             />
           </View>
