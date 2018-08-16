@@ -83,13 +83,25 @@ export default class Wallet {
     }, secureDS)
   }
 
-  static async importMnemonic(mnemonic, title, index, secureDS) {
+  static async unlockFromMnemonic(mnemonic, title, index, secureDS) {
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', Keystore.CoinType.ETH.path, index)
     const w = Starypto.fromPrivateKey(private_key)
     secureDS.savePrivateKey(w.address, private_key)
     return new Wallet({
       address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
     }, secureDS)
+  }
+
+  static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
+    const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
+    const wallets = keys.map((k) => {
+      const w = Starypto.fromPrivateKey(k.private_key)
+      return new Wallet({
+        address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
+      })
+    })
+
+    return wallets
   }
 
   constructor(obj, secureDS) {
