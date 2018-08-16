@@ -4,7 +4,6 @@ import { Platform } from 'react-native'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
 import LocalStore from './LocalStore'
 import Permission from '../Permission'
-import NotificationAPI from '../api/NotificationAPI'
 
 const TOKEN_DEVICES_NOTIF_SAVED = 'TOKEN_DEVICES_NOTIF_SAVED'
 const NOTIFICATION_USE_SAVED = 'NOTIFICATION_USE_SAVED'
@@ -18,7 +17,6 @@ class NotificationStore {
   constructor() {
     this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, (token) => {
       this.token = token
-      NotificationAPI.updateNotificationAllWallet()
     })
 
     this.setupUseNotification()
@@ -43,14 +41,7 @@ class NotificationStore {
   }
 
   @action changeStateUseNotification() {
-    this.enable = !this.enable
-    LocalStore.saveItem(NOTIFICATION_USE_SAVED, this.enable)
-    if (this.enable) {
-      NotificationAPI.updateNotificationAllWallet()
-    } else {
-      PushNotificationHelper.removeAllDeliveredNotifications()
-      NotificationAPI.deleteAllNotification()
-    }
+
   }
 
   @action getToken() {

@@ -22,14 +22,11 @@ import BlindScreen from './app/components/screens/BlindScreen'
 import Lock from './app/components/elements/Lock'
 // import TickerStore from './app/stores/TickerStore'
 // import NotificationStore from './app/stores/NotificationStore'
-import NotificationListenter from './app/NotificationListener'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
 import NotificationStore from './app/AppStores/stores/Notification'
 
 console.ignoredYellowBox = ['Warning: isMounted']
-
-NotificationListenter.registerKilledListener()
 
 export default class App extends Component {
   async componentWillMount() {
@@ -41,7 +38,6 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    NotificationListenter.setupInitNotification()
     AppState.addEventListener('change', this._handleAppStateChange)
     // PushNotificationHelper.setBadgeNumber(0)
     if (Platform.OS === 'ios') {

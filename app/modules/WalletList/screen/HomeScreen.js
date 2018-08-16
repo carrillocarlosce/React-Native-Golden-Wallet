@@ -19,7 +19,6 @@ import Hamburger from '../elements/HamburgerButton'
 import SettingScreen from '../../Setting/screen/SettingScreen'
 import HomeSendButton from '../elements/HomeSendButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import NotificationListenter from '../../../NotificationListener'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
@@ -44,7 +43,6 @@ export default class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
-    NotificationListenter.registerAppListener(this.props.navigation)
     FCM.setBadgeNumber(0)
     this.state = {
       translateY: new Animated.Value(0)
@@ -290,7 +288,7 @@ export default class HomeScreen extends Component {
               {
                 translateY: translateY.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [height - 56 + getStatusBarHeight(), Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
+                  outputRange: [height - 41 + marginTop, Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
                   extrapolate: 'clamp',
                   useNativeDriver: true
                 })
