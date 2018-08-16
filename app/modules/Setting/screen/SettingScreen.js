@@ -13,6 +13,7 @@ import SettingStore from '../stores/SettingStore'
 import NavStore from '../../../stores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 import AppSetting from '../../Setting/elements/AppSetting'
+import AppSettingStore from '../stores/AppSettingStore'
 
 @observer
 export default class SettingScreen extends Component {
@@ -27,6 +28,7 @@ export default class SettingScreen extends Component {
   constructor(props) {
     super(props)
     this.settingStore = new SettingStore()
+    this.appSettingStore = new AppSettingStore()
   }
 
   componentDidMount() {
@@ -44,7 +46,9 @@ export default class SettingScreen extends Component {
 
   onNetworkPress = () => NavStore.pushToScreen('NetworkScreen')
 
-  onNotificationSwitch = () => { }
+  onNotificationSwitch = (isEnable) => {
+    this.appSettingStore.switchEnableNotification(isEnable)
+  }
 
   renderCommunity = () => (
     <FlatList
@@ -122,7 +126,7 @@ export default class SettingScreen extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.container}>
           <SettingItem
-            style={{ marginTop: 15, borderTopWidth: 0 }}
+            style={{ borderTopWidth: 0 }}
             mainText="Manage Wallets"
             onPress={this.onManageWalletPress}
           />

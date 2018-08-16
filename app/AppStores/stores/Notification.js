@@ -23,7 +23,9 @@ class Notification {
   }
 
   addWallet(name, address) {
-    // check notification enable
+    if (!this.deviceToken || !MainStore.appState.enableNotification) {
+      return
+    }
     API.addWallet(name, address, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
@@ -32,8 +34,16 @@ class Notification {
     })
   }
 
-  addWallets(wallets) {
-    // check notification enable
+  addWallets() {
+    if (!this.deviceToken) {
+      return
+    }
+    const wallets = MainStore.appState.wallets.map((w) => {
+      return {
+        name: w.title,
+        address: w.address
+      }
+    })
     API.addWallets(wallets, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
@@ -50,6 +60,12 @@ class Notification {
       return
     }
     API.removeWallet(id)
+  }
+
+  async removeWallets() {
+    MainStore.appState.wallets.forEach((w) => {
+      this.removeWallet(w.address)
+    })
   }
 
   @action setCurrentNotif = (notif) => { this.currentNotif = notif }

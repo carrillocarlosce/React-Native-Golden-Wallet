@@ -7,10 +7,12 @@ import FCM, {
 import { Platform } from 'react-native'
 import Permissions from 'react-native-permissions'
 import NotificationStore from '../AppStores/stores/Notification'
+import MainStore from '../AppStores/MainStore'
 
 class PushNotificationHelper {
   init() {
     FCM.getFCMToken().then((token) => {
+      console.log(token)
       NotificationStore.setDeviceToken(token)
     })
 
@@ -43,7 +45,27 @@ class PushNotificationHelper {
     })
     FCM.removeAllDeliveredNotifications()
 
-    FCM.requestPermissions({ badge: true, sound: true, alert: true })
+    Permissions.check('notification').then((response) => {
+      if (response === 'authorized') {
+        MainStore.appState.setEnableNotification(true)
+      } else if (response === 'undetermined') {
+        PushNotificationHelper.requestPermission().then((res) => {
+          if (res === 'authorized') {
+            MainStore.appState.setEnableNotification(true)
+          } else {
+            MainStore.appState.setEnableNotification(false)
+          }
+        })
+      } else {
+        MainStore.appState.setEnableNotification(false)
+      }
+    }).catch((e) => {
+      console.log(e)
+    })
+
+    if (Platform.OS === 'android') {
+      MainStore.appState.setEnableNotification(true)
+    }
   }
 
   requestPermission() {

@@ -41,6 +41,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
+  @observable enableNotification = false
 
   static TIME_INTERVAL = 20000
 
@@ -61,6 +62,7 @@ class AppState {
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
+  @action setEnableNotification = (isEnable) => { this.enableNotification = isEnable }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
