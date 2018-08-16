@@ -283,9 +283,9 @@ export default class HomeScreen extends Component {
         <Animated.View
           style={{
             position: 'absolute',
-            top: 71 + marginTop,
+            top: 71,
             width,
-            height: height - 71 - marginTop,
+            height: height - 71 + marginTop,
             transform: [
               {
                 translateY: translateY.interpolate({
