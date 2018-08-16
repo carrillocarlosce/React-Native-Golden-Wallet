@@ -63,6 +63,10 @@ export default class ImportAddressStore {
     return !this.finished && this.titleMap[title]
   }
 
+  @computed get titleIsEmpty() {
+    return this.customTitle.trim() === ''
+  }
+
   @computed get errorAddress() {
     if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
       return constant.INVALID_ADDRESS
@@ -75,6 +79,8 @@ export default class ImportAddressStore {
   }
 
   @computed get isReadyCreate() {
-    return this.address !== '' && this.title !== '' && this.errorAddress === '' && !this.isErrorTitle
+    return this.address !== '' && this.title !== '' &&
+      this.errorAddress === '' && !this.isErrorTitle &&
+      !this.titleIsEmpty
   }
 }

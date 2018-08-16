@@ -3,6 +3,7 @@ import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
+import constant from '../../../commons/constant'
 
 export default class ImportMnemonicStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -32,25 +33,34 @@ export default class ImportMnemonicStore {
   }
 
   @action async generateWallets() {
-    this.loading = true
-    const title = `My wallet ${MainStore.appState.wallets.length}`
-    const ds = MainStore.secureStorage
-    const mnemonicWallets = []
-    for (let i = 0; i < 5; i++) {
-      /* eslint-disable-next-line */
-      const wallet = await Wallet.importMnemonic(this.mnemonic, title, i, ds)
-      mnemonicWallets.push(wallet)
-    }
-    this.loading = false
-    this.mnemonicWallets = mnemonicWallets
-    return mnemonicWallets
+    // this.loading = true
+    // this.loading = false
+    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic)
+    return this.mnemonicWallets
+  }
+
+  get walletIsExisted() {
+    return MainStore.appState.wallets.find(w => w.address === this.selectedWallet.address)
   }
 
   @action async unlockWallet() {
     if (!this.selectedWallet) {
-      NavStore.popupCustom.show('No wallet have not selected')
+      NavStore.popupCustom.show('No wallet have not selected.')
+      return
     }
-    await this.selectedWallet.save()
+
+    if (this.walletIsExisted) {
+      NavStore.popupCustom.show(constant.EXISTED_WALLET)
+      return
+    }
+
+    const index = this.mnemonicWallets
+      .findIndex(w => w.address.toLowerCase() === this.selectedWallet.address.toLowerCase())
+    const title = `My wallet ${MainStore.appState.wallets.length}`
+    const ds = MainStore.secureStorage
+    const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
+
+    await wallet.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
     NavStore.reset()
