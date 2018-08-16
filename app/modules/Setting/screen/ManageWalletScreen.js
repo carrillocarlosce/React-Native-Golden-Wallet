@@ -21,6 +21,7 @@ import ManageWalletItem from '../elements/ManageWalletItem'
 import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../stores/NavStore'
+import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -33,6 +34,11 @@ export default class ListWalletScreen extends Component {
 
   static defaultProps = {
     navigation: null
+  }
+
+  constructor(props) {
+    super(props)
+    this.manageWalletStore = new ManageWalletStore()
   }
 
   onActionPress = (index) => {
@@ -58,8 +64,7 @@ export default class ListWalletScreen extends Component {
           text: 'OK',
           onClick: async (text) => {
             this.selectedWallet.title = text
-            await this.selectedWallet.update()
-            MainStore.appState.syncWallets()
+            await this.manageWalletStore.editWallet(this.selectedWallet)
             NavStore.popupCustom.hide()
             this.actionSheet.hide()
           }
@@ -88,8 +93,7 @@ export default class ListWalletScreen extends Component {
             if (index === wallets.length - 1) {
               MainStore.appState.setSelectedWallet(null)
             }
-            await this.selectedWallet.remove()
-            MainStore.appState.syncWallets()
+            await this.manageWalletStore.removeWallet(this.selectedWallet)
             NavStore.popupCustom.hide()
             this.actionSheet.hide()
           }

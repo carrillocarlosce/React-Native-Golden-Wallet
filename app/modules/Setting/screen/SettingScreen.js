@@ -9,7 +9,7 @@ import {
 import { observer } from 'mobx-react/native'
 import AppStyle from '../../../commons/AppStyle'
 import SettingItem from '../elements/SettingItem'
-import SettingStore from '../SettingStore'
+import SettingStore from '../stores/SettingStore'
 import NavStore from '../../../stores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 import AppSetting from '../../Setting/elements/AppSetting'

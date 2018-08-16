@@ -4,6 +4,7 @@ import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import Checker from '../../../Handler/Checker'
 import constant from '../../../commons/constant'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportAddressStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -25,6 +26,7 @@ export default class ImportAddressStore {
     const ds = MainStore.secureStorage
     const { address } = this
     const w = Wallet.importAddress(address, title, ds)
+    NotificationStore.addWallet(title, w.address)
     await w.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()

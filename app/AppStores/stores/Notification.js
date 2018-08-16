@@ -3,6 +3,8 @@ import WalletToken from './WalletToken'
 import Wallet from './Wallet'
 import MainStore from '../MainStore'
 import NavStore from '../../stores/NavStore'
+import NotificationDS from '../DataSource/NotificationDS'
+import API from '../../api'
 
 class Notification {
   @observable currentNotif = null
@@ -11,6 +13,44 @@ class Notification {
   lastedTokenAddress = null
   deviceToken = null
   appState = 'background'
+
+  saveNotifID(address, id) {
+    NotificationDS.saveNotifID(address, id)
+  }
+
+  async getNotifID(address) {
+    return await NotificationDS.getNotifID(address)
+  }
+
+  addWallet(name, address) {
+    // check notification enable
+    API.addWallet(name, address, this.deviceToken).then((res) => {
+      const { data, success } = res.data
+      if (success) {
+        this.saveNotifID(address, data.id)
+      }
+    })
+  }
+
+  addWallets(wallets) {
+    // check notification enable
+    API.addWallets(wallets, this.deviceToken).then((res) => {
+      const { data, success } = res.data
+      if (success) {
+        data.forEach((d) => {
+          this.saveNotifID(d.address, d.id)
+        })
+      }
+    })
+  }
+
+  async removeWallet(address) {
+    const id = await this.getNotifID(address)
+    if (!id) {
+      return
+    }
+    API.removeWallet(id)
+  }
 
   @action setCurrentNotif = (notif) => { this.currentNotif = notif }
   @action setDeviceToken = (dt) => { this.deviceToken = dt }

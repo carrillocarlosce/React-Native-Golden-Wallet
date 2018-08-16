@@ -7,7 +7,8 @@ import {
   Text,
   Animated,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import TouchID from '../../../Libs/react-native-touch-id'
@@ -16,13 +17,12 @@ import AppStyle from '../../commons/AppStyle'
 /* eslint-disable-next-line */
 import GoldenLoading from './../elements/GoldenLoading'
 import BiometryCounter from '../../Handler/BiometryCounter'
-import LayoutUtils from '../../commons/LayoutUtils'
 import HapticHandler from '../../Handler/HapticHandler'
 import SecureDS from '../../AppStores/DataSource/SecureDS'
 
 const { width, height } = Dimensions.get('window')
 const isSmallScreen = height < 569
-const extraBottom = LayoutUtils.getExtraBottom()
+const extraBottom = Platform.OS === 'ios' ? 0 : 48
 const dataNumber1 = [
   { number: '1' },
   { number: '2' },
