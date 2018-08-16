@@ -5,6 +5,7 @@ import AppStyle from './commons/AppStyle'
 import NavStore from './stores/NavStore'
 import PopupCustom from './components/elements/PopupCustom'
 import CustomToastTop from './components/elements/CustomToastTop'
+import NotificationInApp from './components/elements/NotificationInApp'
 
 // screen
 import HomeScreen from './modules/WalletList/screen/HomeScreen'
@@ -291,6 +292,7 @@ export default class MainStack extends Component {
             NavStore.toastTop = ref
           }}
         />
+        <NotificationInApp />
       </View>
     )
   }
