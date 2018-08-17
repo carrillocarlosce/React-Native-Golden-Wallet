@@ -4,6 +4,7 @@ import MainStore from '../../AppStores/MainStore'
 import HapticHandler from '../../Handler/HapticHandler'
 import SecureDS from '../../AppStores/DataSource/SecureDS'
 import NavStore from '../../stores/NavStore'
+import MigrateData from '../../../MigrateData'
 
 class UnlockStore {
   @observable data = {
@@ -24,7 +25,7 @@ class UnlockStore {
     }
   }
 
-  @action handlePress(number) {
+  @action async handlePress(number) {
     HapticHandler.ImpactLight()
     const { pinTyped, pincode, pinConfirm } = this.data
     if (pinTyped === 5) {
@@ -33,7 +34,10 @@ class UnlockStore {
         pinTyped: pinTyped + 1,
         pincode: pincode + number
       })
-      if (MainStore.appState.hasPassword) {
+      const oldData = await MigrateData.getItem('USER_WALLET_ENCRYPTED')
+      if (oldData) {
+        this._handelMigrateData()
+      } else if (MainStore.appState.hasPassword) {
         this._handleCheckPincode()
       } else if (pinConfirm === '') {
         this._handleCreatePin()
@@ -47,6 +51,33 @@ class UnlockStore {
         pinTyped: pinTyped + 1,
         pincode: pincode + number
       })
+    }
+  }
+
+  async _handelMigrateData() {
+    const { pincode } = this.data
+    const iv = await MigrateData.getIV()
+    if (!iv) {
+      this._handleErrorPin()
+      return
+    }
+    NavStore.showLoading()
+    const decriptData = await MigrateData.decrypData(pincode, iv, true)
+    if (!decriptData) {
+      this._handleErrorPin()
+      NavStore.hideLoading()
+    } else {
+      const { appState } = MainStore
+      appState.setHasPassword(true)
+      appState.save()
+      const password = await MigrateData.getDecryptedRandomKey(pincode, iv)
+      await SecureDS.forceSavePassword(password, iv, pincode)
+      await SecureDS.forceSaveIV(iv)
+      HapticHandler.NotificationSuccess()
+      MainStore.setSecureStorage(pincode)
+      await MigrateData.migrateOldData(pincode, iv, decriptData, password)
+      NavStore.goBack()
+      NavStore.hideLoading()
     }
   }
 

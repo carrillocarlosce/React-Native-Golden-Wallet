@@ -6,7 +6,7 @@ import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportPrivateKeyStore {
-  @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
+  @observable customTitle = ``
   @observable privKey = ''
   @observable loading = false
   @observable finished = false

@@ -7,7 +7,7 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportAddressStore {
-  @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
+  @observable customTitle = ``
   @observable addessWallet = ''
   @observable loading = false
   @observable finished = false
