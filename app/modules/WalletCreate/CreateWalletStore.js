@@ -3,6 +3,7 @@ import MainStore from '../../AppStores/MainStore'
 import Wallet from '../../AppStores/stores/Wallet'
 import NavStore from '../../stores/NavStore'
 import NotificationStore from '../../AppStores/stores/Notification'
+import AppStyle from '../../commons/AppStyle'
 
 class CreateWalletStore {
   @observable customTitle = ``
@@ -22,6 +23,7 @@ class CreateWalletStore {
     Wallet.generateNew(ds, title, index).then(async (w) => {
       this.finished = true
       NotificationStore.addWallet(title, w.address)
+      NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
       await w.save()
       await MainStore.appState.syncWallets()
       MainStore.appState.autoSetSelectedWallet()

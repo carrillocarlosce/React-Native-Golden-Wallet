@@ -51,9 +51,9 @@ export default class TransactionDetailScreen extends Component {
     return `${operator} ${this.selectedTransaction.balance.toString(10)} ${tokenSymbol !== '' ? tokenSymbol : 'ETH'}`
   }
 
-  _onPress = (message) => {
+  _onPress = (message, title) => {
     Clipboard.setString(message)
-    NavStore.showToastTop('Copied', {}, { color: AppStyle.mainColor })
+    NavStore.showToastTop(`${title} Copied`, {}, { color: AppStyle.mainColor })
   }
 
   renderValue = () => {
@@ -68,7 +68,7 @@ export default class TransactionDetailScreen extends Component {
           type,
           isSelf
         }}
-        action={() => this._onPress(value)}
+        action={() => { }}
       />
     )
   }
@@ -81,7 +81,7 @@ export default class TransactionDetailScreen extends Component {
           title: 'Time',
           subtitle: this.selectedTransaction.date
         }}
-        action={() => this._onPress(this.selectedTransaction.date)}
+        action={() => this._onPress(this.selectedTransaction.date, 'Time')}
       />
     )
 
@@ -93,7 +93,7 @@ export default class TransactionDetailScreen extends Component {
           title: 'Transaction Hash',
           subtitle: this.selectedTransaction.hash
         }}
-        action={() => this._onPress(this.selectedTransaction.hash)}
+        action={() => this._onPress(this.selectedTransaction.hash, 'Transaction Hash')}
       />
     )
 
@@ -108,7 +108,7 @@ export default class TransactionDetailScreen extends Component {
           title,
           subtitle
         }}
-        action={() => this._onPress(subtitle)}
+        action={() => this._onPress(subtitle, 'Address')}
       />
     )
   }
@@ -121,7 +121,7 @@ export default class TransactionDetailScreen extends Component {
           title: 'Fee',
           subtitle: this.selectedTransaction.fee.toString(10)
         }}
-        action={() => this._onPress(this.selectedTransaction.fee.toString(10))}
+        action={() => { }}
         bottomLine={false}
       />
     )
