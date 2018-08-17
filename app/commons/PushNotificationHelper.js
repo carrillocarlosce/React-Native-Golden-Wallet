@@ -1,9 +1,4 @@
-import FCM, {
-  FCMEvent,
-  RemoteNotificationResult,
-  WillPresentNotificationResult,
-  NotificationType
-} from 'react-native-fcm'
+import FCM, { FCMEvent } from 'react-native-fcm'
 import { Platform } from 'react-native'
 import Permissions from 'react-native-permissions'
 import NotificationStore from '../AppStores/stores/Notification'
@@ -17,7 +12,8 @@ class PushNotificationHelper {
     })
 
     FCM.getInitialNotification().then((notif) => {
-      if (notif.tx) {
+      if (notif && notif.tx) {
+        NotificationStore.isInitFromNotification = true
         NotificationStore.setCurrentNotif(notif)
         NotificationStore.gotoTransactionList()
       }
@@ -28,30 +24,26 @@ class PushNotificationHelper {
       if (notif && notif.opened_from_tray) {
         NotificationStore.gotoTransactionList()
       }
-      if (Platform.OS === 'ios') {
-        switch (notif._notificationType) {
-          case NotificationType.Remote:
-            notif.finish(RemoteNotificationResult.NewData)
-            break
-          case NotificationType.NotificationResponse:
-            notif.finish()
-            break
-          case NotificationType.WillPresent:
-            notif.finish(WillPresentNotificationResult.All)
-            break
-          default:
-        }
-      }
     })
+
+    FCM.on(FCMEvent.RefreshToken, (token) => {
+      NotificationStore.setDeviceToken(token)
+      NotificationStore.addWallets()
+    })
+
     FCM.removeAllDeliveredNotifications()
 
     Permissions.check('notification').then((response) => {
       if (response === 'authorized') {
-        MainStore.appState.setEnableNotification(true)
+        if (MainStore.appState.enableNotification) {
+          MainStore.appState.setEnableNotification(true)
+        }
       } else if (response === 'undetermined') {
-        PushNotificationHelper.requestPermission().then((res) => {
+        this.requestPermission().then((res) => {
           if (res === 'authorized') {
-            MainStore.appState.setEnableNotification(true)
+            if (MainStore.appState.enableNotification) {
+              MainStore.appState.setEnableNotification(true)
+            }
           } else {
             MainStore.appState.setEnableNotification(false)
           }
@@ -69,7 +61,7 @@ class PushNotificationHelper {
   }
 
   requestPermission() {
-    return FCM.requestPermissions({ badge: true, sound: true, alert: true })
+    return FCM.requestPermissions({ badge: true, sound: true, alert: false })
   }
 
   removeAllDeliveredNotifications = () => {
