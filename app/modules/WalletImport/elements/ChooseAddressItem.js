@@ -26,7 +26,7 @@ export default class ChooseAddressItem extends Component {
 
   constructor(props) {
     super(props)
-    this.importMnemonicStore = MainStore.importStore.importMnemonicStore
+    this.importMnemonicStore = MainStore.importMnemonicStore
   }
 
   componentDidMount() {

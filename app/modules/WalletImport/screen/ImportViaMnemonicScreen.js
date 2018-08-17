@@ -27,6 +27,7 @@ import AppStyle from '../../../commons/AppStyle'
 import ImportMnemonicStore from '../stores/ImportMnemonicStore'
 import ActionButton from '../../../components/elements/ActionButton'
 import constant from '../../../commons/constant'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -43,7 +44,8 @@ export default class ImportViaMnemonicScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.importMnemonicStore = new ImportMnemonicStore()
+    MainStore.importMnemonicStore = new ImportMnemonicStore()
+    this.importMnemonicStore = MainStore.importMnemonicStore
     this.extraHeight = new Animated.Value(0)
   }
 

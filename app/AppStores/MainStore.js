@@ -21,6 +21,8 @@ class MainStore {
   importStore = null
   backupStore = null
 
+  importMnemonicStore = null
+
   setSecureStorage(pincode) {
     this.secureStorage = new SecureDS(pincode)
   }

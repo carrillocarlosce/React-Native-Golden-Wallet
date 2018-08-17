@@ -34,9 +34,9 @@ export default class ImportMnemonicStore {
   }
 
   @action async generateWallets() {
-    // this.loading = true
-    // this.loading = false
-    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic)
+    this.loading = true
+    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic, null, 0, 9)
+    this.loading = false
     return this.mnemonicWallets
   }
 
@@ -60,7 +60,7 @@ export default class ImportMnemonicStore {
 
     const title = this.customTitle
     // TO DO: remove below line when done check wallet name
-    if (!title) alert('Wallet name can not be blank')
+    if (!title) return alert('Wallet name can not be blank')
 
     const ds = MainStore.secureStorage
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
