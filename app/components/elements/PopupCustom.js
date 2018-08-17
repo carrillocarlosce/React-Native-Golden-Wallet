@@ -225,7 +225,7 @@ export default class PopupCustom extends Component {
                       underlineColorAndroid="transparent"
                       onChangeText={this.onChangeText}
                       keyboardAppearance="dark"
-                      placeholder="Wallet Name"
+                      placeholder=""
                       placeholderTextColor="#4A4A4A"
                       value={valueInput}
                     />
