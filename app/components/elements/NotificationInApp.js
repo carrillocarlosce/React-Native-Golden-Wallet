@@ -64,7 +64,7 @@ export default class NotificationInApp extends Component {
   render() {
     const { notif } = NotificationStore
     const { styleText, content } = this
-    if (notif && NotificationStore.appState === 'active') {
+    if (notif && !NotificationStore.isInitFromNotification) {
       this.showToast()
     }
     return (
