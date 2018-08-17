@@ -35,7 +35,7 @@ export default class ImportMnemonicStore {
 
   @action async generateWallets() {
     this.loading = true
-    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic, null, 0, 9)
+    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic, undefined, 0, 9)
     this.loading = false
     return this.mnemonicWallets
   }
@@ -44,7 +44,7 @@ export default class ImportMnemonicStore {
     return MainStore.appState.wallets.find(w => w.address === this.selectedWallet.address)
   }
 
-  @action async unlockWallet() {
+  @action gotoEnterName() {
     if (!this.selectedWallet) {
       NavStore.popupCustom.show('No wallet have not selected.')
       return
@@ -54,18 +54,23 @@ export default class ImportMnemonicStore {
       NavStore.popupCustom.show(constant.EXISTED_WALLET)
       return
     }
+    NavStore.pushToScreen('EnterNameViaMnemonic')
+  }
 
+  @action async unlockWallet() {
     const index = this.mnemonicWallets
       .findIndex(w => w.address.toLowerCase() === this.selectedWallet.address.toLowerCase())
-
     const title = this.customTitle
     // TO DO: remove below line when done check wallet name
-    if (!title) return alert('Wallet name can not be blank')
+    if (!title) {
+      alert('Wallet name can not be blank')
+      return
+    }
 
     const ds = MainStore.secureStorage
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
     NotificationStore.addWallet(title, wallet.address)
-    NavStore.showToastTop(constant.IMPORT_WALLET_SUCCESS, {}, { color: AppStyle.colorUp })
+    NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
     await wallet.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
@@ -86,5 +91,13 @@ export default class ImportMnemonicStore {
 
   @computed get isReadyCreate() {
     return !this.errorMnemonic && this.mnemonic !== ''
+  }
+
+  @computed get isReadyUnlock() {
+    return !this.titleIsExisted && this.title !== ''
+  }
+
+  @computed get titleIsExisted() {
+    return MainStore.appState.wallets.find(w => w.title === this.title)
   }
 }

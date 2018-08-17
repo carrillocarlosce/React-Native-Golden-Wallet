@@ -41,7 +41,7 @@ export default class ChooseAddressScreen extends Component {
   }
 
   handleUnlock = () => {
-    this.importMnemonicStore.unlockWallet()
+    this.importMnemonicStore.gotoEnterName()
   }
 
   render() {
