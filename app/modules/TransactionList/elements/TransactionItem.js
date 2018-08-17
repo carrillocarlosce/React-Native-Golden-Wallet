@@ -11,6 +11,7 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import Helper from '../../../commons/Helper'
 import PendingTransaction from './PendingTransaction'
+import MainStore from '../../../AppStores/MainStore';
 
 export default class TransactionsItem extends Component {
   static propTypes = {
@@ -47,6 +48,10 @@ export default class TransactionsItem extends Component {
     return '+'
   }
 
+  get selectedToken() {
+    return MainStore.appState.selectedToken
+  }
+
   render() {
     const {
       style,
@@ -60,9 +65,10 @@ export default class TransactionsItem extends Component {
       date,
       balanceUSD,
       type,
-      status,
-      tokenSymbol
+      status
     } = transactionItem
+
+    const { symbol } = this.selectedToken
 
     const { colorBalance, operator } = this
     return (
@@ -79,7 +85,7 @@ export default class TransactionsItem extends Component {
               {status === 0 && <PendingTransaction style={{ marginLeft: 4 }} />}
             </View>
             <Text style={[styles.balance, colorBalance]}>
-              {`${operator} ${Helper.formatETH(balance.toString(10))} ${tokenSymbol != '' ? tokenSymbol : 'ETH'}`}
+              {`${operator} ${Helper.formatETH(balance.toString(10))} ${symbol}`}
             </Text>
           </View>
           <View style={[styles.rowStyle, { marginTop: 5 }]}>
