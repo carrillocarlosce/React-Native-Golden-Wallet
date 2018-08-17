@@ -30,7 +30,7 @@ class AppState {
   @observable selectedToken = null // for sending transaction
   @observable wallets = []
   @observable addressBooks = []
-  @observable rateETHDollar = new BigNumber(412.0)
+  @observable rateETHDollar = new BigNumber(0)
   @observable hasPassword = false
   @observable didBackup = false
   currentWalletIndex = 0
@@ -41,7 +41,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  @observable enableNotification = false
+  @observable enableNotification = true
 
   static TIME_INTERVAL = 20000
 
@@ -62,7 +62,10 @@ class AppState {
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  @action setEnableNotification = (isEnable) => { this.enableNotification = isEnable }
+  @action setEnableNotification = (isEnable) => {
+    this.enableNotification = isEnable
+    this.save()
+  }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
@@ -117,8 +120,14 @@ class AppState {
 
   @action async getRateETHDollar() {
     setTimeout(async () => {
-      const rs = await api.fetchRateETHDollar()
-      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
+      if (this.internetConnection === 'online') {
+        const rs = await api.fetchRateETHDollar()
+        const rate = rs.data && rs.data.RAW && rs.data.RAW.ETH && rs.data.RAW.ETH.USD
+
+        if (rate.PRICE != this.rateETHDollar) {
+          this.rateETHDollar = new BigNumber(rate.PRICE)
+        }
+      }
     }, 100)
   }
 
@@ -139,6 +148,7 @@ class AppState {
     const data = orgData
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
+    this.enableNotification = data.enableNotification
     this.currentWalletIndex = data.currentWalletIndex
     const wallets = await WalletDS.getWallets()
     const addressBooks = await AddressBookDS.getAddressBooks()
@@ -158,7 +168,7 @@ class AppState {
     //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
     // }
 
-    this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
     this.fetchWalletsBalance(false)
   }
@@ -190,6 +200,7 @@ class AppState {
 
     this.checkBalanceJobID = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
+      this.getRateETHDollar()
       this.startCheckBalanceJob()
     }, AppState.TIME_INTERVAL)
   }
@@ -228,7 +239,8 @@ class AppState {
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
       didBackup: this.didBackup,
-      gasPriceEstimate: this.gasPriceEstimate
+      gasPriceEstimate: this.gasPriceEstimate,
+      enableNotification: this.enableNotification
     }
   }
 }

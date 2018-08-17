@@ -26,6 +26,7 @@ import NavStore from '../../../stores/NavStore'
 import Config from '../../../AppStores/stores/Config'
 import Ticker from '../elements/Ticker'
 import TickerStore from '../stores/TickerStore'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -53,13 +54,15 @@ export default class HomeScreen extends Component {
     TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
-      MainStore.gotoUnlock()
-      this.props.navigation.navigate('UnlockScreen', {
-        isLaunchApp: true,
-        onUnlock: () => {
-          this._gotoCreateWallet()
-        }
-      })
+      if (!NotificationStore.isInitFromNotification) {
+        MainStore.gotoUnlock()
+        this.props.navigation.navigate('UnlockScreen', {
+          isLaunchApp: true,
+          onUnlock: () => {
+            this._gotoCreateWallet()
+          }
+        })
+      }
     }, 100)
   }
 
@@ -82,9 +85,9 @@ export default class HomeScreen extends Component {
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
-    let color = { backgroundColor: AppStyle.mainColor }
+    const color = { backgroundColor: AppStyle.mainColor }
     if (currentNetwork === Config.networks.mainnet) {
-      color = { backgroundColor: AppStyle.colorUp }
+      return <View />
     }
     currentNetwork = currentNetwork.replace(/^\w/, c => c.toUpperCase())
     return (
@@ -281,7 +284,7 @@ export default class HomeScreen extends Component {
         <Animated.View
           style={{
             position: 'absolute',
-            top: 71,
+            top: Platform.OS === 'ios' ? 101 : 71,
             width,
             height: height - 71 + marginTop,
             transform: [

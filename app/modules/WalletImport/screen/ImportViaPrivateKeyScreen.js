@@ -25,7 +25,7 @@ import Checker from '../../../Handler/Checker'
 import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
 import Spinner from '../../../components/elements/Spinner'
-import MainStore from '../../../AppStores/MainStore'
+import ImportPrivateKeyStore from '../stores/ImportPrivateKeyStore'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
 
@@ -45,7 +45,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
   constructor(props) {
     super(props)
     this.extraHeight = new Animated.Value(0)
-    this.importPrivateKeyStore = MainStore.importStore.importPrivateKeyStore
+    this.importPrivateKeyStore = new ImportPrivateKeyStore()
   }
 
   componentWillMount() {

@@ -13,7 +13,6 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
-import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -40,7 +39,6 @@ export default class CreateWalletScreen extends Component {
 
   gotoImport = () => {
     const { navigation } = this.props
-    MainStore.gotoImport()
     navigation.navigate('ImportWalletScreen')
   }
 

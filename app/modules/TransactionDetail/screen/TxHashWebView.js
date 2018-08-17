@@ -5,6 +5,8 @@ import NavigationHeader from '../../../components/elements/NavigationHeader'
 import Spinner from '../../../components/elements/Spinner'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
+import AppState from '../../../AppStores/AppState'
+import Config from '../../../AppStores/stores/Config'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -35,11 +37,11 @@ export default class TxHashWebViewScreen extends Component {
        document.querySelector('.tibrr-cookie-consent-container').style.display = 'none';
     `
     const { txHash } = navigation.state.params
-    // const { currentNetwork } = NetworkStore
-    const url = `https://etherscan.io/tx/${txHash}`
-    // if (currentNetwork !== Network.MainNet) {
-    //   url = `https://${currentNetwork}.etherscan.io/tx/${txHash}`
-    // }
+
+    const { networkName } = AppState
+
+    const url = `${URL.EtherScan.webURL(networkName)}/tx/${txHash}`
+
     const style = this.state.isShow ? { flex: 1 } : { width: 0 }
     return (
       <View style={styles.container}>
