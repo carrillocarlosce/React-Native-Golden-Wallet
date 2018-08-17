@@ -103,7 +103,7 @@ export default class SettingScreen extends Component {
 
   renderAbount = () => (
     <FlatList
-      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? 60 + statusBarHeight : 50 }}
+      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? 90 + statusBarHeight : 50 }}
       ListHeaderComponent={<Text style={styles.titleText}>About</Text>}
       data={this.settingStore.dataAbout}
       keyExtractor={v => v.mainText}
@@ -116,6 +116,8 @@ export default class SettingScreen extends Component {
             subText={item.subText}
             onPress={item.onPress}
             iconRight={item.iconRight}
+            disable={item.disable}
+            showArrow={item.showArrow}
           />
         )
       }
