@@ -38,6 +38,7 @@ export default class AnimationInput extends Component {
 
   render() {
     this.amountStore = MainStore.sendTransaction.amountStore
+    this.confirmStore = MainStore.sendTransaction.confirmStore
     const {
       data,
       subData,

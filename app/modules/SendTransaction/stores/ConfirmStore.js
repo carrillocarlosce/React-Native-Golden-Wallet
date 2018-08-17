@@ -6,7 +6,8 @@ import Helper from '../../../commons/Helper'
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
   @observable gasLimit = new BigNumber('21000')
-  @observable gasPrice = new BigNumber('1000000000')
+  // @observable gasPrice = new BigNumber('1000000000')
+  @observable gasPrice = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
   // @action setToAddress(address) {
@@ -54,6 +55,10 @@ export default class ConfirmStore {
 
   @computed get title() {
     return MainStore.sendTransaction.isToken ? MainStore.appState.selectedToken.symbol : 'ETH'
+  }
+
+  @computed get fee() {
+    return this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
   }
 
   @computed get formatedFee() {
