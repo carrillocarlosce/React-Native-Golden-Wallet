@@ -32,6 +32,7 @@ import TxHashWebViewScreen from './modules/TransactionDetail/screen/TxHashWebVie
 import NetworkScreen from './modules/Setting/screen/NetworkScreen'
 import DWebBrowserScreen from './components/screens/DWebBrowserScreen'
 import AddressInputScreen from './modules/SendTransaction/screen/AddressInputScreen'
+import EnterNameViaMnemonic from './modules/WalletImport/screen/EnterNameViaMnemonic'
 
 const AddressBookStack = StackNavigator(
   {
@@ -215,6 +216,12 @@ const CreateWalletStack = StackNavigator(
     },
     ScanQRCodeScreen: {
       screen: ScanQRCodeScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    EnterNameViaMnemonic: {
+      screen: EnterNameViaMnemonic,
       navigationOptions: {
         header: null
       }
