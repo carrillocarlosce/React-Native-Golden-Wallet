@@ -30,7 +30,7 @@ class AppState {
   @observable selectedToken = null // for sending transaction
   @observable wallets = []
   @observable addressBooks = []
-  @observable rateETHDollar = new BigNumber(412.0)
+  @observable rateETHDollar = new BigNumber(0)
   @observable hasPassword = false
   @observable didBackup = false
   currentWalletIndex = 0
@@ -120,8 +120,14 @@ class AppState {
 
   @action async getRateETHDollar() {
     setTimeout(async () => {
-      const rs = await api.fetchRateETHDollar()
-      this.rateETHDollar = new BigNumber(rs.data.RAW.ETH.USD.PRICE)
+      if (this.internetConnection === 'online') {
+        const rs = await api.fetchRateETHDollar()
+        const rate = rs.data && rs.data.RAW && rs.data.RAW.ETH && rs.data.RAW.ETH.USD
+
+        if (rate.PRICE != this.rateETHDollar) {
+          this.rateETHDollar = new BigNumber(rate.PRICE)
+        }
+      }
     }, 100)
   }
 
@@ -162,7 +168,7 @@ class AppState {
     //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
     // }
 
-    this.rateETHDollar = new BigNumber(data.rateETHDollar)
+    this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
     this.fetchWalletsBalance(false)
   }
@@ -194,6 +200,7 @@ class AppState {
 
     this.checkBalanceJobID = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
+      this.getRateETHDollar()
       this.startCheckBalanceJob()
     }, AppState.TIME_INTERVAL)
   }

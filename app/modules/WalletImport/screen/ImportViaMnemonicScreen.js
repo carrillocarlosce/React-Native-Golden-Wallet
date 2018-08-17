@@ -24,7 +24,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
 import NavStore from '../../../stores/NavStore'
 import AppStyle from '../../../commons/AppStyle'
-import MainStore from '../../../AppStores/MainStore'
+import ImportMnemonicStore from '../stores/ImportMnemonicStore'
 import ActionButton from '../../../components/elements/ActionButton'
 import constant from '../../../commons/constant'
 
@@ -43,7 +43,7 @@ export default class ImportViaMnemonicScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.importMnemonicStore = MainStore.importStore.importMnemonicStore
+    this.importMnemonicStore = new ImportMnemonicStore()
     this.extraHeight = new Animated.Value(0)
   }
 

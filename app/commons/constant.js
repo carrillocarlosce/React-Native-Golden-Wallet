@@ -63,5 +63,7 @@ export default {
   INVALID_ADDRESS: 'Invalid Address',
   INVALID_MNEMONIC: 'Invalid Mnemonic Phrase',
   INVALID_PRIVATE_KEY: 'Invalid Private Key',
-  EXISTED_WALLET: 'Wallet was existed'
+  EXISTED_WALLET: 'Wallet was existed',
+  ADDRESS_BOOK_EXISTED: 'Address Book was existed',
+  EXISTED_NAME_AB: 'Address Book name was existed'
 }

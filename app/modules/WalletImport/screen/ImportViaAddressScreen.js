@@ -24,7 +24,7 @@ import Checker from '../../../Handler/Checker'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
-import MainStore from '../../../AppStores/MainStore'
+import ImportAddressStore from '../stores/ImportAddressStore'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -41,7 +41,7 @@ export default class ImportViaAddressScreen extends Component {
   constructor(props) {
     super(props)
     this.extraHeight = new Animated.Value(0)
-    this.importAddressStore = MainStore.importStore.importAddressStore
+    this.importAddressStore = new ImportAddressStore()
   }
 
   componentWillMount() {

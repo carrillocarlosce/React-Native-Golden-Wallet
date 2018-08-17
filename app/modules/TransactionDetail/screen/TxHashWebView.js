@@ -39,10 +39,8 @@ export default class TxHashWebViewScreen extends Component {
     const { txHash } = navigation.state.params
 
     const { networkName } = AppState
-    let url = `https://etherscan.io/tx/${txHash}`
-    if (networkName !== Config.networks.mainnet) {
-      url = `https://${networkName}.etherscan.io/tx/${txHash}`
-    }
+
+    const url = `${URL.EtherScan.webURL(networkName)}/tx/${txHash}`
 
     const style = this.state.isShow ? { flex: 1 } : { width: 0 }
     return (

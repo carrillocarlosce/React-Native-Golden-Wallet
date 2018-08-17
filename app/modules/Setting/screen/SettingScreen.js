@@ -12,7 +12,6 @@ import AppStyle from '../../../commons/AppStyle'
 import SettingItem from '../elements/SettingItem'
 import SettingStore from '../stores/SettingStore'
 import NavStore from '../../../stores/NavStore'
-import MainStore from '../../../AppStores/MainStore'
 import AppSetting from '../../Setting/elements/AppSetting'
 import AppSettingStore from '../stores/AppSettingStore'
 
@@ -41,7 +40,6 @@ export default class SettingScreen extends Component {
   }
 
   onAddressBookPress = () => {
-    MainStore.gotoAddressBook()
     NavStore.pushToScreen('AddressBookScreen')
   }
 
