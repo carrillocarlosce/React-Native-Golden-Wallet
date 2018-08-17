@@ -4,7 +4,6 @@ import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
 import UnlockStore from '../modules/Unlock/UnlockStore'
-import ImportStore from '../modules/WalletImport/stores/ImportStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import AddressBookStore from '../modules/AddressBook/AddressBookStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
@@ -21,7 +20,6 @@ class MainStore {
   unlock = null
   importStore = null
   backupStore = null
-  addressBookStore = null
 
   setSecureStorage(pincode) {
     this.secureStorage = new SecureDS(pincode)
@@ -50,18 +48,10 @@ class MainStore {
     })
   }
 
-  gotoImport() {
-    this.importStore = new ImportStore()
-  }
-
   async gotoBackup() {
     this.backupStore = new BackupStore()
     const mnemonic = await this.secureStorage.deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
-  }
-
-  gotoAddressBook() {
-    this.addressBookStore = new AddressBookStore()
   }
 }
 
