@@ -34,6 +34,10 @@ export default class TransactionDetailScreen extends Component {
     return MainStore.appState.selectedToken.selectedTransaction
   }
 
+  get selectedToken() {
+    return MainStore.appState.selectedToken
+  }
+
   get operator() {
     const { type, isSelf } = this.selectedTransaction
     if (type == constant.SENT || type == constant.PENDING) {
@@ -46,9 +50,9 @@ export default class TransactionDetailScreen extends Component {
   }
 
   get value() {
-    const { tokenSymbol } = this.selectedTransaction
     const { operator } = this
-    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${tokenSymbol !== '' ? tokenSymbol : 'ETH'}`
+    const { symbol } = this.selectedToken
+    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${symbol}`
   }
 
   _onPress = (message, title) => {
