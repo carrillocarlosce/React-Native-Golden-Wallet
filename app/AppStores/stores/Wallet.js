@@ -59,7 +59,6 @@ export default class Wallet {
 
   static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
     if (!secureDS) throw new Error('Secure data source is required')
-
     const mnemonic = await secureDS.deriveMnemonic()
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', path, index)
     const w = Starypto.fromPrivateKey(private_key)

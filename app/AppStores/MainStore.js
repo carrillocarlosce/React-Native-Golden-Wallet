@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx'
+import { AsyncStorage } from 'react-native'
 import SendStore from '../modules/SendTransaction/stores/SendStore'
 import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
@@ -42,9 +43,13 @@ class MainStore {
     this.sendTransaction = null
   }
 
-  gotoUnlock() {
+  async gotoUnlock() {
     this.unlock = new UnlockStore()
-    const unlockDes = this.appState.hasPassword ? 'Unlock with your PIN' : 'Create your PIN'
+    let unlockDes = this.appState.hasPassword ? 'Unlock with your PIN' : 'Create your PIN'
+    const oldData = await AsyncStorage.getItem('USER_WALLET_ENCRYPTED')
+    if (oldData) {
+      unlockDes = 'Unlock with your PIN'
+    }
     this.unlock.setData({
       unlockDes
     })

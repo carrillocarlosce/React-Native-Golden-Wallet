@@ -48,6 +48,15 @@ export default class SecureDS {
     return iv
   }
 
+  static forceSavePassword(password, iv, pincode) {
+    const randomStrEncrypted = Starypto.encryptString(password, pincode, iv, 'aes-256-cbc')
+    return AsyncStorage.setItem(dataKey, randomStrEncrypted)
+  }
+
+  static forceSaveIV(iv) {
+    return AsyncStorage.setItem(IVKey, iv)
+  }
+
   async hasSetupPincode() {
     return this._getPassword()
   }
