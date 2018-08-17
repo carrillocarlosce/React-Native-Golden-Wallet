@@ -200,7 +200,7 @@ export default class PopupCustom extends Component {
                       this.setState({ valueInput: text })
                     }}
                     keyboardAppearance="dark"
-                    placeholder="Wallet Name"
+                    placeholder=""
                     placeholderTextColor="#4A4A4A"
                     value={valueInput}
                   />

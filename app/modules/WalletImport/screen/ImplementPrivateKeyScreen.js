@@ -127,6 +127,18 @@ export default class ImplementPrivateKeyScreen extends Component {
     )
   }
 
+  _checkInvalidKeyStore() {
+    const { privateKey } = this.state
+    if (privateKey === '') {
+      return true
+    }
+    if (!Checker.checkPrivateKey(privateKey)) {
+      // NavStore.popupCustom.show('Invalid private key')
+      return true
+    }
+    return false
+  }
+
   _handleConfirm = async () => {
     const { privateKey } = this.state
     if (privateKey === '') {
@@ -216,6 +228,7 @@ export default class ImplementPrivateKeyScreen extends Component {
             </Animated.View>
             <BottomButton
               onPress={this._handleConfirm}
+              disable={this._checkInvalidKeyStore()}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -252,5 +265,13 @@ const styles = StyleSheet.create({
     color: AppStyle.mainColor,
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginLeft: 20,
+    marginTop: 10
   }
 })
