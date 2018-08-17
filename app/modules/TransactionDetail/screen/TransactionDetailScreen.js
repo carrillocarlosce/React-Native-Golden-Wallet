@@ -100,7 +100,7 @@ export default class TransactionDetailScreen extends Component {
   renderAddress = () => {
     const { isSent } = this.selectedTransaction
     const title = isSent ? 'To' : 'From'
-    const subtitle = isSent ? this.selectedTransaction.from : this.selectedTransaction.to
+    const subtitle = isSent ? this.selectedTransaction.to : this.selectedTransaction.from
     return (
       <TransactionDetailItem
         style={{ marginTop: 15 }}
