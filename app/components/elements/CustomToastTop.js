@@ -9,13 +9,15 @@ import {
 import HapticHandler from '../../Handler/HapticHandler'
 
 const { width } = Dimensions.get('window')
-
-export default class CreateWalletScreen extends Component {
-  state = {
-    offsetToast: new Animated.Value(-100),
-    content: '',
-    styleText: {},
-    style: {}
+export default class CustomToastTop extends Component {
+  constructor(props) {
+    super(props)
+    this.offsetToast = new Animated.Value(-100)
+    this.state = {
+      content: '',
+      styleText: {},
+      style: {}
+    }
   }
 
   showToast(content, style = {}, styleText = {}) {
@@ -25,7 +27,7 @@ export default class CreateWalletScreen extends Component {
       styleText
     })
     setTimeout(() => HapticHandler.ImpactLight(), 100)
-    Animated.timing(this.state.offsetToast, {
+    Animated.timing(this.offsetToast, {
       toValue: 0,
       duration: 250
     }).start()
@@ -33,7 +35,7 @@ export default class CreateWalletScreen extends Component {
   }
 
   hideToast() {
-    Animated.timing(this.state.offsetToast, {
+    Animated.timing(this.offsetToast, {
       toValue: -100,
       duration: 250
     }).start()
@@ -46,7 +48,7 @@ export default class CreateWalletScreen extends Component {
         style={[styles.container, {
           transform: [
             {
-              translateY: this.state.offsetToast
+              translateY: this.offsetToast
             }
           ]
         }, style]}

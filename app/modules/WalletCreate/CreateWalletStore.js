@@ -2,6 +2,7 @@ import { observable, action, computed } from 'mobx'
 import MainStore from '../../AppStores/MainStore'
 import Wallet from '../../AppStores/stores/Wallet'
 import NavStore from '../../stores/NavStore'
+import NotificationStore from '../../AppStores/stores/Notification'
 
 class CreateWalletStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -19,6 +20,7 @@ class CreateWalletStore {
     const { title } = this
     Wallet.generateNew(ds, title, index).then(async (w) => {
       this.finished = true
+      NotificationStore.addWallet(title, w.address)
       await w.save()
       await MainStore.appState.syncWallets()
       MainStore.appState.autoSetSelectedWallet()

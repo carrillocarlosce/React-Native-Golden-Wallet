@@ -115,3 +115,8 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
       return true
     })
 }
+
+export const fetchTokenDetail = (address, contract) => {
+  const url = `http://wallet.skylab.vn/balance/${address}/${contract}`
+  return caller.get(url, {}, true)
+}

@@ -83,13 +83,29 @@ export default class Wallet {
     }, secureDS)
   }
 
-  static async importMnemonic(mnemonic, title, index, secureDS) {
+  static async unlockFromMnemonic(mnemonic, title, index, secureDS) {
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', Keystore.CoinType.ETH.path, index)
     const w = Starypto.fromPrivateKey(private_key)
     secureDS.savePrivateKey(w.address, private_key)
     return new Wallet({
       address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
     }, secureDS)
+  }
+
+  static async getWalletAtAddress(address) {
+    return await WalletDS.getWalletAtAddress(address)
+  }
+
+  static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
+    const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
+    const wallets = keys.map((k) => {
+      const w = Starypto.fromPrivateKey(k.private_key)
+      return new Wallet({
+        address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
+      })
+    })
+
+    return wallets
   }
 
   constructor(obj, secureDS) {
@@ -154,6 +170,10 @@ export default class Wallet {
     await WalletDS.deleteWallet(this.address)
   }
 
+  getTokenAtAddress(address) {
+    return this.tokens.find(t => t.address === address)
+  }
+
   async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
@@ -180,9 +200,8 @@ export default class Wallet {
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
-
-      // this.setTokens([tokenETH, ...tokens])
       this.update()
+      MainStore.appState.syncWallets()
       this.isFetchingBalance = false
       this.isRefresh = false
       this.loading = false

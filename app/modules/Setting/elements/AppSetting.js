@@ -23,9 +23,14 @@ export default class AppSetting extends Component {
     return MainStore.appState.config.network
   }
 
+  get currentStateEnableNotification() {
+    return MainStore.appState.enableNotification
+  }
+
   render() {
     const { onNetworkPress, onNotificationSwitch } = this.props
     const network = this.currentNetWork.replace(/^\w/, c => c.toUpperCase())
+    const enableNotif = this.currentStateEnableNotification
     return (
       <View style={styles.container}>
         <SettingItem
@@ -38,8 +43,8 @@ export default class AppSetting extends Component {
           mainText="Enable Notification"
           disable
           type="switch"
-          enableSwitch={false}
-          onSwitch={onNotificationSwitch}
+          enableSwitch={enableNotif}
+          onSwitch={() => { onNotificationSwitch(!enableNotif) }}
         />
       </View>
     )

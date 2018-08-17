@@ -19,8 +19,6 @@ import Hamburger from '../elements/HamburgerButton'
 import SettingScreen from '../../Setting/screen/SettingScreen'
 import HomeSendButton from '../elements/HomeSendButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import NotificationListenter from '../../../NotificationListener'
-import NotificationStore from '../../../stores/NotificationStore'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
@@ -45,7 +43,6 @@ export default class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
-    NotificationListenter.registerAppListener(this.props.navigation)
     FCM.setBadgeNumber(0)
     this.state = {
       translateY: new Animated.Value(0)
@@ -56,17 +53,13 @@ export default class HomeScreen extends Component {
     TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
-      if (!NotificationStore.isInitFromNotification) {
-        MainStore.gotoUnlock()
-        this.props.navigation.navigate('UnlockScreen', {
-          isLaunchApp: true,
-          onUnlock: () => {
-            this._gotoCreateWallet()
-          }
-        })
-      } else {
-        this.props.navigation.navigate('TransactionDetailScreen', NotificationStore.transactionFromNotif)
-      }
+      MainStore.gotoUnlock()
+      this.props.navigation.navigate('UnlockScreen', {
+        isLaunchApp: true,
+        onUnlock: () => {
+          this._gotoCreateWallet()
+        }
+      })
     }, 100)
   }
 
@@ -86,21 +79,6 @@ export default class HomeScreen extends Component {
       MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
     }
   }
-
-  // @computed get selectedWalletIndex() {
-  //   const wallet = MainStore.appState.selectedWallet
-  //   if (!wallet) return 0
-
-  //   console.warn(wallet)
-  //   let index = 0
-  //   MainStore.appState.wallets.forEach((w, i) => {
-  //     if (w.address === wallet.address) {
-  //       index = i
-  //     }
-  //   })
-
-  //   setTimeout(() => this._carousel && this._carousel.snapToItem(index, true), 0)
-  // }
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
@@ -303,14 +281,14 @@ export default class HomeScreen extends Component {
         <Animated.View
           style={{
             position: 'absolute',
-            top: 71 + marginTop,
+            top: 71,
             width,
-            height: height - 71 - marginTop,
+            height: height - 71 + marginTop,
             transform: [
               {
                 translateY: translateY.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [height - 56 + getStatusBarHeight(), Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
+                  outputRange: [height - 41 + marginTop, Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
                   extrapolate: 'clamp',
                   useNativeDriver: true
                 })

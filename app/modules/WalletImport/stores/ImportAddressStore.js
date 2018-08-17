@@ -4,6 +4,7 @@ import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import Checker from '../../../Handler/Checker'
 import constant from '../../../commons/constant'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportAddressStore {
   @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
@@ -25,6 +26,7 @@ export default class ImportAddressStore {
     const ds = MainStore.secureStorage
     const { address } = this
     const w = Wallet.importAddress(address, title, ds)
+    NotificationStore.addWallet(title, w.address)
     await w.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
@@ -63,6 +65,10 @@ export default class ImportAddressStore {
     return !this.finished && this.titleMap[title]
   }
 
+  @computed get titleIsEmpty() {
+    return this.customTitle.trim() === ''
+  }
+
   @computed get errorAddress() {
     if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
       return constant.INVALID_ADDRESS
@@ -75,6 +81,8 @@ export default class ImportAddressStore {
   }
 
   @computed get isReadyCreate() {
-    return this.address !== '' && this.title !== '' && this.errorAddress === '' && !this.isErrorTitle
+    return this.address !== '' && this.title !== '' &&
+      this.errorAddress === '' && !this.isErrorTitle &&
+      !this.titleIsEmpty
   }
 }
