@@ -14,7 +14,9 @@ import SettingStore from '../stores/SettingStore'
 import NavStore from '../../../stores/NavStore'
 import AppSetting from '../../Setting/elements/AppSetting'
 import AppSettingStore from '../stores/AppSettingStore'
+import LayoutUtils from '../../../commons/LayoutUtils'
 
+const statusBarHeight = LayoutUtils.getExtraTop()
 @observer
 export default class SettingScreen extends Component {
   static propTypes = {
@@ -101,7 +103,7 @@ export default class SettingScreen extends Component {
 
   renderAbount = () => (
     <FlatList
-      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? 80 : 50 }}
+      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? 90 + statusBarHeight : 50 }}
       ListHeaderComponent={<Text style={styles.titleText}>About</Text>}
       data={this.settingStore.dataAbout}
       keyExtractor={v => v.mainText}
@@ -114,6 +116,8 @@ export default class SettingScreen extends Component {
             subText={item.subText}
             onPress={item.onPress}
             iconRight={item.iconRight}
+            disable={item.disable}
+            showArrow={item.showArrow}
           />
         )
       }
@@ -134,7 +138,7 @@ export default class SettingScreen extends Component {
             onPress={this.onAddressBookPress}
           />
           {this.renderCommunity()}
-          {this.renderSecurity()}
+          {/* {this.renderSecurity()} */}
           {this.renderAppSetting()}
           {this.renderAbount()}
         </View>

@@ -33,7 +33,7 @@ export default class ChooseAddressScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.importMnemonicStore = MainStore.importStore.importMnemonicStore
+    this.importMnemonicStore = MainStore.importMnemonicStore
   }
 
   handleSelect = (w) => {

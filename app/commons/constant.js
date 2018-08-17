@@ -65,5 +65,8 @@ export default {
   INVALID_PRIVATE_KEY: 'Invalid Private Key',
   EXISTED_WALLET: 'Wallet was existed',
   ADDRESS_BOOK_EXISTED: 'Address Book was existed',
-  EXISTED_NAME_AB: 'Address Book name was existed'
+  EXISTED_NAME_AB: 'Address Book name was existed',
+
+  CREATE_WALLET_SUCCESS: 'Create Wallet Success',
+  IMPORT_WALLET_SUCCESS: 'Import Wallet Success'
 }

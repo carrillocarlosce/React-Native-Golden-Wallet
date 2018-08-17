@@ -43,7 +43,7 @@ export default class ConfirmScreen extends Component {
   }
 
   componentWillMount() {
-    MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
+    // MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
     MainStore.sendTransaction.confirmStore.estimateGas()
     MainStore.sendTransaction.confirmStore.validateAmount()
   }

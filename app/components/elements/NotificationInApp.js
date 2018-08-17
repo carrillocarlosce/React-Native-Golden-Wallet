@@ -12,13 +12,15 @@ import HapticHandler from '../../Handler/HapticHandler'
 import NotificationStore from '../../AppStores/stores/Notification'
 import constant from '../../commons/constant'
 import AppStyle from '../../commons/AppStyle'
+import LayoutUtils from '../../commons/LayoutUtils'
 
 const { width } = Dimensions.get('window')
+const { heightNotif } = LayoutUtils
 @observer
 export default class NotificationInApp extends Component {
   constructor(props) {
     super(props)
-    this.offsetToast = new Animated.Value(-100)
+    this.offsetToast = new Animated.Value(-heightNotif)
   }
 
   onPress = () => {
@@ -65,12 +67,12 @@ export default class NotificationInApp extends Component {
       toValue: 0,
       duration: 250
     }).start()
-    setTimeout(() => this.hideToast(), 4000)
+    setTimeout(() => this.hideToast(), 2500)
   }
 
   hideToast() {
     Animated.timing(this.offsetToast, {
-      toValue: -100,
+      toValue: -heightNotif,
       duration: 250
     }).start()
   }
@@ -101,7 +103,7 @@ export default class NotificationInApp extends Component {
 const styles = StyleSheet.create({
   container: {
     width,
-    height: 100,
+    height: heightNotif,
     backgroundColor: '#212637',
     alignItems: 'center',
     justifyContent: 'flex-end',

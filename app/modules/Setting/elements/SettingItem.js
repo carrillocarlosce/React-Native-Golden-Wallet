@@ -21,7 +21,8 @@ export default class SettingItem extends PureComponent {
     type: PropTypes.string,
     onSwitch: PropTypes.func,
     enableSwitch: PropTypes.bool,
-    disable: PropTypes.bool
+    disable: PropTypes.bool,
+    showArrow: PropTypes.bool
   }
 
   static defaultProps = {
@@ -32,12 +33,13 @@ export default class SettingItem extends PureComponent {
     type: 'normal',
     onSwitch: () => { },
     enableSwitch: false,
-    disable: false
+    disable: false,
+    showArrow: true
   }
 
   renderRightField = () => {
     const {
-      type, onSwitch, enableSwitch, subText
+      type, onSwitch, enableSwitch, subText, showArrow
     } = this.props
     if (type === 'switch') {
       return (
@@ -52,7 +54,9 @@ export default class SettingItem extends PureComponent {
     return (
       <View style={styles.rightField}>
         <Text style={[styles.text, { marginRight: 10 }]}>{subText}</Text>
-        <Image source={images.icon_indicator} />
+        {showArrow &&
+          <Image source={images.icon_indicator} />
+        }
       </View>
     )
   }

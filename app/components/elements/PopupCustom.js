@@ -13,6 +13,8 @@ import {
 } from 'react-native'
 // import PropTypes from 'prop-types'
 import AppStyle from '../../commons/AppStyle'
+import constant from '../../commons/constant'
+import MainStore from '../../AppStores/MainStore'
 
 export default class PopupCustom extends Component {
   state = {
@@ -32,7 +34,9 @@ export default class PopupCustom extends Component {
     valueInput: '',
     type: 'normal',
     isAddress: false,
-    offsetY: new Animated.Value(0)
+    offsetY: new Animated.Value(0),
+    fromWallet: false,
+    errorMsg: ''
   }
 
   componentWillMount() {
@@ -49,6 +53,26 @@ export default class PopupCustom extends Component {
   componentWillUnmount() {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
+  }
+
+  onChangeText = (text) => {
+    const { fromWallet } = this.state
+    const errorText = fromWallet ? constant.EXISTED_NAME : constant.EXISTED_NAME_AB
+    if (this.checkExistedName(fromWallet, text)) {
+      this.setState({ valueInput: text, errorMsg: errorText })
+    } else {
+      this.setState({ valueInput: text, errorMsg: '' })
+    }
+  }
+
+  checkExistedName(fromWallet, text) {
+    if (text === this.selectedTitle) {
+      return false
+    }
+    if (fromWallet) {
+      return MainStore.appState.wallets.find(w => w.title === text)
+    }
+    return MainStore.appState.addressBooks.find(ab => ab.title === text)
   }
 
   _runKeyboardAnim(toValue) {
@@ -84,7 +108,8 @@ export default class PopupCustom extends Component {
         })
       }
     }
-  ], content, type = 'normal', isAddress = false, valueInput = '') {
+  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, selectedTitle) {
+    this.selectedTitle = selectedTitle
     this.setState({
       visible: true,
       content,
@@ -92,7 +117,8 @@ export default class PopupCustom extends Component {
       title,
       type,
       isAddress,
-      valueInput
+      valueInput,
+      fromWallet
     })
   }
 
@@ -134,7 +160,7 @@ export default class PopupCustom extends Component {
 
   render() {
     const {
-      visible, title, content, type, valueInput, isAddress
+      visible, title, content, type, valueInput, isAddress, errorMsg
     } = this.state
     const contentPaddingVertical = type === 'input'
       ? {
@@ -191,19 +217,22 @@ export default class PopupCustom extends Component {
                   renderContent
                 }
                 {type === 'input' &&
-                  <TextInput
-                    autoFocus
-                    autoCorrect={false}
-                    style={styles.textInput}
-                    underlineColorAndroid="transparent"
-                    onChangeText={(text) => {
-                      this.setState({ valueInput: text })
-                    }}
-                    keyboardAppearance="dark"
-                    placeholder=""
-                    placeholderTextColor="#4A4A4A"
-                    value={valueInput}
-                  />
+                  <View>
+                    <TextInput
+                      autoFocus
+                      autoCorrect={false}
+                      style={styles.textInput}
+                      underlineColorAndroid="transparent"
+                      onChangeText={this.onChangeText}
+                      keyboardAppearance="dark"
+                      placeholder=""
+                      placeholderTextColor="#4A4A4A"
+                      value={valueInput}
+                    />
+                    {errorMsg !== '' &&
+                      <Text style={styles.errorText}>{errorMsg}</Text>
+                    }
+                  </View>
                 }
               </View>
               <View style={styles.buttonField}>
@@ -276,5 +305,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
     backgroundColor: '#121734'
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginTop: 10
   }
 })

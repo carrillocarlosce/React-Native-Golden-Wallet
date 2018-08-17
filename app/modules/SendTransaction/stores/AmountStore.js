@@ -58,6 +58,12 @@ class AmountStore {
     return isUSD ? this.amountSubTextBigNum : this.amountTextBigNum
   }
 
+  @computed get fee() {
+    const { fee } = MainStore.sendTransaction.confirmStore
+    const { isUSD } = this.amountText
+    return isUSD ? fee.times(this.rate) : fee
+  }
+
   @computed get amountTextString() {
     const array = this.amountText.data.map((item) => { return item.text })
     return array.join('').replace(/,/g, '') || '0' // String
@@ -98,8 +104,8 @@ class AmountStore {
 
   @computed get checkMaxBalanceValid() {
     return (this.amountText.isUSD
-      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD)
-      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto))
+      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(this.fee))
+      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(this.fee)))
   }
 
   @computed get checkSmallSize() {
@@ -146,7 +152,9 @@ class AmountStore {
 
   @action max() {
     const { isUSD } = this.amountText
-    const value = isUSD ? Helper.formatUSD(this.amountUSDString, true, 100000000) : Helper.formatETH(this.amountCryptoString, true)
+    const value = isUSD
+      ? Helper.formatUSD(this.amountUSD.minus(this.fee).toString(10), true, 100000000)
+      : Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true)
     const dataSplit = value.toString().split('.')
     const integer = dataSplit[0]
     const decimal = dataSplit[1] ? dataSplit[1] : ''

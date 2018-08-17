@@ -200,7 +200,7 @@ class AppState {
 
     this.checkBalanceJobID = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
-      this.getRateETHDollar()
+      // this.getRateETHDollar()
       this.startCheckBalanceJob()
     }, AppState.TIME_INTERVAL)
   }

@@ -2,8 +2,8 @@ import { observable, action } from 'mobx'
 import { Platform, Linking, Alert } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import * as StoreReview from 'react-native-store-review'
-import constant from '../../../commons/constant'
-import NavStore from '../../../stores/NavStore'
+import constant from '../../commons/constant'
+import NavStore from '../../stores/NavStore'
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
 const PLAY_STORE_LINK = 'market://details?id=app.starfish'
@@ -17,19 +17,19 @@ export default class SettingStore {
     },
     {
       mainText: 'Follow Twitter',
-      onPress: () => { Linking.openURL('https://twitter.com/goldenwallet_io') },
+      onPress: () => { },
+      iconRight: false
+    },
+    {
+      mainText: 'Medium',
+      onPress: () => { },
+      iconRight: false
+    },
+    {
+      mainText: 'Request Feature',
+      onPress: () => { },
       iconRight: false
     }
-    // {
-    //   mainText: 'Medium',
-    //   onPress: () => { },
-    //   iconRight: false
-    // },
-    // {
-    //   mainText: 'Request Feature',
-    //   onPress: () => { },
-    //   iconRight: false
-    // }
   ]
 
   @observable dataSecurity = [
@@ -50,7 +50,7 @@ export default class SettingStore {
     },
     {
       mainText: 'Source Code',
-      onPress: () => { Linking.openURL('https://github.com/goldennetwork/golden-wallet-react-native') },
+      onPress: () => { },
       subText: 'Github'
     },
     {
@@ -60,9 +60,7 @@ export default class SettingStore {
     {
       mainText: 'App Version',
       onPress: () => { },
-      subText: DeviceInfo.getVersion(),
-      disable: true,
-      showArrow: false
+      subText: DeviceInfo.getVersion()
     }
   ]
 
