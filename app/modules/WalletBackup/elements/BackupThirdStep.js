@@ -48,6 +48,7 @@ export default class BackupThirdStep extends Component {
       buttonStates,
       listKeywordRandom
     } = obj
+    console.log(obj)
     return (
       <ScrollView>
         <View style={{ flex: 1 }}>
