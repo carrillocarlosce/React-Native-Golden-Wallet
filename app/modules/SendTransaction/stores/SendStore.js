@@ -100,7 +100,7 @@ class SendStore {
     NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.navigator.dispatch(NavigationActions.back())
     // MainStore.clearSendStore()
-    NavStore.popupCustom.show('Send success')
+    NavStore.showToastTop('Your transaction has been pending')
   }
 
   _onSendFail = (err) => {

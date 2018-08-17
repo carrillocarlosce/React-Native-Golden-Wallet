@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { randomBytes } from 'react-native-randombytes'
+import * as Keychain from 'react-native-keychain'
 import Starypto from '../../../Libs/react-native-starypto'
 import MnemonicDS from './SecureMnemonicDS'
 import PrivateKeyDS from './SecurePrivateKeyDS'
@@ -17,7 +18,8 @@ export default class SecureDS {
 
   // Return new SecureDS
   static async getInstance(pincode) {
-    const passCipher = await AsyncStorage.getItem(dataKey)
+    const keychain = await Keychain.getGenericPassword()
+    const passCipher = keychain.password
     const iv = await AsyncStorage.getItem(IVKey)
 
     try {
@@ -34,7 +36,10 @@ export default class SecureDS {
   }
 
   randomKey = (length = 16) => randomBytes(length).toString('hex').slice(0, length)
-  _getPassword = () => AsyncStorage.getItem(dataKey) // cipher
+  _getPassword = async () => {
+    const keychain = await Keychain.getGenericPassword()
+    return keychain ? keychain.password : null
+  }// cipher
   getIV = async () => {
     if (this.iv !== null) return this.iv
 
@@ -50,7 +55,7 @@ export default class SecureDS {
 
   static forceSavePassword(password, iv, pincode) {
     const randomStrEncrypted = Starypto.encryptString(password, pincode, iv, 'aes-256-cbc')
-    return AsyncStorage.setItem(dataKey, randomStrEncrypted)
+    return Keychain.setGenericPassword(dataKey, randomStrEncrypted)
   }
 
   static forceSaveIV(iv) {
@@ -65,7 +70,8 @@ export default class SecureDS {
     const password = this.randomKey()
 
     const randomStrEncrypted = Starypto.encryptString(password, this.pincode, iv, 'aes-256-cbc')
-    AsyncStorage.setItem(dataKey, randomStrEncrypted)
+    // AsyncStorage.setItem(dataKey, randomStrEncrypted)
+    Keychain.setGenericPassword(dataKey, randomStrEncrypted)
     return password
   }
 
@@ -76,6 +82,7 @@ export default class SecureDS {
   derivePass = async () => {
     const passCipher = await this._getPassword()
     const iv = await this.getIV()
+    console.log(passCipher)
 
     if (!passCipher) return { password: this._deriveNew(iv), iv }
     return { password: this._deriveOld(iv, passCipher), iv }
@@ -117,7 +124,8 @@ export default class SecureDS {
     if (!this.iv) await this.getIV()
     const { iv, password } = await this.derivePass()
 
-    AsyncStorage.removeItem(dataKey)
+    // AsyncStorage.removeItem(dataKey)
+    Keychain.resetGenericPassword()
     AsyncStorage.removeItem(IVKey)
 
     await new PrivateKeyDS(password, iv).clearAllData()

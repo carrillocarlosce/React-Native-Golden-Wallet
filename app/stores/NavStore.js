@@ -54,7 +54,7 @@ class ObservableNavStore {
   }
 
   @action lockScreen(params, shouldShowCancel = false) {
-    console.log(this.preventOpenUnlockScreen)
+    // console.log(this.preventOpenUnlockScreen)
     if (this.currentRouteName === 'UnlockScreen' ||
       (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && this.preventOpenUnlockScreen)) {
       this.preventOpenUnlockScreen = false

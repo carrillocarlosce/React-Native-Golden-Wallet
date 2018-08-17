@@ -6,7 +6,6 @@ import AppDS from './DataSource/AppDS'
 import appState from './AppState'
 import UnlockStore from '../modules/Unlock/UnlockStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
-import AddressBookStore from '../modules/AddressBook/AddressBookStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
 
 // do not allow change state outside action function
@@ -57,6 +56,7 @@ class MainStore {
     this.backupStore = new BackupStore()
     const mnemonic = await this.secureStorage.deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
+    this.backupStore.setup()
   }
 }
 

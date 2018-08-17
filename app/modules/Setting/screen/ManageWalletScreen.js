@@ -180,7 +180,7 @@ export default class ListWalletScreen extends Component {
           <NavigationHeader
             style={{ marginTop: 20 + marginTop }}
             headerItem={{
-              title: 'Wallets',
+              title: 'Manage Wallets',
               icon: null,
               button: images.backButton
             }}

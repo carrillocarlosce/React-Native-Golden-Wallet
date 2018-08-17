@@ -17,19 +17,19 @@ export default class SettingStore {
     },
     {
       mainText: 'Follow Twitter',
-      onPress: () => { },
-      iconRight: false
-    },
-    {
-      mainText: 'Medium',
-      onPress: () => { },
-      iconRight: false
-    },
-    {
-      mainText: 'Request Feature',
-      onPress: () => { },
+      onPress: () => { Linking.openURL('https://twitter.com/goldenwallet_io') },
       iconRight: false
     }
+    // {
+    //   mainText: 'Medium',
+    //   onPress: () => { },
+    //   iconRight: false
+    // },
+    // {
+    //   mainText: 'Request Feature',
+    //   onPress: () => { },
+    //   iconRight: false
+    // }
   ]
 
   @observable dataSecurity = [
@@ -50,7 +50,7 @@ export default class SettingStore {
     },
     {
       mainText: 'Source Code',
-      onPress: () => { },
+      onPress: () => { Linking.openURL('https://github.com/goldennetwork/golden-wallet-react-native') },
       subText: 'Github'
     },
     {

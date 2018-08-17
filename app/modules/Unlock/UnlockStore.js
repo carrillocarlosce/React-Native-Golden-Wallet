@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx'
+import * as Keychain from 'react-native-keychain'
 import { Animated } from 'react-native'
 import MainStore from '../../AppStores/MainStore'
 import HapticHandler from '../../Handler/HapticHandler'
@@ -61,12 +62,11 @@ class UnlockStore {
       this._handleErrorPin()
       return
     }
-    NavStore.showLoading()
     const decriptData = await MigrateData.decrypData(pincode, iv, true)
     if (!decriptData) {
       this._handleErrorPin()
-      NavStore.hideLoading()
     } else {
+      NavStore.showLoading()
       const { appState } = MainStore
       appState.setHasPassword(true)
       appState.save()
@@ -109,6 +109,7 @@ class UnlockStore {
     appState.setHasPassword(true)
     appState.save()
     const ds = new SecureDS(pincode)
+    await Keychain.resetGenericPassword()
     ds.derivePass()
     HapticHandler.NotificationSuccess()
     MainStore.setSecureStorage(pincode)
