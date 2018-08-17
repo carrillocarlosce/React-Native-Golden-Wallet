@@ -71,7 +71,11 @@ export default class ListWalletScreen extends Component {
         }
       ],
       'Enter your wallet name',
-      'input'
+      'input',
+      false,
+      '',
+      true,
+      this.selectedWallet.title
     )
   }
 

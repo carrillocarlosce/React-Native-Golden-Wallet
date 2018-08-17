@@ -60,7 +60,9 @@ export default class SettingStore {
     {
       mainText: 'App Version',
       onPress: () => { },
-      subText: DeviceInfo.getVersion()
+      subText: DeviceInfo.getVersion(),
+      disable: true,
+      showArrow: false
     }
   ]
 

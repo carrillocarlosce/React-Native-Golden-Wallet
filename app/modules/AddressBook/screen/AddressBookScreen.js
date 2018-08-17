@@ -67,7 +67,11 @@ export default class AddressBookScreen extends Component {
         }
       ],
       'Enter your address name',
-      'input'
+      'input',
+      false,
+      '',
+      false,
+      this.selectedAB.title
     )
   }
 
