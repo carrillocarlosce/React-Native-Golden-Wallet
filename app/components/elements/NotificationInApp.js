@@ -45,6 +45,20 @@ export default class NotificationInApp extends Component {
     return notif.content
   }
 
+  get shouldShowNotifInApp() {
+    const { notif, isInitFromNotification, appState } = NotificationStore
+    if (!notif) {
+      return false
+    }
+    if (isInitFromNotification) {
+      return false
+    }
+    if (appState === 'active') {
+      return true
+    }
+    return false
+  }
+
   showToast(content, style = {}, styleText = {}) {
     setTimeout(() => HapticHandler.ImpactLight(), 100)
     Animated.timing(this.offsetToast, {
@@ -62,9 +76,8 @@ export default class NotificationInApp extends Component {
   }
 
   render() {
-    const { notif } = NotificationStore
-    const { styleText, content } = this
-    if (notif && NotificationStore.appState === 'active') {
+    const { styleText, content, shouldShowNotifInApp } = this
+    if (shouldShowNotifInApp) {
       this.showToast()
     }
     return (
