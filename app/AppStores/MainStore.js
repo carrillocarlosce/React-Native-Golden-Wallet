@@ -29,8 +29,8 @@ class MainStore {
 
   // Start
   @action async startApp() {
-    PushNotificationHelper.init()
     await AppDS.readAppData()
+    PushNotificationHelper.init()
     appState.startAllServices()
   }
 

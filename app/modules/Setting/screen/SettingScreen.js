@@ -4,7 +4,8 @@ import {
   StyleSheet,
   ScrollView,
   Text,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import AppStyle from '../../../commons/AppStyle'
@@ -102,7 +103,7 @@ export default class SettingScreen extends Component {
 
   renderAbount = () => (
     <FlatList
-      style={{ flex: 1, marginBottom: 30 }}
+      style={{ flex: 1, marginBottom: Platform.OS === 'ios' ? 80 : 50 }}
       ListHeaderComponent={<Text style={styles.titleText}>About</Text>}
       data={this.settingStore.dataAbout}
       keyExtractor={v => v.mainText}

@@ -1,4 +1,5 @@
 import { observable, action, computed } from 'mobx'
+import { Platform } from 'react-native'
 import WalletToken from './WalletToken'
 import Wallet from './Wallet'
 import MainStore from '../MainStore'
@@ -9,6 +10,7 @@ import API from '../../api'
 class Notification {
   @observable currentNotif = null
   @observable tokenFromNotif = null
+  isInitFromNotification = false
   lastedWalletAddress = null
   lastedTokenAddress = null
   deviceToken = null
@@ -68,10 +70,19 @@ class Notification {
     })
   }
 
+  checkExistedWallet(address) {
+    const wallet = MainStore.appState.wallets.find(w => w.address === address)
+    if (wallet) {
+      return true
+    }
+    return false
+  }
+
   @action setCurrentNotif = (notif) => { this.currentNotif = notif }
   @action setDeviceToken = (dt) => { this.deviceToken = dt }
   @action setTokenFromNotif = () => {
     const { selectedWallet, selectedToken } = MainStore.appState
+
     if (!this.notif) {
       return
     }
@@ -81,10 +92,14 @@ class Notification {
     if (!this.lastedTokenAddress && selectedToken) {
       this.lastedTokenAddress = selectedToken.address
     }
+
     const { address, contract } = this.notif
     MainStore.appState.setselectedToken(null)
     WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
       const wallet = await Wallet.getWalletAtAddress(address)
+      if (!wallet) {
+        return
+      }
       MainStore.appState.setSelectedWallet(wallet)
       MainStore.appState.setselectedToken(token)
       token.fetchTransactions(false)
@@ -110,6 +125,18 @@ class Notification {
     NavStore.closeTransactionDetail()
     setTimeout(() => {
       this.setTokenFromNotif()
+      if (this.notif && !this.checkExistedWallet(this.notif.address)) {
+        NavStore.popupCustom.show('Wallet not Found')
+        if (this.isInitFromNotification) {
+          NavStore.lockScreen({
+            onUnlock: (pincode) => {
+              this.isInitFromNotification = false
+              MainStore.setSecureStorage(pincode)
+            }
+          })
+        }
+        return
+      }
       NavStore.pushToScreen('TransactionListScreen', { fromNotif: true })
     }, 500)
   }
@@ -120,8 +147,11 @@ class Notification {
       return null
     }
     const tx = JSON.parse(currentNotif.tx)
+    const content = Platform.OS === 'ios'
+      ? currentNotif.aps.alert.body
+      : currentNotif.fcm.body
     return {
-      ...tx, content: currentNotif.fcm.body, address: currentNotif.address, contract: currentNotif.contract
+      ...tx, content, address: currentNotif.address, contract: currentNotif.contract
     }
   }
 }

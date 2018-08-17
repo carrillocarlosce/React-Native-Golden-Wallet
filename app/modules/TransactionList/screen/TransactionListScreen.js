@@ -20,6 +20,7 @@ import EmptyList from '../elements/EmptyList'
 import AppState from '../../../AppStores/AppState'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import NavStore from '../../../stores/NavStore'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -35,6 +36,14 @@ export default class TransactionListScreen extends Component {
   }
 
   async componentDidMount() {
+    if (NotificationStore.isInitFromNotification) {
+      NavStore.lockScreen({
+        onUnlock: (pincode) => {
+          NotificationStore.isInitFromNotification = false
+          MainStore.setSecureStorage(pincode)
+        }
+      })
+    }
     if (this.selectedToken) {
       this.selectedToken.fetchTransactions(false)
     }

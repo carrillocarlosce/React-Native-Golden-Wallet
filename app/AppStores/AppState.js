@@ -41,7 +41,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  @observable enableNotification = false
+  @observable enableNotification = true
 
   static TIME_INTERVAL = 20000
 
@@ -62,7 +62,10 @@ class AppState {
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  @action setEnableNotification = (isEnable) => { this.enableNotification = isEnable }
+  @action setEnableNotification = (isEnable) => {
+    this.enableNotification = isEnable
+    this.save()
+  }
 
   @action async syncWallets() {
     await WalletDS.getWallets().then((_wallets) => {
@@ -139,6 +142,7 @@ class AppState {
     const data = orgData
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
+    this.enableNotification = data.enableNotification
     this.currentWalletIndex = data.currentWalletIndex
     const wallets = await WalletDS.getWallets()
     const addressBooks = await AddressBookDS.getAddressBooks()
@@ -228,7 +232,8 @@ class AppState {
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
       didBackup: this.didBackup,
-      gasPriceEstimate: this.gasPriceEstimate
+      gasPriceEstimate: this.gasPriceEstimate,
+      enableNotification: this.enableNotification
     }
   }
 }
