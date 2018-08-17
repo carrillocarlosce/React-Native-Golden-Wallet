@@ -4,7 +4,8 @@ import {
   Image,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native'
 import PropTypes from 'prop-types'
 import images from './../../commons/images'
@@ -16,6 +17,7 @@ export default class NavigationHeader extends Component {
     containerStyle: PropTypes.object,
     headerItem: PropTypes.object,
     titleStyle: PropTypes.object,
+    rightView: PropTypes.object,
     action: PropTypes.func
   }
 
@@ -27,6 +29,10 @@ export default class NavigationHeader extends Component {
       icon: null,
       button: images.backButton
     },
+    rightView: {
+      rightViewIcon: null,
+      rightViewAction: () => { }
+    },
     titleStyle: {},
     action: () => { }
   }
@@ -37,6 +43,7 @@ export default class NavigationHeader extends Component {
       containerStyle,
       titleStyle,
       headerItem,
+      rightView,
       action
     } = this.props
     const {
@@ -44,6 +51,10 @@ export default class NavigationHeader extends Component {
       icon,
       button
     } = headerItem
+    const {
+      rightViewIcon,
+      rightViewAction = () => { }
+    } = rightView
     return (
       <TouchableOpacity
         style={containerStyle}
@@ -69,6 +80,32 @@ export default class NavigationHeader extends Component {
             >
               {title}
             </Text>
+          }
+          {rightViewIcon &&
+            <TouchableWithoutFeedback
+              onPress={rightViewAction}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  position: 'absolute',
+                  right: 10,
+                  bottom: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center'
+                }}
+              >
+                <Image
+                  style={{
+                    width: 15,
+                    height: 30
+                  }}
+                  source={rightViewIcon}
+                />
+              </View>
+            </TouchableWithoutFeedback>
           }
         </View>
       </TouchableOpacity>

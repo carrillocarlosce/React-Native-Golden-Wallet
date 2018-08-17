@@ -119,6 +119,17 @@ export default class AdressInputScreen extends Component {
     confirmModal && confirmModal.open()
   }
 
+  gotoScan = () => {
+    const { navigation } = this.props
+    setTimeout(() => {
+      navigation.navigate('ScanQRCodeScreen', {
+        title: 'Scan QR Code',
+        marginTop,
+        returnData: this.returnData.bind(this)
+      })
+    }, 300)
+  }
+
   clearText = () => {
     const { addressInputStore } = MainStore.sendTransaction
     addressInputStore.setAddress('')
@@ -143,8 +154,9 @@ export default class AdressInputScreen extends Component {
         <TouchableOpacity
           onPress={() => {
             Keyboard.dismiss()
-            const { qrCodeModal } = MainStore.sendTransaction.addressInputStore
-            qrCodeModal && qrCodeModal.open()
+            // const { qrCodeModal } = MainStore.sendTransaction.addressInputStore
+            // qrCodeModal && qrCodeModal.open()
+            this.gotoScan()
           }}
         >
           <View
@@ -270,7 +282,7 @@ export default class AdressInputScreen extends Component {
     )
   }
 
-  _onCompleted = (address) => {
+  returnData = (address) => {
     const { addressInputStore } = MainStore.sendTransaction
     const resChecker = Checker.checkAddress(address)
     if (!resChecker || resChecker.length === 0) {
@@ -421,7 +433,7 @@ export default class AdressInputScreen extends Component {
           </View>
         </TouchableWithoutFeedback>
         {this._renderAddressModal(addressInputStore)}
-        {this._renderQRCodeModal()}
+        {/* {this._renderQRCodeModal()} */}
         {this._renderConfirmModal()}
       </View>
     )

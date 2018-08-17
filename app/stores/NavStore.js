@@ -27,6 +27,7 @@ class ObservableNavStore {
   @observable.ref lock = null
   @observable.ref currentRouteName = ''
   @observable.ref loading = null
+  @observable.ref preventOpenUnlockScreen = false
 
   showLoading() {
     this.loading && this.loading._show()
@@ -53,8 +54,10 @@ class ObservableNavStore {
   }
 
   @action lockScreen(params, shouldShowCancel = false) {
-    if (this.currentRouteName === '' || this.currentRouteName === 'UnlockScreen' ||
-      (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen')) {
+    // console.log(this.preventOpenUnlockScreen)
+    if (this.currentRouteName === 'UnlockScreen' ||
+      (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && this.preventOpenUnlockScreen)) {
+      this.preventOpenUnlockScreen = false
       return
     }
 
