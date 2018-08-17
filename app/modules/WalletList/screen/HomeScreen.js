@@ -129,7 +129,7 @@ export default class HomeScreen extends Component {
         }}
         onCopy={() => {
           Clipboard.setString(MainStore.appState.selectedWallet.address)
-          NavStore.showToastTop('Copied', {}, { color: AppStyle.mainColor })
+          NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
         }}
       />
     )
@@ -284,7 +284,7 @@ export default class HomeScreen extends Component {
         <Animated.View
           style={{
             position: 'absolute',
-            top: Platform.OS === 'ios' ? 101 : 71,
+            top: Platform.OS === 'ios' ? 81 + marginTop : 71,
             width,
             height: height - 71 + marginTop,
             transform: [

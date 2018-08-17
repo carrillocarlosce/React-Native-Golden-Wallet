@@ -24,7 +24,8 @@ import AnimationInput from '../elements/AnimationInput'
 import SelectedCoinScreen from './SelectedCoinScreen'
 import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
-import { BigNumber } from 'bignumber.js'
+import Config from '../../../AppStores/stores/Config'
+import NavStore from '../../../stores/NavStore'
 
 // const BN = require('bn.js')
 
@@ -71,6 +72,11 @@ export default class SendTransactionScreen extends Component {
   constructor(props) {
     super(props)
     this.amountStore = MainStore.sendTransaction.amountStore
+    const currentNetwork = MainStore.appState.config.network
+    if (currentNetwork !== Config.networks.mainnet) {
+      const network = currentNetwork.replace(/^\w/, c => c.toUpperCase())
+      NavStore.showToastTop(`You're on the ${network} Testnet.`, {}, { color: AppStyle.mainColor })
+    }
   }
 
   _onKeyPress = debounce((text) => {
@@ -250,12 +256,6 @@ export default class SendTransactionScreen extends Component {
   }
 
   render() {
-    const {
-      data,
-      subData,
-      isUSD,
-      isHadPoint
-    } = this.amountStore.getAmountText
     // console.log(new BigNumber('111111.12e+18').toString(10))
     return (
       <SafeAreaView

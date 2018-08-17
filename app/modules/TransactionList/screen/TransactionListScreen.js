@@ -37,15 +37,27 @@ export default class TransactionListScreen extends Component {
 
   async componentDidMount() {
     if (NotificationStore.isInitFromNotification) {
-      NavStore.lockScreen({
-        onUnlock: (pincode) => {
-          NotificationStore.isInitFromNotification = false
-          MainStore.setSecureStorage(pincode)
-        }
-      })
+      setTimeout(() => {
+        NavStore.lockScreen({
+          onUnlock: (pincode) => {
+            NotificationStore.isInitFromNotification = false
+            MainStore.setSecureStorage(pincode)
+          }
+        })
+      }, 100)
     }
     if (this.selectedToken) {
       this.selectedToken.fetchTransactions(false)
+    }
+  }
+
+  componentWillUnmount() {
+    const { navigation } = this.props
+    const { params } = navigation.state
+    const { notif } = NotificationStore
+    if (notif && params) {
+      NotificationStore.resetSelectedAtAppState()
+      NotificationStore.setCurrentNotif(null)
     }
   }
 
@@ -68,12 +80,6 @@ export default class TransactionListScreen extends Component {
 
   goBack = async () => {
     const { navigation } = this.props
-    const { params } = navigation.state
-    const { notif } = NotificationStore
-    if (notif && params) {
-      await NotificationStore.resetSelectedAtAppState()
-      NotificationStore.setCurrentNotif(null)
-    }
     navigation.goBack()
   }
 
