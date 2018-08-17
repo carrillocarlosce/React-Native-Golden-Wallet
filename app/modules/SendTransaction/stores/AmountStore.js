@@ -58,6 +58,12 @@ class AmountStore {
     return isUSD ? this.amountSubTextBigNum : this.amountTextBigNum
   }
 
+  @computed get fee() {
+    const { fee } = MainStore.sendTransaction.confirmStore
+    const { isUSD } = this.amountText
+    return isUSD ? fee.times(this.rate) : fee
+  }
+
   @computed get amountTextString() {
     const array = this.amountText.data.map((item) => { return item.text })
     return array.join('').replace(/,/g, '') || '0' // String
@@ -73,8 +79,6 @@ class AmountStore {
 
   @computed get amountHeaderString() {
     const { isUSD } = this.amountText
-    const { fee } = MainStore.sendTransaction.confirmStore
-    console.log(fee.toString(10))
     return isUSD
       ? `${this.prefix}${Helper.formatUSD((this.amountUSD.minus(this.amountTextBigNum).toString(10)), true)}`
       : `${Helper.formatETH((this.amountCrypto.minus(this.amountTextBigNum).toString(10)), true)} ${this.postfix}`
@@ -99,10 +103,9 @@ class AmountStore {
   }
 
   @computed get checkMaxBalanceValid() {
-    const { fee } = MainStore.sendTransaction.confirmStore
     return (this.amountText.isUSD
-      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(fee))
-      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(fee)))
+      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(this.fee))
+      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(this.fee)))
   }
 
   @computed get checkSmallSize() {
@@ -149,10 +152,9 @@ class AmountStore {
 
   @action max() {
     const { isUSD } = this.amountText
-    const { fee } = MainStore.sendTransaction.confirmStore
     const value = isUSD
-      ? Helper.formatUSD(this.amountUSD.minus(fee).toString(10), true, 100000000)
-      : Helper.formatETH(this.amountCrypto.minus(fee).toString(10), true)
+      ? Helper.formatUSD(this.amountUSD.minus(this.fee).toString(10), true, 100000000)
+      : Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true)
     const dataSplit = value.toString().split('.')
     const integer = dataSplit[0]
     const decimal = dataSplit[1] ? dataSplit[1] : ''
