@@ -73,6 +73,8 @@ class AmountStore {
 
   @computed get amountHeaderString() {
     const { isUSD } = this.amountText
+    const { fee } = MainStore.sendTransaction.confirmStore
+    console.log(fee.toString(10))
     return isUSD
       ? `${this.prefix}${Helper.formatUSD((this.amountUSD.minus(this.amountTextBigNum).toString(10)), true)}`
       : `${Helper.formatETH((this.amountCrypto.minus(this.amountTextBigNum).toString(10)), true)} ${this.postfix}`
@@ -97,9 +99,10 @@ class AmountStore {
   }
 
   @computed get checkMaxBalanceValid() {
+    const { fee } = MainStore.sendTransaction.confirmStore
     return (this.amountText.isUSD
-      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD)
-      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto))
+      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(fee))
+      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(fee)))
   }
 
   @computed get checkSmallSize() {
@@ -146,7 +149,10 @@ class AmountStore {
 
   @action max() {
     const { isUSD } = this.amountText
-    const value = isUSD ? Helper.formatUSD(this.amountUSDString, true, 100000000) : Helper.formatETH(this.amountCryptoString, true)
+    const { fee } = MainStore.sendTransaction.confirmStore
+    const value = isUSD
+      ? Helper.formatUSD(this.amountUSD.minus(fee).toString(10), true, 100000000)
+      : Helper.formatETH(this.amountCrypto.minus(fee).toString(10), true)
     const dataSplit = value.toString().split('.')
     const integer = dataSplit[0]
     const decimal = dataSplit[1] ? dataSplit[1] : ''
