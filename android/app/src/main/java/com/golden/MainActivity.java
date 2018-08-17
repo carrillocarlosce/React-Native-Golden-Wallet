@@ -28,7 +28,9 @@ public class MainActivity extends ReactActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         SplashScreen.show(this, true);
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 
     @Override
