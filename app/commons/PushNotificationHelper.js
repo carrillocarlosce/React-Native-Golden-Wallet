@@ -7,7 +7,6 @@ import MainStore from '../AppStores/MainStore'
 class PushNotificationHelper {
   init() {
     FCM.getFCMToken().then((token) => {
-      console.log(token)
       NotificationStore.setDeviceToken(token)
     })
 
@@ -27,36 +26,39 @@ class PushNotificationHelper {
     })
 
     FCM.on(FCMEvent.RefreshToken, (token) => {
+      if (NotificationStore.deviceToken === token) {
+        return
+      }
       NotificationStore.setDeviceToken(token)
       NotificationStore.addWallets()
     })
 
     FCM.removeAllDeliveredNotifications()
 
-    Permissions.check('notification').then((response) => {
-      if (response === 'authorized') {
-        if (MainStore.appState.enableNotification) {
-          MainStore.appState.setEnableNotification(true)
-        }
-      } else if (response === 'undetermined') {
-        this.requestPermission().then((res) => {
-          if (res === 'authorized') {
-            if (MainStore.appState.enableNotification) {
-              MainStore.appState.setEnableNotification(true)
-            }
-          } else {
-            MainStore.appState.setEnableNotification(false)
-          }
-        })
-      } else {
-        MainStore.appState.setEnableNotification(false)
-      }
-    }).catch((e) => {
-      console.log(e)
-    })
-
     if (Platform.OS === 'android') {
       MainStore.appState.setEnableNotification(true)
+    } else {
+      Permissions.check('notification').then((response) => {
+        if (response === 'authorized') {
+          if (MainStore.appState.enableNotification) {
+            MainStore.appState.setEnableNotification(true)
+          }
+        } else if (response === 'undetermined') {
+          this.requestPermission().then((res) => {
+            if (res === 'authorized') {
+              if (MainStore.appState.enableNotification) {
+                MainStore.appState.setEnableNotification(true)
+              }
+            } else {
+              MainStore.appState.setEnableNotification(false)
+            }
+          })
+        } else {
+          MainStore.appState.setEnableNotification(false)
+        }
+      }).catch((e) => {
+        console.log(e)
+      })
     }
   }
 
