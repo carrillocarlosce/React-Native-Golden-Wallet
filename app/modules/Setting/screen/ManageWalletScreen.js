@@ -52,7 +52,7 @@ export default class ListWalletScreen extends Component {
 
   onEdit = () => {
     NavStore.popupCustom.show(
-      'Wallet',
+      'Wallet Name',
       [
         {
           text: 'Cancel',
