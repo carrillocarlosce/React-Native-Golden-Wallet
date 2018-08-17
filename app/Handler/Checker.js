@@ -1,6 +1,6 @@
 class Checker {
   static checkAddress(address) {
-    const regx = /0x[0-9A-Fa-f]{40}/
+    const regx = /^0x[0-9A-Fa-f]{40}$/
     return address.match(regx)
   }
   static checkPrivateKey(key) {
