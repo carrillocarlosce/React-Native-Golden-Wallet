@@ -420,7 +420,7 @@ export default class ScanQRCodeScreen extends PureComponent {
                 <Text
                   style={styles.description}
                 >
-                  Automatically Scan The QR Code Into The Frame
+                  Automatically scan the QR code into the frame
                 </Text>
               </View>
             </RNCamera>
