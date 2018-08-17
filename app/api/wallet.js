@@ -62,6 +62,7 @@ export const fetchTransactions = (addressStr, data, page = 1) => {
  */
 export const checkStatusTransaction = (txHash) => {
   let url = 'https://api.etherscan.io/api'
+
   const apikey = 'SVUJNQSR2APDFX89JJ1VKQU4TKMB6W756M'
   if (appState.config.network !== NetworkConfig.networks.mainnet) {
     url = `https://api-${appState.config.network}.etherscan.io/api`
@@ -100,17 +101,25 @@ export const fetchGasPrice = () => {
 export const checkTxHasBeenDroppedOrFailed = (txHash) => {
   let url = `https://etherscan.io/tx/${txHash}`
   if (appState.config.network !== NetworkConfig.networks.mainnet) {
-    url = `https://api-${appState.config.network}.etherscan.io/tx/${txHash}`
+    url = `https://${appState.config.network}.etherscan.io/tx/${txHash}`
   }
 
   return caller.get(url)
     .then((res) => {
       if (res.data && typeof res.data === 'string') {
         const htmlString = res.data
-        return htmlString.includes('Dropped&Replaced') ||
+
+        const removed = htmlString.includes('Dropped&Replaced') ||
           htmlString.includes('Dropped') ||
           htmlString.includes('Replaced') ||
           htmlString.includes('<font color="red">Fail</font>')
+
+        const notBroadCast = htmlString.includes('we are unable to locate this Transaction Hash')
+        if (notBroadCast) {
+          return 'notBroadCast'
+        }
+
+        return removed
       }
       return true
     })

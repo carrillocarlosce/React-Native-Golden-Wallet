@@ -38,7 +38,7 @@ export default class TransactionsItem extends Component {
   get operator() {
     const { transactionItem } = this.props
     const { type, isSelf } = transactionItem
-    if (type === constant.SENT) {
+    if (type === constant.SENT || type === constant.PENDING) {
       return '-'
     }
     if (isSelf) {

@@ -106,7 +106,7 @@ export default class Transaction {
   async fetchToCheckHasSuccess() {
     try {
       const apiResponse = await api.checkStatusTransaction(this.hash)
-      return true(apiResponse.data.result.status === '1')
+      return apiResponse.data.result.status === '1'
     } catch (_) {
       // do nothing
       return false
@@ -116,6 +116,12 @@ export default class Transaction {
   async fetchToCheckDroppedOrReplaced() {
     try {
       const result = await api.checkTxHasBeenDroppedOrFailed(this.hash)
+      if (result === 'notBroadCast') {
+        const oneHour = 60 * 60 * 1000
+        const hoursFromCreated = (new Date().getTime() - (this.timeStamp * 1000)) / oneHour
+
+        return hoursFromCreated > 4
+      }
       return result
     } catch (_) {
       // do nothing
