@@ -23,7 +23,7 @@ import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
 import BottomButton from '../../../components/elements/BottomButton'
 import Checker from '../../../Handler/Checker'
-import MainStore from '../../../AppStores/MainStore'
+import AddressBookStore from '../AddressBookStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { height } = Dimensions.get('window')
@@ -41,7 +41,7 @@ export default class AddAddressBookScreen extends Component {
   constructor(props) {
     super(props)
     this.traslateTop = new Animated.Value(0)
-    this.addressBookStore = MainStore.addressBookStore
+    this.addressBookStore = new AddressBookStore()
   }
 
   componentDidMount() {
@@ -111,7 +111,7 @@ export default class AddAddressBookScreen extends Component {
   }
 
   _renderNameField = () => {
-    const { title } = this.addressBookStore
+    const { title, isErrorTitle } = this.addressBookStore
     return (
       <View style={{ marginTop: 15, marginHorizontal: 20 }}>
         <Text style={{
@@ -128,12 +128,15 @@ export default class AddAddressBookScreen extends Component {
           value={title}
           onChangeText={this.onChangeTitle}
         />
+        {isErrorTitle &&
+          <Text style={styles.errorText}>{constant.EXISTED_NAME_AB}</Text>
+        }
       </View>
     )
   }
 
   _renderAddressField = () => {
-    const { address } = this.addressBookStore
+    const { address, errorAddressBook } = this.addressBookStore
     return (
       <View style={{ marginTop: 20, marginHorizontal: 20 }}>
         <Text style={{
@@ -151,6 +154,9 @@ export default class AddAddressBookScreen extends Component {
           needPasteButton
           value={address}
         />
+        {errorAddressBook !== '' &&
+          <Text style={styles.errorText}>{errorAddressBook}</Text>
+        }
       </View>
     )
   }
@@ -180,8 +186,10 @@ export default class AddAddressBookScreen extends Component {
   }
 
   _renderSaveButton() {
+    const { isReadyCreate } = this.addressBookStore
     return (
       <BottomButton
+        disable={!isReadyCreate}
         onPress={() => {
           this._saveItem()
         }}
@@ -232,5 +240,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: AppStyle.backgroundDarkMode
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginTop: 10
   }
 })
