@@ -53,5 +53,7 @@ export default {
 
   swipeButtonBackground: '#1F2437',
   borderLinesSetting: '#1D2137',
-  errorColor: '#D0021B'
+  errorColor: '#D0021B',
+  blueActionColor: '#4A90E2'
+
 }

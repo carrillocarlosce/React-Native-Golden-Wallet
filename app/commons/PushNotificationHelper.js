@@ -23,6 +23,8 @@ class PushNotificationHelper {
       if (notif && notif.opened_from_tray) {
         NotificationStore.gotoTransactionList()
       }
+      MainStore.appState.fetchWalletsBalance(false, false)
+      MainStore.appState.startCheckBalanceJob()
     })
 
     FCM.on(FCMEvent.RefreshToken, (token) => {

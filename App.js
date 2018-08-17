@@ -25,6 +25,7 @@ import Lock from './app/components/elements/Lock'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
 import NotificationStore from './app/AppStores/stores/Notification'
+import AppStyle from './app/commons/AppStyle'
 
 console.ignoredYellowBox = ['Warning: isMounted']
 
@@ -60,10 +61,10 @@ export default class App extends Component {
   }
 
   handleFirstConnectivityChange = (connection) => {
-    const connectionType = connection.type === 'none' ? 'offline' : 'online'
-    // if (connection.type === 'none') {
-    //   NavStore.showToastTop(connectionType, {}, { color: AppStyle.errorColor })
-    // }
+    const connectionType = connection.type === 'none' ? 'No internet connection' : 'online'
+    if (connection.type === 'none') {
+      NavStore.showToastTop(connectionType, { backgroundColor: AppStyle.errorColor }, { color: 'white' })
+    }
     MainStore.appState.setInternetConnection(connectionType)
   }
 
@@ -83,6 +84,8 @@ export default class App extends Component {
     }
     if (nextAppState === 'active') {
       setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
+      MainStore.appState.fetchWalletsBalance(false, false)
+      MainStore.appState.startCheckBalanceJob()
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {

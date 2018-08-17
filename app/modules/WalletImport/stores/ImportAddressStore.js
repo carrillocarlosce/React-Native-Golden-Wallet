@@ -5,6 +5,7 @@ import NavStore from '../../../stores/NavStore'
 import Checker from '../../../Handler/Checker'
 import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import AppStyle from '../../../commons/AppStyle'
 
 export default class ImportAddressStore {
   @observable customTitle = ``
@@ -27,6 +28,7 @@ export default class ImportAddressStore {
     const { address } = this
     const w = Wallet.importAddress(address, title, ds)
     NotificationStore.addWallet(title, w.address)
+    NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
     await w.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()

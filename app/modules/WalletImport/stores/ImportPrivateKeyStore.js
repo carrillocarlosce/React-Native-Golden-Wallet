@@ -4,6 +4,7 @@ import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../stores/NavStore'
 import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import AppStyle from '../../../commons/AppStyle'
 
 export default class ImportPrivateKeyStore {
   @observable customTitle = ``
@@ -29,6 +30,7 @@ export default class ImportPrivateKeyStore {
     }
     this.finished = true
     NotificationStore.addWallet(this.title, w.address)
+    NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
     await w.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()

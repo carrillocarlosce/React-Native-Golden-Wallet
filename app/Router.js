@@ -161,6 +161,12 @@ const CreateSendTransactionStack = StackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    ScanQRCodeScreen: {
+      screen: ScanQRCodeScreen,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {

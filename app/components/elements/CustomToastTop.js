@@ -7,12 +7,14 @@ import {
 } from 'react-native'
 // import PropTypes from 'prop-types'
 import HapticHandler from '../../Handler/HapticHandler'
+import LayoutUtils from '../../commons/LayoutUtils'
 
 const { width } = Dimensions.get('window')
+const { heightNotif } = LayoutUtils
 export default class CustomToastTop extends Component {
   constructor(props) {
     super(props)
-    this.offsetToast = new Animated.Value(-100)
+    this.offsetToast = new Animated.Value(-heightNotif)
     this.state = {
       content: '',
       styleText: {},
@@ -31,12 +33,12 @@ export default class CustomToastTop extends Component {
       toValue: 0,
       duration: 250
     }).start()
-    setTimeout(() => this.hideToast(), 1000)
+    setTimeout(() => this.hideToast(), 2500)
   }
 
   hideToast() {
     Animated.timing(this.offsetToast, {
-      toValue: -100,
+      toValue: -heightNotif,
       duration: 250
     }).start()
   }
@@ -62,7 +64,7 @@ export default class CustomToastTop extends Component {
 const styles = StyleSheet.create({
   container: {
     width,
-    height: 100,
+    height: heightNotif,
     backgroundColor: '#212637',
     alignItems: 'center',
     justifyContent: 'flex-end',
