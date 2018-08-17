@@ -85,9 +85,9 @@ export default class HomeScreen extends Component {
 
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
-    let color = { backgroundColor: AppStyle.mainColor }
+    const color = { backgroundColor: AppStyle.mainColor }
     if (currentNetwork === Config.networks.mainnet) {
-      color = { backgroundColor: AppStyle.colorUp }
+      return <View />
     }
     currentNetwork = currentNetwork.replace(/^\w/, c => c.toUpperCase())
     return (

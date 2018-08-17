@@ -7,7 +7,7 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ImportMnemonicStore {
-  @observable customTitle = `My wallet ${MainStore.appState.wallets.length}`
+  @observable customTitle = ``
   @observable mnemonicPhrase = ''
   @observable mnemonicWallets = []
   @observable loading = false
@@ -19,7 +19,6 @@ export default class ImportMnemonicStore {
     this.mnemonicPhrase = mn
     if (this.mnemonicPhrase !== '') {
       KeyStore.mnemonicIsValid(this.mnemonic).then((isValidate) => {
-        console.log(isValidate)
         this.isErrorMnemonic = isValidate == 0
       })
     } else {
@@ -57,7 +56,11 @@ export default class ImportMnemonicStore {
 
     const index = this.mnemonicWallets
       .findIndex(w => w.address.toLowerCase() === this.selectedWallet.address.toLowerCase())
-    const title = `My wallet ${MainStore.appState.wallets.length}`
+
+    const title = this.customTitle
+    // TO DO: remove below line when done check wallet name
+    if (!title) alert('Wallet name can not be blank')
+
     const ds = MainStore.secureStorage
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
     NotificationStore.addWallet(title, wallet.address)
