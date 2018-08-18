@@ -202,7 +202,7 @@ export default class ListWalletScreen extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
-                <Text style={[styles.actionText, { color: AppStyle.colorDown }]}>Remove Wallet</Text>
+                <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
               </View>
             </TouchableOpacity>
           </ActionSheetCustom>

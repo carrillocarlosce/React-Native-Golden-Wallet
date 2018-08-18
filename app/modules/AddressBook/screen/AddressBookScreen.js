@@ -210,7 +210,7 @@ export default class AddressBookScreen extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
-                <Text style={[styles.actionText, { color: AppStyle.colorDown }]}>Delete Address</Text>
+                <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Delete Address</Text>
               </View>
             </TouchableOpacity>
           </ActionSheetCustom>
