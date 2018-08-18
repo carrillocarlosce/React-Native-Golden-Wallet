@@ -110,7 +110,7 @@ class AmountStore {
   @computed get checkMaxBalanceWithFee() {
     return this.amountText.isUSD
       ? Helper.formatUSD(this.amountTextString.toString(10), true, 1000000) === Helper.formatUSD(this.amountUSD.minus(this.fee).toString(10), true, 1000000)
-      : Helper.formatETH(this.amountTextString.toString(10), true) === Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true, 1000000)
+      : Helper.formatETH(this.amountTextString.toString(10), true) === Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true)
   }
 
   @computed get checkSmallSize() {
