@@ -79,7 +79,7 @@ export default class ImportWalletScreen extends Component {
 
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
-              title="Mnemonic"
+              title="Mnemonic Phrase"
               subtitle="Enter your Mnemonic Phase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done."
               imageCard={images.iconMnemonic}
               onPress={this.gotoImportMnemonic}
@@ -91,7 +91,7 @@ export default class ImportWalletScreen extends Component {
 
             <SmallCard
               style={{ marginTop: 20, marginBottom: 20, height: 174 }}
-              title="Address"
+              title="Address Only"
               subtitle="Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key."
               imageCard={images.iconAddress}
               onPress={this.gotoImportAddress}

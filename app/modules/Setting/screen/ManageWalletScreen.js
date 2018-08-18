@@ -51,58 +51,60 @@ export default class ListWalletScreen extends Component {
   }
 
   onEdit = () => {
-    NavStore.popupCustom.show(
-      'Wallet Name',
-      [
-        {
-          text: 'Cancel',
-          onClick: () => {
-            NavStore.popupCustom.hide()
+    this.actionSheet.hide(() => {
+      NavStore.popupCustom.show(
+        'Wallet Name',
+        [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              NavStore.popupCustom.hide()
+            }
+          },
+          {
+            text: 'OK',
+            onClick: async (text) => {
+              this.selectedWallet.title = text
+              await this.manageWalletStore.editWallet(this.selectedWallet)
+              NavStore.popupCustom.hide()
+            }
           }
-        },
-        {
-          text: 'OK',
-          onClick: async (text) => {
-            this.selectedWallet.title = text
-            await this.manageWalletStore.editWallet(this.selectedWallet)
-            NavStore.popupCustom.hide()
-            this.actionSheet.hide()
-          }
-        }
-      ],
-      'Enter your wallet name',
-      'input',
-      false,
-      this.selectedWallet.title,
-      true
-    )
+        ],
+        'Enter your wallet name',
+        'input',
+        false,
+        this.selectedWallet.title,
+        true
+      )
+    })
   }
 
   onDelete = () => {
-    NavStore.popupCustom.show(
-      'Are you sure you want to remove this wallet ?',
-      [
-        {
-          text: 'Cancel',
-          onClick: () => {
-            NavStore.popupCustom.hide()
-          }
-        },
-        {
-          text: 'Remove',
-          onClick: async () => {
-            const { wallets, selectedWallet } = MainStore.appState
-            const index = wallets.indexOf(selectedWallet)
-            if (index === wallets.length - 1) {
-              MainStore.appState.setSelectedWallet(null)
+    this.actionSheet.hide(() => {
+      NavStore.popupCustom.show(
+        'Are you sure you want to remove this wallet ?',
+        [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              NavStore.popupCustom.hide()
             }
-            await this.manageWalletStore.removeWallet(this.selectedWallet)
-            NavStore.popupCustom.hide()
-            this.actionSheet.hide()
+          },
+          {
+            text: 'Remove',
+            onClick: async () => {
+              const { wallets, selectedWallet } = MainStore.appState
+              const index = wallets.indexOf(selectedWallet)
+              if (index === wallets.length - 1) {
+                MainStore.appState.setSelectedWallet(null)
+              }
+              await this.manageWalletStore.removeWallet(this.selectedWallet)
+              NavStore.popupCustom.hide()
+            }
           }
-        }
-      ]
-    )
+        ]
+      )
+    })
   }
 
   get wallets() {
