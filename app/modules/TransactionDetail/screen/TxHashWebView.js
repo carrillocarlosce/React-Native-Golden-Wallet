@@ -6,7 +6,7 @@ import Spinner from '../../../components/elements/Spinner'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import AppState from '../../../AppStores/AppState'
-import Config from '../../../AppStores/stores/Config'
+import URL from '../../../api/url'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')

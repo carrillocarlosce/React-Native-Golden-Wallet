@@ -108,8 +108,8 @@ export default class PopupCustom extends Component {
         })
       }
     }
-  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, selectedTitle) {
-    this.selectedTitle = selectedTitle
+  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false) {
+    this.selectedTitle = valueInput
     this.setState({
       visible: true,
       content,
@@ -129,8 +129,16 @@ export default class PopupCustom extends Component {
   }
 
   _renderButons = () => {
-    const { buttons, valueInput } = this.state
+    const {
+      buttons, valueInput, type, errorMsg
+    } = this.state
     const buttonsView = buttons.map((btn, index) => {
+      let disable = false
+      let styleTextDisable = {}
+      if (index === 1 && type === 'input' && (valueInput === '' || errorMsg !== '')) {
+        disable = true
+        styleTextDisable = { color: AppStyle.secondaryTextColor }
+      }
       const lineBetween = index > 0
         ? <View style={styles.line} />
         : <View />
@@ -145,11 +153,12 @@ export default class PopupCustom extends Component {
         >
           {lineBetween}
           <TouchableOpacity
+            disabled={disable}
             style={[styles.buttonView]}
             onPress={() => { btn.onClick(valueInput) }}
           >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={styles.textButton}>{btn.text}</Text>
+              <Text style={[styles.textButton, styleTextDisable]}>{btn.text}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -225,7 +234,7 @@ export default class PopupCustom extends Component {
                       underlineColorAndroid="transparent"
                       onChangeText={this.onChangeText}
                       keyboardAppearance="dark"
-                      placeholder="Wallet Name"
+                      placeholder=""
                       placeholderTextColor="#4A4A4A"
                       value={valueInput}
                     />

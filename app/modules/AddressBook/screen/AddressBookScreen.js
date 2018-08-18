@@ -69,9 +69,8 @@ export default class AddressBookScreen extends Component {
       'Enter your address name',
       'input',
       false,
-      '',
-      false,
-      this.selectedAB.title
+      this.selectedAB.title,
+      false
     )
   }
 
