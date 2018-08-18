@@ -98,14 +98,19 @@ class AmountStore {
       : `${this.prefix}${Helper.formatUSD(this.amountSubTextBigNum.toString(10), true)}`
   }
 
-  @computed get checkInputValid() {
-    return this.amountText.data.length != 0 && this.checkMaxBalanceValid
+  @computed get checkButtonEnable() {
+    return this.amountText.data.length != 0 && this.checkValueValid
   }
 
-  @computed get checkMaxBalanceValid() {
-    return (this.amountText.isUSD
-      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(this.fee))
-      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(this.fee)))
+  @computed get checkWarningTitle() {
+    if (this.amountText.data.length == 0) return false
+    return !this.checkValueValid
+  }
+
+  @computed get checkMaxBalanceWithFee() {
+    return this.amountText.isUSD
+      ? Helper.formatUSD(this.amountTextString.toString(10), true, 1000000) === Helper.formatUSD(this.amountUSD.minus(this.fee).toString(10), true, 1000000)
+      : Helper.formatETH(this.amountTextString.toString(10), true) === Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true, 1000000)
   }
 
   @computed get checkSmallSize() {
@@ -119,6 +124,12 @@ class AmountStore {
     return isUSD
       ? (isHadPoint ? data.length + newSubData.length > 9 : data.length > 9)
       : (isHadPoint ? data.length + newSubData.length > 6 : data.length > 6)
+  }
+
+  @computed get checkValueValid() {
+    return (this.amountText.isUSD
+      ? this.amountTextBigNum.isLessThanOrEqualTo(this.amountUSD.minus(this.fee))
+      : this.amountTextBigNum.isLessThanOrEqualTo(this.amountCrypto.minus(this.fee)))
   }
 
   @computed get getAmountText() {
@@ -153,9 +164,12 @@ class AmountStore {
   @action max() {
     const { isUSD } = this.amountText
     const value = isUSD
-      ? Helper.formatUSD(this.amountUSD.minus(this.fee).toString(10), true, 100000000)
-      : Helper.formatETH(this.amountCrypto.minus(this.fee).toString(10), true)
-    const dataSplit = value.toString().split('.')
+      ? ((this.amountUSD.minus(this.fee)).lt(new BigNumber('0')) ? new BigNumber('0') : this.amountUSD.minus(this.fee))
+      : ((this.amountCrypto.minus(this.fee)).lt(new BigNumber('0')) ? new BigNumber('0') : this.amountCrypto.minus(this.fee))
+    const valueString = isUSD
+      ? Helper.formatUSD(value.toString(10), true, 100000000)
+      : Helper.formatETH(value.toString(10), true)
+    const dataSplit = valueString.toString().split('.')
     const integer = dataSplit[0]
     const decimal = dataSplit[1] ? dataSplit[1] : ''
     if (decimal.split('').length == 0) {

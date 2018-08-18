@@ -205,6 +205,10 @@ class AppState {
     }, AppState.TIME_INTERVAL)
   }
 
+  stopCheckBalanceJob() {
+    if (this.checkBalanceJobID) clearTimeout(this.checkBalanceJobID)
+  }
+
   async startCheckUnpendTransactionsJob() {
     if (this.checkUnpendTransactionsJobID) clearTimeout(this.checkUnpendTransactionsJobID)
 
