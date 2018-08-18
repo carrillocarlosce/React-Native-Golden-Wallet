@@ -14,7 +14,7 @@ export default {
   SELF: 'Self',
   TITLE_SEND_SUCCESS: 'Your transfer is completed.',
   SUB_TITTLE_SEND_SUCCESS: 'The process may take up to some seconds. Please check your history for transaction status.',
-  TEXT_VIEW_DETAIL: 'View Details',
+  TEXT_VIEW_DETAIL: 'Check on Etherscan',
   RETURN_WALLET: 'Return to wallet',
   CREATE_NEW_WALLET: 'Create A New Wallet',
   CONFIRM: 'Confirm',
@@ -59,13 +59,13 @@ export default {
 
   INFURA_API_KEY: 'qMZ7EIind33NY9Azu836',
   EMPTY_NAME: 'Name cannot be blank',
-  EXISTED_NAME: 'Wallet name was existed',
+  EXISTED_NAME: 'Wallet name already exists.',
   INVALID_ADDRESS: 'Invalid Address',
   INVALID_MNEMONIC: 'Invalid Mnemonic Phrase',
   INVALID_PRIVATE_KEY: 'Invalid Private Key',
-  EXISTED_WALLET: 'Wallet was existed',
-  ADDRESS_BOOK_EXISTED: 'Address Book was existed',
-  EXISTED_NAME_AB: 'Address Book name was existed',
+  EXISTED_WALLET: 'Wallet already exists.',
+  ADDRESS_BOOK_EXISTED: 'Address Book already exists.',
+  EXISTED_NAME_AB: 'Address Book name already exists.',
 
   CREATE_WALLET_SUCCESS: 'Create Wallet Success',
   IMPORT_WALLET_SUCCESS: 'Import Wallet Success'
