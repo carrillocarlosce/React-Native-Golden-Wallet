@@ -1,6 +1,6 @@
 export default class CheckBalanceJob {
   appState = null
-  checkBalanceJobID = null
+  jobId = null
   timeInterval = 20000
   ignoreSelectedWallet = false
 
@@ -28,18 +28,18 @@ export default class CheckBalanceJob {
 
   start() {
     this.stop() // ensure not have running job
-    this.checkBalanceJobID = setTimeout(() => {
+    this.jobId = setTimeout(() => {
       this.fetchWalletsBalance(false, true)
       this.start()
     }, this.timeInterval)
   }
 
   stop() {
-    if (this.checkBalanceJobID) clearTimeout(this.checkBalanceJobID)
-    this.checkBalanceJobID = null
+    if (this.jobId) clearTimeout(this.jobId)
+    this.jobId = null
   }
 
   isRunning() {
-    return this.checkBalanceJobID !== null
+    return this.jobId !== null
   }
 }

@@ -48,7 +48,8 @@ class AppState {
 
   constructor() {
     this.BgJobs = {
-      CheckBalance: new BgJobs.CheckBalance(this, this.TIME_INTERVAL)
+      CheckBalance: new BgJobs.CheckBalance(this, this.TIME_INTERVAL),
+      CheckPendingTransaction: new BgJobs.CheckPendingTransaction(this, this.TIME_INTERVAL)
     }
   }
 
@@ -57,7 +58,7 @@ class AppState {
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
     this.BgJobs.CheckBalance.start()
-    this.startCheckUnpendTransactionsJob()
+    this.BgJobs.CheckPendingTransaction.start()
     this.getGasPriceEstimate()
   }
 
@@ -192,28 +193,6 @@ class AppState {
 
   save() {
     return AppDS.saveAppData(this.toJSON())
-  }
-
-  async startCheckUnpendTransactionsJob() {
-    if (this.checkUnpendTransactionsJobID) clearTimeout(this.checkUnpendTransactionsJobID)
-    this.checkUnpendTransactionsJobID = setTimeout(async () => {
-      await this.checkUnpendTransactions()
-      this.startCheckUnpendTransactionsJob()
-    }, AppState.TIME_INTERVAL)
-  }
-
-  async checkUnpendTransactions() {
-    if (this.internetConnection === 'online') {
-      const newUnpendTxs = []
-      for (let i = 0; i < this.unpendTransactions.length; i++) {
-        const ut = this.unpendTransactions[i]
-        const canRemove = await ut.canRemove()
-        if (!canRemove) newUnpendTxs.push(ut)
-      }
-
-      this.setUnpendTransactions(newUnpendTxs)
-      UnspendTransactionDS.saveTransactions(this.unpendTransactions)
-    }
   }
 
   // for local storage: be careful with MobX observable

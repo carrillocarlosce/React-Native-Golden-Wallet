@@ -1,5 +1,7 @@
 import CheckBalanceJob from './CheckBalanceJob'
+import CheckPendingTransactionJob from './CheckPendingTransactionJob'
 
 export default {
-  CheckBalance: CheckBalanceJob
+  CheckBalance: CheckBalanceJob,
+  CheckPendingTransaction: CheckPendingTransactionJob
 }

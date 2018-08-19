@@ -22,7 +22,8 @@ class PushNotificationHelper {
       if (!MainStore.appState.enableNotification) {
         return
       }
-      MainStore.appState.checkUnpendTransactions()
+
+      MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
       NotificationStore.setCurrentNotif(notif)
       if (notif && notif.opened_from_tray) {
         NotificationStore.gotoTransactionList()
