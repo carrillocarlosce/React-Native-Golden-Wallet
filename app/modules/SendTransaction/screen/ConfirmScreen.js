@@ -522,6 +522,7 @@ export default class ConfirmScreen extends Component {
 
   _onPressAction = (gasPrice, adj) => {
     MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
+    MainStore.sendTransaction.confirmStore.validateAmount()
     MainStore.sendTransaction.confirmStore.setAdjust(adj)
     this.actionSheet.hide()
   }
