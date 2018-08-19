@@ -23,6 +23,9 @@ class PushNotificationHelper {
       if (!MainStore.appState.enableNotification) {
         return
       }
+      if (!notif.tx) {
+        return
+      }
 
       MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
       NotificationStore.setCurrentNotif(notif)
