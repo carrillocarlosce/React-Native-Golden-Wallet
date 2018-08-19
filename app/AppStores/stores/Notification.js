@@ -61,7 +61,9 @@ class Notification {
     if (!id) {
       return
     }
-    API.removeWallet(id)
+    API.removeWallet(id).then((res) => {
+
+    })
   }
 
   async removeWallets() {

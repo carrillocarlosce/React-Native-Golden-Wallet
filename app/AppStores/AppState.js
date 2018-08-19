@@ -211,21 +211,24 @@ class AppState {
 
   async startCheckUnpendTransactionsJob() {
     if (this.checkUnpendTransactionsJobID) clearTimeout(this.checkUnpendTransactionsJobID)
-
     this.checkUnpendTransactionsJobID = setTimeout(async () => {
-      if (this.internetConnection === 'online') {
-        const newUnpendTxs = []
-        for (let i = 0; i < this.unpendTransactions.length; i++) {
-          const ut = this.unpendTransactions[i]
-          const canRemove = await ut.canRemove()
-          if (!canRemove) newUnpendTxs.push(ut)
-        }
-
-        this.setUnpendTransactions(newUnpendTxs)
-        UnspendTransactionDS.saveTransactions(this.unpendTransactions)
-      }
+      await this.checkUnpendTransactions()
       this.startCheckUnpendTransactionsJob()
     }, AppState.TIME_INTERVAL)
+  }
+
+  async checkUnpendTransactions() {
+    if (this.internetConnection === 'online') {
+      const newUnpendTxs = []
+      for (let i = 0; i < this.unpendTransactions.length; i++) {
+        const ut = this.unpendTransactions[i]
+        const canRemove = await ut.canRemove()
+        if (!canRemove) newUnpendTxs.push(ut)
+      }
+
+      this.setUnpendTransactions(newUnpendTxs)
+      UnspendTransactionDS.saveTransactions(this.unpendTransactions)
+    }
   }
 
   // for local storage: be careful with MobX observable
