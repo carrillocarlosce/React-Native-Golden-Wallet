@@ -54,9 +54,9 @@ export default class App extends Component {
   }
 
   handleFirstConnectivityChange = (connection) => {
-    const connectionType = connection.type === 'none' ? 'No internet connection' : 'online'
+    const connectionType = connection.type === 'none' ? 'offline' : 'online'
     if (connection.type === 'none') {
-      NavStore.showToastTop(connectionType, { backgroundColor: AppStyle.errorColor }, { color: 'white' })
+      NavStore.showToastTop('No internet connection', { backgroundColor: AppStyle.errorColor }, { color: 'white' })
     }
     MainStore.appState.setInternetConnection(connectionType)
   }
