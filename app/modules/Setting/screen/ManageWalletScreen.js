@@ -20,7 +20,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import ManageWalletItem from '../elements/ManageWalletItem'
 import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()

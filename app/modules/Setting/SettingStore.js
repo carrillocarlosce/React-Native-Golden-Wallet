@@ -3,7 +3,7 @@ import { Platform, Linking, Alert } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import * as StoreReview from 'react-native-store-review'
 import constant from '../../commons/constant'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
 const PLAY_STORE_LINK = 'market://details?id=app.starfish'

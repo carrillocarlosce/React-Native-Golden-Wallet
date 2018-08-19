@@ -1,6 +1,6 @@
 import MainStore from '../../../AppStores/MainStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 export default class AppSettingStore {
   switchEnableNotification(isEnable) {

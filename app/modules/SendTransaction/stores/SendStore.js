@@ -7,7 +7,7 @@ import ConfirmStore from './ConfirmStore'
 import AdvanceStore from './AdvanceStore'
 import Starypto from '../../../../Libs/react-native-starypto'
 import MainStore from '../../../AppStores/MainStore'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import HapticHandler from '../../../Handler/HapticHandler'
 

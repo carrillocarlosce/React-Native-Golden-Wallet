@@ -23,7 +23,7 @@ import ActionButton from '../../../components/elements/ActionButton'
 import Checker from '../../../Handler/Checker'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import BottomButton from '../../../components/elements/BottomButton'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()

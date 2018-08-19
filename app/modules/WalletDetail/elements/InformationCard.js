@@ -9,7 +9,7 @@ import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
 import images from '../../../commons/images'
 import FadeText from './FadeText'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 @observer
 export default class InformationCard extends Component {

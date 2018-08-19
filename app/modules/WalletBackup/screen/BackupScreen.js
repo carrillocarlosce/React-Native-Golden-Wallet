@@ -9,7 +9,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import MainStore from '../../../AppStores/MainStore'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 const { height } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()

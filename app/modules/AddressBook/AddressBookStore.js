@@ -2,7 +2,7 @@ import { observable, action, computed } from 'mobx'
 import AddressBook from '../../AppStores/stores/AddressBook'
 import MainStore from '../../AppStores/MainStore'
 import Checker from '../../Handler/Checker'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 import constant from '../../commons/constant'
 
 export default class AddressBookStore {

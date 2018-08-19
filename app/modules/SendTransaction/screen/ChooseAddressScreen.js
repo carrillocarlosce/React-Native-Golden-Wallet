@@ -9,7 +9,6 @@ import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import AddressItem from '../elements/AddressItem'
-import ContactStore from '../../../stores/ContactStore'
 import MainStore from '../../../AppStores/MainStore'
 
 // const { width, height } = Dimensions.get('window')

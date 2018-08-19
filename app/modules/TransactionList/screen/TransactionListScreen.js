@@ -19,7 +19,7 @@ import Modal from '../../../../Libs/react-native-modalbox'
 import EmptyList from '../elements/EmptyList'
 import AppState from '../../../AppStores/AppState'
 import NotificationStore from '../../../AppStores/stores/Notification'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()

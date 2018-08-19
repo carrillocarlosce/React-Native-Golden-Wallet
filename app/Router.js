@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import AppStyle from './commons/AppStyle'
-import NavStore from './stores/NavStore'
+import NavStore from './AppStores/NavStore'
 import PopupCustom from './components/elements/PopupCustom'
 import CustomToastTop from './components/elements/CustomToastTop'
 import NotificationInApp from './components/elements/NotificationInApp'
@@ -30,7 +30,6 @@ import BackupFinishScreen from './modules/WalletBackup/screen/BackupFinishScreen
 import ManageWalletScreen from './modules/Setting/screen/ManageWalletScreen'
 import TxHashWebViewScreen from './modules/TransactionDetail/screen/TxHashWebView'
 import NetworkScreen from './modules/Setting/screen/NetworkScreen'
-import DWebBrowserScreen from './components/screens/DWebBrowserScreen'
 import AddressInputScreen from './modules/SendTransaction/screen/AddressInputScreen'
 import EnterNameViaMnemonic from './modules/WalletImport/screen/EnterNameViaMnemonic'
 
@@ -132,12 +131,6 @@ const HomeStack = StackNavigator(
     },
     TxHashWebViewScreen: {
       screen: TxHashWebViewScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DWebBrowserScreen: {
-      screen: DWebBrowserScreen,
       navigationOptions: {
         header: null
       }

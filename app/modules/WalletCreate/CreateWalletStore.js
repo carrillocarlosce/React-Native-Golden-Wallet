@@ -1,7 +1,7 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../AppStores/MainStore'
 import Wallet from '../../AppStores/stores/Wallet'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 import NotificationStore from '../../AppStores/stores/Notification'
 import AppStyle from '../../commons/AppStyle'
 

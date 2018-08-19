@@ -4,7 +4,7 @@ import { Animated } from 'react-native'
 import MainStore from '../../AppStores/MainStore'
 import HapticHandler from '../../Handler/HapticHandler'
 import SecureDS from '../../AppStores/DataSource/SecureDS'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 import MigrateData from '../../../MigrateData'
 
 class UnlockStore {

@@ -1,8 +1,6 @@
 import { observable, action } from 'mobx'
 import { Platform } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import SendStore from './SendTransactionStore'
-import TransactionStore from './TransactionStore'
 
 // gets the current screen from navigation state
 function getCurrentRouteName(navigationState) {
@@ -47,12 +45,6 @@ class ObservableNavStore {
     this.toastTop && this.toastTop.showToast(content, style, styleText)
   }
 
-  @action closeModal() {
-    SendStore.setSendingAddress('')
-    SendStore.setSelectedToken(null)
-    this.sendModal && this.sendModal.close()
-  }
-
   @action lockScreen(params, shouldShowCancel = false) {
     // console.log(this.preventOpenUnlockScreen)
     if (this.currentRouteName === 'UnlockScreen' || this.currentRouteName === '' ||
@@ -95,11 +87,7 @@ class ObservableNavStore {
   }
 
   @action onNavigationStateChange(prevState, currentState) {
-    const prevScreen = getCurrentRouteName(prevState)
     const currentScreen = getCurrentRouteName(currentState)
-    if (prevScreen === 'TransactionDetailScreen' && currentScreen === 'TokenScreen') {
-      setTimeout(() => TransactionStore.clearTransactionMap(), 200)
-    }
     this.currentRouteName = currentScreen
   }
 

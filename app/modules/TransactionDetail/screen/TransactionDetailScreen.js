@@ -14,7 +14,7 @@ import TransactionDetailItem from '../elements/TransactionDetailItem'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
