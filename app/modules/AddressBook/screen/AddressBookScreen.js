@@ -45,56 +45,58 @@ export default class AddressBookScreen extends Component {
   }
 
   onEdit = () => {
-    NavStore.popupCustom.show(
-      'Address Book',
-      [
-        {
-          text: 'Cancel',
-          onClick: () => {
-            NavStore.popupCustom.hide()
+    this.actionSheet.hide(() => {
+      NavStore.popupCustom.show(
+        'Address Book',
+        [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              NavStore.popupCustom.hide()
+            }
+          },
+          {
+            text: 'OK',
+            onClick: async (text) => {
+              const addressBook = this.selectedAB
+              addressBook.title = text
+              await this.selectedAB.update()
+              MainStore.appState.syncAddressBooks()
+              NavStore.popupCustom.hide()
+            }
           }
-        },
-        {
-          text: 'OK',
-          onClick: async (text) => {
-            const addressBook = this.selectedAB
-            addressBook.title = text
-            await this.selectedAB.update()
-            MainStore.appState.syncAddressBooks()
-            NavStore.popupCustom.hide()
-            this.actionSheet.hide()
-          }
-        }
-      ],
-      'Enter your address name',
-      'input',
-      false,
-      this.selectedAB.title,
-      false
-    )
+        ],
+        'Enter your address name',
+        'input',
+        false,
+        this.selectedAB.title,
+        false
+      )
+    })
   }
 
   onDelete = () => {
-    NavStore.popupCustom.show(
-      'Are you sure you want to delete this address book ?',
-      [
-        {
-          text: 'Cancel',
-          onClick: () => {
-            NavStore.popupCustom.hide()
+    this.actionSheet.hide(() => {
+      NavStore.popupCustom.show(
+        'Are you sure you want to delete this address book ?',
+        [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              NavStore.popupCustom.hide()
+            }
+          },
+          {
+            text: 'Delete',
+            onClick: async () => {
+              await this.selectedAB.delete()
+              MainStore.appState.syncAddressBooks()
+              NavStore.popupCustom.hide()
+            }
           }
-        },
-        {
-          text: 'Delete',
-          onClick: async () => {
-            await this.selectedAB.delete()
-            MainStore.appState.syncAddressBooks()
-            NavStore.popupCustom.hide()
-            this.actionSheet.hide()
-          }
-        }
-      ]
-    )
+        ]
+      )
+    })
   }
 
   get addressBooks() {
@@ -208,7 +210,7 @@ export default class AddressBookScreen extends Component {
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
-                <Text style={[styles.actionText, { color: AppStyle.colorDown }]}>Delete Address</Text>
+                <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Delete Address</Text>
               </View>
             </TouchableOpacity>
           </ActionSheetCustom>

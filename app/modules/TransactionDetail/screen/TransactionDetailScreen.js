@@ -72,7 +72,7 @@ export default class TransactionDetailScreen extends Component {
           type,
           isSelf
         }}
-        action={() => { }}
+        action={() => { this._onPress(value, 'Value') }}
       />
     )
   }
@@ -125,7 +125,7 @@ export default class TransactionDetailScreen extends Component {
           title: 'Fee',
           subtitle: this.selectedTransaction.fee.toString(10)
         }}
-        action={() => { }}
+        action={() => { this._onPress(this.selectedTransaction.fee.toString(10), 'Fee') }}
         bottomLine={false}
       />
     )

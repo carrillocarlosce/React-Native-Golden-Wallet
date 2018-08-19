@@ -34,7 +34,7 @@ export default class AppSetting extends Component {
     return (
       <View style={styles.container}>
         <SettingItem
-          style={{ borderTopWidth: 1 }}
+          style={{ borderTopWidth: 0 }}
           mainText="Network"
           onPress={onNetworkPress}
           subText={network}

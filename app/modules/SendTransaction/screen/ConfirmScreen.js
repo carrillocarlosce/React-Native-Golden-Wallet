@@ -405,8 +405,8 @@ export default class ConfirmScreen extends Component {
     return (
       <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
         <View style={[styles.actionSheetItem, { borderTopLeftRadius: 5, borderTopRightRadius: 5, height: 60 }]}>
-          <Text style={[styles.actionSheetText, { fontSize: 10, color: '#8A8D97' }]}>Your transaction will process faster with a higher</Text>
-          <Text style={[styles.actionSheetText, { fontSize: 10, color: '#8A8D97' }]}>gas price.</Text>
+          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>Your transaction will process faster with a higher</Text>
+          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>gas price.</Text>
         </View>
         <TouchableOpacity
           style={styles.actionSheetItem}

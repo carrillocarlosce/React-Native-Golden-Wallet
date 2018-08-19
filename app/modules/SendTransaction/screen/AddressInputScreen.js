@@ -20,7 +20,6 @@ import Modal from 'react-native-modalbox'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import constant from '../../../commons/constant'
 import ScanQRCodeScreen from './ScanQRCodeScreen'
 import ChooseAddressScreen from './ChooseAddressScreen'
 import ConfirmScreen from './ConfirmScreen'
@@ -400,8 +399,6 @@ export default class AdressInputScreen extends Component {
                   underlineColorAndroid="transparent"
                   keyboardAppearance="dark"
                   autoCorrect={false}
-                  placeholder={constant.CHOOSE_ADDRESS}
-                  placeholderTextColor={AppStyle.greyTextInput}
                   multiline
                   style={[
                     styles.textInput

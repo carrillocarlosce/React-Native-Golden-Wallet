@@ -9,12 +9,14 @@ import {
   TextInput,
   Keyboard,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Image
 } from 'react-native'
 // import PropTypes from 'prop-types'
 import AppStyle from '../../commons/AppStyle'
 import constant from '../../commons/constant'
 import MainStore from '../../AppStores/MainStore'
+import images from '../../commons/images'
 
 export default class PopupCustom extends Component {
   state = {
@@ -167,6 +169,24 @@ export default class PopupCustom extends Component {
     return buttonsView
   }
 
+  clearText = () => {
+    this.setState({ valueInput: '' })
+  }
+
+  renderIconClear = () => {
+    const { valueInput } = this.state
+    if (valueInput === '') {
+      return <View key="invisible" />
+    }
+    return (
+      <View key="visible" style={{ position: 'absolute', right: 10, bottom: 8 }}>
+        <TouchableOpacity onPress={this.clearText}>
+          <Image source={images.iconCloseSearch} style={styles.iconClose} />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     const {
       visible, title, content, type, valueInput, isAddress, errorMsg
@@ -241,6 +261,7 @@ export default class PopupCustom extends Component {
                     {errorMsg !== '' &&
                       <Text style={styles.errorText}>{errorMsg}</Text>
                     }
+                    {this.renderIconClear()}
                   </View>
                 }
               </View>

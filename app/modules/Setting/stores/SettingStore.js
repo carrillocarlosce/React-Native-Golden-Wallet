@@ -46,7 +46,8 @@ export default class SettingStore {
   @observable dataAbout = [
     {
       mainText: `Rate Golden on ${store}`,
-      onPress: () => { this.showPopupRating() }
+      onPress: () => { this.showPopupRating() },
+      iconRight: false
     },
     {
       mainText: 'Source Code',

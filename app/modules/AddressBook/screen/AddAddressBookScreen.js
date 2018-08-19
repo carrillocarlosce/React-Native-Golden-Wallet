@@ -124,7 +124,6 @@ export default class AddAddressBookScreen extends Component {
         <InputWithAction
           ref={(ref) => { this.nameField = ref }}
           style={{ marginTop: 10 }}
-          placeholder="Address Name"
           value={title}
           onChangeText={this.onChangeTitle}
         />
@@ -148,7 +147,6 @@ export default class AddAddressBookScreen extends Component {
         </Text>
         <InputWithAction
           style={{ marginTop: 10 }}
-          placeholder="Your Address"
           styleTextInput={commonStyle.fontAddress}
           onChangeText={this.onChangeAddress}
           needPasteButton
