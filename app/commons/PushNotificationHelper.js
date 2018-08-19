@@ -13,6 +13,7 @@ class PushNotificationHelper {
     FCM.getInitialNotification().then((notif) => {
       if (notif && notif.tx) {
         NotificationStore.isInitFromNotification = true
+        MainStore.appState.checkUnpendTransactions()
         NotificationStore.setCurrentNotif(notif)
         NotificationStore.gotoTransactionList()
       }
@@ -56,15 +57,8 @@ class PushNotificationHelper {
             MainStore.appState.setEnableNotification(true)
           }
         } else if (response === 'undetermined') {
-          this.requestPermission().then((res) => {
-            if (res === 'authorized') {
-              if (MainStore.appState.enableNotification) {
-                MainStore.appState.setEnableNotification(true)
-              }
-            } else {
-              MainStore.appState.setEnableNotification(false)
-            }
-          })
+          this.requestPermission()
+          MainStore.appState.setEnableNotification(true)
         } else {
           MainStore.appState.setEnableNotification(false)
         }

@@ -26,14 +26,14 @@ export default class WalletToken {
   belongsToWalletAddress = null
 
   static fetchTokenDetail = (address, contract) => {
-    return API.fetchTokenDetail(address, contract).then(res => new WalletToken(res.data.data))
+    return API.fetchTokenDetail(address, contract).then(res => new WalletToken(res.data.data, address))
   }
 
   constructor(obj, belongsToWalletAddress) {
     const { tokenInfo } = obj
     this.balance = new BigNumber(`${obj.balance}`)
     this.title = tokenInfo.name
-    this.address = tokenInfo.address
+    this.address = tokenInfo.address !== '' ? tokenInfo.address : belongsToWalletAddress
     this.decimals = tokenInfo.decimals
     this.symbol = tokenInfo.symbol
     this.rate = tokenInfo.price ? new BigNumber(`${tokenInfo.price.rate}`) : new BigNumber(0)

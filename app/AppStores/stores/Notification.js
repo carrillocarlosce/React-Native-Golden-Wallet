@@ -14,7 +14,7 @@ class Notification {
   lastedWalletAddress = null
   lastedTokenAddress = null
   deviceToken = null
-  appState = 'background'
+  appState = 'active'
 
   saveNotifID(address, id) {
     NotificationDS.saveNotifID(address, id)
