@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import WalletToken from './WalletToken'
 import Wallet from './Wallet'
 import MainStore from '../MainStore'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 import NotificationDS from '../DataSource/NotificationDS'
 import API from '../../api'
 

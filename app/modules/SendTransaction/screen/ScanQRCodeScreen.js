@@ -20,7 +20,7 @@ import images from '../../../commons/images'
 import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
 import HapticHandler from '../../../Handler/HapticHandler'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 
 const { width } = Dimensions.get('window')

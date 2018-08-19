@@ -20,7 +20,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import AddressBookItem from '../elements/AddressBookItem'
 import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')

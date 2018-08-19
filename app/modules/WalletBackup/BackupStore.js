@@ -1,7 +1,7 @@
 import { observable, action, computed } from 'mobx'
 import lodash from 'lodash'
 import HapticHandler from '../../Handler/HapticHandler'
-import NavStore from '../../stores/NavStore'
+import NavStore from '../../AppStores/NavStore'
 import MainStore from '../../AppStores/MainStore'
 
 export default class BackupStore {

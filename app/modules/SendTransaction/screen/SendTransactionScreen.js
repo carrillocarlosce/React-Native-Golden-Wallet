@@ -25,7 +25,7 @@ import SelectedCoinScreen from './SelectedCoinScreen'
 import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
 import Config from '../../../AppStores/stores/Config'
-import NavStore from '../../../stores/NavStore'
+import NavStore from '../../../AppStores/NavStore'
 
 // const BN = require('bn.js')
 
