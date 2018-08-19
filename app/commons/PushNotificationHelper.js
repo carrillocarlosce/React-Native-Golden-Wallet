@@ -19,6 +19,10 @@ class PushNotificationHelper {
     })
 
     FCM.on(FCMEvent.Notification, (notif) => {
+      if (!MainStore.appState.enableNotification) {
+        return
+      }
+      MainStore.appState.checkUnpendTransactions()
       NotificationStore.setCurrentNotif(notif)
       if (notif && notif.opened_from_tray) {
         NotificationStore.gotoTransactionList()
@@ -28,6 +32,9 @@ class PushNotificationHelper {
     })
 
     FCM.on(FCMEvent.RefreshToken, (token) => {
+      if (!MainStore.appState.enableNotification) {
+        return
+      }
       if (NotificationStore.deviceToken === token) {
         return
       }
@@ -38,7 +45,9 @@ class PushNotificationHelper {
     FCM.removeAllDeliveredNotifications()
 
     if (Platform.OS === 'android') {
-      MainStore.appState.setEnableNotification(true)
+      if (MainStore.appState.enableNotification) {
+        MainStore.appState.setEnableNotification(true)
+      }
     } else {
       Permissions.check('notification').then((response) => {
         if (response === 'authorized') {
