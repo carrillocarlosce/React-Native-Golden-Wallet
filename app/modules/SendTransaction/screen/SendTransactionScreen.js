@@ -245,10 +245,10 @@ export default class SendTransactionScreen extends Component {
     return (
       <TouchableOpacity
         style={styles.sendTo}
-        disabled={!this.amountStore.checkInputValid}
+        disabled={!this.amountStore.checkButtonEnable}
         onPress={this._onSendPress}
       >
-        <Text style={[styles.sendText, { color: this.amountStore.checkInputValid ? AppStyle.mainColor : AppStyle.greyTextInput }]}>
+        <Text style={[styles.sendText, { color: this.amountStore.checkButtonEnable ? AppStyle.mainColor : AppStyle.greyTextInput }]}>
           {constant.SEND_TO}
         </Text>
       </TouchableOpacity>

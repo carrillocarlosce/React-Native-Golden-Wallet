@@ -6,6 +6,7 @@ import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import { observer } from '../../../../node_modules/mobx-react'
 import MainStore from '../../../AppStores/MainStore'
+import Helper from '../../../commons/Helper'
 
 const dataRef = {}
 // const BN = require('bn.js')
@@ -44,6 +45,10 @@ export default class AnimationInput extends Component {
       subData,
       isUSD
     } = this.props.data
+    const fee = isUSD
+      ? Helper.formatUSD(this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum).toString(10), true, 1000000)
+      : Helper.formatETH(this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum).toString(10), true)
+    const string = fee !== '0' ? `${fee} For Network Fee` : ''
     const style = {
       fontFamily: 'OpenSans-Semibold',
       color: data.length == 0 ? AppStyle.greyTextInput : AppStyle.mainTextColor,
@@ -55,9 +60,12 @@ export default class AnimationInput extends Component {
     const postfixTitle = !isUSD
       ? <Text style={[{ marginLeft: 15 }, style]}>{this.props.postfix}</Text>
       : null
-    const warningTitle = this.amountStore.checkMaxBalanceValid
-      ? null
-      : <Text style={styles.waringStyle}>Not Enough Balance</Text>
+    const warningTitle = this.amountStore.checkWarningTitle
+      ? <Text style={styles.waringStyle}>Not Enough Balance For Network Fee</Text>
+      : null
+    const warningFee = this.amountStore.checkMaxBalanceWithFee
+      ? <Text style={styles.waringFeeStyle}>{string}</Text>
+      : null
     const textInit = data.length == 0
       ? <Text style={styles.textInit}>{isUSD ? '0' : '0.0'}</Text>
       : null
@@ -100,7 +108,7 @@ export default class AnimationInput extends Component {
             <Text style={[styles.subTitle, { color: data.length == 0 ? AppStyle.greyTextInput : AppStyle.secondaryTextColor }]}>
               {this.props.subData}
             </Text>
-            {warningTitle}
+            {warningTitle || warningFee}
           </View>
           <TouchableOpacity
             style={styles.changeButton}
@@ -146,6 +154,13 @@ const styles = StyleSheet.create({
   textInit: {
     color: AppStyle.greyTextInput,
     fontSize: 60,
+    fontFamily: 'OpenSans-Semibold'
+  },
+  waringFeeStyle: {
+    color: AppStyle.grayColor,
+    alignSelf: 'center',
+    fontSize: 14,
+    marginTop: 10,
     fontFamily: 'OpenSans-Semibold'
   }
 })
