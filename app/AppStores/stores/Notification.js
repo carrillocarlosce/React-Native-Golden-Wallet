@@ -38,7 +38,7 @@ class Notification {
 
   addWallets() {
     if (!this.deviceToken) {
-      return
+      return null
     }
     const wallets = MainStore.appState.wallets.map((w) => {
       return {
@@ -46,28 +46,28 @@ class Notification {
         address: w.address
       }
     })
-    API.addWallets(wallets, this.deviceToken).then((res) => {
+    return API.addWallets(wallets, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
         data.forEach((d) => {
           this.saveNotifID(d.address, d.id)
         })
       }
+      return res.data.success
     })
   }
 
   async removeWallet(address) {
     const id = await this.getNotifID(address)
     if (!id) {
-      return
+      return null
     }
-    API.removeWallet(id)
+    return API.removeWallet(id)
   }
 
   async removeWallets() {
-    MainStore.appState.wallets.forEach((w) => {
-      this.removeWallet(w.address)
-    })
+    const removeWalletsPromise = MainStore.appState.wallets.map(w => this.removeWallet(w.address))
+    return Promise.all(removeWalletsPromise)
   }
 
   checkExistedWallet(address) {

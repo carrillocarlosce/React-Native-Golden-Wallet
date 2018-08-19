@@ -61,7 +61,6 @@ export default class SwitchButton extends Component {
           onPress={() => {
             HapticHandler.ImpactLight()
             onStateChange(!enable)
-            !enable ? this._turnOn() : this._turnOff()
           }}
         >
           <View style={styles.container}>

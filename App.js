@@ -7,7 +7,6 @@
 import React, { Component } from 'react'
 import {
   StatusBar,
-  Platform,
   View,
   AppState,
   Keyboard,
@@ -40,12 +39,6 @@ export default class App extends Component {
 
   async componentDidMount() {
     AppState.addEventListener('change', this._handleAppStateChange)
-    // PushNotificationHelper.setBadgeNumber(0)
-    if (Platform.OS === 'ios') {
-      //
-    } else {
-      // PushNotificationHelper.removeAllDeliveredNotifications()
-    }
     crashlytics.init()
     try {
       // SplashScreen.hide()
@@ -61,9 +54,9 @@ export default class App extends Component {
   }
 
   handleFirstConnectivityChange = (connection) => {
-    const connectionType = connection.type === 'none' ? 'No internet connection' : 'online'
+    const connectionType = connection.type === 'none' ? 'offline' : 'online'
     if (connection.type === 'none') {
-      NavStore.showToastTop(connectionType, { backgroundColor: AppStyle.errorColor }, { color: 'white' })
+      NavStore.showToastTop('No internet connection', { backgroundColor: AppStyle.errorColor }, { color: 'white' })
     }
     MainStore.appState.setInternetConnection(connectionType)
   }
