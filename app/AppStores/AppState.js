@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx'
+import { observable, action, computed, autorun } from 'mobx'
 import BigNumber from 'bignumber.js'
 import Config from './stores/Config'
 import Constants from '../commons/constant'
@@ -7,6 +7,7 @@ import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
+import BgJobs from './BackgroundJobs'
 import api from '../api'
 
 // const defaultAppData = {
@@ -45,13 +46,17 @@ class AppState {
 
   static TIME_INTERVAL = 20000
 
-  // constructor() { }
+  constructor() {
+    this.BgJobs = {
+      CheckBalance: new BgJobs.CheckBalance(this, this.TIME_INTERVAL)
+    }
+  }
 
   startAllServices() {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
-    this.startCheckBalanceJob()
+    this.BgJobs.CheckBalance.start()
     this.startCheckUnpendTransactionsJob()
     this.getGasPriceEstimate()
   }
@@ -170,7 +175,7 @@ class AppState {
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
-    this.fetchWalletsBalance(false)
+    this.BgJobs.CheckBalance.doOnce(false)
   }
 
   @computed get isShowSendButton() {
@@ -187,26 +192,6 @@ class AppState {
 
   save() {
     return AppDS.saveAppData(this.toJSON())
-  }
-
-  fetchWalletsBalance(isRefeshing, isBg) {
-    if (this.internetConnection === 'online') {
-      this.wallets.forEach(w => w.fetchingBalance(isRefeshing, isBg))
-    }
-  }
-
-  async startCheckBalanceJob() {
-    if (this.checkBalanceJobID) clearTimeout(this.checkBalanceJobID)
-
-    this.checkBalanceJobID = setTimeout(() => {
-      this.fetchWalletsBalance(false, true)
-      // this.getRateETHDollar()
-      this.startCheckBalanceJob()
-    }, AppState.TIME_INTERVAL)
-  }
-
-  stopCheckBalanceJob() {
-    if (this.checkBalanceJobID) clearTimeout(this.checkBalanceJobID)
   }
 
   async startCheckUnpendTransactionsJob() {
