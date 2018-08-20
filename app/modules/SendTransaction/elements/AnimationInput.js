@@ -68,7 +68,7 @@ export default class AnimationInput extends Component {
       ? <Text style={[{ marginLeft: 15 }, style]}>{this.props.postfix}</Text>
       : null
     const warningTitle = this.amountStore.checkWarningTitle
-      ? <Text style={styles.waringStyle}>Not Enough Balance For Network Fee</Text>
+      ? <Text style={styles.waringStyle}>Not enough balance for network fee</Text>
       : null
     const warningFee = this.amountStore.checkMaxBalanceWithFee
       ? <Text style={styles.waringFeeStyle}>{string}</Text>

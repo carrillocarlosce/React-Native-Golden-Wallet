@@ -61,6 +61,9 @@ class AmountStore {
   @computed get fee() {
     const { fee } = MainStore.sendTransaction.confirmStore
     const { isUSD } = this.amountText
+    if (MainStore.sendTransaction.isToken) {
+      return 0
+    }
     return isUSD ? fee.times(this.rate) : fee
   }
 
@@ -79,9 +82,17 @@ class AmountStore {
 
   @computed get amountHeaderString() {
     const { isUSD } = this.amountText
+    let eth = Helper.formatUSD((this.amountUSD.minus(this.amountTextBigNum).toString(10)), true)
+    let usd = Helper.formatETH((this.amountCrypto.minus(this.amountTextBigNum).toString(10)), true)
+    if (eth.charAt(0) === '-') {
+      eth = '0'
+    }
+    if (usd.charAt(0) === '-') {
+      usd = '0'
+    }
     return isUSD
-      ? `${this.prefix}${Helper.formatUSD((this.amountUSD.minus(this.amountTextBigNum).toString(10)), true)}`
-      : `${Helper.formatETH((this.amountCrypto.minus(this.amountTextBigNum).toString(10)), true)} ${this.postfix}`
+      ? `${this.prefix}${eth}`
+      : `${usd} ${this.postfix}`
   }
 
   @computed get amountHeaderAddressInputScreen() {
