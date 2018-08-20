@@ -11,7 +11,7 @@ export default class AddressBookStore {
   finished = false
 
   @action setTitle = (t) => { this.title = t }
-  @action setAddress = (add) => { this.address = add }
+  @action setAddress = (add) => { this.address = add.toLowerCase() }
 
   @action async saveAddressBook() {
     const validate = Checker.checkAddress(this.address)
