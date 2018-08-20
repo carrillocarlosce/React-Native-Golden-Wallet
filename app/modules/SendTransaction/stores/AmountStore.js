@@ -59,7 +59,10 @@ class AmountStore {
   }
 
   @computed get fee() {
-    const { fee } = MainStore.sendTransaction.confirmStore
+    // const { fee } = MainStore.sendTransaction.confirmStore
+    const gasLimt = MainStore.sendTransaction.isToken ? new BigNumber(150000) : new BigNumber(21000)
+    const gasPriceStandard = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
+    const fee = gasLimt.times(gasPriceStandard).div(new BigNumber(1e+18))
     const { isUSD } = this.amountText
     if (MainStore.sendTransaction.isToken) {
       return 0
