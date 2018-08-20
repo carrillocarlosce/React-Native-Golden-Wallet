@@ -224,6 +224,7 @@ export default class Wallet {
     if (needSetSelectedToken) {
       for (let i = 0; i < tokens.length; i++) {
         if (tokens[i].symbol === selectedToken.symbol) {
+          selectedToken.balance = tokens[i].balance
           tokens[i] = selectedToken
         }
       }
