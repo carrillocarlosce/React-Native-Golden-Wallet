@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Checker from '../Handler/Checker'
 
 const METHOD_GET = 'get'
 const METHOD_POST = 'post'
@@ -20,15 +19,7 @@ function requestAPI(method, url, headers = {}, dataBody, isJSON = false) {
     config.data = dataBody
   }
 
-  return new Promise(async (resolve, reject) => {
-    const checkInternet = await Checker.checkInternet()
-    if (!checkInternet) {
-      reject(new Error('Network Error'))
-    }
-    axios(config).then((res) => {
-      resolve(res)
-    })
-  })
+  return axios(config)
 }
 
 const ApiCaller = {
