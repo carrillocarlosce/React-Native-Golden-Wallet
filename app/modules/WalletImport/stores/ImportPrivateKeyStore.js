@@ -22,20 +22,26 @@ export default class ImportPrivateKeyStore {
   @action async create() {
     this.loading = true
     const ds = MainStore.secureStorage
-    const w = Wallet.importPrivateKey(this.privateKey, this.title, ds)
-    if (this.addressMap[w.address]) {
-      NavStore.popupCustom.show('Existed Wallet')
+
+    try {
+      const w = Wallet.importPrivateKey(this.privateKey, this.title, ds)
+      if (this.addressMap[w.address]) {
+        NavStore.popupCustom.show('Existed Wallet')
+        this.loading = false
+        return
+      }
+      this.finished = true
+      NotificationStore.addWallet(this.title, w.address)
+      NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+      await w.save()
+      await MainStore.appState.syncWallets()
+      MainStore.appState.autoSetSelectedWallet()
       this.loading = false
-      return
+      NavStore.reset()
+    } catch (_) {
+      this.loading = false
+      NavStore.popupCustom.show('Invalid private key.')
     }
-    this.finished = true
-    NotificationStore.addWallet(this.title, w.address)
-    NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await w.save()
-    await MainStore.appState.syncWallets()
-    MainStore.appState.autoSetSelectedWallet()
-    this.loading = false
-    NavStore.reset()
   }
 
   @computed get privateKey() {
