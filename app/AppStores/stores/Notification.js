@@ -28,6 +28,7 @@ class Notification {
     if (!this.deviceToken || !MainStore.appState.enableNotification) {
       return null
     }
+
     return API.addWallet(name, address, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
