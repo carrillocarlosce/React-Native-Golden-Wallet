@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx'
 import { Platform } from 'react-native'
+import Permissions from 'react-native-permissions'
 import { NavigationActions } from 'react-navigation'
 
 // gets the current screen from navigation state
@@ -26,6 +27,8 @@ class ObservableNavStore {
   @observable.ref currentRouteName = ''
   @observable.ref loading = null
   @observable.ref preventOpenUnlockScreen = false
+  @observable triggerRenderAndroid = false
+  @observable.ref shouldReloadCamera = false
 
   showLoading() {
     this.loading && this.loading._show()
@@ -51,6 +54,15 @@ class ObservableNavStore {
       (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && this.preventOpenUnlockScreen)) {
       this.preventOpenUnlockScreen = false
       return
+    }
+
+    if ((Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && !this.preventOpenUnlockScreen)) {
+      Permissions.check('camera').then((res) => {
+        if (res == 'authorized') {
+          this.shouldReloadCamera = true
+          this.triggerRenderAndroid = !this.triggerRenderAndroid
+        }
+      })
     }
 
     this.lock && this.lock._show(params, shouldShowCancel)

@@ -4,12 +4,11 @@ import {
   View,
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
   Image,
-  // Clipboard,
   Platform,
   TouchableWithoutFeedback
 } from 'react-native'
+import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
 import Permissions from 'react-native-permissions'
 import { RNCamera } from 'react-native-camera'
@@ -29,6 +28,7 @@ const { width } = Dimensions.get('window')
 const heightBottomView = (width * 65) / 375
 const marginTop = LayoutUtils.getExtraTop()
 
+@observer
 export default class ScanQRCodeScreen extends PureComponent {
   static propTypes = {
     navigation: PropsType.object
@@ -45,29 +45,34 @@ export default class ScanQRCodeScreen extends PureComponent {
 
   componentWillMount() {
     NavStore.preventOpenUnlockScreen = true
-    setTimeout(() => {
-      this.setState({
-        showCamera: true
-      })
-    }, 300)
+
     Permissions.check('camera').then((response) => {
-      if (response === 'denied') {
+      if (response != 'authorized') {
+        this.setState({
+          showCamera: true
+        })
         if (Platform.OS === 'android') return
         this.showPopupPermissionCamera()
-      } else if (response === 'undetermined') {
-        Permissions.request('camera', {
-          rationale: {
-            title: 'Camera Permission',
-            message: '"Golden" needs permission to access your device’s camera to scan QRCode'
-          }
-        }).then((res) => {
-          if (res === 'denied') {
-            if (Platform.OS === 'android') return
-            this.showPopupPermissionCamera()
-          }
-        })
+      } else {
+        setTimeout(() => {
+          this.setState({
+            showCamera: true
+          })
+        }, 500)
       }
     })
+    if (Platform.OS == 'ios') {
+      this.requestPhotoPermission()
+    }
+  }
+
+  componentDidUpdate() {
+    if (NavStore.shouldReloadCamera) {
+      NavStore.shouldReloadCamera = false
+      this.setState({ showCamera: false }, () => {
+        this.setState({ showCamera: true })
+      })
+    }
   }
 
   onSuccess = (data) => {
@@ -79,16 +84,6 @@ export default class ScanQRCodeScreen extends PureComponent {
   onError = (data) => {
     NavStore.popupCustom.show(data)
   }
-
-  // async onPasteAddress() {
-  //   const address = await Clipboard.getString()
-  //   if (address) {
-  //     this.props.navigation.state.params.returnData(address)
-  //     this.props.navigation.goBack()
-  //   } else {
-  //     NavStore.popupCustom.show('No Address Copied')
-  //   }
-  // }
 
   requestCameraPermissionAndroid(callback = () => { }) {
     Permissions.request('camera').then((res) => {
@@ -127,18 +122,26 @@ export default class ScanQRCodeScreen extends PureComponent {
     }
   }
 
-  requestPhotoPermission() {
+  requestPhotoPermission(openLibrary = false) {
     NavStore.preventOpenUnlockScreen = true
-    Permissions.request('photo')
+    Permissions.check('photo').then((response) => {
+      if (response != 'authorized') {
+        Permissions.request('photo').then((res) => {
+          if (openLibrary && res == 'authorized') {
+            this.pickPhotosFromGallery()
+          }
+        })
+      }
+    })
   }
 
   showPopupPermissionPhoto() {
     if (Platform.OS == 'android') {
       Permissions.check('camera').then((res) => {
         if (res == 'authorized') {
-          this.requestPhotoPermission()
+          this.requestPhotoPermission(true)
         } else {
-          this.requestCameraPermissionAndroid(() => { this.requestPhotoPermission() })
+          this.requestCameraPermissionAndroid(() => { this.requestPhotoPermission(true) })
         }
       })
     } else {
@@ -179,27 +182,42 @@ export default class ScanQRCodeScreen extends PureComponent {
     }
   }
 
+  pickPhotosFromGallery() {
+    NavStore.preventOpenUnlockScreen = true
+    const options = {
+      title: 'QRCode Image',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    }
+    ImagePicker.launchImageLibrary(options, (res) => {
+      if (res.error) {
+        this.showPopupPermissionPhoto()
+      } else {
+        const url = Platform.OS === 'ios' ? res.uri : res.path
+        this._getQRCode(url)
+      }
+    })
+  }
+
   openImageLibrary() {
     NavStore.preventOpenUnlockScreen = true
     Permissions.check('photo').then((response) => {
       if (response != 'authorized') {
         this.showPopupPermissionPhoto()
       } else {
-        const options = {
-          title: 'QRCode Image',
-          storageOptions: {
-            skipBackup: true,
-            path: 'images'
-          }
+        if (Platform.OS == 'android') {
+          Permissions.check('camera').then((res) => {
+            if (res != 'authorized') {
+              this.requestCameraPermissionAndroid(this.pickPhotosFromGallery)
+            } else {
+              this.pickPhotosFromGallery()
+            }
+          })
+        } else {
+          this.pickPhotosFromGallery()
         }
-        ImagePicker.launchImageLibrary(options, (res) => {
-          if (res.error) {
-            this.showPopupPermissionPhoto()
-          } else {
-            const url = Platform.OS === 'ios' ? res.uri : res.path
-            this._getQRCode(url)
-          }
-        })
       }
     })
   }
@@ -213,29 +231,6 @@ export default class ScanQRCodeScreen extends PureComponent {
     }
   }
 
-  // _renderNotAuthorizedView = () => {
-  //   return (
-  //     <View
-  //       style={{
-  //         width,
-  //         height: width,
-  //         alignItems: 'center',
-  //         justifyContent: 'center',
-  //         backgroundColor: AppStyle.colorBlack
-  //       }}
-  //     >
-  //       <Text
-  //         style={{
-  //           color: AppStyle.mainTextColor,
-  //           fontFamily: 'OpenSans-Semibold',
-  //           fontSize: 20
-  //         }}
-  //       >
-  //         Camera not authorized
-  //       </Text>
-  //     </View>
-  //   )
-  // }
   _renderNotAuthorizedView = () => {
     return (
       <View
@@ -279,116 +274,18 @@ export default class ScanQRCodeScreen extends PureComponent {
     )
   }
 
-  //   render() {
-  //     const { title, marginTop, marginBottom = 0 } = this.props.navigation.state.params
-  //     return (
-  //       <View style={{ flex: 1, paddingTop: 16 + marginTop }}>
-  //         <NavigationHeader
-  //           headerItem={{
-  //             title,
-  //             icon: null,
-  //             button: images.backButton
-  //           }}
-  //           action={() => {
-  //             this.props.navigation.goBack()
-  //           }}
-  //         />
-  //         <View
-  //           style={{
-  //             flex: 1,
-  //             alignItems: 'center',
-  //             justifyContent: 'center'
-  //           }}
-  //         >
-  //           {this.state.showCamera && (
-  //             <Camera
-  //               style={styles.camera}
-  //               onBarCodeRead={(e) => { this._handleBarCodeRead(e) }}
-  //               permissionDialogTitle="Permission to use camera"
-  //               permissionDialogMessage="We need your permission to use your camera phone "
-  //               notAuthorizedView={
-  //                 this._renderNotAuthorizedView()
-  //               }
-  //             />
-  //           )}
-  //           <View style={[styles.viewButtonBottom, { marginBottom }]}>
-  //             <TouchableOpacity
-  //               style={styles.buttonBlue}
-  //               onPress={() => {
-  //                 this.openImageLibrary()
-  //               }}
-  //             >
-  //               <Image
-  //                 style={styles.imageButtonBlue}
-  //                 source={images.backgroundLargeButton}
-  //               />
-  //               <Text style={styles.textButtonBlue}>
-  //                 {constant.IMPORT}
-  //               </Text>
-  //             </TouchableOpacity>
-  //             <TouchableOpacity
-  //               style={[styles.buttonBlue, { marginLeft: 20 }]}
-  //               onPress={() => this.onPasteAddress()}
-  //             >
-  //               <Image
-  //                 style={styles.imageButtonBlue}
-  //                 source={images.backgroundLargeButton}
-  //               />
-  //               <Text style={styles.textButtonBlue}>
-  //                 {constant.PASTE_ADDRESS}
-  //               </Text>
-  //             </TouchableOpacity>
-  //           </View>
-  //         </View>
-  //       </View>
-  //     )
-  //   }
-  // }
-
-  // const styles = StyleSheet.create({
-  //   camera: {
-  //     width,
-  //     height: width
-  //   },
-  //   viewButtonBottom: {
-  //     flexDirection: 'row',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     alignSelf: 'center',
-  //     width: width - 40,
-  //     flex: 1
-  //   },
-  //   buttonBlue: {
-  //     width: widthButton,
-  //     height: 34,
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     borderRadius: 5
-  //   },
-  //   imageButtonBlue: {
-  //     width: widthButton,
-  //     height: 34,
-  //     borderRadius: 5,
-  //     position: 'absolute'
-  //   },
-  //   textButtonBlue: {
-  //     fontFamily: 'OpenSans-Semibold',
-  //     fontSize: 14,
-  //     color: AppStyle.mainColor
-  //   }
-  // })
   render() {
+    console.log('render')
+    const triggerRender = NavStore.triggerRenderAndroid
     return (
       <View style={{ flex: 1, paddingTop: isIphoneX() ? 64 : marginTop + 20, paddingBottom: isIphoneX() ? 33 : 0 }}>
         <NavigationHeader
-          // containerStyle={[styles.header]}
           headerItem={{
             title: 'Scan QR Code',
             icon: null,
             button: images.backButton
           }}
           action={() => {
-            // NavigationStore.popView()
             this.props.navigation.goBack()
           }}
           rightView={{
@@ -398,38 +295,43 @@ export default class ScanQRCodeScreen extends PureComponent {
             }
           }}
         />
-        <View
+        {/* <View
           style={{ flex: 1 }}
+        > */}
+        {!this.state.showCamera &&
+          <View style={styles.camera} />
+        }
+        {this.state.showCamera && (
+          <RNCamera
+            style={styles.camera}
+            onBarCodeRead={(e) => { this._handleBarCodeRead(e) }}
+            permissionDialogTitle="Permission to use camera"
+            permissionDialogMessage="We need your permission to use your camera phone "
+            notAuthorizedView={
+              this._renderNotAuthorizedView()
+            }
+            type={RNCamera.Constants.Type.back}
+            flashMode={this.state.enableFlash ? RNCamera.Constants.FlashMode.torch : RNCamera.Constants.FlashMode.off}
+          >
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={images.imgScanFrame}
+              />
+              <Text
+                style={styles.description}
+              >
+                Automatically scan the QR code into the frame
+              </Text>
+            </View>
+          </RNCamera>
+        )}
+        <TouchableWithoutFeedback
+          onPress={() => {
+            this.openImageLibrary()
+          }}
         >
-          {this.state.showCamera && (
-            <RNCamera
-              style={[styles.camera]}
-              onBarCodeRead={(e) => { this._handleBarCodeRead(e) }}
-              permissionDialogTitle="Permission to use camera"
-              permissionDialogMessage="We need your permission to use your camera phone "
-              notAuthorizedView={
-                this._renderNotAuthorizedView()
-              }
-              type={RNCamera.Constants.Type.back}
-              flashMode={this.state.enableFlash ? RNCamera.Constants.FlashMode.torch : RNCamera.Constants.FlashMode.off}
-            >
-              <View style={{ alignItems: 'center' }}>
-                <Image
-                  source={images.imgScanFrame}
-                />
-                <Text
-                  style={styles.description}
-                >
-                  Automatically scan the QR code into the frame
-                </Text>
-              </View>
-            </RNCamera>
-          )}
-          <TouchableOpacity
+          <View
             style={styles.buttonBlue}
-            onPress={() => {
-              this.openImageLibrary()
-            }}
           >
             <Image
               source={images.iconAddPhoto}
@@ -437,8 +339,9 @@ export default class ScanQRCodeScreen extends PureComponent {
             <Text style={styles.textButtonBlue}>
               {constant.ADD_FROM_ALBUM}
             </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
+        {/* </View> */}
       </View>
     )
   }
@@ -453,9 +356,9 @@ const styles = StyleSheet.create({
   buttonBlue: {
     width,
     height: heightBottomView,
-    backgroundColor: AppStyle.backgroundDarkBlue,
-    position: 'absolute',
-    bottom: 0,
+    // backgroundColor: AppStyle.backgroundDarkBlue,
+    // position: 'absolute',
+    // bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
@@ -472,10 +375,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: AppStyle.mainTextColor
   }
-  // header: {
-  //   position: 'absolute',
-  //   zIndex: 1000,
-  //   left: 0,
-  //   right: 0
-  // }
 })
