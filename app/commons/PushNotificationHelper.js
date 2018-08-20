@@ -13,7 +13,7 @@ class PushNotificationHelper {
     FCM.getInitialNotification().then((notif) => {
       if (notif && notif.tx) {
         NotificationStore.isInitFromNotification = true
-        MainStore.appState.checkUnpendTransactions()
+        MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
         NotificationStore.setCurrentNotif(notif)
         NotificationStore.gotoTransactionList()
       }
