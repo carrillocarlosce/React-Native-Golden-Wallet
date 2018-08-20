@@ -92,7 +92,9 @@ export default class TransactionListScreen extends Component {
   }
 
   render() {
-    const defaultToken = { allTransactions: [], isRefreshing: false, isLoading: true }
+    const defaultToken = {
+      allTransactions: [], isRefreshing: false, isLoading: true, successTransactions: []
+    }
     const selectedToken = this.selectedToken ? this.selectedToken : defaultToken
     const transactions = selectedToken.allTransactions
     const { navigation } = this.props
