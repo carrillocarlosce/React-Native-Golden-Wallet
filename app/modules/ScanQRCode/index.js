@@ -47,7 +47,7 @@ export default class ScanQRCodeScreen extends PureComponent {
     NavStore.preventOpenUnlockScreen = true
 
     Permissions.check('camera').then((response) => {
-      if (response != 'authorized') {
+      if (response == 'denied') {
         this.setState({
           showCamera: true
         })
