@@ -18,7 +18,7 @@ export default class ImportAddressStore {
   }
 
   @action setAddress(address) {
-    this.addessWallet = address
+    this.addessWallet = address.toLowerCase()
   }
 
   @action async create(title) {
