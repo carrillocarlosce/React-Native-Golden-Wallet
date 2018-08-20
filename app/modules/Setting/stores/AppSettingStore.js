@@ -10,23 +10,9 @@ export default class AppSettingStore {
     }
     MainStore.appState.setEnableNotification(isEnable)
     if (isEnable) {
-      NotificationStore.addWallets().then((res) => {
-        if (!res) {
-          MainStore.appState.setEnableNotification(!isEnable)
-          NavStore.popupCustom.show('Can not turn on Notification.')
-        }
-      })
+      NotificationStore.onNotif().then(res => console.log(res))
     } else {
-      NotificationStore.removeWallets().then((results) => {
-        for (let i = 0; i < results.length; i++) {
-          const res = results[i]
-          if (!res.data.success && res.data.data.error !== 'not found') {
-            MainStore.appState.setEnableNotification(!isEnable)
-            NavStore.popupCustom.show('Can not turn off Notification.')
-            break
-          }
-        }
-      })
+      NotificationStore.offNotif().then(res => console.log(res))
     }
   }
 }

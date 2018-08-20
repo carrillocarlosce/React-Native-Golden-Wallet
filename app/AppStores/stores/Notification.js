@@ -51,12 +51,20 @@ class Notification {
     return API.addWallets(wallets, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
-        data.forEach((d) => {
+        data.wallets.forEach((d) => {
           this.saveNotifID(d.address, d.id)
         })
       }
       return res.data.success
     })
+  }
+
+  onNotif() {
+    return API.onNotification(this.deviceToken)
+  }
+
+  offNotif() {
+    return API.offNotification(this.deviceToken)
   }
 
   async removeWallet(address) {
