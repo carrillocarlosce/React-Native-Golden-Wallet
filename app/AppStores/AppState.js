@@ -176,7 +176,7 @@ class AppState {
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
-    this.BgJobs.CheckBalance.doOnce(false)
+    // this.BgJobs.CheckBalance.doOnce(false)
   }
 
   @computed get isShowSendButton() {

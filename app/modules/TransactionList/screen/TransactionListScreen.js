@@ -92,11 +92,13 @@ export default class TransactionListScreen extends Component {
   }
 
   render() {
-    const defaultToken = { allTransactions: [], isRefreshing: false, isLoading: true }
+    const defaultToken = {
+      allTransactions: [], isRefreshing: false, isLoading: true, successTransactions: []
+    }
     const selectedToken = this.selectedToken ? this.selectedToken : defaultToken
     const transactions = selectedToken.allTransactions
     const { navigation } = this.props
-    const { isRefreshing, isLoading } = selectedToken
+    const { isRefreshing, isLoading, successTransactions } = selectedToken
 
     return (
       <View style={styles.container}>
@@ -162,7 +164,7 @@ export default class TransactionListScreen extends Component {
             />
           </View>
         </Modal>
-        {transactions.length === 0 && isLoading && <Spinner />}
+        {successTransactions.length === 0 && isLoading && <Spinner />}
       </View>
     )
   }

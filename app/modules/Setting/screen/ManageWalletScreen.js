@@ -22,6 +22,7 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -66,6 +67,7 @@ export default class ListWalletScreen extends Component {
             onClick: async (text) => {
               this.selectedWallet.title = text
               await this.manageWalletStore.editWallet(this.selectedWallet)
+              NotificationStore.editWalletName(this.selectedWallet.title, this.selectedWallet.address)
               NavStore.popupCustom.hide()
             }
           }

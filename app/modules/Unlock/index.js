@@ -59,7 +59,9 @@ export default class UnlockScreen extends Component {
   renderDots(numberOfDots) {
     const dots = []
     const { unlock } = MainStore
-    const { pinTyped } = unlock.data
+    const { pincode } = unlock.data
+    const pinTyped = pincode.length
+
     const styleDot = {
       width: 13,
       height: 13,

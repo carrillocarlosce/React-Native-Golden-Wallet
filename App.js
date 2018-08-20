@@ -74,7 +74,7 @@ export default class App extends Component {
     }
     if (nextAppState === 'active') {
       setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
-      MainStore.appState.BgJobs.CheckBalance.doOnce(false, false)
+      // MainStore.appState.BgJobs.CheckBalance.doOnce(false, false)
       MainStore.appState.BgJobs.CheckBalance.start()
       this.blind.hideBlind()
     }

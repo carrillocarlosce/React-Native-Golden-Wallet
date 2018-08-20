@@ -82,7 +82,6 @@ export default class SecureDS {
   derivePass = async () => {
     const passCipher = await this._getPassword()
     const iv = await this.getIV()
-    console.log(passCipher)
 
     if (!passCipher) return { password: this._deriveNew(iv), iv }
     return { password: this._deriveOld(iv, passCipher), iv }

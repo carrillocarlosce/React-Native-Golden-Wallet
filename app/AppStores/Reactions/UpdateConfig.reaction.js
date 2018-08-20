@@ -5,6 +5,7 @@ export default (appState) => {
     () => appState.config,
     () => {
       appState.wallets.forEach((w) => {
+        w.offLoading()
         w.fetchingBalance()
       })
     }

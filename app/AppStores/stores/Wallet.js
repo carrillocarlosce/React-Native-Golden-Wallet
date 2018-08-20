@@ -184,6 +184,12 @@ export default class Wallet {
     secureDS.savePrivateKey(this.address, privateKey)
   }
 
+  @action offLoading() {
+    this.isFetchingBalance = false
+    this.isRefresh = false
+    this.loading = false
+  }
+
   @action fetchingBalance(isRefresh = false, isBackground = false) {
     if (this.loading) return
 
@@ -201,13 +207,9 @@ export default class Wallet {
       this.totalBalance = totalTokenETH
       this.update()
       MainStore.appState.syncWallets()
-      this.isFetchingBalance = false
-      this.isRefresh = false
-      this.loading = false
+      this.offLoading()
     }).catch((e) => {
-      this.isFetchingBalance = false
-      this.isRefresh = false
-      this.loading = false
+      this.offLoading()
     })
   }
 
@@ -215,12 +217,14 @@ export default class Wallet {
     this.tokens = tokens
   }
 
-  @action autoSetSelectedTokenIfNeeded(tokens) {
+  @action autoSetSelectedTokenIfNeeded(_tokens) {
+    const tokens = _tokens
     const { selectedToken } = MainStore.appState
     const needSetSelectedToken = selectedToken && selectedToken.belongsToWalletAddress === this.address
     if (needSetSelectedToken) {
       for (let i = 0; i < tokens.length; i++) {
         if (tokens[i].symbol === selectedToken.symbol) {
+          selectedToken.balance = tokens[i].balance
           tokens[i] = selectedToken
         }
       }

@@ -66,6 +66,10 @@ export default class WalletToken {
     return [...this.unspendTransactions.slice(), ...this.transactions.slice()]
   }
 
+  @computed get successTransactions() {
+    return this.transactions
+  }
+
   @computed get balanceInDollar() {
     return this.rate.times(this.balanceToken)
   }

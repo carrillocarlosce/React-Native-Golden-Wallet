@@ -6,7 +6,7 @@ import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import { observer } from '../../../../node_modules/mobx-react'
 import MainStore from '../../../AppStores/MainStore'
-import Helper from '../../../commons/Helper'
+// import Helper from '../../../commons/Helper'
 
 const dataRef = {}
 // const BN = require('bn.js')
@@ -45,10 +45,17 @@ export default class AnimationInput extends Component {
       subData,
       isUSD
     } = this.props.data
-    const fee = isUSD
-      ? Helper.formatUSD(this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum).toString(10), true, 1000000)
-      : Helper.formatETH(this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum).toString(10), true)
-    const string = fee !== '0' ? `${fee} For Network Fee` : ''
+
+    // const feeValue = isUSD
+    //   ? this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum)
+    //   : this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum)
+
+    // const fee = isUSD
+    //   ? Helper.formatUSD(feeValue.toString(10), true, 1000000)
+    //   : Helper.formatETH(feeValue.toString(10), true)
+
+    // const string = feeValue.toString(10) !== '0' ? `${feeValue.toString(10)} For Network Fee` : ''
+    const string = 'Included network fee'
     const style = {
       fontFamily: 'OpenSans-Semibold',
       color: data.length == 0 ? AppStyle.greyTextInput : AppStyle.mainTextColor,
@@ -61,7 +68,7 @@ export default class AnimationInput extends Component {
       ? <Text style={[{ marginLeft: 15 }, style]}>{this.props.postfix}</Text>
       : null
     const warningTitle = this.amountStore.checkWarningTitle
-      ? <Text style={styles.waringStyle}>Not Enough Balance For Network Fee</Text>
+      ? <Text style={styles.waringStyle}>Not enough balance for network fee</Text>
       : null
     const warningFee = this.amountStore.checkMaxBalanceWithFee
       ? <Text style={styles.waringFeeStyle}>{string}</Text>

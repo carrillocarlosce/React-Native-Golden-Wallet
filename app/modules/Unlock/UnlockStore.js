@@ -28,29 +28,33 @@ class UnlockStore {
 
   @action async handlePress(number) {
     HapticHandler.ImpactLight()
-    const { pinTyped, pincode, pinConfirm } = this.data
-    if (pinTyped === 5) {
+    const { pincode, pinConfirm } = this.data
+    const pinData = pincode + number
+
+    if (pinData.length === 6) {
       // handle check pincode
       this.setData({
-        pinTyped: pinTyped + 1,
-        pincode: pincode + number
+        // pinTyped: pinTyped + 1,
+        pincode: pinData
       })
-      const oldData = await MigrateData.getItem('USER_WALLET_ENCRYPTED')
-      if (oldData) {
-        this._handelMigrateData()
-      } else if (MainStore.appState.hasPassword) {
-        this._handleCheckPincode()
-      } else if (pinConfirm === '') {
-        this._handleCreatePin()
-      } else if (this.data.pincode === this.data.pinConfirm) {
-        this._handleConfirmPin()
-      } else {
-        this._handleErrorPin()
-      }
+      MigrateData.getItem('USER_WALLET_ENCRYPTED')
+        .then((oldData) => {
+          if (oldData) {
+            this._handelMigrateData()
+          } else if (MainStore.appState.hasPassword) {
+            this._handleCheckPincode()
+          } else if (pinConfirm === '') {
+            this._handleCreatePin()
+          } else if (this.data.pincode === this.data.pinConfirm) {
+            this._handleConfirmPin()
+          } else {
+            this._handleErrorPin()
+          }
+        })
     } else {
       this.setData({
-        pinTyped: pinTyped + 1,
-        pincode: pincode + number
+        // pinTyped: pinTyped + 1,
+        pincode: pinData
       })
     }
   }
@@ -139,10 +143,10 @@ class UnlockStore {
   }
 
   handleDeletePin() {
-    const { pinTyped, pincode } = this.data
-    if (pinTyped > 0) {
+    const { pincode } = this.data
+    if (pincode.length > 0) {
       this.setData({
-        pinTyped: pinTyped - 1,
+        // pinTyped: pinTyped - 1,
         pincode: pincode.slice(0, -1)
       })
     }

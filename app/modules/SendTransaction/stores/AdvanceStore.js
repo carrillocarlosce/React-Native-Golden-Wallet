@@ -55,6 +55,9 @@ export default class AdvanceStore {
     const gasPrice = new BigNumber(price)
     const fee = gasLimit.times(gasPrice)
     const feeUSD = fee.times(this.rate)
-    return `${Helper.formatETH(fee.toString(10))} ${this.title} ($${Helper.formatUSD(feeUSD)})`
+    const usd = Helper.formatUSD(feeUSD) !== '0'
+      ? `($${Helper.formatUSD(feeUSD)})`
+      : ''
+    return `${Helper.formatETH(fee.toString(10), false, 6)} ${this.title} ${usd}`
   }
 }
