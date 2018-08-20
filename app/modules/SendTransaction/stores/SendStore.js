@@ -10,6 +10,7 @@ import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import HapticHandler from '../../../Handler/HapticHandler'
+import AppStyle from '../../../commons/AppStyle'
 
 // import NavigationStore from '../../../navigation/NavigationStore'
 // import ScreenID from '../../../navigation/ScreenID'
@@ -100,7 +101,7 @@ class SendStore {
     NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.navigator.dispatch(NavigationActions.back())
     // MainStore.clearSendStore()
-    NavStore.showToastTop('Your transaction has been pending')
+    NavStore.showToastTop('Your transaction has been pending', {}, { color: AppStyle.colorUp })
   }
 
   _onSendFail = (err) => {

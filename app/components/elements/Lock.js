@@ -258,7 +258,7 @@ export default class Lock extends Component {
           ref={(ref) => { this.loading = ref }}
         // style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }
         />
-        <Text style={styles.desText}>Unlock with your PIN</Text>
+        <Text style={styles.desText}>Unlock your Golden</Text>
         <Animated.View
           style={[styles.pinField, {
             transform: [

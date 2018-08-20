@@ -55,7 +55,7 @@ export default class AnimationInput extends Component {
     //   : Helper.formatETH(feeValue.toString(10), true)
 
     // const string = feeValue.toString(10) !== '0' ? `${feeValue.toString(10)} For Network Fee` : ''
-    const string = 'Include network fee'
+    const string = 'Included network fee'
     const style = {
       fontFamily: 'OpenSans-Semibold',
       color: data.length == 0 ? AppStyle.greyTextInput : AppStyle.mainTextColor,
