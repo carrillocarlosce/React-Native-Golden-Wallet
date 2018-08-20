@@ -45,10 +45,16 @@ export default class AnimationInput extends Component {
       subData,
       isUSD
     } = this.props.data
+
+    const feeValue = isUSD
+      ? this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum)
+      : this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum)
+
     const fee = isUSD
-      ? Helper.formatUSD(this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum).toString(10), true, 1000000)
-      : Helper.formatETH(this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum).toString(10), true)
-    const string = fee !== '0' ? `${fee} For Network Fee` : ''
+      ? Helper.formatUSD(feeValue.toString(10), true, 1000000)
+      : Helper.formatETH(feeValue.toString(10), true)
+
+    const string = feeValue.toString(10) !== '0' ? `${fee} For Network Fee` : ''
     const style = {
       fontFamily: 'OpenSans-Semibold',
       color: data.length == 0 ? AppStyle.greyTextInput : AppStyle.mainTextColor,
