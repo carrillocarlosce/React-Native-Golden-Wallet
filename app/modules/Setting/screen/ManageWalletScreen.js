@@ -67,7 +67,7 @@ export default class ListWalletScreen extends Component {
             onClick: async (text) => {
               this.selectedWallet.title = text
               await this.manageWalletStore.editWallet(this.selectedWallet)
-              NotificationStore.editWalletName(this.selectedWallet.title, this.selectedWallet.address)
+              NotificationStore.addWallets()
               NavStore.popupCustom.hide()
             }
           }
