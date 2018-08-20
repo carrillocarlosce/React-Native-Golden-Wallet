@@ -115,7 +115,7 @@ export default class Lock extends Component {
   _handlePass() {
     this._hide()
     HapticHandler.NotificationSuccess()
-    setTimeout(() => this.state.params.onUnlock && this.state.params.onUnlock(this.state.pinCode), 250)
+    setTimeout(() => this.state.params.onUnlock && this.state.params.onUnlock(this.state.pinCode.substring(0, 6)), 250)
   }
 
   _handleErrorPin(e) {

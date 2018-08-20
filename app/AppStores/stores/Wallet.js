@@ -215,7 +215,8 @@ export default class Wallet {
     this.tokens = tokens
   }
 
-  @action autoSetSelectedTokenIfNeeded(tokens) {
+  @action autoSetSelectedTokenIfNeeded(_tokens) {
+    const tokens = _tokens
     const { selectedToken } = MainStore.appState
     const needSetSelectedToken = selectedToken && selectedToken.belongsToWalletAddress === this.address
     if (needSetSelectedToken) {
