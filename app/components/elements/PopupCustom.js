@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
   textInput: {
     width: 236,
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 40,
     paddingVertical: 10,
     color: AppStyle.mainTextColor,
     fontSize: 14,

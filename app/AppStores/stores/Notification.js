@@ -73,7 +73,7 @@ class Notification {
 
   async editWalletName(name, address) {
     await this.removeWallet(address)
-    this.addWallet(name, address).then(res => console.warn(res))
+    this.addWallet(name, address).then((res) => { })
   }
 
   checkExistedWallet(address) {

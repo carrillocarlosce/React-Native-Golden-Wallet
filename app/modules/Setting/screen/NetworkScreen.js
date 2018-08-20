@@ -52,7 +52,7 @@ export default class NetworkScreen extends Component {
   _renderNetworkList() {
     return (
       <FlatList
-        style={{ flex: 1, marginTop: 30 }}
+        style={{ flex: 1, marginTop: 15 }}
         data={networks}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(_, index) => `${index}`}
@@ -88,7 +88,7 @@ export default class NetworkScreen extends Component {
             navigation.dispatch(NavigationActions.back())
           }}
         />
-        {this._renderIntroduction()}
+        {/* {this._renderIntroduction()} */}
         {this._renderNetworkList()}
         {loading &&
           <Spinner />
