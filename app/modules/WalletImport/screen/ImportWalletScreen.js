@@ -80,7 +80,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
               title="Mnemonic Phrase"
-              subtitle="Enter your Mnemonic Phase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done."
+              subtitle="Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done."
               imageCard={images.iconMnemonic}
               onPress={this.gotoImportMnemonic}
               titleTextStyle={{ color: AppStyle.mainTextColor }}
