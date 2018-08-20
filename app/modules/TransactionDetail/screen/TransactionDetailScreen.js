@@ -123,7 +123,7 @@ export default class TransactionDetailScreen extends Component {
         style={{ marginTop: 15 }}
         data={{
           title: 'Fee',
-          subtitle: this.selectedTransaction.fee.toString(10)
+          subtitle: this.selectedTransaction.feeFormat
         }}
         action={() => { this._onPress(this.selectedTransaction.fee.toString(10), 'Fee') }}
         bottomLine={false}

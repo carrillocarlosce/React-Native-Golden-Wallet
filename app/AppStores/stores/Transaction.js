@@ -90,6 +90,16 @@ export default class Transaction {
     return this.gas.multipliedBy(this.gasPrice).dividedBy(new BigNumber(`1.0e+18`))
   }
 
+  get feeFormat() {
+    const feeStr = this.fee.toFixed(4)
+    const usd = this.fee.times(MainStore.appState.rateETHDollar).toFixed(2)
+    let usdStr = `= $${usd}`
+    if (usd === '0') {
+      usdStr = ''
+    }
+    return `${feeStr} ETH ${usdStr}`
+  }
+
   get balance() {
     return this.value.dividedBy(new BigNumber(`1.0e+${this.decimal}`))
   }
