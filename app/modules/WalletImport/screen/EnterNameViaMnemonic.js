@@ -84,7 +84,7 @@ export default class EnterNameViaMnemonic extends Component {
             {this.renderErrorField()}
             <BottomButton
               disable={!isReadyUnlock}
-              text="Create"
+              text="Done"
               onPress={this.handleCreate}
             />
             {loading &&
