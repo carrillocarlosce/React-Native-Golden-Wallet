@@ -26,13 +26,14 @@ class Notification {
 
   addWallet(name, address) {
     if (!this.deviceToken || !MainStore.appState.enableNotification) {
-      return
+      return null
     }
-    API.addWallet(name, address, this.deviceToken).then((res) => {
+    return API.addWallet(name, address, this.deviceToken).then((res) => {
       const { data, success } = res.data
       if (success) {
         this.saveNotifID(address, data.id)
       }
+      return res.data
     })
   }
 
@@ -68,6 +69,11 @@ class Notification {
   async removeWallets() {
     const removeWalletsPromise = MainStore.appState.wallets.map(w => this.removeWallet(w.address))
     return Promise.all(removeWalletsPromise)
+  }
+
+  async editWalletName(name, address) {
+    await this.removeWallet(address)
+    this.addWallet(name, address).then(res => console.warn(res))
   }
 
   checkExistedWallet(address) {

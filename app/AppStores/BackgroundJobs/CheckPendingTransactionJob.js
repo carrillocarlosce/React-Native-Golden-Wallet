@@ -19,6 +19,9 @@ export default class CheckPendingTransactionJob {
         if (!canRemove) newUnpendTxs.push(ut)
       }
 
+      if (this.appState.selectedToken && newUnpendTxs.length !== this.appState.unpendTransactions.length) {
+        this.appState.selectedToken.fetchTransactions(true)
+      }
       this.appState.setUnpendTransactions(newUnpendTxs)
       UnspendTransactionDS.saveTransactions(this.appState.unpendTransactions)
     }
