@@ -44,10 +44,10 @@ class MainStore {
 
   async gotoUnlock() {
     this.unlock = new UnlockStore()
-    let unlockDes = this.appState.hasPassword ? 'Unlock with your PIN' : 'Create your PIN'
+    let unlockDes = this.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
     const oldData = await AsyncStorage.getItem('USER_WALLET_ENCRYPTED')
     if (oldData) {
-      unlockDes = 'Unlock with your PIN'
+      unlockDes = 'Unlock your Golden'
     }
     this.unlock.setData({
       unlockDes
