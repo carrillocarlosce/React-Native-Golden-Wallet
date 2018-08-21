@@ -231,7 +231,7 @@ export default class ConfirmScreen extends Component {
               style={styles.textInput}
               keyboardAppearance="dark"
               value={gasLimit}
-              keyboardType="number-pad"
+              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
               onChangeText={(t) => {
                 advanceStore.setGasLimit(t)
                 advanceStore.setGasLimitErr('')
@@ -261,7 +261,7 @@ export default class ConfirmScreen extends Component {
           <View>
             <TextInput
               ref={ref => (this.gasGwei = ref)}
-              keyboardType="number-pad"
+              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
               keyboardAppearance="dark"
               value={gasGwei}
               style={styles.textInput}
