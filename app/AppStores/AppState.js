@@ -144,9 +144,9 @@ class AppState {
         const res = await api.fetchGasPrice()
         const data = typeof res.data === 'object'
           ? {
-            slow: Math.floor(res.data.safeLow / 10),
-            standard: Math.floor(res.data.average / 10),
-            fast: Math.floor(res.data.fastest / 10)
+            slow: !isNaN(res.data.safeLow / 10) ? Math.floor(res.data.safeLow / 10) : 2,
+            standard: !isNaN(res.data.average / 10) ? Math.floor(res.data.average / 10) : 10,
+            fast: !isNaN(res.data.fastest / 10) ? Math.floor(res.data.fastest / 10) : 60
           }
           : this.gasPriceEstimate
 
