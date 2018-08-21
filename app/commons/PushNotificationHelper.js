@@ -15,7 +15,7 @@ class PushNotificationHelper {
         NotificationStore.isInitFromNotification = true
         MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
         NotificationStore.setCurrentNotif(notif)
-        NotificationStore.gotoTransactionList()
+        // NotificationStore.gotoTransactionList()
       }
     })
 

@@ -111,7 +111,8 @@ class Notification {
     const { address, contract } = this.notif
     MainStore.appState.setselectedToken(null)
     WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
-      const wallet = await Wallet.getWalletAtAddress(address)
+      const wallet = MainStore.appState.wallets
+        .find(w => w.address.toLowerCase() === this.lastedWalletAddress.toLowerCase())
       if (!wallet) {
         return
       }
@@ -125,11 +126,15 @@ class Notification {
     if (!this.lastedWalletAddress) {
       return
     }
-    const prevSelectedWallet = await Wallet.getWalletAtAddress(this.lastedWalletAddress)
+
+    const prevSelectedWallet = MainStore.appState.wallets
+      .find(w => w.address.toLowerCase() === this.lastedWalletAddress.toLowerCase())
+
     // prevSelectedWallet.fetchingBalance()
     const prevSelectedToken = prevSelectedWallet.getTokenAtAddress(this.lastedTokenAddress)
     this.lastedWalletAddress = null
     this.lastedTokenAddress = null
+    // this.setCurrentNotif(null)
     MainStore.appState.setSelectedWallet(prevSelectedWallet)
     setTimeout(() => {
       MainStore.appState.setselectedToken(prevSelectedToken)
@@ -137,6 +142,8 @@ class Notification {
   }
 
   @action gotoTransactionList() {
+    if (!this.notif) return
+
     NavStore.closeTransactionDetail()
     setTimeout(() => {
       this.setTokenFromNotif()

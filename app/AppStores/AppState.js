@@ -7,6 +7,7 @@ import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
+import NotificationStore from './stores/Notification'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
 
@@ -177,6 +178,8 @@ class AppState {
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
     // this.BgJobs.CheckBalance.doOnce(false)
+
+    if (NotificationStore.notif) NotificationStore.gotoTransactionList()
   }
 
   @computed get isShowSendButton() {
