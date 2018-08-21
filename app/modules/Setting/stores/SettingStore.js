@@ -6,7 +6,7 @@ import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
-const PLAY_STORE_LINK = 'market://details?id=app.starfish'
+const PLAY_STORE_LINK = 'market://details?id=io.goldenwallet'
 
 export default class SettingStore {
   @observable dataCommunity = [
