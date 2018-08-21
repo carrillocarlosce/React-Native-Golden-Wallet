@@ -112,7 +112,7 @@ class Notification {
     MainStore.appState.setselectedToken(null)
     WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
       const wallet = MainStore.appState.wallets
-        .find(w => w.address.toLowerCase() === this.lastedWalletAddress.toLowerCase())
+        .find(w => w.address.toLowerCase() === address.toLowerCase())
       if (!wallet) {
         return
       }
