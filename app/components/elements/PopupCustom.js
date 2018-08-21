@@ -8,14 +8,17 @@ import {
   Platform,
   TextInput,
   Keyboard,
-  Animated
+  Animated,
+  TouchableWithoutFeedback,
+  Image
 } from 'react-native'
+// import PropTypes from 'prop-types'
 import AppStyle from '../../commons/AppStyle'
+import constant from '../../commons/constant'
+import MainStore from '../../AppStores/MainStore'
+import images from '../../commons/images'
 
 export default class PopupCustom extends Component {
-  static navigatorStyle = {
-    navBarHidden: true
-  }
   state = {
     visible: false,
     title: 'Alert',
@@ -33,7 +36,9 @@ export default class PopupCustom extends Component {
     valueInput: '',
     type: 'normal',
     isAddress: false,
-    offsetY: new Animated.Value(0)
+    offsetY: new Animated.Value(0),
+    fromWallet: false,
+    errorMsg: ''
   }
 
   componentWillMount() {
@@ -43,16 +48,44 @@ export default class PopupCustom extends Component {
     this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
   }
 
+  componentDidMount() {
+
+  }
+
   componentWillUnmount() {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
 
+  onChangeText = (text) => {
+    const { fromWallet } = this.state
+    const errorText = fromWallet ? constant.EXISTED_NAME : constant.EXISTED_NAME_AB
+    if (this.checkExistedName(fromWallet, text)) {
+      this.setState({ valueInput: text, errorMsg: errorText })
+    } else {
+      this.setState({ valueInput: text, errorMsg: '' })
+    }
+  }
+
+  checkExistedName(fromWallet, text) {
+    if (text === this.selectedTitle) {
+      return false
+    }
+    if (fromWallet) {
+      return MainStore.appState.wallets.find(w => w.title === text)
+    }
+    return MainStore.appState.addressBooks.find(ab => ab.title === text)
+  }
+
   _runKeyboardAnim(toValue) {
+    // if (!isNaN(this.state.bottom)) return
+
+    // this.setState({bottom: toValue})
     Animated.timing(
-      this.state.offsetY,
+      // Animate value over time
+      this.state.offsetY, // The value to drive
       {
-        toValue: -toValue,
+        toValue: -toValue, // Animate to final value of 1
         duration: 250,
         useNativeDriver: true
       }
@@ -77,7 +110,8 @@ export default class PopupCustom extends Component {
         })
       }
     }
-  ], content, type = 'normal', isAddress = false, valueInput = '') {
+  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false) {
+    this.selectedTitle = valueInput
     this.setState({
       visible: true,
       content,
@@ -85,7 +119,8 @@ export default class PopupCustom extends Component {
       title,
       type,
       isAddress,
-      valueInput
+      valueInput,
+      fromWallet
     })
   }
 
@@ -96,8 +131,16 @@ export default class PopupCustom extends Component {
   }
 
   _renderButons = () => {
-    const { buttons, valueInput } = this.state
+    const {
+      buttons, valueInput, type, errorMsg
+    } = this.state
     const buttonsView = buttons.map((btn, index) => {
+      let disable = false
+      let styleTextDisable = {}
+      if (index === 1 && type === 'input' && (valueInput === '' || errorMsg !== '')) {
+        disable = true
+        styleTextDisable = { color: AppStyle.secondaryTextColor }
+      }
       const lineBetween = index > 0
         ? <View style={styles.line} />
         : <View />
@@ -106,17 +149,18 @@ export default class PopupCustom extends Component {
           key={index}
           style={{
             flexDirection: 'row',
-            alignItems: AppStyle.center,
+            alignItems: 'center',
             flex: 1
           }}
         >
           {lineBetween}
           <TouchableOpacity
+            disabled={disable}
             style={[styles.buttonView]}
             onPress={() => { btn.onClick(valueInput) }}
           >
-            <View style={{ flex: 1, alignItems: AppStyle.center, justifyContent: AppStyle.center }}>
-              <Text style={styles.textButton}>{btn.text}</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={[styles.textButton, styleTextDisable]}>{btn.text}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -125,9 +169,27 @@ export default class PopupCustom extends Component {
     return buttonsView
   }
 
+  clearText = () => {
+    this.setState({ valueInput: '' })
+  }
+
+  renderIconClear = () => {
+    const { valueInput } = this.state
+    if (valueInput === '') {
+      return <View key="invisible" />
+    }
+    return (
+      <View key="visible" style={{ position: 'absolute', right: 10, bottom: 8 }}>
+        <TouchableOpacity onPress={this.clearText}>
+          <Image source={images.iconCloseSearch} style={styles.iconClose} />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     const {
-      visible, title, content, type, valueInput, isAddress
+      visible, title, content, type, valueInput, isAddress, errorMsg
     } = this.state
     const contentPaddingVertical = type === 'input'
       ? {
@@ -167,42 +229,48 @@ export default class PopupCustom extends Component {
         visible={visible}
         onRequestClose={() => { }}
       >
-        <Animated.View
-          style={[styles.overlayPopup, {
-            transform: [
-              {
-                translateY: this.state.offsetY
-              }
-            ]
-          }]}
-        >
-          <View style={styles.popupCustom}>
-            <View style={[styles.contentField, contentPaddingVertical]}>
-              <Text style={[styles.titlePopup, titleColor]}>{title}</Text>
-              {content &&
-                renderContent
-              }
-              {type === 'input' &&
-                <TextInput
-                  autoFocus
-                  autoCorrect={false}
-                  style={styles.textInput}
-                  underlineColorAndroid="transparent"
-                  onChangeText={(text) => {
-                    this.setState({ valueInput: text })
-                  }}
-                  keyboardAppearance="dark"
-                  placeholder="Wallet Name"
-                  placeholderTextColor="#4A4A4A"
-                  value={valueInput}
-                />
-              }
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+          <Animated.View
+            style={[styles.overlayPopup, {
+              transform: [
+                {
+                  translateY: this.state.offsetY
+                }
+              ]
+            }]}
+          >
+            <View style={styles.popupCustom}>
+              <View style={[styles.contentField, contentPaddingVertical]}>
+                <Text style={[styles.titlePopup, titleColor]}>{title}</Text>
+                {content &&
+                  renderContent
+                }
+                {type === 'input' &&
+                  <View>
+                    <TextInput
+                      autoFocus
+                      autoCorrect={false}
+                      style={styles.textInput}
+                      underlineColorAndroid="transparent"
+                      onChangeText={this.onChangeText}
+                      keyboardAppearance="dark"
+                      placeholder=""
+                      placeholderTextColor="#4A4A4A"
+                      value={valueInput}
+                    />
+                    {errorMsg !== '' &&
+                      <Text style={styles.errorText}>{errorMsg}</Text>
+                    }
+                    {this.renderIconClear()}
+                  </View>
+                }
+              </View>
+              <View style={styles.buttonField}>
+                {this._renderButons()}
+              </View>
             </View>
-            <View style={styles.buttonField}>
-              {this._renderButons()}
-            </View>
-          </View>
-        </Animated.View>
+          </Animated.View>
+        </TouchableWithoutFeedback>
       </Modal>
     )
   }
@@ -216,35 +284,35 @@ const styles = StyleSheet.create({
   },
   overlayPopup: {
     flex: 1,
-    alignItems: AppStyle.center,
-    justifyContent: AppStyle.center,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.75)'
   },
   titlePopup: {
     fontSize: 17,
-    fontFamily: AppStyle.mainFontSemiBold,
-    textAlign: AppStyle.center
+    fontFamily: 'OpenSans-Semibold',
+    textAlign: 'center'
   },
   buttonField: {
     borderTopWidth: 0.5,
     borderColor: '#14192D',
     flexDirection: 'row',
-    alignItems: AppStyle.center,
+    alignItems: 'center',
     height: 43
   },
   buttonView: {
-    alignItems: AppStyle.center,
-    justifyContent: AppStyle.center,
+    alignItems: 'center',
+    justifyContent: 'center',
     flex: 1
   },
   textButton: {
     fontSize: 18,
-    fontFamily: AppStyle.mainFontSemiBold,
+    fontFamily: 'OpenSans-Semibold',
     color: AppStyle.mainColor
   },
   contentField: {
-    alignItems: AppStyle.center,
-    justifyContent: AppStyle.center,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 17
   },
   line: {
@@ -254,18 +322,26 @@ const styles = StyleSheet.create({
   },
   contentPopup: {
     fontSize: 14,
-    fontFamily: AppStyle.mainFont,
+    fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
     color: AppStyle.mainTextColor,
-    textAlign: AppStyle.center
+    textAlign: 'center'
   },
   textInput: {
     width: 236,
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 40,
     paddingVertical: 10,
     color: AppStyle.mainTextColor,
     fontSize: 14,
-    fontFamily: AppStyle.mainFontSemiBold,
+    fontFamily: 'OpenSans-Semibold',
     backgroundColor: '#121734'
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold',
+    color: AppStyle.errorColor,
+    alignSelf: 'flex-start',
+    marginTop: 10
   }
 })

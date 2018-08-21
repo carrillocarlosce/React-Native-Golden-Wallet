@@ -57,11 +57,14 @@
     "react/jsx-boolean-value": 0,
     "no-nested-ternary": 0,
     "func-names": 0,
+    "no-await-in-loop": 0,
     "jsx-quotes": [
       2,
       "prefer-double"
     ],
-    "eqeqeq": 0
+    "eqeqeq": 0,
+    "no-return-await": 0,
+    "camelcase": 0
   },
   "env": {
     "react-native/react-native": true

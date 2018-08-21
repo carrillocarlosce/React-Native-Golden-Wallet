@@ -21,12 +21,12 @@ export default class BottomButton extends Component {
   static propTypes = {
     onPress: PropTypes.func.isRequired,
     text: PropTypes.string,
-    enable: PropTypes.bool
+    disable: PropTypes.bool
   }
 
   static defaultProps = {
     text: constant.DONE,
-    enable: true
+    disable: false
   }
 
   state = {
@@ -35,11 +35,15 @@ export default class BottomButton extends Component {
     borderRadius: new Animated.Value(5)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
     const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
     this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
     this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
+  }
+
+  componentDidMount() {
+
   }
 
   componentWillUnmount() {
@@ -48,36 +52,37 @@ export default class BottomButton extends Component {
   }
 
   _runKeyboardAnim(toValue) {
+    const duration = Platform.OS === 'ios' ? 250 : 0
     Animated.parallel([
       Animated.timing(
         this.state.bottom,
         {
           toValue,
-          duration: 250
+          duration
         }
       ),
       Animated.timing(
         this.state.marginVertical,
         {
           toValue: toValue === 20 + extraBottom ? 20 : 0,
-          duration: 250
+          duration
         }
       ),
       Animated.timing(
         this.state.borderRadius,
         {
           toValue: toValue === 20 + extraBottom ? 5 : 0,
-          duration: 250
+          duration
         }
       )
     ]).start()
   }
 
   _keyboardDidShow(e) {
-    let value = e.endCoordinates.height + extraBottom
+    let value = Platform.OS === 'ios' ? e.endCoordinates.height + extraBottom : 0
 
-    if (Platform.OS == 'android') {
-      value = 0
+    if (isIPX) {
+      value -= 34
     }
     this._runKeyboardAnim(value)
   }
@@ -87,7 +92,7 @@ export default class BottomButton extends Component {
   }
 
   render() {
-    const { onPress, text, enable } = this.props
+    const { onPress, text, disable } = this.props
     return (
       <Animated.View style={{
         position: 'absolute',
@@ -100,14 +105,14 @@ export default class BottomButton extends Component {
       }}
       >
         <TouchableOpacity
-          disabled={!enable}
+          disabled={disable}
           onPress={() => {
             Keyboard.dismiss()
             onPress()
           }}
           style={styles.saveButton}
         >
-          <Text style={{ fontSize: 16, color: enable ? AppStyle.mainColor : AppStyle.Color.silverColor, fontFamily: AppStyle.mainFontSemiBold }}>
+          <Text style={{ fontSize: 16, color: disable ? AppStyle.secondaryTextColor : AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>
             {text}
           </Text>
         </TouchableOpacity>

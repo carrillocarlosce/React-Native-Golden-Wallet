@@ -4,22 +4,29 @@ import {
   StyleSheet,
   Platform,
   Dimensions,
-  Animated
+  Animated,
+  Clipboard,
+  Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
+import SplashScreen from 'react-native-splash-screen'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import LargeCard from '../elements/LargeCard'
 import Hamburger from '../elements/HamburgerButton'
-import SettingScreen from './SettingScreen'
+import SettingScreen from '../../Setting/screen/SettingScreen'
 import HomeSendButton from '../elements/HomeSendButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import NotificationListenter from '../../../NotificationListener'
-import NotificationStore from '../../../stores/NotificationStore'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
+import MainStore from '../../../AppStores/MainStore'
+import NavStore from '../../../AppStores/NavStore'
+import Config from '../../../AppStores/stores/Config'
+import Ticker from '../elements/Ticker'
+import TickerStore from '../stores/TickerStore'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -37,7 +44,6 @@ export default class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
-    NotificationListenter.registerAppListener(this.props.navigation)
     FCM.setBadgeNumber(0)
     this.state = {
       translateY: new Animated.Value(0)
@@ -45,122 +51,88 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   TickerStore.callApi()
-    // }, 0)
-    this.index = 0
-    this.shouldShowSuccess = true
+    TickerStore.callApi()
     setTimeout(() => {
+      SplashScreen.hide()
       if (!NotificationStore.isInitFromNotification) {
+        MainStore.gotoUnlock()
         this.props.navigation.navigate('UnlockScreen', {
           isLaunchApp: true,
           onUnlock: () => {
             this._gotoCreateWallet()
           }
         })
-      } else {
-        this.props.navigation.navigate('TransactionDetailScreen', NotificationStore.transactionFromNotif)
       }
     }, 100)
   }
 
-  _shouldShowSendButton(cards) {
-    if (cards.length === 0) {
-      return false
-    }
-    return cards[0].privateKey !== undefined && cards[0].privateKey !== ''
+  onSendPress = () => {
+    const { navigation } = this.props
+    const { selectedWallet } = MainStore.appState
+    MainStore.goToSendTx()
+    MainStore.appState.setselectedToken(selectedWallet.tokens[0])
+    MainStore.sendTransaction.changeIsToken(false)
+    navigation.navigate('SendTransactionStack')
   }
 
-  returnData = (isCreateSuccess, index, isCreate = false, isAddress = false) => {
-    if (isCreateSuccess) {
-      // WalletStore.setSelectedIndex(index)
-      // WalletStore.cacheListOriginalWallet()
-      // const wallet = WalletStore.dataCards[index]
-      // this.sendButton._toggleSendButton(isCreateSuccess && !isAddress)
-      // setTimeout(() => {
-      //   if (isCreate) {
-      //     // TokenStore.initDataWalletWhenCreate(wallet.address)
-      //     NavStore.showToastTop(
-      //       'Your wallet was successfully created!',
-      //       {},
-      //       { color: AppStyle.colorUp }
-      //     )
-      //   }
-      //   this.props.navigation.navigate('TokenScreen', {
-      //     currentIndex: index,
-      //     card: wallet,
-      //     isCreate
-      //   })
-      // }, 250)
+  onSnapToItem = (index) => {
+    if (this.cards[index].address === '0') {
+      MainStore.appState.setSelectedWallet(null)
+    } else {
+      MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
     }
   }
 
-  _renderSendButton = (cards) => {
+  _renderNetwork = () => {
+    let currentNetwork = MainStore.appState.config.network
+    const color = { backgroundColor: AppStyle.mainColor }
+    if (currentNetwork === Config.networks.mainnet) {
+      return <View />
+    }
+    currentNetwork = currentNetwork.replace(/^\w/, c => c.toUpperCase())
     return (
-      <HomeSendButton
-        ref={(ref) => { this.sendButton = ref }}
-        isShow={this._shouldShowSendButton(cards)}
-        action={() => {
-          // if (WalletStore.selectedWallet) {
-          //   if (WalletStore.selectedWallet.canSendTransaction()) {
-          //     // NavStore.openModal()
-          //     this.props.navigation.navigate('SendTransactionStack')
-          //     const wl = WalletStore.selectedWallet
-          //     const wallet = {
-          //       postfix: 'ETH',
-          //       balanceCrypto: WalletStore.selectedWallet.balanceETH || 0,
-          //       balanceUSD: WalletStore.selectedWallet.balanceETH * CurrencyStore.currencyUSD || 0,
-          //       ratio: CurrencyStore.currencyUSD
-          //     }
-          //     sendTransactionStore.setWallet(wallet)
-          //     sendTransactionStore.selectedToken = { title: 'ETH', address: wl.address }
-          //   } else {
-          //     NavStore.popupCustom.show('This wallet can not send a transaction')
-          //   }
-          // } else {
-          //   NavStore.popupCustom.show('You have no wallet selected')
-          // }
-        }}
-      />
+      <View style={styles.networkField}>
+        <View style={[styles.dot, color]} />
+        <Text style={styles.networkText}>{`Active Network: ${currentNetwork}`}</Text>
+      </View>
     )
   }
 
+  _renderSendButton = () =>
+    (
+      <HomeSendButton
+        action={this.onSendPress}
+      />
+    )
+
   _gotoCreateWallet() {
-    this.props.navigation.navigate('CreateWalletStack', {
-      returnData: this.returnData,
-      // index: WalletStore.dataCards.length
-      index: 0
-    })
+    this.props.navigation.navigate('CreateWalletStack')
   }
 
-  _renderCard = ({ item, index }) => {
-    return (
+  _renderCard = ({ item, index }) =>
+    (
       <LargeCard
-        // isNew={index === WalletStore.dataCards.length}
-        isNew={index === 0}
-        cardItem={item}
         index={index}
         style={{ margin: 5, marginTop: 20 }}
         navigation={this.props.navigation}
         onPress={() => {
-          // index !== WalletStore.dataCards.length
-          index !== 0
-            ? this.props.navigation.navigate('TokenScreen', {
-              currentIndex: index,
-              card: item
-            })
+          index !== this.wallets.length
+            ? this.props.navigation.navigate('TokenScreen', { index })
             : this._gotoCreateWallet()
         }}
         onAddPrivateKey={() => {
-          this.props.navigation.navigate('AddPrivateKeyScreen', {
-            wallet: item,
-            index,
-            returnData: this.returnData
-          })
+          this.props.navigation.navigate('ImplementPrivateKeyScreen')
+        }}
+        onBackup={async () => {
+          await MainStore.gotoBackup()
+          this.props.navigation.navigate('BackupScreen')
+        }}
+        onCopy={() => {
+          Clipboard.setString(MainStore.appState.selectedWallet.address)
+          NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
         }}
       />
     )
-  }
 
   stackScrollInterpolator = (index, carouselProps) => {
     const range = [1, 0, -1, -2, -3]
@@ -233,25 +205,22 @@ export default class HomeScreen extends Component {
       outputRange: [0, 1],
       extrapolate: 'clamp'
     })
-    // let cards = WalletStore.dataCards.slice()
-    let cards = []
-    if (cards.length < 5) {
-      cards = [{
+    this.wallets = MainStore.appState.wallets.slice()
+    this.cards = this.wallets
+    if (this.cards.length < 5) {
+      this.cards = [...this.cards, {
         balance: '0 ETH',
         balanceUSD: '$0',
         address: '0'
-      }, ...cards]
+      }]
     }
-    // const tickers = TickerStore.tickers.slice()
+    const tickers = TickerStore.tickers.slice()
 
     return (
       <View style={styles.container}>
         <View style={styles.homeHeader}>
           <Hamburger
             onPressHamburger={(isShow) => {
-              if (!isShow) {
-                this.settingScreen._turnOffSwipe()
-              }
               Animated.timing(
                 translateY,
                 {
@@ -272,12 +241,12 @@ export default class HomeScreen extends Component {
                 width: width - 77
               }}
             >
-              {/* <Ticker
+              <Ticker
                 data={tickers}
                 style={{
                   width: width - 77
                 }}
-              /> */}
+              />
             </Animated.View>
             <Animated.Text
               style={{
@@ -294,50 +263,35 @@ export default class HomeScreen extends Component {
         <View style={{ height: heightCarousel }}>
           <Carousel
             removeClippedSubviews={false}
-            // enableMomentum={false}
-            // lockScrollWhileSnapping={Platform.OS === 'android'}
             ref={(c) => { this._carousel = c }}
-            data={cards}
-            // scrollInterpolator={this.stackScrollInterpolator}
-            // slideInterpolatedStyle={this.stackAnimatedStyles}
+            data={this.cards}
             layout="default"
             renderItem={this._renderCard}
             sliderWidth={width}
             itemWidth={width - 72}
             inactiveSlideOpacity={1}
             keyExtractor={item => item.address}
-            onSnapToItem={(index) => {
-              // this.sendButton._toggleSendButton(this.checkPrivateKey(cards[index].privateKey))
-              // if (cards[index].address === '0') {
-              //   WalletStore.setSelectedIndex(null)
-              // } else {
-              //   WalletStore.setSelectedIndex(index)
-              //   WalletStore.cacheListOriginalWallet()
-              // }
-            }}
+            onSnapToItem={this.onSnapToItem}
+          // firstItem={this.selectedWalletIndex}
           />
         </View>
         <View
-          style={{
-            marginTop: -20,
-            flex: 1,
-            alignItems: 'flex-end',
-            marginRight: 20
-          }}
+          style={styles.bottomField}
         >
-          {this._renderSendButton(cards)}
+          {this._renderNetwork()}
+          {this._renderSendButton()}
         </View>
         <Animated.View
           style={{
             position: 'absolute',
-            top: 71 + marginTop,
+            top: Platform.OS === 'ios' ? 81 + marginTop : 71,
             width,
-            height: height - 71 - marginTop,
+            height: height - 71 + marginTop,
             transform: [
               {
                 translateY: translateY.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [height - 56 + getStatusBarHeight(), Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
+                  outputRange: [height - 41 + marginTop, Platform.OS === 'ios' ? 0 : getStatusBarHeight()],
                   extrapolate: 'clamp',
                   useNativeDriver: true
                 })
@@ -346,16 +300,9 @@ export default class HomeScreen extends Component {
           }}
         >
           <SettingScreen
-            ref={(ref) => { this.settingScreen = ref }}
-            onDeleted={() => {
-              // if (WalletStore.selectedIndex === null) {
-              //   this.sendButton._toggleSendButton(false)
-              // }
-            }}
             navigation={navigation}
             onCreated={(index, isCreate, isAddress) => {
               this._carousel.snapToItem(index)
-              this.sendButton._toggleSendButton(!isAddress)
             }}
           />
         </Animated.View>
@@ -374,5 +321,29 @@ const styles = StyleSheet.create({
     marginTop: marginTop + 20,
     paddingLeft: 10,
     paddingBottom: 15
+  },
+  networkField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 20
+  },
+  bottomField: {
+    marginTop: -25,
+    flex: 1,
+    marginLeft: 36,
+    marginRight: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5
+  },
+  networkText: {
+    fontSize: 12,
+    fontFamily: 'OpenSans-Semibold',
+    marginLeft: 4,
+    color: AppStyle.mainTextColor
   }
 })

@@ -5,11 +5,11 @@ package com.rngoldenkeystore.libs;
  */
 
 public interface KeyPair {
-    public byte[] getPrivateKey ();
+    public byte[] getPrivateKey();
 
-    public byte[] getPublicKey ();
+    public byte[] getPublicKey();
 
-    public String getPrivateKeyHex ();
+    public String getPrivateKeyHex();
 
-    public String getPublicKeyHex ();
+    public String getPublicKeyHex();
 }

@@ -1,84 +1,34 @@
 import DeviceInfo from 'react-native-device-info'
 import ApiCaller from './api-caller'
-import NotificationStore from '../stores/NotificationStore'
-import WalletStore from '../stores/WalletStore'
-import LocalStore from '../stores/LocalStore'
+import URL from './url'
 
-class NotificationAPI {
-  postDeviceTokenWithWallet({ name, address }) {
-    const params = this._getParams(name, address)
-    ApiCaller.post('http://wallet.skylab.vn/wallets', params, true, { 'Content-Type': 'application/json' }, '').then((response) => {
-      const { data, success } = response.data
-      if (success) {
-        LocalStore.saveItem(address, data.id)
-      }
-    }).catch((e) => {
-      console.log(e)
-    })
+export const addWallet = (name, address, deviceToken) => {
+  const device_udid = DeviceInfo.getUniqueID() !== '' ? DeviceInfo.getUniqueID() : deviceToken.substring(0, 10)
+  const data = {
+    name, address, device_token: deviceToken, device_udid
   }
 
-  deleteNotificationWithWallet(address) {
-    LocalStore.getItems(address, (id) => {
-      ApiCaller.delete(`http://wallet.skylab.vn/wallets/${id}`, {}, false, { 'Content-Type': 'application/x-www-form-urlencoded' }).then((response) => {
-        // console.log(response)
-      }).catch((e) => {
-        console.log(e)
-      })
-    })
-  }
-
-  deleteAllNotification() {
-    if (!WalletStore.dataCards || WalletStore.dataCards.length === 0) {
-      return
-    }
-    WalletStore.dataCards.forEach((wallet) => {
-      LocalStore.getItems(wallet.address, (id) => {
-        ApiCaller.delete(`http://wallet.skylab.vn/wallets/${id}`, {}, false, { 'Content-Type': 'application/x-www-form-urlencoded' }).then((response) => {
-        }).catch((e) => {
-          console.log(e)
-        })
-      })
-    })
-  }
-
-  updateNotificationAllWallet() {
-    if (!WalletStore.userWallets) {
-      return
-    }
-    if (!NotificationStore.enable) {
-      return
-    }
-    const params = this._getParamstWalletUpdate()
-    ApiCaller.post('http://wallet.skylab.vn/wallets/list', params, true, { 'Content-Type': 'application/json' }, '').then((response) => {
-      response.data.data.forEach((wallet) => {
-        LocalStore.saveItem(wallet.address, wallet.id)
-      })
-    }).catch((e) => {
-      console.log(e)
-    })
-  }
-
-  _getParamstWalletUpdate() {
-    const deviceID = DeviceInfo.getUniqueID()
-    const wallets = WalletStore.userWallets.ethWallets.map((wallet) => {
-      return { name: wallet.cardName, address: wallet.address }
-    })
-    return {
-      device_token: NotificationStore.token,
-      device_udid: deviceID,
-      wallets
-    }
-  }
-
-  _getParams(name, address) {
-    const deviceID = DeviceInfo.getUniqueID()
-    return {
-      name,
-      address,
-      device_udid: deviceID,
-      device_token: NotificationStore.token
-    }
-  }
+  return ApiCaller.post(`${URL.Skylab.apiURL()}/wallets`, data, true)
 }
 
-export default new NotificationAPI()
+export const removeWallet = (id) => {
+  return ApiCaller.delete(`${URL.Skylab.apiURL()}/wallets/${id}`, {}, false)
+}
+
+export const addWallets = (wallets, deviceToken) => {
+  const device_udid = DeviceInfo.getUniqueID() !== '' ? DeviceInfo.getUniqueID() : deviceToken.substring(0, 10)
+  const data = {
+    wallets, device_token: deviceToken, device_udid
+  }
+  return ApiCaller.post(`${URL.Skylab.apiURL()}/wallets/list`, data, true)
+}
+
+export const offNotification = (deviceToken) => {
+  const device_udid = DeviceInfo.getUniqueID() !== '' ? DeviceInfo.getUniqueID() : deviceToken.substring(0, 10)
+  return ApiCaller.put(`${URL.Skylab.apiURL()}/wallets/${device_udid}/disable`)
+}
+
+export const onNotification = (deviceToken) => {
+  const device_udid = DeviceInfo.getUniqueID() !== '' ? DeviceInfo.getUniqueID() : deviceToken.substring(0, 10)
+  return ApiCaller.put(`${URL.Skylab.apiURL()}/wallets/${device_udid}/enable`)
+}

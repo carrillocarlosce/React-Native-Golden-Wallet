@@ -33,7 +33,7 @@ public class ECPoint implements KeyPair{
             return null;
         }
         BigInteger pri = new BigInteger(1, priKey);
-        return CURVE.getG().multiply(pri).getEncoded(false);
+        return CURVE.getG().multiply(pri).getEncoded(true);
     }
 
     private String bytesToHexString(byte[] bytes) {

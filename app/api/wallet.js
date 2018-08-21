@@ -1,6 +1,8 @@
+import BigNumber from 'bignumber.js'
 import caller from './api-caller'
-import NetworkStore from '../stores/NetworkStore'
-import Network from '../Network'
+import appState from '../AppStores/AppState'
+import NetworkConfig from '../AppStores/stores/Config'
+import URL from './url'
 
 /**
  *
@@ -8,7 +10,32 @@ import Network from '../Network'
  */
 export const fetchWalletInfo = (address) => {
   if (!address) return Promise.reject()
-  const url = `http://wallet.skylab.vn/balance/${address}`
+  if (appState.networkName !== NetworkConfig.networks.mainnet) {
+    const urlTest = URL.EtherScan.apiURL(appState.networkName)
+    const apikey = 'SVUJNQSR2APDFX89JJ1VKQU4TKMB6W756M'
+    const data = {
+      module: 'account',
+      action: 'balance',
+      address,
+      tag: 'latest',
+      apikey
+    }
+    return new Promise((resolve, reject) => {
+      caller.get(urlTest, data, true).then((res) => {
+        const result = {
+          data: {
+            data: {
+              ETH: { balance: new BigNumber(`${res.data.result}e-18`).toString(10) },
+              address,
+              tokens: []
+            }
+          }
+        }
+        resolve(result)
+      }).catch(e => reject(e))
+    })
+  }
+  const url = `${URL.Skylab.apiURL()}/balance/${address}`
   return caller.get(url, {}, true)
 }
 
@@ -17,22 +44,11 @@ export const fetchWalletInfo = (address) => {
  * @param {String} addressStr
  * @param {Object} data
  */
-export const fetchTransactions = (addressStr, data = {
-  module: 'account',
-  action: 'txlist',
-  address: addressStr,
-  startblock: 0,
-  sort: 'desc',
-  endblock: 99999999,
-  offset: 8,
-  apikey: 'SVUJNQSR2APDFX89JJ1VKQU4TKMB6W756M'
-}, page = 1) => {
-  let url = `https://api.etherscan.io/api`
+export const fetchTransactions = (addressStr, data, page = 1) => {
+  const url = URL.EtherScan.apiURL(appState.networkName)
   const params = data
   params.page = page
-  if (NetworkStore.currentNetwork !== Network.MainNet) {
-    url = `https://api-${NetworkStore.currentNetwork}.etherscan.io/api`
-  }
+
   if (!addressStr) return Promise.reject()
   return caller.get(url, params, true)
 }
@@ -42,12 +58,8 @@ export const fetchTransactions = (addressStr, data = {
  * @param {String} txHash
  */
 export const checkStatusTransaction = (txHash) => {
-  let url = 'https://api.etherscan.io/api'
+  const url = URL.EtherScan.apiURL(appState.networkName)
   const apikey = 'SVUJNQSR2APDFX89JJ1VKQU4TKMB6W756M'
-  if (NetworkStore.currentNetwork !== Network.MainNet) {
-    url = `https://api-${NetworkStore.currentNetwork}.etherscan.io/api`
-    // apikey = 'YourApiKeyToken'
-  }
   const params = {
     module: 'transaction',
     action: 'gettxreceiptstatus',
@@ -63,6 +75,47 @@ export const checkStatusTransaction = (txHash) => {
  */
 export const fetchToken = (address) => {
   if (!address) return Promise.reject()
-  const url = `http://wallet.skylab.vn/balance/${address}`
+  const url = `${URL.Skylab.apiURL()}/balance/${address}`
+  return caller.get(url, {}, true)
+}
+
+export const fetchRateETHDollar = () => {
+  const data = {
+    fsyms: 'ETH',
+    tsyms: 'BTC,USD,EUR,GBP,AUD,CAD,CNY,JPY,RUB'
+  }
+  return caller.get(`${URL.CryptoCompare.apiURL()}/data/pricemultifull`, data, true)
+}
+
+export const fetchGasPrice = () => {
+  return caller.get(`${URL.EthGasStation.apiURL()}/json/ethgasAPI.json`)
+}
+
+export const checkTxHasBeenDroppedOrFailed = (txHash) => {
+  const url = `${URL.EtherScan.webURL(appState.networkName)}/tx/${txHash}`
+
+  return caller.get(url)
+    .then((res) => {
+      if (res.data && typeof res.data === 'string') {
+        const htmlString = res.data
+
+        const removed = htmlString.includes('Dropped&Replaced') ||
+          htmlString.includes('Dropped') ||
+          htmlString.includes('Replaced') ||
+          htmlString.includes('<font color="red">Fail</font>')
+
+        const notBroadCast = htmlString.includes('we are unable to locate this Transaction Hash')
+        if (notBroadCast) {
+          return 'notBroadCast'
+        }
+
+        return removed
+      }
+      return true
+    })
+}
+
+export const fetchTokenDetail = (address, contract) => {
+  const url = `${URL.Skylab.apiURL()}/balance/${address}/${contract}`
   return caller.get(url, {}, true)
 }

@@ -4,12 +4,11 @@ import {
   Image,
   Text,
   StyleSheet,
-  Platform,
+  TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native'
 import PropTypes from 'prop-types'
-import debounce from 'lodash.debounce'
-import images from '../../commons/images'
+import images from './../../commons/images'
 import AppStyle from '../../commons/AppStyle'
 
 export default class NavigationHeader extends Component {
@@ -18,6 +17,7 @@ export default class NavigationHeader extends Component {
     containerStyle: PropTypes.object,
     headerItem: PropTypes.object,
     titleStyle: PropTypes.object,
+    rightView: PropTypes.object,
     action: PropTypes.func
   }
 
@@ -29,11 +29,13 @@ export default class NavigationHeader extends Component {
       icon: null,
       button: images.backButton
     },
+    rightView: {
+      rightViewIcon: null,
+      rightViewAction: () => { }
+    },
     titleStyle: {},
     action: () => { }
   }
-
-  canPressAction = true
 
   render() {
     const {
@@ -41,6 +43,7 @@ export default class NavigationHeader extends Component {
       containerStyle,
       titleStyle,
       headerItem,
+      rightView,
       action
     } = this.props
     const {
@@ -48,12 +51,14 @@ export default class NavigationHeader extends Component {
       icon,
       button
     } = headerItem
+    const {
+      rightViewIcon,
+      rightViewAction = () => { }
+    } = rightView
     return (
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         style={containerStyle}
-        onPress={Platform.OS === 'ios' ? () => { action() } : debounce(() => {
-          action()
-        }, 200)}
+        onPress={() => { action() }}
       >
         <View style={[styles.container, style]}>
           <Image
@@ -76,8 +81,34 @@ export default class NavigationHeader extends Component {
               {title}
             </Text>
           }
+          {rightViewIcon &&
+            <TouchableWithoutFeedback
+              onPress={rightViewAction}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  position: 'absolute',
+                  right: 10,
+                  bottom: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignSelf: 'center'
+                }}
+              >
+                <Image
+                  style={{
+                    width: 15,
+                    height: 30
+                  }}
+                  source={rightViewIcon}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          }
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     )
   }
 }
@@ -92,6 +123,6 @@ const styles = StyleSheet.create({
   titleStyle: {
     fontSize: 20,
     color: AppStyle.mainTextColor,
-    fontFamily: AppStyle.mainFontBold
+    fontFamily: 'OpenSans-Bold'
   }
 })
