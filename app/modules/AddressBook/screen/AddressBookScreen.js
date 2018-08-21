@@ -125,7 +125,7 @@ export default class AddressBookScreen extends Component {
           color: '#8A8D97'
         }}
         >
-          Get started by adding your frst one.
+          Get started by adding your first one.
         </Text>
       </View>
     )

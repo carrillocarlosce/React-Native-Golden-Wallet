@@ -102,7 +102,7 @@ class UnlockStore {
     this.setData({
       pinTyped: 0,
       pinConfirm: pincode,
-      unlockDes: 'Confirm your PIN',
+      unlockDes: 'Confirm your Pincode',
       pincode: ''
     })
   }
