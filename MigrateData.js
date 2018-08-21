@@ -1,10 +1,15 @@
 import { AsyncStorage } from 'react-native'
 import { randomBytes } from 'react-native-randombytes'
 import * as Keychain from 'react-native-keychain'
-import KeyLocal from './app/commons/SAVED_ID_LOCAL'
 import Starypto from './Libs/react-native-starypto'
 import MainStore from './app/AppStores/MainStore'
 import Wallet from './app/AppStores/stores/Wallet'
+
+const KeyLocal = {
+  PIN_CODE: 'PIN_CODE',
+  IV_CODE: 'IV',
+  DATA_ENCRYPTED: 'USER_WALLET_ENCRYPTED'
+}
 
 class MigrateData {
   getRandomKeyFromKeychain = async (pinCode, iv) => {
