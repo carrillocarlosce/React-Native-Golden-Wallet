@@ -142,11 +142,15 @@ class AppState {
     setTimeout(async () => {
       if (this.config.network === Config.networks.mainnet && this.internetConnection === 'online') {
         const res = await api.fetchGasPrice()
-        this.gasPriceEstimate = {
-          slow: res.data ? Math.floor(res.data.safeLow / 10) : Math.floor(this.gasPriceEstimate.slow / 10),
-          standard: res.data ? Math.floor(res.data.average / 10) : Math.floor(this.gasPriceEstimate.standard / 10),
-          fast: res.data ? Math.floor(res.data.fastest / 10) : Math.floor(this.gasPriceEstimate.fast / 10)
-        }
+        const data = typeof res.data === 'object'
+          ? {
+            slow: Math.floor(res.data.safeLow / 10),
+            standard: Math.floor(res.data.average / 10),
+            fast: Math.floor(res.data.fastest / 10)
+          }
+          : this.gasPriceEstimate
+
+        this.gasPriceEstimate = data
       }
     }, 0)
   }

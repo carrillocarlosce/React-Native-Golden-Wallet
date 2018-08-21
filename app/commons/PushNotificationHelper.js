@@ -10,6 +10,8 @@ class PushNotificationHelper {
       NotificationStore.setDeviceToken(token)
     })
 
+    FCM.setBadgeNumber(0)
+
     FCM.getInitialNotification().then((notif) => {
       if (notif && notif.tx) {
         NotificationStore.isInitFromNotification = true

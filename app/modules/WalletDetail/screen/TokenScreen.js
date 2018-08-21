@@ -139,7 +139,7 @@ export default class TokenScreen extends Component {
           ListFooterComponent={this._renderFooter(this.wallet)}
           data={tokens}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => `${item.symbol}-${index}`}
+          keyExtractor={(item, index) => `${item.symbol}-${item.address}`}
           refreshing={refreshing}
           onRefresh={this.onRefreshToken}
           renderItem={this.renderItem}

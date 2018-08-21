@@ -36,10 +36,10 @@ export default class TokenItem extends Component {
 
   get token() {
     const { indexToken } = this.props
-    return this.Wallet.tokens[indexToken]
+    return this.wallet.tokens[indexToken]
   }
 
-  get Wallet() {
+  get wallet() {
     return MainStore.appState.selectedWallet
   }
 
@@ -74,7 +74,10 @@ export default class TokenItem extends Component {
             position: 'absolute',
             opacity: imageNotFound ? 0 : 1
           }}
-          onLoad={() => this.setState({ imageNotFound: false })}
+          onProgress={() => this.setState({ imageNotFound: false })}
+          onLoad={() => {
+            Platform.OS === 'android' && this.setState({ imageNotFound: false })
+          }}
         />
       </View>
     )
@@ -91,7 +94,7 @@ export default class TokenItem extends Component {
       title, symbol, balanceToken, balanceInDollar
     } = this.token
 
-    const { isHideValue } = this.Wallet
+    const { isHideValue } = this.wallet
 
     return (
       <TouchableOpacity onPress={onPress}>
