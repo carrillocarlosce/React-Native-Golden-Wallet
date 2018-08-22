@@ -55,11 +55,12 @@ export default class HomeScreen extends Component {
     setTimeout(() => {
       SplashScreen.hide()
       if (!NotificationStore.isInitFromNotification) {
-        MainStore.gotoUnlock()
         this.props.navigation.navigate('UnlockScreen', {
           isLaunchApp: true,
           onUnlock: () => {
-            this._gotoCreateWallet()
+            setTimeout(() => {
+              this._gotoCreateWallet()
+            }, 250)
           }
         })
       }
