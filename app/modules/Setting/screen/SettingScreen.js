@@ -138,7 +138,7 @@ export default class SettingScreen extends Component {
             onPress={this.onAddressBookPress}
           />
           {this.renderCommunity()}
-          {/* {this.renderSecurity()} */}
+          {this.renderSecurity()}
           {this.renderAppSetting()}
           {this.renderAbount()}
         </View>
