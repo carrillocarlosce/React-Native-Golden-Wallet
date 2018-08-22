@@ -146,7 +146,7 @@ export default class ListWalletScreen extends Component {
   _renderFooter = () => {
     const { navigation } = this.props
     const { wallets } = this
-    if (wallets.length === 5) {
+    if (wallets.length === 10) {
       return null
     }
     return (
