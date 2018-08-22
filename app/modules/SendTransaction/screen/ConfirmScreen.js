@@ -21,11 +21,12 @@ import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
+import AppState from '../../../AppStores/AppState'
+import InputWithAction from '../../../components/elements/InputWithActionItem'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
 const isIPX = height === 812
-
 @observer
 export default class ConfirmScreen extends Component {
   constructor(props) {
@@ -36,8 +37,8 @@ export default class ConfirmScreen extends Component {
       opacity: new Animated.Value(0),
       isShowAdvance: false,
       bottom: 0,
-      marginVertical: new Animated.Value(20),
-      borderRadius: 5
+      marginVertical: new Animated.Value(20)
+      // borderRadius: 5
     }
   }
 
@@ -45,6 +46,38 @@ export default class ConfirmScreen extends Component {
     // MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
     MainStore.sendTransaction.confirmStore.estimateGas()
     MainStore.sendTransaction.confirmStore.validateAmount()
+  }
+
+  onDefaultPress() {
+    const { advanceStore } = MainStore.sendTransaction
+    const { gasPriceEstimate } = AppState
+    advanceStore.reset()
+    advanceStore.setGasLimit('21000')
+    advanceStore.setGasPrice(gasPriceEstimate.standard.toString())
+  }
+
+  onDone() {
+    const { advanceStore } = MainStore.sendTransaction
+    Animated.parallel([
+      Animated.timing(
+        this.state.translateX,
+        {
+          toValue: 200,
+          duration: 200,
+          useNativeDriver: true
+        }
+      ),
+      Animated.timing(
+        this.state.opacity,
+        {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true
+        }
+      )
+    ]).start()
+    advanceStore._onDone()
+    setTimeout(() => this.setState({ isShowAdvance: false }), 200)
   }
 
   showAdvance = () => {
@@ -72,25 +105,28 @@ export default class ConfirmScreen extends Component {
   }
 
   hideAdvance = () => {
-    Animated.parallel([
-      Animated.timing(
-        this.state.translateX,
+    const { advanceStore } = MainStore.sendTransaction
+    if (advanceStore.validateGas) {
+      this.onDone()
+    } else {
+      Keyboard.dismiss()
+      NavStore.popupCustom.show('Confirm', [
         {
-          toValue: 200,
-          duration: 200,
-          useNativeDriver: true
-        }
-      ),
-      Animated.timing(
-        this.state.opacity,
+          text: 'No',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+          }
+        },
         {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true
+          text: 'Yes',
+          onClick: () => {
+            this.onDefaultPress()
+            NavStore.popupCustom.hide()
+            this.onDone()
+          }
         }
-      )
-    ]).start()
-    setTimeout(() => this.setState({ isShowAdvance: false }), 200)
+      ], 'Network fee is invalid. Do you want to reset to Standard Fee?')
+    }
   }
 
   _renderConfirmHeader() {
@@ -210,8 +246,44 @@ export default class ConfirmScreen extends Component {
           <Image source={images.backButton} style={styles.backIcon} resizeMode="contain" />
           <Text style={[styles.title]}>Advance</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.standard,
+            {
+              position: 'absolute',
+              right: 20,
+              marginTop: 0,
+              marginLeft: 0
+            }
+          ]}
+          onPress={() => {
+            Keyboard.dismiss()
+            this.onDefaultPress()
+          }}
+        >
+          <Text style={styles.standardText}>Default</Text>
+        </TouchableOpacity>
       </View>
     )
+  }
+
+  validateGasPrice(advanceStore, t) {
+    if (t <= 0) {
+      advanceStore.setGasPriceErr('Gas price must be greater than 0')
+    } else if (t > 100) {
+      advanceStore.setGasPriceErr('Gas price must be lesser than 100')
+    } else {
+      advanceStore.setGasPriceErr('')
+    }
+  }
+  validateGasLimit(advanceStore, t) {
+    if (t < 21000) {
+      advanceStore.setGasLimitErr('Gas limit must be greater than 21000')
+    } else if (t > 150000) {
+      advanceStore.setGasLimitErr('Gas limit must be lesser than 150000')
+    } else {
+      advanceStore.setGasLimitErr('')
+    }
   }
 
   _renderAdvanceContent(isShowClearGasLimit, isShowClearGasPrice, gasLimit, gasGwei, tmpFee, gasLimitErr, gasGweiErr, advanceStore) {
@@ -220,13 +292,19 @@ export default class ConfirmScreen extends Component {
         <View
           style={[styles.item, { marginTop: 20, marginBottom: 50 }]}
         >
-          <Text
-            style={styles.key}
-          >
-            Gas Limit
-          </Text>
+          <View style={styles.labelHolder}>
+            <Text
+              style={styles.key}
+            >
+              Gas Limit
+            </Text>
+            <Image
+              style={styles.iconLabel}
+              source={images.iconInfo}
+            />
+          </View>
           <View>
-            <TextInput
+            {/* <TextInput
               ref={ref => (this.gasLimit = ref)}
               style={styles.textInput}
               keyboardAppearance="dark"
@@ -234,9 +312,9 @@ export default class ConfirmScreen extends Component {
               keyboardType="number-pad"
               onChangeText={(t) => {
                 advanceStore.setGasLimit(t)
-                advanceStore.setGasLimitErr('')
-                advanceStore.setDisableDone(false)
-                // this.setState({ gasLimit: t, isShowClearGasLimit: t !== '', gasLimitErr: '', isDisableDone: false })
+                advanceStore.setShowClearGasLimit(t != '')
+                console.log(advanceStore)
+                this.validateGasLimit(advanceStore, t)
               }}
             />
             {isShowClearGasLimit &&
@@ -245,7 +323,20 @@ export default class ConfirmScreen extends Component {
                 onPress={this.clearGasLimit(advanceStore)}
               >
                 <Image source={images.iconCloseSearch} style={styles.iconClear} />
-              </TouchableOpacity>}
+              </TouchableOpacity>} */}
+            <InputWithAction
+              ref={ref => (this.gasLimit = ref)}
+              style={styles.textInput}
+              // keyboardAppearance="dark"
+              value={gasLimit}
+              keyboardType="number-pad"
+              onChangeText={(t) => {
+                advanceStore.setGasLimit(t)
+                // advanceStore.setShowClearGasLimit(t != '')
+                console.log(advanceStore)
+                this.validateGasLimit(advanceStore, t)
+              }}
+            />
             {gasLimitErr !== '' &&
               <Text
                 style={styles.err}
@@ -253,13 +344,19 @@ export default class ConfirmScreen extends Component {
                 {gasLimitErr}
               </Text>}
           </View>
-          <Text
-            style={styles.key}
-          >
-            Gas Price (Gwei)
-          </Text>
+          <View style={styles.labelHolder}>
+            <Text
+              style={styles.key}
+            >
+              Gas Price (Gwei)
+            </Text>
+            <Image
+              style={styles.iconLabel}
+              source={images.iconInfo}
+            />
+          </View>
           <View>
-            <TextInput
+            {/* <TextInput
               ref={ref => (this.gasGwei = ref)}
               keyboardType="number-pad"
               keyboardAppearance="dark"
@@ -267,9 +364,7 @@ export default class ConfirmScreen extends Component {
               style={styles.textInput}
               onChangeText={(t) => {
                 advanceStore.setGasPrice(t)
-                advanceStore.setGasPriceErr('')
-                advanceStore.setDisableDone(false)
-                // this.setState({ gasGwei: t, isShowClearGasPrice: t !== '', gasGweiErr: '', isDisableDone: false })
+                this.validateGasPrice(advanceStore, t)
               }}
             />
             {isShowClearGasPrice &&
@@ -278,7 +373,18 @@ export default class ConfirmScreen extends Component {
                 onPress={this.clearGasGwei(advanceStore)}
               >
                 <Image source={images.iconCloseSearch} style={styles.iconClear} />
-              </TouchableOpacity>}
+              </TouchableOpacity>} */}
+            <InputWithAction
+              ref={ref => (this.gasGwei = ref)}
+              keyboardType="number-pad"
+              // keyboardAppearance="dark"
+              value={gasGwei}
+              style={styles.textInput}
+              onChangeText={(t) => {
+                advanceStore.setGasPrice(t)
+                this.validateGasPrice(advanceStore, t)
+              }}
+            />
             {gasGweiErr !== '' &&
               <Text
                 style={styles.err}
@@ -286,17 +392,28 @@ export default class ConfirmScreen extends Component {
                 {gasGweiErr}
               </Text>}
           </View>
-          <Text
-            style={styles.key}
-          >
-            Fee (Gas Limit * Gas Price)
-          </Text>
+          <View style={styles.labelHolder}>
+            <Text
+              style={styles.key}
+            >
+              Network Fee
+            </Text>
+            <Image
+              style={styles.iconLabel}
+              source={images.iconInfo}
+            />
+          </View>
           <TextInput
             editable={false}
             keyboardAppearance="dark"
             ref={ref => (this.fee = ref)}
             value={`${tmpFee}`}
-            style={styles.textInput}
+            style={[styles.textInput, {
+              color: AppStyle.secondaryTextColor,
+              paddingHorizontal: 10,
+              fontFamily: 'OpenSans-Semibold',
+              fontSize: 14
+            }]}
           />
         </View>
       </View>
@@ -307,14 +424,12 @@ export default class ConfirmScreen extends Component {
     advanceStore.setGasLimit('')
     advanceStore.setGasLimitErr('')
     advanceStore.setDisableDone(false)
-    // this.setState({ gasLimit: '', isShowClearGasLimit: false, gasLimitErr: '', isDisableDone: false })
   }
 
   clearGasGwei = (advanceStore) => {
     advanceStore.setGasPrice('')
     advanceStore.setGasPriceErr('')
     advanceStore.setDisableDone(false)
-    // this.setState({ gasGwei: '', isShowClearGasPrice: false, gasGweiErr: '', isDisableDone: false })
   }
 
   _onSend(advanceStore) {
@@ -383,21 +498,21 @@ export default class ConfirmScreen extends Component {
     MainStore.sendTransaction.addressInputStore.confirmModal && MainStore.sendTransaction.addressInputStore.confirmModal.close()
   }
 
-  _renderDoneBtn(advanceStore) {
-    return (
-      <TouchableOpacity
-        disabled={this.state.isDisableDone}
-        style={[styles.doneBtn, { borderRadius: this.state.borderRadius }]}
-        onPress={this._onDone}
-      >
-        <Text
-          style={[styles.sendText, { color: advanceStore.isDisableDone ? '#8a8d97' : AppStyle.mainColor }]}
-        >
-          {constant.DONE}
-        </Text>
-      </TouchableOpacity >
-    )
-  }
+  // _renderDoneBtn(advanceStore) {
+  //   return (
+  //     <TouchableOpacity
+  //       disabled={this.state.isDisableDone}
+  //       style={[styles.doneBtn, { borderRadius: this.state.borderRadius }]}
+  //       onPress={this._onDone}
+  //     >
+  //       <Text
+  //         style={[styles.sendText, { color: advanceStore.isDisableDone ? '#8a8d97' : AppStyle.mainColor }]}
+  //       >
+  //         {constant.DONE}
+  //       </Text>
+  //     </TouchableOpacity >
+  //   )
+  // }
 
   _renderActionSheet() {
     const { gasPriceEstimate } = MainStore.appState
@@ -429,45 +544,45 @@ export default class ConfirmScreen extends Component {
     )
   }
 
-  _onDone = () => {
-    const { advanceStore } = MainStore.sendTransaction
-    const gasLimit = Number(advanceStore.gasLimit)
-    const gasPrice = Number(advanceStore.gasPrice)
-    let errCount = 0
-    if (Number.isNaN(gasLimit) || Number.isNaN(gasPrice)) {
-      return NavStore.popupCustom.show(
-        'Invalid number',
-        [
-          {
-            text: 'Ok',
-            onClick: () => {
-              NavStore.popupCustom.hide()
-            }
-          }
-        ]
-      )
-    }
-    if (gasLimit < 21000) {
-      errCount++
-      advanceStore.setGasLimitErr('Gas limit must be greater than 21000')
-    }
-    if (gasPrice <= 0) {
-      errCount++
-      advanceStore.setGasPriceErr('Gas price must be greater than 0')
-    }
-    if (errCount === 0) {
-      // sendStore.setGasLimit(gasLimit)
-      // sendStore.setGasPrice(gasGwei)
-      // sendStore.validateAmount()
-      // TODO Done
-      this.hideAdvance()
-    } else {
-      // this.setState({ isDisableDone: true })
-      advanceStore.setDisableDone(true)
-    }
-    advanceStore._onDone()
-    return true
-  }
+  // _onDone = () => {
+  //   const { advanceStore } = MainStore.sendTransaction
+  //   const gasLimit = Number(advanceStore.gasLimit)
+  //   const gasPrice = Number(advanceStore.gasPrice)
+  //   let errCount = 0
+  //   if (Number.isNaN(gasLimit) || Number.isNaN(gasPrice)) {
+  //     return NavStore.popupCustom.show(
+  //       'Invalid number',
+  //       [
+  //         {
+  //           text: 'Ok',
+  //           onClick: () => {
+  //             NavStore.popupCustom.hide()
+  //           }
+  //         }
+  //       ]
+  //     )
+  //   }
+  //   if (gasLimit < 21000) {
+  //     errCount++
+  //     advanceStore.setGasLimitErr('Gas limit must be greater than 21000')
+  //   }
+  //   if (gasPrice <= 0) {
+  //     errCount++
+  //     advanceStore.setGasPriceErr('Gas price must be greater than 0')
+  //   }
+  //   if (errCount === 0) {
+  //     // sendStore.setGasLimit(gasLimit)
+  //     // sendStore.setGasPrice(gasGwei)
+  //     // sendStore.validateAmount()
+  //     // TODO Done
+  //     this.hideAdvance()
+  //   } else {
+  //     // this.setState({ isDisableDone: true })
+  //     advanceStore.setDisableDone(true)
+  //   }
+  //   advanceStore._onDone()
+  //   return true
+  // }
 
   _runKeyboardAnim(toValue) {
     Animated.parallel([
@@ -499,7 +614,8 @@ export default class ConfirmScreen extends Component {
       if (isIPX) {
         // value += 10
       }
-      this.setState({ bottom: value + 20, borderRadius: 0 })
+      // this.setState({ bottom: value + 20, borderRadius: 0 })
+      this.setState({ bottom: value + 20 })
       const extra = extraBottom === 0 ? -10 : -extraBottom
       if (isIPX) {
         // extra = -30
@@ -512,7 +628,8 @@ export default class ConfirmScreen extends Component {
   _keyboardDidHide(e) {
     this._runKeyboardAnim(0)
     this._runExtraHeight(0)
-    this.setState({ bottom: 0, borderRadius: 5 })
+    // this.setState({ bottom: 0, borderRadius: 5 })
+    this.setState({ bottom: 0 })
   }
 
   _onCancelAction = () => {
@@ -592,6 +709,7 @@ export default class ConfirmScreen extends Component {
                 ]}
               >
                 <ScrollView
+                  keyboardShouldPersistTaps="always"
                   style={{ marginBottom: bottom }}
                 >
                   <TouchableWithoutFeedback
@@ -618,7 +736,7 @@ export default class ConfirmScreen extends Component {
                   }
                 ]}
               >
-                {this._renderDoneBtn(advanceStore)}
+                {/* {this._renderDoneBtn(advanceStore)} */}
               </Animated.View>
             </View>
           }
@@ -645,7 +763,7 @@ const styles = StyleSheet.create({
     // backgroundColor: AppStyle.backgroundColor
   },
   confirmHeader: {
-    height: 25,
+    height: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -679,8 +797,8 @@ const styles = StyleSheet.create({
   key: {
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16,
-    color: AppStyle.mainTextColor,
-    marginTop: 15
+    color: AppStyle.mainTextColor
+    // marginTop: 15
   },
   value: {
     fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNew',
@@ -724,30 +842,26 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#14192d',
     alignSelf: 'stretch',
-    marginTop: 10,
-    color: AppStyle.secondaryTextColor,
-    paddingLeft: 10,
-    fontFamily: 'OpenSans-Semibold',
-    paddingRight: 10,
-    fontSize: 14
+    marginTop: 10
+    // paddingRight: 10
   },
-  doneBtn: {
-    backgroundColor: AppStyle.backgroundDarkBlue,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+  // doneBtn: {
+  //   backgroundColor: AppStyle.backgroundDarkBlue,
+  //   height: 50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center'
+  // },
   line: {
     height: 1,
     backgroundColor: '#14192D',
     marginLeft: 20,
     marginRight: 20
   },
-  clearBtn: {
-    position: 'absolute',
-    right: 10,
-    top: 19
-  },
+  // clearBtn: {
+  //   position: 'absolute',
+  //   right: 10,
+  //   top: 19
+  // },
   err: {
     color: 'red',
     marginTop: 10,
@@ -781,5 +895,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A90E2',
     fontFamily: 'OpenSans-Semibold'
+  },
+  labelHolder: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15
+  },
+  iconLabel: {
+    marginLeft: 8,
+    width: 16,
+    height: 16
   }
+
 })
