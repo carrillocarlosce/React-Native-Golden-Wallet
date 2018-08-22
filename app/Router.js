@@ -34,6 +34,7 @@ import EnterNameViaMnemonic from './modules/WalletImport/screen/EnterNameViaMnem
 import BackupFirstStepScreen from './modules/WalletBackup/screen/BackupFirstStepScreen'
 import BackupSecondStepScreen from './modules/WalletBackup/screen/BackupSecondStepScreen'
 import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStepScreen'
+import UnlockPincode from './modules/ChangePincode/screen/UnlockPincode'
 
 const BackupStack = StackNavigator(
   {
@@ -99,6 +100,12 @@ const HomeStack = StackNavigator(
     },
     NetworkScreen: {
       screen: NetworkScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ChangePincodeScreen: {
+      screen: UnlockPincode,
       navigationOptions: {
         header: null
       }
