@@ -54,9 +54,9 @@ class MainStore {
     })
   }
 
-  async gotoBackup() {
+  async gotoBackup(pincode) {
     this.backupStore = new BackupStore()
-    const mnemonic = await this.secureStorage.deriveMnemonic()
+    const mnemonic = await new SecureDS(pincode).deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
     this.backupStore.setup()
   }

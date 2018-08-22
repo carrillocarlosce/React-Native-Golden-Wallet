@@ -9,6 +9,8 @@ const { width } = Dimensions.get('window')
 
 const fontWeight = Platform.OS === 'ios' ? { fontWeight: 'bold' } : {}
 
+export const opensansRegular = Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular'
+
 const styles = StyleSheet.create({
   line: {
     height: 1,
