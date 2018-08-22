@@ -21,7 +21,6 @@ import TokenScreen from './modules/WalletDetail/screen/TokenScreen'
 import SendTransactionScreen from './modules/SendTransaction/screen/SendTransactionScreen'
 import UnlockScreen from './modules/Unlock'
 import ScanQRCodeScreen from './modules/ScanQRCode'
-import BackupScreen from './modules/WalletBackup/screen/BackupScreen'
 import PrivacyPolicyWebView from './modules/Setting/screen/PrivacyPolicyWebView'
 import ImplementPrivateKeyScreen from './modules/WalletImport/screen/ImplementPrivateKeyScreen'
 import AddressBookScreen from './modules/AddressBook/screen/AddressBookScreen'
@@ -32,6 +31,36 @@ import TxHashWebViewScreen from './modules/TransactionDetail/screen/TxHashWebVie
 import NetworkScreen from './modules/Setting/screen/NetworkScreen'
 import AddressInputScreen from './modules/SendTransaction/screen/AddressInputScreen'
 import EnterNameViaMnemonic from './modules/WalletImport/screen/EnterNameViaMnemonic'
+import BackupFirstStepScreen from './modules/WalletBackup/screen/BackupFirstStepScreen'
+import BackupSecondStepScreen from './modules/WalletBackup/screen/BackupSecondStepScreen'
+import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStepScreen'
+
+const BackupStack = StackNavigator(
+  {
+    BackupFirstStepScreen: {
+      screen: BackupFirstStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BackupSecondStepScreen: {
+      screen: BackupSecondStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BackupThirdStepScreen: {
+      screen: BackupThirdStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    }
+  },
+  {
+    initialRouteName: 'BackupFirstStepScreen',
+    cardStyle: { backgroundColor: AppStyle.backgroundColor }
+  }
+)
 
 const AddressBookStack = StackNavigator(
   {
@@ -96,13 +125,6 @@ const HomeStack = StackNavigator(
       screen: TransactionListScreen,
       navigationOptions: {
         header: null
-      }
-    },
-    BackupScreen: {
-      screen: BackupScreen,
-      navigationOptions: {
-        header: null,
-        gesturesEnabled: false
       }
     },
     PrivacyPolicyWebView: {
@@ -250,6 +272,12 @@ const Router = StackNavigator(
     },
     CreateWalletStack: {
       screen: CreateWalletStack,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BackupStack: {
+      screen: BackupStack,
       navigationOptions: {
         header: null
       }

@@ -159,6 +159,7 @@ class AppState {
     const data = orgData
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
+    this.didBackup = data.didBackup
     this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
     this.currentWalletIndex = data.currentWalletIndex
     const wallets = await WalletDS.getWallets()
