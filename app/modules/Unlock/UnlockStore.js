@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx'
 import * as Keychain from 'react-native-keychain'
-import { Animated } from 'react-native'
+import { Animated, AsyncStorage } from 'react-native'
 import MainStore from '../../AppStores/MainStore'
 import HapticHandler from '../../Handler/HapticHandler'
 import SecureDS from '../../AppStores/DataSource/SecureDS'
@@ -19,6 +19,18 @@ class UnlockStore {
   animatedValue = new Animated.Value(0)
   isShake = false
 
+  @action async setup() {
+    let unlockDes = MainStore.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
+    const oldData = await AsyncStorage.getItem('USER_WALLET_ENCRYPTED')
+    if (oldData) {
+      unlockDes = 'Unlock your Golden'
+    }
+    this.setData({
+      unlockDes,
+      pincode: ''
+    })
+  }
+
   @action setData(data) {
     this.data = {
       ...this.data,
@@ -30,33 +42,37 @@ class UnlockStore {
     HapticHandler.ImpactLight()
     const { pincode, pinConfirm } = this.data
     const pinData = pincode + number
-
-    if (pinData.length === 6) {
-      // handle check pincode
-      this.setData({
-        // pinTyped: pinTyped + 1,
-        pincode: pinData
-      })
-      MigrateData.getItem('USER_WALLET_ENCRYPTED')
-        .then((oldData) => {
-          if (oldData) {
-            this._handelMigrateData()
-          } else if (MainStore.appState.hasPassword) {
-            this._handleCheckPincode()
-          } else if (pinConfirm === '') {
-            this._handleCreatePin()
-          } else if (this.data.pincode === this.data.pinConfirm) {
-            this._handleConfirmPin()
-          } else {
-            this._handleErrorPin()
-          }
+    return new Promise((resolve, reject) => {
+      if (pinData.length === 6) {
+        // handle check pincode
+        this.setData({
+          // pinTyped: pinTyped + 1,
+          pincode: pinData
         })
-    } else {
-      this.setData({
-        // pinTyped: pinTyped + 1,
-        pincode: pinData
-      })
-    }
+        MigrateData.getItem('USER_WALLET_ENCRYPTED')
+          .then((oldData) => {
+            if (oldData) {
+              this._handelMigrateData()
+              resolve(this.data.pincode)
+            } else if (MainStore.appState.hasPassword) {
+              this._handleCheckPincode()
+              resolve(this.data.pincode)
+            } else if (pinConfirm === '') {
+              this._handleCreatePin()
+            } else if (this.data.pincode === this.data.pinConfirm) {
+              this._handleConfirmPin()
+              resolve(this.data.pincode)
+            } else {
+              this._handleErrorPin()
+            }
+          })
+      } else {
+        this.setData({
+          // pinTyped: pinTyped + 1,
+          pincode: pinData
+        })
+      }
+    })
   }
 
   async _handelMigrateData() {
@@ -153,4 +169,4 @@ class UnlockStore {
   }
 }
 
-export default UnlockStore
+export default new UnlockStore()

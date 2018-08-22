@@ -42,18 +42,6 @@ class MainStore {
     this.sendTransaction = null
   }
 
-  async gotoUnlock() {
-    this.unlock = new UnlockStore()
-    let unlockDes = this.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
-    const oldData = await AsyncStorage.getItem('USER_WALLET_ENCRYPTED')
-    if (oldData) {
-      unlockDes = 'Unlock your Golden'
-    }
-    this.unlock.setData({
-      unlockDes
-    })
-  }
-
   async gotoBackup() {
     this.backupStore = new BackupStore()
     const mnemonic = await this.secureStorage.deriveMnemonic()
