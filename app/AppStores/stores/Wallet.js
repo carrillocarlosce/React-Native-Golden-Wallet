@@ -198,7 +198,7 @@ export default class Wallet {
     this.isFetchingBalance = !isRefresh && !isBackground
     api.fetchWalletInfo(this.address).then(async (res) => {
       const { data } = res.data
-      const tokens = data.tokens.map(t => new WalletToken(t, this.address))
+      const tokens = data.tokens ? data.tokens.map(t => new WalletToken(t, this.address)) : []
       const tokenETH = this.getTokenETH(data)
       this.autoSetSelectedTokenIfNeeded([tokenETH, ...tokens])
       const totalTokenDollar = this.tokens.reduce((rs, item) => rs.plus(item.balanceInDollar), new BigNumber('0'))
