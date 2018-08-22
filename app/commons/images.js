@@ -71,6 +71,7 @@ export default {
   iconAddPhoto: require('./../assets/images/icon_add_photo.png'),
   // iconAddPhoto: require('./../assets/images/icon_add_photo.png'),
   iconFlashOn: require('./../assets/images/ic_flash.png'),
-  iconFlashOff: require('./../assets/images/ic_off_flash.png')
+  iconFlashOff: require('./../assets/images/ic_off_flash.png'),
+  backupNoteBook: require('./../assets/images/backup_note_book.png')
 
 }

@@ -1,10 +1,8 @@
 import { observable, action } from 'mobx'
-import { AsyncStorage } from 'react-native'
 import SendStore from '../modules/SendTransaction/stores/SendStore'
 import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
-import UnlockStore from '../modules/Unlock/UnlockStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
 
@@ -42,9 +40,9 @@ class MainStore {
     this.sendTransaction = null
   }
 
-  async gotoBackup() {
+  async gotoBackup(pincode) {
     this.backupStore = new BackupStore()
-    const mnemonic = await this.secureStorage.deriveMnemonic()
+    const mnemonic = await new SecureDS(pincode).deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
     this.backupStore.setup()
   }
