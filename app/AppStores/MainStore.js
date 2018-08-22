@@ -7,6 +7,7 @@ import appState from './AppState'
 import UnlockStore from '../modules/Unlock/UnlockStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
+import ChangePincodeStore from '../modules/ChangePincode/stores/ChangePincodeStore'
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
@@ -20,6 +21,7 @@ class MainStore {
   unlock = null
   importStore = null
   backupStore = null
+  changePincode = null
 
   importMnemonicStore = null
 
@@ -42,6 +44,10 @@ class MainStore {
     this.sendTransaction = null
   }
 
+  goToChangePincode() {
+    this.changePincode = new ChangePincodeStore()
+  }
+
   async gotoUnlock() {
     this.unlock = new UnlockStore()
     let unlockDes = this.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
@@ -54,9 +60,9 @@ class MainStore {
     })
   }
 
-  async gotoBackup() {
+  async gotoBackup(pincode) {
     this.backupStore = new BackupStore()
-    const mnemonic = await this.secureStorage.deriveMnemonic()
+    const mnemonic = await new SecureDS(pincode).deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
     this.backupStore.setup()
   }

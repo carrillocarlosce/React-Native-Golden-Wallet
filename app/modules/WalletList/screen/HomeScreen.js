@@ -75,6 +75,37 @@ export default class HomeScreen extends Component {
     navigation.navigate('SendTransactionStack')
   }
 
+  onBackup = () => {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        await MainStore.gotoBackup(pincode)
+        this.props.navigation.navigate('BackupStack')
+      }
+    }, true)
+  }
+
+  onAlertBackup = () => {
+    NavStore.popupCustom.show(
+      'No backup, No wallet!',
+      [
+        {
+          text: 'Later',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+          }
+        },
+        {
+          text: 'Backup now',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+            this.onBackup()
+          }
+        }
+      ],
+      'The Recovery Phrase protects your wallet and can be used to restore your assets if your device will be lost or damaged. Don’t skip the backup step!'
+    )
+  }
+
   onSnapToItem = (index) => {
     if (this.cards[index].address === '0') {
       MainStore.appState.setSelectedWallet(null)
@@ -123,10 +154,8 @@ export default class HomeScreen extends Component {
         onAddPrivateKey={() => {
           this.props.navigation.navigate('ImplementPrivateKeyScreen')
         }}
-        onBackup={async () => {
-          await MainStore.gotoBackup()
-          this.props.navigation.navigate('BackupScreen')
-        }}
+        onBackup={this.onBackup}
+        onAlertBackup={this.onAlertBackup}
         onCopy={() => {
           Clipboard.setString(MainStore.appState.selectedWallet.address)
           NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
@@ -207,7 +236,7 @@ export default class HomeScreen extends Component {
     })
     this.wallets = MainStore.appState.wallets.slice()
     this.cards = this.wallets
-    if (this.cards.length < 5) {
+    if (this.cards.length < 10) {
       this.cards = [...this.cards, {
         balance: '0 ETH',
         balanceUSD: '$0',

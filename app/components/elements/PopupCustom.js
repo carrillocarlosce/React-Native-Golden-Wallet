@@ -39,6 +39,7 @@ export default class PopupCustom extends Component {
     offsetY: new Animated.Value(0),
     fromWallet: false,
     errorMsg: '',
+    image: null,
     isRemoveWallet: false
   }
 
@@ -111,7 +112,7 @@ export default class PopupCustom extends Component {
         })
       }
     }
-  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, isRemoveWallet = false) {
+  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, image = null, isRemoveWallet = false) {
     this.selectedTitle = valueInput
     this.setState({
       visible: true,
@@ -122,6 +123,7 @@ export default class PopupCustom extends Component {
       isAddress,
       valueInput: isRemoveWallet ? '' : valueInput,
       fromWallet,
+      image,
       isRemoveWallet
     })
   }
@@ -200,7 +202,7 @@ export default class PopupCustom extends Component {
 
   render() {
     const {
-      visible, title, content, type, valueInput, isAddress, errorMsg, isRemoveWallet
+      visible, title, content, type, valueInput, isAddress, errorMsg, image, isRemoveWallet
     } = this.state
     const contentPaddingVertical = type === 'input'
       ? {
@@ -252,6 +254,9 @@ export default class PopupCustom extends Component {
           >
             <View style={styles.popupCustom}>
               <View style={[styles.contentField, contentPaddingVertical]}>
+                {image &&
+                  <Image style={{ alignSelf: 'center', marginBottom: 20 }} source={image} />
+                }
                 <Text style={[styles.titlePopup, titleColor]}>{title}</Text>
                 {content &&
                   renderContent

@@ -20,7 +20,7 @@ class SecurePrivateKeyDataSource {
   updateTrackDataKey = async (address, deleting = false) => {
     const keysStr = await AsyncStorage.getItem(trackDataKey)
     const keysObj = keysStr ? JSON.parse(keysStr) : {}
-    if (deleting) keysObj[address] = 1
+    if (!deleting) keysObj[address] = 1
     else delete (keysObj[address])
 
     await AsyncStorage.setItem(trackDataKey, JSON.stringify(keysObj))

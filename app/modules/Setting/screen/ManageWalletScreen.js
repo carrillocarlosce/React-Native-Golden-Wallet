@@ -114,6 +114,7 @@ export default class ListWalletScreen extends Component {
             false,
             this.selectedWallet.title,
             true,
+            null,
             true
           )
           // NavStore.popupCustom.show(
@@ -211,7 +212,7 @@ export default class ListWalletScreen extends Component {
     const { navigation } = this.props
     const { wallets } = this
     let backgroundColor
-    if (wallets.length === 5) {
+    if (wallets.length === 10) {
       return null
     }
     if (wallets.length === 0) {
