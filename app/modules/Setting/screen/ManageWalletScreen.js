@@ -8,7 +8,9 @@ import {
   SafeAreaView,
   View,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Animated,
+  Easing
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -83,29 +85,62 @@ export default class ListWalletScreen extends Component {
 
   onDelete = () => {
     this.actionSheet.hide(() => {
-      NavStore.popupCustom.show(
-        'Are you sure you want to remove this wallet ?',
-        [
-          {
-            text: 'Cancel',
-            onClick: () => {
-              NavStore.popupCustom.hide()
-            }
-          },
-          {
-            text: 'Remove',
-            onClick: async () => {
-              const { wallets, selectedWallet } = MainStore.appState
-              const index = wallets.indexOf(selectedWallet)
-              if (index === wallets.length - 1) {
-                MainStore.appState.setSelectedWallet(null)
+      NavStore.lockScreen({
+        onUnlock: (pincode) => {
+          NavStore.popupCustom.show(
+            'Remove Wallet',
+            [
+              {
+                text: 'Cancel',
+                onClick: () => {
+                  NavStore.popupCustom.hide()
+                }
+              },
+              {
+                text: 'Remove',
+                onClick: async (text) => {
+                  const { wallets, selectedWallet } = MainStore.appState
+                  const index = wallets.indexOf(selectedWallet)
+                  if (index === wallets.length - 1) {
+                    MainStore.appState.setSelectedWallet(null)
+                  }
+                  await this.manageWalletStore.removeWallet(this.selectedWallet)
+                  NavStore.popupCustom.hide()
+                }
               }
-              await this.manageWalletStore.removeWallet(this.selectedWallet)
-              NavStore.popupCustom.hide()
-            }
-          }
-        ]
-      )
+            ],
+            'Enter your wallet name to remove',
+            'input',
+            false,
+            this.selectedWallet.title,
+            true,
+            true
+          )
+          // NavStore.popupCustom.show(
+          //   'Are you sure you want to remove this wallet ?',
+          //   [
+          //     {
+          //       text: 'Cancel',
+          //       onClick: () => {
+          //         NavStore.popupCustom.hide()
+          //       }
+          //     },
+          //     {
+          //       text: 'Remove',
+          //       onClick: async () => {
+          //         const { wallets, selectedWallet } = MainStore.appState
+          //         const index = wallets.indexOf(selectedWallet)
+          //         if (index === wallets.length - 1) {
+          //           MainStore.appState.setSelectedWallet(null)
+          //         }
+          //         await this.manageWalletStore.removeWallet(this.selectedWallet)
+          //         NavStore.popupCustom.hide()
+          //       }
+          //     }
+          //   ]
+          // )
+        }
+      }, true)
     })
   }
 
@@ -125,12 +160,41 @@ export default class ListWalletScreen extends Component {
     }
   }
 
+  _renderNoWalletView() {
+    return (
+      <View style={{ alignItems: 'center', flex: 1, marginBottom: 30 }}>
+        <Image
+          source={images.noWalletImage}
+          style={styles.contactImageStyle}
+        />
+        <Text style={{
+          fontSize: 26,
+          fontFamily: AppStyle.mainFontBold,
+          marginTop: 60,
+          color: AppStyle.titleDarkModeColor
+        }}
+        >No wallets yet
+        </Text>
+        <Text style={{
+          fontSize: 18,
+          fontFamily: AppStyle.mainFontSemiBold,
+          marginTop: 20,
+          color: '#8A8D97'
+        }}
+        >
+          Get started by adding your first one.
+        </Text>
+      </View>
+    )
+  }
+
   _renderAddressList() {
     const { wallets } = this
     return (
       <FlatList
         style={{ flex: 1, marginTop: 15 }}
         data={wallets}
+        ListEmptyComponent={this._renderNoWalletView()}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => item.address}
         renderItem={this._renderItem}
@@ -146,13 +210,18 @@ export default class ListWalletScreen extends Component {
   _renderFooter = () => {
     const { navigation } = this.props
     const { wallets } = this
+    let backgroundColor
     if (wallets.length === 5) {
       return null
+    }
+    if (wallets.length === 0) {
+      backgroundColor = { backgroundColor: AppStyle.backgroundColor }
     }
     return (
       <TouchableOpacity
         style={[
-          styles.addContactButtonStyle
+          styles.addContactButtonStyle,
+          backgroundColor
         ]}
         onPress={() => {
           navigation.navigate('CreateWalletStack', {
