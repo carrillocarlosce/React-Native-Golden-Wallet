@@ -144,11 +144,10 @@ export default class LargeCard extends Component {
     const isHide = isHideValue
     const backgroundCard = AppStyle.mode1
     // const numberOfPendingTransaction = unspendTransactions.length
-
     const actionButton = (
       <TouchableOpacity
         onPress={() => {
-          if (MainStore.appState.didBackup) {
+          if (MainStore.appState.didBackup || importType !== undefined) {
             this.setState({ isFlipped: !this.state.isFlipped })
           } else {
             onAlertBackup()
