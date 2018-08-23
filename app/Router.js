@@ -35,6 +35,7 @@ import BackupFirstStepScreen from './modules/WalletBackup/screen/BackupFirstStep
 import BackupSecondStepScreen from './modules/WalletBackup/screen/BackupSecondStepScreen'
 import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStepScreen'
 import UnlockPincode from './modules/ChangePincode/screen/UnlockPincode'
+import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -118,6 +119,12 @@ const HomeStack = StackNavigator(
     },
     ManageWalletScreen: {
       screen: ManageWalletScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ExportPrivateKeyScreen: {
+      screen: ExportPrivateKeyScreen,
       navigationOptions: {
         header: null
       }
