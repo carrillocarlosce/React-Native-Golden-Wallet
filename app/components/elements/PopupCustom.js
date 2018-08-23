@@ -39,7 +39,8 @@ export default class PopupCustom extends Component {
     offsetY: new Animated.Value(0),
     fromWallet: false,
     errorMsg: '',
-    image: null
+    image: null,
+    isRemoveWallet: false
   }
 
   componentWillMount() {
@@ -111,7 +112,7 @@ export default class PopupCustom extends Component {
         })
       }
     }
-  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, image = null) {
+  ], content, type = 'normal', isAddress = false, valueInput = '', fromWallet = false, image = null, isRemoveWallet = false) {
     this.selectedTitle = valueInput
     this.setState({
       visible: true,
@@ -120,21 +121,23 @@ export default class PopupCustom extends Component {
       title,
       type,
       isAddress,
-      valueInput,
+      valueInput: isRemoveWallet ? '' : valueInput,
       fromWallet,
-      image
+      image,
+      isRemoveWallet
     })
   }
 
   hide() {
     this.setState({
-      visible: false
+      visible: false,
+      errorMsg: ''
     })
   }
 
   _renderButons = () => {
     const {
-      buttons, valueInput, type, errorMsg
+      buttons, valueInput, type, errorMsg, isRemoveWallet
     } = this.state
     const buttonsView = buttons.map((btn, index) => {
       let disable = false
@@ -142,6 +145,14 @@ export default class PopupCustom extends Component {
       if (index === 1 && type === 'input' && (valueInput === '' || errorMsg !== '')) {
         disable = true
         styleTextDisable = { color: AppStyle.secondaryTextColor }
+      }
+      if (isRemoveWallet && index === 1) {
+        disable = true
+        styleTextDisable = { color: AppStyle.secondaryTextColor }
+        if (valueInput === this.selectedTitle) {
+          disable = false
+          styleTextDisable = { color: AppStyle.mainColor }
+        }
       }
       const lineBetween = index > 0
         ? <View style={styles.line} />
@@ -181,7 +192,7 @@ export default class PopupCustom extends Component {
       return <View key="invisible" />
     }
     return (
-      <View key="visible" style={{ position: 'absolute', right: 10, bottom: 8 }}>
+      <View key="visible" style={{ position: 'absolute', right: 10, top: 28 }}>
         <TouchableOpacity onPress={this.clearText}>
           <Image source={images.iconCloseSearch} style={styles.iconClose} />
         </TouchableOpacity>
@@ -191,7 +202,7 @@ export default class PopupCustom extends Component {
 
   render() {
     const {
-      visible, title, content, type, valueInput, isAddress, errorMsg, image
+      visible, title, content, type, valueInput, isAddress, errorMsg, image, isRemoveWallet
     } = this.state
     const contentPaddingVertical = type === 'input'
       ? {
@@ -263,8 +274,11 @@ export default class PopupCustom extends Component {
                       placeholderTextColor="#4A4A4A"
                       value={valueInput}
                     />
-                    {errorMsg !== '' &&
+                    {errorMsg !== '' && !isRemoveWallet &&
                       <Text style={styles.errorText}>{errorMsg}</Text>
+                    }
+                    {isRemoveWallet && valueInput !== this.selectedTitle && valueInput !== '' &&
+                      <Text style={styles.errorText}>Wallet name does not match</Text>
                     }
                     {this.renderIconClear()}
                   </View>

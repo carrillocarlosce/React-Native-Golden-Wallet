@@ -237,7 +237,7 @@ export default class HomeScreen extends Component {
     })
     this.wallets = MainStore.appState.wallets.slice()
     this.cards = this.wallets
-    if (this.cards.length < 5) {
+    if (this.cards.length < 10) {
       this.cards = [...this.cards, {
         balance: '0 ETH',
         balanceUSD: '$0',

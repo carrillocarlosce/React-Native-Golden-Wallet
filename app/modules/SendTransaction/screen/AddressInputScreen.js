@@ -308,7 +308,8 @@ export default class AdressInputScreen extends Component {
         position="bottom"
         keyboardTopOffset={isIPX ? 30 : 22}
         onClosed={() => {
-
+          const { advanceStore } = MainStore.sendTransaction
+          advanceStore.reset()
         }}
         ref={(ref) => { MainStore.sendTransaction.addressInputStore.confirmModal = ref }}
       >

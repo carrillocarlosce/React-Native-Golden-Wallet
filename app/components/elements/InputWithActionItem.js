@@ -63,6 +63,10 @@ export default class SearchInput extends Component {
     this.textInput.focus()
   }
 
+  isFocused() {
+    this.textInput.isFocused()
+  }
+
   render() {
     const {
       placeholder = '',

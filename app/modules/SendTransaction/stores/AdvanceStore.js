@@ -33,6 +33,22 @@ export default class AdvanceStore {
 
   }
 
+  @action setShowClearGasLimit(value) {
+    this.isShowClearGasLimit = value
+  }
+
+  @action reset() {
+    this.gasGweiErr = ''
+    this.gasLimitErr = ''
+  }
+
+  @computed get validateGas() {
+    if (this.gasGweiErr == '' && this.gasLimitErr == '') {
+      return true
+    }
+    return false
+  }
+
   @computed get rate() {
     return MainStore.appState.rateETHDollar
   }
