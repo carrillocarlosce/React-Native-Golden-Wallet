@@ -58,7 +58,9 @@ export default class HomeScreen extends Component {
         isLaunchApp: true,
         onUnlock: () => {
           if (!NotificationStore.isInitFromNotification) {
-            this._gotoCreateWallet()
+            if (MainStore.appState.wallets.length === 0) {
+              this._gotoCreateWallet()
+            }
           } else {
             NotificationStore.isInitFromNotification = false
             NotificationStore.gotoTransactionList()
