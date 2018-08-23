@@ -27,7 +27,9 @@ const { width } = Dimensions.get('window')
 // const widthButton = (width - 60) / 2
 const heightBottomView = (width * 65) / 375
 const marginTop = LayoutUtils.getExtraTop()
-
+const heightCamera = (width * 591) / 375
+const a = (width * 177) / 375
+const ratio = a / heightCamera
 @observer
 export default class ScanQRCodeScreen extends PureComponent {
   static propTypes = {
@@ -266,7 +268,7 @@ export default class ScanQRCodeScreen extends PureComponent {
           </View>
         </TouchableWithoutFeedback>
         <Text
-          style={styles.description}
+          style={[styles.description, { marginTop: 25 }]}
         >
           Automatically scan the QR code into the frame
         </Text>
@@ -288,7 +290,7 @@ export default class ScanQRCodeScreen extends PureComponent {
             this.props.navigation.goBack()
           }}
           rightView={{
-            rightViewIcon: this.state.enableFlash ? images.iconFlashOn : images.iconFlashOff,
+            rightViewIcon: this.state.enableFlash ? images.iconFlashOff : images.iconFlashOn,
             rightViewAction: () => {
               this.setState({ enableFlash: !this.state.enableFlash })
             }
@@ -312,12 +314,16 @@ export default class ScanQRCodeScreen extends PureComponent {
             type={RNCamera.Constants.Type.back}
             flashMode={this.state.enableFlash ? RNCamera.Constants.FlashMode.torch : RNCamera.Constants.FlashMode.off}
           >
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={images.imgScanFrame}
+                style={{ width, flex: 1 }}
+                source={images.scanFrame}
               />
               <Text
-                style={styles.description}
+                style={[styles.description, {
+                  position: 'absolute',
+                  bottom: ratio * heightCamera - (isIphoneX() ? 25 : 40)
+                }]}
               >
                 Automatically scan the QR code into the frame
               </Text>
@@ -355,9 +361,6 @@ const styles = StyleSheet.create({
   buttonBlue: {
     width,
     height: heightBottomView,
-    // backgroundColor: AppStyle.backgroundDarkBlue,
-    // position: 'absolute',
-    // bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
@@ -369,7 +372,6 @@ const styles = StyleSheet.create({
     color: AppStyle.mainTextColor
   },
   description: {
-    marginTop: 20,
     fontFamily: 'OpenSans-Light',
     fontSize: 14,
     color: AppStyle.mainTextColor

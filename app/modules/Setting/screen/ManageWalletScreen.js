@@ -8,9 +8,7 @@ import {
   SafeAreaView,
   View,
   Dimensions,
-  TouchableWithoutFeedback,
-  Animated,
-  Easing
+  TouchableWithoutFeedback
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -151,7 +149,10 @@ export default class ListWalletScreen extends Component {
 
   _renderItem = ({ item, index }) =>
     (
-      <ManageWalletItem index={index} action={() => { this.onActionPress(index) }} />
+      <ManageWalletItem
+        index={index}
+        action={() => { this.onActionPress(index) }}
+      />
     )
 
   returnData = (isCreateSuccess, index, isCreate) => {
