@@ -275,7 +275,6 @@ export default class ScanQRCodeScreen extends PureComponent {
   }
 
   render() {
-    console.log('render')
     const triggerRender = NavStore.triggerRenderAndroid
     return (
       <View style={{ flex: 1, paddingTop: isIphoneX() ? 64 : marginTop + 20, paddingBottom: isIphoneX() ? 33 : 0 }}>
