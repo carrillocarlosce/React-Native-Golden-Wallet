@@ -66,6 +66,10 @@ export default class ImportViaAddressScreen extends Component {
 
   onChangeAddress = (text) => {
     this.importAddressStore.setAddress(text)
+    const { errorAddress } = this.importAddressStore
+    if (errorAddress) {
+      this.addressField.shake()
+    }
   }
 
   gotoScan = () => {
@@ -175,6 +179,7 @@ export default class ImportViaAddressScreen extends Component {
               }
               <Text style={[styles.titleText, { marginTop: 20 }]}>Address</Text>
               <InputWithAction
+                ref={(ref) => { this.addressField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 onChangeText={this.onChangeAddress}
                 needPasteButton

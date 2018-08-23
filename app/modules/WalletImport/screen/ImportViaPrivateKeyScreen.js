@@ -65,6 +65,10 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   onChangePrivKey = (text) => {
     this.importPrivateKeyStore.setPrivateKey(text)
+    const { isErrorPrivateKey } = this.importPrivateKeyStore
+    if (isErrorPrivateKey) {
+      this.privKeyField.shake()
+    }
   }
 
   onChangeName = (text) => {
@@ -195,6 +199,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
               }
               <Text style={[styles.titleText, { marginTop: 20 }]}>Private Key</Text>
               <InputWithAction
+                ref={(ref) => { this.privKeyField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 onChangeText={this.onChangePrivKey}
                 needPasteButton
