@@ -1,7 +1,6 @@
 import { observable, action, computed } from 'mobx'
 import { Platform } from 'react-native'
 import WalletToken from './WalletToken'
-import Wallet from './Wallet'
 import MainStore from '../MainStore'
 import NavStore from '../../AppStores/NavStore'
 import NotificationDS from '../DataSource/NotificationDS'
@@ -11,6 +10,7 @@ class Notification {
   @observable currentNotif = null
   @observable tokenFromNotif = null
   isInitFromNotification = false
+  isOpenFromTray = false
   lastedWalletAddress = null
   lastedTokenAddress = null
   deviceToken = null

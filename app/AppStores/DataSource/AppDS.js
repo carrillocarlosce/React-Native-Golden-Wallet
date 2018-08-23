@@ -26,6 +26,16 @@ class AppDataSource {
   async saveAppData(data) {
     return AsyncStorage.setItem(dataKey, JSON.stringify(data))
   }
+
+  async enraseData() {
+    return new Promise(async (resolve, reject) => {
+      const allKeys = await AsyncStorage.getAllKeys()
+      const removePromises = allKeys.map(k => AsyncStorage.removeItem(k))
+      Promise.all(removePromises)
+        .then(res => resolve(res))
+        .catch(e => reject(e))
+    })
+  }
 }
 
 export default new AppDataSource()
