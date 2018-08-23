@@ -74,6 +74,7 @@ export default {
   iconFlashOff: require('./../assets/images/ic_off_flash.png'),
   noWalletImage: require('./../assets/images/img_wallet.png'),
   iconInfo: require('./../assets/images/ic_info.png'),
-  backupNoteBook: require('./../assets/images/backup_note_book.png')
+  backupNoteBook: require('./../assets/images/backup_note_book.png'),
+  scanFrame: require('./../assets/images/scan_frame.png')
 
 }

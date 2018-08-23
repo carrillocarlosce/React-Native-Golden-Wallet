@@ -8,9 +8,7 @@ import {
   SafeAreaView,
   View,
   Dimensions,
-  TouchableWithoutFeedback,
-  Animated,
-  Easing
+  TouchableWithoutFeedback
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -25,6 +23,7 @@ import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import SecureDS from '../../../AppStores/DataSource/SecureDS';
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -79,6 +78,43 @@ export default class ListWalletScreen extends Component {
         false,
         this.selectedWallet.title,
         true
+      )
+    })
+  }
+
+  onExportPrivateKey = () => {
+    this.actionSheet.hide(() => {
+      NavStore.popupCustom.show(
+        'WARNING!',
+        [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              NavStore.popupCustom.hide()
+            }
+          },
+          {
+            text: 'Continue',
+            onClick: async (text) => {
+              NavStore.popupCustom.hide()
+              NavStore.lockScreen({
+                onUnlock: (pincode) => {
+                  NavStore.showLoading()
+                  const ds = new SecureDS(pincode)
+                  this.getPrivateKey(ds).then((pk) => {
+                    NavStore.hideLoading()
+                    NavStore.pushToScreen('ExportPrivateKeyScreen', {
+                      pk,
+                      walletName: this.selectedWallet.title,
+                      address: this.selectedWallet.address
+                    })
+                  }).catch(e => NavStore.hideLoading())
+                }
+              }, true)
+            }
+          }
+        ],
+        'It is essential to understand that the Private Key is the most important and sensitive part of your account information.\n\nWhoever has knowledge of a Private Key has full control over the associated funds and assets.\n\nIt is important for restoring your account so you should never lose it, but also keep it top secret.'
       )
     })
   }
@@ -145,13 +181,21 @@ export default class ListWalletScreen extends Component {
     })
   }
 
+  getPrivateKey(ds) {
+    this.selectedWallet.setSecureDS(ds)
+    return this.selectedWallet.derivePrivateKey()
+  }
+
   get wallets() {
     return MainStore.appState.wallets
   }
 
   _renderItem = ({ item, index }) =>
     (
-      <ManageWalletItem index={index} action={() => { this.onActionPress(index) }} />
+      <ManageWalletItem
+        index={index}
+        action={() => { this.onActionPress(index) }}
+      />
     )
 
   returnData = (isCreateSuccess, index, isCreate) => {
@@ -272,6 +316,11 @@ export default class ListWalletScreen extends Component {
                 <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={this.onExportPrivateKey}>
+              <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+                <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
                 <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
@@ -312,5 +361,10 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     fontFamily: 'OpenSans-Semibold'
+  },
+  contactImageStyle: {
+    resizeMode: 'contain',
+    width: 168,
+    marginTop: 40
   }
 })

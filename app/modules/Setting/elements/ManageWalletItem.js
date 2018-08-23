@@ -34,14 +34,16 @@ export default class ManageWalletItem extends Component {
 
   render() {
     const {
-      style, action
+      style, action, index
     } = this.props
 
     const { title, address } = this.wallet
-
+    const borderBottomWidth = {
+      borderBottomWidth: index == 9 ? 0 : 1
+    }
     return (
       <TouchableWithoutFeedback>
-        <View style={[styles.container, style]}>
+        <View style={[styles.container, borderBottomWidth, style]}>
           <View style={{}}>
             <Text style={styles.name}>{title}</Text>
             <Text
@@ -64,7 +66,6 @@ const styles = StyleSheet.create({
     backgroundColor: AppStyle.backgroundTextInput,
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
     borderColor: AppStyle.borderLinesSetting,
     flexDirection: 'row',
     justifyContent: 'space-between'

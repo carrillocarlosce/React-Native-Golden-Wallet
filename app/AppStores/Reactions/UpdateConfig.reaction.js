@@ -8,6 +8,7 @@ export default (appState) => {
         w.offLoading()
         w.fetchingBalance()
       })
+      appState.getGasPriceEstimate()
     }
   )
 }
