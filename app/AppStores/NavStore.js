@@ -23,7 +23,7 @@ class ObservableNavStore {
   @observable.ref navigator = null
   @observable.ref popupCustom = null
   @observable.ref toastTop = null
-  @observable.ref currentRouteName = ''
+  currentRouteName = ''
   @observable.ref loading = null
   @observable.ref preventOpenUnlockScreen = false
   @observable triggerRenderAndroid = false
