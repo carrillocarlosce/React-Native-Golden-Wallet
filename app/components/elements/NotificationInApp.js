@@ -13,6 +13,7 @@ import NotificationStore from '../../AppStores/stores/Notification'
 import constant from '../../commons/constant'
 import AppStyle from '../../commons/AppStyle'
 import LayoutUtils from '../../commons/LayoutUtils'
+import NavStore from '../../AppStores/NavStore'
 
 const { width } = Dimensions.get('window')
 const { heightNotif } = LayoutUtils
@@ -49,6 +50,10 @@ export default class NotificationInApp extends Component {
 
   get shouldShowNotifInApp() {
     const { notif, isInitFromNotification, appState } = NotificationStore
+    const { currentRouteName } = NavStore
+    if (currentRouteName === '' || currentRouteName === 'UnlockScreen') {
+      return false
+    }
     if (!notif) {
       return false
     }
