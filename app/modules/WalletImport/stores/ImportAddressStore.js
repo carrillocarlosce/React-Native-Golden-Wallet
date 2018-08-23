@@ -18,7 +18,7 @@ export default class ImportAddressStore {
   }
 
   @action setAddress(address) {
-    this.addessWallet = address.toLowerCase()
+    this.addessWallet = address
   }
 
   @action async create(title) {
@@ -77,7 +77,7 @@ export default class ImportAddressStore {
       return constant.INVALID_ADDRESS
     }
 
-    if (!this.finished && this.addressMap[this.address]) {
+    if (!this.finished && this.addressMap[this.address.toLowerCase()]) {
       return constant.EXISTED_WALLET
     }
     return ''

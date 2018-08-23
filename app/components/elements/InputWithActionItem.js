@@ -72,19 +72,19 @@ export default class SearchInput extends Component {
   }
 
   shake() {
-    const { animatedValue, isShake } = this
-    Animated.spring(
-      animatedValue,
-      {
-        toValue: isShake ? 0 : 1,
-        duration: 250,
-        tension: 80,
-        friction: 4
-      }
-    ).start()
-    setTimeout(() => {
-      this.isShake = !isShake
-    }, 250)
+    // const { animatedValue, isShake } = this
+    // Animated.spring(
+    //   animatedValue,
+    //   {
+    //     toValue: isShake ? 0 : 1,
+    //     duration: 250,
+    //     tension: 80,
+    //     friction: 4
+    //   }
+    // ).start()
+    // setTimeout(() => {
+    //   this.isShake = !isShake
+    // }, 250)
   }
 
   render() {
