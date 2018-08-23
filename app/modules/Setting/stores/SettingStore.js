@@ -89,6 +89,8 @@ export default class SettingStore {
       // This API is only available on iOS 10.3 or later
       if (StoreReview.isAvailable) {
         StoreReview.requestReview()
+      } else {
+        NavStore.popupCustom.show('Store review is not available')
       }
     } else {
       Alert.alert(
