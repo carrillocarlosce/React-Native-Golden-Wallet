@@ -16,6 +16,8 @@ import images from '../../commons/images'
 import GoldenLoading from '../../components/elements/GoldenLoading'
 import UnlockStore from './UnlockStore'
 import NavStore from '../../AppStores/NavStore'
+import DisableView from './elements/DisableView'
+import AppStyle from '../../commons/AppStyle'
 
 const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
@@ -63,6 +65,11 @@ export default class UnlockScreen extends Component {
 
   componentDidMount() {
     UnlockStore.setup()
+  }
+
+  get shouldShowDisableView() {
+    const { wrongPincodeCount, timeRemaining } = UnlockStore
+    return wrongPincodeCount > 5 && timeRemaining > 0
   }
 
   renderDots(numberOfDots) {
@@ -136,24 +143,22 @@ export default class UnlockScreen extends Component {
     )
   }
 
-  render() {
-    const unlockDescription = UnlockStore.data.unlockDes
+  renderContent = (unlockDescription, warningPincodeFail) => {
+    if (this.shouldShowDisableView) {
+      return <DisableView />
+    }
+
     const animationShake = UnlockStore.animatedValue.interpolate({
       inputRange: [0, 0.3, 0.7, 1],
       outputRange: [0, -20, 20, 0],
       useNativeDriver: true
     })
-
     return (
-      <View style={styles.container}>
-        <StatusBar
-          hidden
-        />
-        <GoldenLoading
-          // style={{ marginTop: isSmallScreen ? 10 : height * 0.07 }}
-          isSpin={false}
-        />
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Text style={styles.desText}>{unlockDescription}</Text>
+        {warningPincodeFail &&
+          <Text style={styles.warningField}>{warningPincodeFail}</Text>
+        }
         <Animated.View
           style={[styles.pinField, {
             transform: [
@@ -174,24 +179,43 @@ export default class UnlockScreen extends Component {
       </View>
     )
   }
+
+  render() {
+    const { shouldShowDisableView } = this
+    const { warningPincodeFail } = UnlockStore
+    const unlockDescription = UnlockStore.data.unlockDes
+    const container = shouldShowDisableView ? {} : { justifyContent: 'center' }
+    return (
+      <View style={[styles.container, container]}>
+        <StatusBar
+          hidden
+        />
+        <GoldenLoading
+          style={{ marginTop: shouldShowDisableView ? 80 : 0 }}
+          isSpin={false}
+        />
+        {this.renderContent(unlockDescription, warningPincodeFail)}
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
+    flex: 1
   },
   desText: {
     color: 'white',
     fontSize: isSmallScreen ? 14 : 22,
     fontFamily: 'OpenSans-Bold',
-    marginTop: isSmallScreen ? 10 : height * 0.03
+    marginTop: isSmallScreen ? 10 : height * 0.03,
+    marginBottom: isSmallScreen ? 8 : height * 0.015
   },
   pinField: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: isSmallScreen ? 13 : height * 0.05
+    marginTop: isSmallScreen ? 13 : height * 0.025
   },
   arrayNumber: {
     flexDirection: 'row',
@@ -216,5 +240,10 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     fontSize: 20,
     color: 'white'
+  },
+  warningField: {
+    color: AppStyle.errorColor,
+    fontFamily: 'OpenSans-Semibold',
+    fontSize: 16
   }
 })
