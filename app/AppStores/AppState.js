@@ -151,6 +151,12 @@ class AppState {
           : this.gasPriceEstimate
 
         this.gasPriceEstimate = data
+      } else {
+        this.gasPriceEstimate = {
+          slow: 2,
+          standard: 10,
+          fast: 60
+        }
       }
     }, 0)
   }

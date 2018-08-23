@@ -8,6 +8,7 @@ export default (appState) => {
       appState.wallets.forEach((w) => {
         w.fetchingBalance()
       })
+      appState.getGasPriceEstimate()
     }
   )
 }
