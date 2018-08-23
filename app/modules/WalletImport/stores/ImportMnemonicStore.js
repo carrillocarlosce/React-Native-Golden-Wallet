@@ -75,6 +75,7 @@ export default class ImportMnemonicStore {
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
     NavStore.reset()
+    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
   }
 
   @computed get isLoading() {

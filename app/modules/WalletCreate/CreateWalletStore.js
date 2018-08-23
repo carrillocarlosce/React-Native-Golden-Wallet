@@ -31,6 +31,9 @@ class CreateWalletStore {
       MainStore.appState.save()
       this.loading = false
       NavStore.reset()
+      NavStore.pushToScreen('TokenScreen', {
+        shouldShowAlertBackup: !MainStore.appState.didBackup
+      })
     }, ds)
   }
 
