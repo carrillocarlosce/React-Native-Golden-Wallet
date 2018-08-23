@@ -17,7 +17,7 @@ class PushNotificationHelper {
         NotificationStore.isInitFromNotification = true
         MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
         NotificationStore.setCurrentNotif(notif)
-        // NotificationStore.gotoTransactionList()
+        NotificationStore.gotoTransactionList()
       }
     })
 
@@ -51,21 +51,10 @@ class PushNotificationHelper {
 
     FCM.removeAllDeliveredNotifications()
 
-    if (Platform.OS === 'android') {
-      if (MainStore.appState.enableNotification) {
-        MainStore.appState.setEnableNotification(true)
-      }
-    } else {
+    if (Platform.OS === 'ios') {
       Permissions.check('notification').then((response) => {
-        if (response === 'authorized') {
-          if (MainStore.appState.enableNotification) {
-            MainStore.appState.setEnableNotification(true)
-          }
-        } else if (response === 'undetermined') {
+        if (response === 'undetermined') {
           this.requestPermission()
-          MainStore.appState.setEnableNotification(true)
-        } else {
-          MainStore.appState.setEnableNotification(false)
         }
       }).catch((e) => {
         console.log(e)
