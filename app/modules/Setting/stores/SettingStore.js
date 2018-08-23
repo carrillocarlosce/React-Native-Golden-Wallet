@@ -4,6 +4,8 @@ import DeviceInfo from 'react-native-device-info'
 import * as StoreReview from 'react-native-store-review'
 import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
+import changePincodeStore from '../../ChangePincode/stores/ChangePincodeStore'
+import MainStore from '../../../AppStores/MainStore';
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
 const PLAY_STORE_LINK = 'market://details?id=io.goldenwallet'
@@ -39,7 +41,7 @@ export default class SettingStore {
     },
     {
       mainText: 'Change Pincode',
-      onPress: () => { }
+      onPress: () => { this.showChangePincode() }
     }
   ]
 
@@ -82,6 +84,11 @@ export default class SettingStore {
         enableSwitch: !enableSwitch
       }
     ]
+  }
+
+  showChangePincode() {
+    MainStore.goToChangePincode()
+    NavStore.pushToScreen('ChangePincodeScreen')
   }
 
   showPopupRating() {
