@@ -21,7 +21,7 @@ import TokenScreen from './modules/WalletDetail/screen/TokenScreen'
 import SendTransactionScreen from './modules/SendTransaction/screen/SendTransactionScreen'
 import UnlockScreen from './modules/Unlock'
 import ScanQRCodeScreen from './modules/ScanQRCode'
-import PrivacyPolicyWebView from './modules/Setting/screen/PrivacyPolicyWebView'
+import PrivacyTermsWebView from './modules/Setting/screen/PrivacyTermsWebView'
 import ImplementPrivateKeyScreen from './modules/WalletImport/screen/ImplementPrivateKeyScreen'
 import AddressBookScreen from './modules/AddressBook/screen/AddressBookScreen'
 import AddAddressBookScreen from './modules/AddressBook/screen/AddAddressBookScreen'
@@ -35,6 +35,7 @@ import BackupFirstStepScreen from './modules/WalletBackup/screen/BackupFirstStep
 import BackupSecondStepScreen from './modules/WalletBackup/screen/BackupSecondStepScreen'
 import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStepScreen'
 import UnlockPincode from './modules/ChangePincode/screen/UnlockPincode'
+import PrivacyTermsScreen from './modules/Setting/screen/PrivacyTermsScreen'
 import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScreen'
 
 const BackupStack = StackNavigator(
@@ -141,8 +142,8 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
-    PrivacyPolicyWebView: {
-      screen: PrivacyPolicyWebView,
+    PrivacyTermsWebView: {
+      screen: PrivacyTermsWebView,
       navigationOptions: {
         header: null
       }
@@ -167,6 +168,12 @@ const HomeStack = StackNavigator(
     },
     TxHashWebViewScreen: {
       screen: TxHashWebViewScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    PrivacyTermsScreen: {
+      screen: PrivacyTermsScreen,
       navigationOptions: {
         header: null
       }
