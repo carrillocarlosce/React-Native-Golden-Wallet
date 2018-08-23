@@ -27,6 +27,7 @@ export default class ChangePincodeStore {
 
   @action handlePress(number) {
     if (!this.canPress) return false
+    HapticHandler.ImpactLight()
     if (this.pinTyped === 5) {
       this.canPress = false
       this.pinCode = `${this.pinCode}${number}`
@@ -42,6 +43,7 @@ export default class ChangePincodeStore {
 
   @action handleBackSpace() {
     if (!this.canPress) return
+    HapticHandler.ImpactLight()
     if (this.pinCode.length > 0) {
       this.pinCode = this.pinCode.slice(0, -1)
     }
