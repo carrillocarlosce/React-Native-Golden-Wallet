@@ -17,7 +17,6 @@ class PushNotificationHelper {
         NotificationStore.isInitFromNotification = true
         MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
         NotificationStore.setCurrentNotif(notif)
-        NotificationStore.gotoTransactionList()
       }
     })
 
@@ -32,7 +31,8 @@ class PushNotificationHelper {
       MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
       NotificationStore.setCurrentNotif(notif)
       if (notif && notif.opened_from_tray) {
-        NotificationStore.gotoTransactionList()
+        FCM.setBadgeNumber(0)
+        NotificationStore.isOpenFromTray = true
       }
       MainStore.appState.BgJobs.CheckBalance.doOnce(false, false)
       MainStore.appState.BgJobs.CheckBalance.start()

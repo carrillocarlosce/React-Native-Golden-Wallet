@@ -78,8 +78,14 @@ export default class App extends Component {
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
-      NavStore.lockScreen()
-      // setTimeout(() => TickerStore.callApi(), 300)
+      NavStore.lockScreen({
+        onUnlock: () => {
+          if (NotificationStore.isOpenFromTray) {
+            NotificationStore.isOpenFromTray = false
+            NotificationStore.gotoTransactionList()
+          }
+        }
+      })
     }
     this.appState = nextAppState
   }
