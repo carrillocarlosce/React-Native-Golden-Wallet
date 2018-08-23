@@ -34,6 +34,7 @@ export default class ImportAddressStore {
     MainStore.appState.autoSetSelectedWallet()
     this.loading = false
     NavStore.reset()
+    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
   }
 
   @computed get title() {

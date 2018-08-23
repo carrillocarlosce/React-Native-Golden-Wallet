@@ -199,6 +199,14 @@ class AppState {
     return this.config.network
   }
 
+  resetAppState() {
+    this.config = new Config('mainnet', Constants.INFURA_API_KEY)
+    this.hasPassword = false
+    this.didBackup = false
+    this.enableNotification = true
+    this.currentWalletIndex = 0
+  }
+
   save() {
     return AppDS.saveAppData(this.toJSON())
   }

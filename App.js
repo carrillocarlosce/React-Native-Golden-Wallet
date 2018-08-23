@@ -17,7 +17,6 @@ import Router from './app/Router'
 import currencyStore from './app/AppStores/CurrencyStore'
 import NavStore from './app/AppStores/NavStore'
 import BlindScreen from './app/components/screens/BlindScreen'
-import Lock from './app/components/elements/Lock'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
 import NotificationStore from './app/AppStores/stores/Notification'
@@ -79,8 +78,14 @@ export default class App extends Component {
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
-      NavStore.lockScreen()
-      // setTimeout(() => TickerStore.callApi(), 300)
+      NavStore.lockScreen({
+        onUnlock: () => {
+          if (NotificationStore.isOpenFromTray) {
+            NotificationStore.isOpenFromTray = false
+            NotificationStore.gotoTransactionList()
+          }
+        }
+      })
     }
     this.appState = nextAppState
   }
@@ -100,9 +105,6 @@ export default class App extends Component {
         <Spinner
           visible={false}
           ref={(ref) => { NavStore.loading = ref }}
-        />
-        <Lock
-          ref={(ref) => { NavStore.lock = ref }}
         />
       </View>
     )

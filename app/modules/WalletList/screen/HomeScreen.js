@@ -54,15 +54,19 @@ export default class HomeScreen extends Component {
     TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
-      if (!NotificationStore.isInitFromNotification) {
-        MainStore.gotoUnlock()
-        this.props.navigation.navigate('UnlockScreen', {
-          isLaunchApp: true,
-          onUnlock: () => {
-            this._gotoCreateWallet()
+      this.props.navigation.navigate('UnlockScreen', {
+        isLaunchApp: true,
+        onUnlock: () => {
+          if (!NotificationStore.isInitFromNotification) {
+            if (MainStore.appState.wallets.length === 0) {
+              this._gotoCreateWallet()
+            }
+          } else {
+            NotificationStore.isInitFromNotification = false
+            NotificationStore.gotoTransactionList()
           }
-        })
-      }
+        }
+      })
     }, 100)
   }
 
