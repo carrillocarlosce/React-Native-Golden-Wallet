@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontFamily: 'OpenSans-Semibold',
-    fontSize: 20,
+    fontSize: isSmallScreen ? 18 : 20,
     color: 'white'
   },
   warningField: {
