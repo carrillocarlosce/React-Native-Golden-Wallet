@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default class PrivacyPolicyWebView extends Component {
+export default class PrivacyTermsWebView extends Component {
   static propTypes = {
     navigation: PropTypes.object
   }
@@ -33,7 +33,7 @@ export default class PrivacyPolicyWebView extends Component {
 
   render() {
     const { navigation } = this.props
-    const url = `https://goldenwallet.co/privacy`
+    const { url } = navigation.state.params
     const style = this.state.isShow ? { flex: 1 } : { width: 0 }
     return (
       <View style={styles.container}>

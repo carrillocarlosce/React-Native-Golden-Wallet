@@ -53,7 +53,7 @@ export default class SettingStore {
     },
     {
       mainText: 'Privacy & Terms',
-      onPress: () => { NavStore.pushToScreen('PrivacyPolicyWebView') }
+      onPress: () => { NavStore.pushToScreen('PrivacyTermsScreen') }
     },
     {
       mainText: 'App Version',
