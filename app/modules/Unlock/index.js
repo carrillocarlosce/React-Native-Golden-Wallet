@@ -7,7 +7,9 @@ import {
   StatusBar,
   Text,
   Animated,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler,
+  Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -65,11 +67,25 @@ export default class UnlockScreen extends Component {
 
   componentDidMount() {
     UnlockStore.setup()
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+    }
   }
 
   get shouldShowDisableView() {
     const { wrongPincodeCount, timeRemaining } = UnlockStore
     return wrongPincodeCount > 5 && timeRemaining > 0
+  }
+
+  handleBackPress = () => {
+    BackHandler.exitApp()
+    return true
   }
 
   renderDots(numberOfDots) {
