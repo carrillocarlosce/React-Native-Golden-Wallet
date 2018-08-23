@@ -64,7 +64,6 @@ class UnlockStore {
   }
 
   @action setup() {
-    console.log(MainStore.appState.hasPassword)
     const unlockDes = MainStore.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
     this.setData({
       unlockDes,
@@ -92,6 +91,7 @@ class UnlockStore {
     }
     this.wrongPincodeCount = 0
     this.setTimeRemaining()
+    this.saveDisableData()
   }
 
   @action setData(data) {
@@ -102,9 +102,6 @@ class UnlockStore {
   }
 
   @action saveDisableData() {
-    if (this.wrongPincodeCount === 0) {
-      return
-    }
     UnlockDS.saveDisableData({
       wrongPincodeCount: this.wrongPincodeCount,
       timeRemaining: this.timeRemaining
