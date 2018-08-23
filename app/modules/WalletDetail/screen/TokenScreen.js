@@ -15,6 +15,7 @@ import AppStyle from '../../../commons/AppStyle'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import ShimmerTokenItem from '../elements/ShimmerTokenItem'
 import MainStore from '../../../AppStores/MainStore'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -29,9 +30,11 @@ export default class TokenScreen extends Component {
   }
 
   componentDidMount() {
-    // setInterval(() => {
-    //   this.wallet.isFetchingBalance = !this.wallet.isFetchingBalance
-    // }, 3000)
+    const { navigation } = this.props
+    const { shouldShowAlertBackup } = navigation.state.params
+    if (shouldShowAlertBackup) {
+      setTimeout(this.showAlertBackup, 2500)
+    }
   }
 
   onBack = () => {
@@ -51,8 +54,39 @@ export default class TokenScreen extends Component {
     navigation.navigate('TransactionListScreen')
   }
 
+  onBackup = () => {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        await MainStore.gotoBackup(pincode)
+        this.props.navigation.navigate('BackupStack')
+      }
+    }, true)
+  }
+
   get wallet() {
     return MainStore.appState.selectedWallet
+  }
+
+  showAlertBackup = () => {
+    NavStore.popupCustom.show(
+      'No backup, No wallet!',
+      [
+        {
+          text: 'Later',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+          }
+        },
+        {
+          text: 'Backup now',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+            this.onBackup()
+          }
+        }
+      ],
+      'The Recovery Phrase protects your wallet and can be used to restore your assets if your device will be lost or damaged. Don’t skip the backup step!'
+    )
   }
 
   _renderFooter = (wallet) => {

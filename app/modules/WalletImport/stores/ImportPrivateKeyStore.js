@@ -38,6 +38,7 @@ export default class ImportPrivateKeyStore {
       MainStore.appState.autoSetSelectedWallet()
       this.loading = false
       NavStore.reset()
+      NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
     } catch (_) {
       this.loading = false
       NavStore.popupCustom.show('Invalid private key.')

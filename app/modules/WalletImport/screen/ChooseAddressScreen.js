@@ -9,17 +9,16 @@ import {
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
-import ActionButton from '../../../components/elements/ActionButton'
 import ChooseAddressItem from '../elements/ChooseAddressItem'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
-import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
 import MainStore from '../../../AppStores/MainStore'
+import BottomButton from '../../../components/elements/BottomButton'
 
 const marginTop = LayoutUtils.getExtraTop()
-const extraBottom = LayoutUtils.getExtraBottom()
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
+const isIPX = height === 812
 
 @observer
 export default class ChooseAddressScreen extends Component {
@@ -47,6 +46,7 @@ export default class ChooseAddressScreen extends Component {
   render() {
     const { navigation } = this.props
     const data = this.importMnemonicStore.mnemonicWallets
+    const { selectedWallet } = this.importMnemonicStore
 
     return (
       <View
@@ -72,7 +72,7 @@ export default class ChooseAddressScreen extends Component {
         </View>
         <View style={styles.line} />
         <FlatList
-          style={{ flex: 1 }}
+          style={{ flex: 1, marginBottom: isIPX ? 124 : 90 }}
           data={data}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => `${index}`}
@@ -86,20 +86,10 @@ export default class ChooseAddressScreen extends Component {
             )
           }}
         />
-        <View style={styles.actionButton}>
-          <ActionButton
-            style={{ height: 40, paddingHorizontal: 17, shadowOpacity: 0.2 }}
-            buttonItem={{
-              name: constant.UNLOCK_YOUR_WALLET,
-              icon: null,
-              background: '#121734'
-            }
-            }
-            imgBackgroundStyle={{ width: 169 }}
-            styleText={{ color: AppStyle.mainColor }}
-            action={this.handleUnlock}
-          />
-        </View>
+        <BottomButton
+          onPress={this.handleUnlock}
+          disable={!selectedWallet}
+        />
       </View>
     )
   }
@@ -117,11 +107,6 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 18,
     color: AppStyle.mainTextColor
-  },
-  actionButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20 + extraBottom
   },
   rowTitle: {
     flexDirection: 'row',
