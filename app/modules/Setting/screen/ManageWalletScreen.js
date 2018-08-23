@@ -312,5 +312,10 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     fontFamily: 'OpenSans-Semibold'
+  },
+  contactImageStyle: {
+    resizeMode: 'contain',
+    width: 168,
+    marginTop: 40
   }
 })
