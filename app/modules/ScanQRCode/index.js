@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     color: AppStyle.mainTextColor
   },
   description: {
-    fontFamily: 'OpenSans-Light',
+    fontFamily: 'OpenSans-Bold',
     fontSize: 14,
     color: AppStyle.mainTextColor
   }
