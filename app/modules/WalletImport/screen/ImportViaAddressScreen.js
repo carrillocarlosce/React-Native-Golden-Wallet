@@ -42,6 +42,10 @@ export default class ImportViaAddressScreen extends Component {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importAddressStore = new ImportAddressStore()
+    this.state = {
+      isNameFocus: false,
+      isAddressFocus: false
+    }
   }
 
   componentWillMount() {
@@ -145,6 +149,7 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   render() {
+    const { isNameFocus, isAddressFocus } = this.state
     const {
       address, title, loading, isErrorTitle, errorAddress, isReadyCreate
     } = this.importAddressStore
@@ -167,17 +172,19 @@ export default class ImportViaAddressScreen extends Component {
                 }}
                 action={this.goBack}
               />
-              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
+              <Text style={[styles.titleText, { marginTop: 15 }, { color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 value={title}
+                onFocus={() => this.setState({ isNameFocus: true })}
+                onBlur={() => this.setState({ isNameFocus: false })}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
                 <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
-              <Text style={[styles.titleText, { marginTop: 20 }]}>Address</Text>
+              <Text style={[styles.titleText, { marginTop: 20 }, { color: isAddressFocus ? AppStyle.mainColor : 'white' }]}>Address</Text>
               <InputWithAction
                 ref={(ref) => { this.addressField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
@@ -185,6 +192,8 @@ export default class ImportViaAddressScreen extends Component {
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={address}
+                onFocus={() => this.setState({ isAddressFocus: true })}
+                onBlur={() => this.setState({ isAddressFocus: false })}
               />
               {errorAddress !== '' &&
                 <Text style={styles.errorText}>{errorAddress}</Text>

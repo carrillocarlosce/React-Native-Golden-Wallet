@@ -1,5 +1,8 @@
 class Checker {
   static checkAddress(address) {
+    if (address.length !== 42) {
+      return false
+    }
     const regx = /^0x[0-9A-Fa-f]{40}$/
     return address.match(regx)
   }

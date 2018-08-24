@@ -42,6 +42,10 @@ export default class AddAddressBookScreen extends Component {
     super(props)
     this.traslateTop = new Animated.Value(0)
     this.addressBookStore = new AddressBookStore()
+    this.state = {
+      isNameFocus: false,
+      isAddressFocus: false
+    }
   }
 
   componentDidMount() {
@@ -110,14 +114,14 @@ export default class AddAddressBookScreen extends Component {
     addressBookStore.setAddress(address)
   }
 
-  _renderNameField = () => {
+  _renderNameField = (isNameFocus) => {
     const { title, isErrorTitle } = this.addressBookStore
     return (
       <View style={{ marginTop: 15, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
-          color: AppStyle.titleDarkModeColor
+          color: isNameFocus ? AppStyle.mainColor : AppStyle.titleDarkModeColor
         }}
         >Name
         </Text>
@@ -126,6 +130,8 @@ export default class AddAddressBookScreen extends Component {
           style={{ marginTop: 10 }}
           value={title}
           onChangeText={this.onChangeTitle}
+          onFocus={() => this.setState({ isNameFocus: true })}
+          onBlur={() => this.setState({ isNameFocus: false })}
         />
         {isErrorTitle &&
           <Text style={styles.errorText}>{constant.EXISTED_NAME_AB}</Text>
@@ -134,14 +140,14 @@ export default class AddAddressBookScreen extends Component {
     )
   }
 
-  _renderAddressField = () => {
+  _renderAddressField = (isAddressFocus) => {
     const { address, errorAddressBook } = this.addressBookStore
     return (
       <View style={{ marginTop: 20, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
-          color: AppStyle.titleDarkModeColor
+          color: isAddressFocus ? AppStyle.mainColor : AppStyle.titleDarkModeColor
         }}
         >Address
         </Text>
@@ -151,6 +157,8 @@ export default class AddAddressBookScreen extends Component {
           onChangeText={this.onChangeAddress}
           needPasteButton
           value={address}
+          onFocus={() => this.setState({ isAddressFocus: true })}
+          onBlur={() => this.setState({ isAddressFocus: false })}
         />
         {errorAddressBook !== '' &&
           <Text style={styles.errorText}>{errorAddressBook}</Text>
@@ -196,6 +204,7 @@ export default class AddAddressBookScreen extends Component {
   }
 
   render() {
+    const { isNameFocus, isAddressFocus } = this.state
     const { navigation } = this.props
     const { traslateTop } = this
     return (
@@ -223,8 +232,8 @@ export default class AddAddressBookScreen extends Component {
                 navigation.goBack()
               }}
             />
-            {this._renderNameField()}
-            {this._renderAddressField()}
+            {this._renderNameField(isNameFocus)}
+            {this._renderAddressField(isAddressFocus)}
             {this._scanQRCodeButton()}
             {this._renderSaveButton()}
           </Animated.View>

@@ -29,7 +29,8 @@ export default class SearchInput extends Component {
     autoFocus: PropsTypes.bool,
     onFocus: PropsTypes.func,
     needPasteButton: PropsTypes.bool,
-    styleTextInput: PropsTypes.number
+    styleTextInput: PropsTypes.number,
+    onBlur: PropsTypes.func
   }
 
   static defaultProps = {
@@ -47,7 +48,8 @@ export default class SearchInput extends Component {
     autoFocus: false,
     onFocus: () => { },
     needPasteButton: false,
-    styleTextInput: 0
+    styleTextInput: 0,
+    onBlur: () => { }
   }
 
   onChangeText = (text) => {
@@ -72,19 +74,19 @@ export default class SearchInput extends Component {
   }
 
   shake() {
-    const { animatedValue, isShake } = this
-    Animated.spring(
-      animatedValue,
-      {
-        toValue: isShake ? 0 : 1,
-        duration: 250,
-        tension: 80,
-        friction: 4
-      }
-    ).start()
-    setTimeout(() => {
-      this.isShake = !isShake
-    }, 250)
+    // const { animatedValue, isShake } = this
+    // Animated.spring(
+    //   animatedValue,
+    //   {
+    //     toValue: isShake ? 0 : 1,
+    //     duration: 250,
+    //     tension: 80,
+    //     friction: 4
+    //   }
+    // ).start()
+    // setTimeout(() => {
+    //   this.isShake = !isShake
+    // }, 250)
   }
 
   render() {
@@ -103,7 +105,8 @@ export default class SearchInput extends Component {
       onFocus,
       onChangeText,
       needPasteButton,
-      styleTextInput
+      styleTextInput,
+      onBlur
     } = this.props
     // const { text } = this.state
     const animationShake = this.animatedValue.interpolate({
@@ -221,6 +224,7 @@ export default class SearchInput extends Component {
           ref={(ref) => { this.textInput = ref }}
           autoFocus={autoFocus}
           onFocus={onFocus}
+          onBlur={onBlur}
           numberOfLines={1}
           value={value}
           keyboardAppearance="dark"

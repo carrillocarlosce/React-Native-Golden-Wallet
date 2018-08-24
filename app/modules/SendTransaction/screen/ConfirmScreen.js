@@ -37,8 +37,9 @@ export default class ConfirmScreen extends Component {
       opacity: new Animated.Value(0),
       isShowAdvance: false,
       bottom: 0,
-      marginVertical: new Animated.Value(20)
-      // borderRadius: 5
+      marginVertical: new Animated.Value(20),
+      isFocusGasLimit: false,
+      isFocusGasPrice: false
     }
   }
 
@@ -286,7 +287,7 @@ export default class ConfirmScreen extends Component {
     }
   }
 
-  _renderAdvanceContent(isShowClearGasLimit, isShowClearGasPrice, gasLimit, gasGwei, tmpFee, gasLimitErr, gasGweiErr, advanceStore) {
+  _renderAdvanceContent(isFocusGasLimit, isFocusGasPrice, gasLimit, gasGwei, tmpFee, gasLimitErr, gasGweiErr, advanceStore) {
     return (
       <View>
         <View
@@ -294,7 +295,7 @@ export default class ConfirmScreen extends Component {
         >
           <View style={styles.labelHolder}>
             <Text
-              style={styles.key}
+              style={[styles.key, { color: isFocusGasLimit ? AppStyle.mainColor : 'white' }]}
             >
               Gas Limit
             </Text>
@@ -304,36 +305,15 @@ export default class ConfirmScreen extends Component {
             />
           </View>
           <View>
-            {/* <TextInput
-              ref={ref => (this.gasLimit = ref)}
-              style={styles.textInput}
-              keyboardAppearance="dark"
-              value={gasLimit}
-              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-              onChangeText={(t) => {
-                advanceStore.setGasLimit(t)
-                advanceStore.setShowClearGasLimit(t != '')
-                console.log(advanceStore)
-                this.validateGasLimit(advanceStore, t)
-              }}
-            />
-            {isShowClearGasLimit &&
-              <TouchableOpacity
-                style={styles.clearBtn}
-                onPress={this.clearGasLimit(advanceStore)}
-              >
-                <Image source={images.iconCloseSearch} style={styles.iconClear} />
-              </TouchableOpacity>} */}
             <InputWithAction
               ref={ref => (this.gasLimit = ref)}
               style={styles.textInput}
-              // keyboardAppearance="dark"
               value={gasLimit}
+              onFocus={() => this.setState({ isFocusGasLimit: true })}
+              onBlur={() => this.setState({ isFocusGasLimit: false })}
               keyboardType="number-pad"
               onChangeText={(t) => {
                 advanceStore.setGasLimit(t)
-                // advanceStore.setShowClearGasLimit(t != '')
-                console.log(advanceStore)
                 this.validateGasLimit(advanceStore, t)
               }}
             />
@@ -346,7 +326,7 @@ export default class ConfirmScreen extends Component {
           </View>
           <View style={styles.labelHolder}>
             <Text
-              style={styles.key}
+              style={[styles.key, { color: isFocusGasPrice ? AppStyle.mainColor : 'white' }]}
             >
               Gas Price (Gwei)
             </Text>
@@ -356,29 +336,12 @@ export default class ConfirmScreen extends Component {
             />
           </View>
           <View>
-            {/* <TextInput
-              ref={ref => (this.gasGwei = ref)}
-              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-              keyboardAppearance="dark"
-              value={gasGwei}
-              style={styles.textInput}
-              onChangeText={(t) => {
-                advanceStore.setGasPrice(t)
-                this.validateGasPrice(advanceStore, t)
-              }}
-            />
-            {isShowClearGasPrice &&
-              <TouchableOpacity
-                style={styles.clearBtn}
-                onPress={this.clearGasGwei(advanceStore)}
-              >
-                <Image source={images.iconCloseSearch} style={styles.iconClear} />
-              </TouchableOpacity>} */}
             <InputWithAction
               ref={ref => (this.gasGwei = ref)}
               keyboardType="number-pad"
-              // keyboardAppearance="dark"
               value={gasGwei}
+              onFocus={() => this.setState({ isFocusGasPrice: true })}
+              onBlur={() => this.setState({ isFocusGasPrice: false })}
               style={styles.textInput}
               onChangeText={(t) => {
                 advanceStore.setGasPrice(t)
@@ -410,13 +373,13 @@ export default class ConfirmScreen extends Component {
             value={`${tmpFee}`}
             style={[styles.textInput, {
               color: AppStyle.secondaryTextColor,
-              paddingHorizontal: 10,
+              padding: 15,
               fontFamily: 'OpenSans-Semibold',
               fontSize: 14
             }]}
           />
         </View>
-      </View>
+      </View >
     )
   }
 
@@ -434,85 +397,12 @@ export default class ConfirmScreen extends Component {
 
   _onSend(advanceStore) {
     MainStore.sendTransaction.sendTx()
-    // NavStore.showLoading()
-    // Checker.checkInternet().then((res) => {
-    //   if (res === true) {
-    //     if (sendStore.selectedToken.title === 'ETH') {
-    //       this._actionSendETH()
-    //     } else {
-    //       this._actionSendToken()
-    //     }
-    //   } else {
-    //     NavStore.hideLoading()
-    //     NavStore.popupCustom.show(
-    //       'No internet',
-    //       [
-    //         {
-    //           text: 'Ok',
-    //           onClick: () => {
-    //             NavStore.popupCustom.hide()
-    //           }
-    //         }
-    //       ]
-    //     )
-    //   }
-    // })
   }
-
-  // _actionSendETH() {
-  //   sendStore.sendETH()
-  //     .then((res) => {
-  //       console.log('Done: ', res)
-  //       HapticHandler.NotificationSuccess()
-  //       NavStore.navigator.dispatch(NavigationActions.back())
-  //       NavStore.navigator.dispatch(NavigationActions.back())
-  //       NavStore.popupCustom.show('Send success')
-  //       setTimeout(() => {
-  //         sendStore.clearData()
-  //       }, 500)
-  //     })
-  //     .catch((err) => {
-  //       NavStore.popupCustom.show(err.message)
-  //     })
-  // }
-
-  // _actionSendToken() {
-  //   sendStore.sendToken()
-  //     .then((res) => {
-  //       console.log('Done: ', res)
-  //       HapticHandler.NotificationSuccess()
-  //       NavStore.navigator.dispatch(NavigationActions.back())
-  //       NavStore.navigator.dispatch(NavigationActions.back())
-  //       NavStore.popupCustom.show('Send success')
-  //       setTimeout(() => {
-  //         sendStore.clearData()
-  //       }, 500)
-  //     })
-  //     .catch((err) => {
-  //       NavStore.popupCustom.show(err.message)
-  //     })
-  // }
 
   _onCancel() {
     NavStore.popupCustom.hide()
     MainStore.sendTransaction.addressInputStore.confirmModal && MainStore.sendTransaction.addressInputStore.confirmModal.close()
   }
-
-  // _renderDoneBtn(advanceStore) {
-  //   return (
-  //     <TouchableOpacity
-  //       disabled={this.state.isDisableDone}
-  //       style={[styles.doneBtn, { borderRadius: this.state.borderRadius }]}
-  //       onPress={this._onDone}
-  //     >
-  //       <Text
-  //         style={[styles.sendText, { color: advanceStore.isDisableDone ? '#8a8d97' : AppStyle.mainColor }]}
-  //       >
-  //         {constant.DONE}
-  //       </Text>
-  //     </TouchableOpacity >
-  //   )
-  // }
 
   _renderActionSheet() {
     const { gasPriceEstimate } = MainStore.appState
@@ -543,46 +433,6 @@ export default class ConfirmScreen extends Component {
       </ActionSheetCustom>
     )
   }
-
-  // _onDone = () => {
-  //   const { advanceStore } = MainStore.sendTransaction
-  //   const gasLimit = Number(advanceStore.gasLimit)
-  //   const gasPrice = Number(advanceStore.gasPrice)
-  //   let errCount = 0
-  //   if (Number.isNaN(gasLimit) || Number.isNaN(gasPrice)) {
-  //     return NavStore.popupCustom.show(
-  //       'Invalid number',
-  //       [
-  //         {
-  //           text: 'Ok',
-  //           onClick: () => {
-  //             NavStore.popupCustom.hide()
-  //           }
-  //         }
-  //       ]
-  //     )
-  //   }
-  //   if (gasLimit < 21000) {
-  //     errCount++
-  //     advanceStore.setGasLimitErr('Gas limit must be greater than 21000')
-  //   }
-  //   if (gasPrice <= 0) {
-  //     errCount++
-  //     advanceStore.setGasPriceErr('Gas price must be greater than 0')
-  //   }
-  //   if (errCount === 0) {
-  //     // sendStore.setGasLimit(gasLimit)
-  //     // sendStore.setGasPrice(gasGwei)
-  //     // sendStore.validateAmount()
-  //     // TODO Done
-  //     this.hideAdvance()
-  //   } else {
-  //     // this.setState({ isDisableDone: true })
-  //     advanceStore.setDisableDone(true)
-  //   }
-  //   advanceStore._onDone()
-  //   return true
-  // }
 
   _runKeyboardAnim(toValue) {
     Animated.parallel([
@@ -650,7 +500,9 @@ export default class ConfirmScreen extends Component {
       opacity,
       isShowAdvance,
       bottom,
-      marginVertical
+      marginVertical,
+      isFocusGasLimit,
+      isFocusGasPrice
     } = this.state
     const { advanceStore, confirmStore } = MainStore.sendTransaction
     const {
@@ -668,15 +520,7 @@ export default class ConfirmScreen extends Component {
       formatedDolar
     } = confirmStore
     const to = MainStore.sendTransaction.address
-    // const tmpFee = `${(gasLimit * gasGwei) / 1000000000}`
-    // const wallet = sendStore.getWallet
-    // console.log('wallet', wallet)
-    // const {ratio} = sendStore.wallet
-    // const tmpFeeUsd = numeral(tmpFee * ratio).format('0,0.[00]')
-    // const eth = Helper.formatETH(value)
-    // const usdAmount = Helper.formatUSD(value * ratio)
     const { address } = MainStore.appState.selectedWallet
-    // const address = '0x0ai00a0a0a0'
     return (
       <TouchableWithoutFeedback onPress={this._onCancelAction}>
         <View
@@ -717,7 +561,7 @@ export default class ConfirmScreen extends Component {
                   >
                     <View style={{ flex: 1 }}>
                       {this._renderAdvanceHeader()}
-                      {this._renderAdvanceContent(isShowClearGasLimit, isShowClearGasPrice, gasLimit, gasPrice, formatedTmpFee, gasLimitErr, gasGweiErr, advanceStore)}
+                      {this._renderAdvanceContent(isFocusGasLimit, isFocusGasPrice, gasLimit, gasPrice, formatedTmpFee, gasLimitErr, gasGweiErr, advanceStore)}
                       {/* {this._renderDoneBtn()} */}
                     </View>
                   </TouchableWithoutFeedback>
@@ -838,7 +682,7 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   textInput: {
-    height: 40,
+    // height: 40,
     borderRadius: 5,
     backgroundColor: '#14192d',
     alignSelf: 'stretch',

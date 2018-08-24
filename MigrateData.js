@@ -4,6 +4,7 @@ import * as Keychain from 'react-native-keychain'
 import Starypto from './Libs/react-native-starypto'
 import MainStore from './app/AppStores/MainStore'
 import Wallet from './app/AppStores/stores/Wallet'
+import { encryptString, decryptString } from './app/Utils/DataCrypto'
 
 const KeyLocal = {
   PIN_CODE: 'PIN_CODE',
@@ -16,13 +17,13 @@ class MigrateData {
     const credentials = await Keychain.getGenericPassword()
     if (!(credentials && credentials.username)) {
       const randomStr = randomBytes(16).toString('hex').slice(0, 16)
-      const randomStrEncrypted = Starypto.encryptString(randomStr, pinCode, iv, 'aes-256-cbc')
+      const randomStrEncrypted = encryptString(randomStr, pinCode, iv, 'aes-256-cbc')
       Keychain.setGenericPassword(KeyLocal.IV_CODE, randomStrEncrypted)
       return randomStrEncrypted
     }
     let randomKey = credentials.password
     if (randomKey.length === 16) {
-      randomKey = Starypto.encryptString(randomKey, pinCode, iv, 'aes-256-cbc')
+      randomKey = encryptString(randomKey, pinCode, iv, 'aes-256-cbc')
       Keychain.setGenericPassword(KeyLocal.IV_CODE, randomKey)
     }
     return randomKey
@@ -35,7 +36,7 @@ class MigrateData {
 
   getDecryptedRandomKey = async (pinCode, iv) => {
     const dataEncrypted = await this.getRandomKeyFromKeychain(pinCode, iv)
-    const dataDecrypted = Starypto.decryptString(dataEncrypted, pinCode, iv, 'aes-256-cbc')
+    const dataDecrypted = decryptString(dataEncrypted, pinCode, iv, 'aes-256-cbc')
     this.randomKey = dataDecrypted
     return dataDecrypted
   }
@@ -48,7 +49,7 @@ class MigrateData {
         if (!dataEncryptedFromStorage) {
           return resolve()
         }
-        const dataDecrypted = Starypto.decryptString(dataEncryptedFromStorage, randomKeyDecrypted, iv, 'aes-256-cbc')
+        const dataDecrypted = decryptString(dataEncryptedFromStorage, randomKeyDecrypted, iv, 'aes-256-cbc')
         if (shouldLoadData) {
           // WalletStore.fetchUserWallet(dataDecrypted)
         }
@@ -86,7 +87,7 @@ class MigrateData {
       const secureDS = MainStore.secureStorage
       const tmpWallets = decriptDataObj.ethWallets ? decriptDataObj.ethWallets : []
       if (decriptDataObj.mnemonic && tmpWallets.length > 0) {
-        const mnemonicCipher = Starypto.encryptString(decriptDataObj.mnemonic, password, iv, 'aes-256-cbc')
+        const mnemonicCipher = encryptString(decriptDataObj.mnemonic, password, iv, 'aes-256-cbc')
         await AsyncStorage.setItem('secure-mnemonic', mnemonicCipher)
         const mnWallets = await Wallet.getWalletsFromMnemonic(decriptDataObj.mnemonic)
 
