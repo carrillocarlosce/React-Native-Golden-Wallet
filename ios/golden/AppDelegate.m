@@ -38,6 +38,7 @@
   [FIRApp configure];
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
 
+  application.applicationIconBadgeNumber = 0;
   return YES;
 }
 
@@ -49,11 +50,13 @@
 #if defined(__IPHONE_11_0)
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
 {
+  UIApplication.sharedApplication.applicationIconBadgeNumber = 0;
   [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 #else
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)())completionHandler
 {
+  UIApplication.sharedApplication.applicationIconBadgeNumber = 0;
   [RNFIRMessaging didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 #endif
