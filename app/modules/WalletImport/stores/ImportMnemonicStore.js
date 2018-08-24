@@ -74,6 +74,7 @@ export default class ImportMnemonicStore {
     await wallet.save()
     await MainStore.appState.syncWallets()
     MainStore.appState.autoSetSelectedWallet()
+    MainStore.appState.selectedWallet.fetchingBalance()
     NavStore.reset()
     NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
   }
