@@ -23,7 +23,7 @@ import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
-import SecureDS from '../../../AppStores/DataSource/SecureDS';
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -105,8 +105,7 @@ export default class ListWalletScreen extends Component {
                     NavStore.hideLoading()
                     NavStore.pushToScreen('ExportPrivateKeyScreen', {
                       pk,
-                      walletName: this.selectedWallet.title,
-                      address: this.selectedWallet.address
+                      walletName: this.selectedWallet.title
                     })
                   }).catch(e => NavStore.hideLoading())
                 }

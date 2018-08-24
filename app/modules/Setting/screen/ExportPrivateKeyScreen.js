@@ -16,7 +16,6 @@ import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import NavStore from '../../../AppStores/NavStore'
 import AppStyle from '../../../commons/AppStyle'
-import MainStore from '../../../AppStores/MainStore';
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -54,7 +53,7 @@ export default class ExportPrivateKeyScreen extends Component {
             fgColor="white"
           />
           <Text style={styles.walletname}>{walletName}</Text>
-          <Text style={styles.address}>{address}</Text>
+          <Text style={styles.privatekey}>{pk}</Text>
           <TouchableOpacity
             style={styles.copybt}
             onPress={() => {
@@ -102,7 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4A4A4A'
   },
-  address: {
+  privatekey: {
     marginTop: 10,
     fontSize: 14,
     fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNewBold',
