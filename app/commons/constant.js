@@ -17,6 +17,8 @@ export default {
   TEXT_VIEW_DETAIL: 'Check on Etherscan',
   RETURN_WALLET: 'Return to wallet',
   CREATE_NEW_WALLET: 'Create A New Wallet',
+  NEW_UPDATE: 'New Updated Available ',
+  UPDATE: 'Update Now',
   CONFIRM: 'Confirm',
   SCAN: 'Scan',
   UNLOCK_YOUR_WALLET: 'Unlock Your Wallet',

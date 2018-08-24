@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
+import DeviceInfo from 'react-native-device-info'
 import SplashScreen from 'react-native-splash-screen'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import LargeCard from '../elements/LargeCard'
@@ -27,6 +28,7 @@ import Config from '../../../AppStores/stores/Config'
 import Ticker from '../elements/Ticker'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import AppVersion from '../../../AppStores/stores/AppVersion'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -51,11 +53,17 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
+    AppVersion.getChangelogsLatest()
+    AppVersion.getChangelogsList()
     setTimeout(() => {
       SplashScreen.hide()
       this.props.navigation.navigate('UnlockScreen', {
         isLaunchApp: true,
         onUnlock: () => {
+          const version = DeviceInfo.getVersion()
+          if (version !== AppVersion.latestVersion.version_number) {
+            this._gotoNewUpdatedAvailableScreen()
+          }
           TickerStore.callApi()
           MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
@@ -143,6 +151,10 @@ export default class HomeScreen extends Component {
 
   _gotoCreateWallet() {
     this.props.navigation.navigate('CreateWalletStack')
+  }
+
+  _gotoNewUpdatedAvailableScreen() {
+    this.props.navigation.navigate('NewUpdatedAvailableScreen')
   }
 
   _renderCard = ({ item, index }) =>
