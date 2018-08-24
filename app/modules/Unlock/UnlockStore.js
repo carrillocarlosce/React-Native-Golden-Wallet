@@ -109,8 +109,11 @@ class UnlockStore {
   }
 
   @action async handlePress(number) {
-    HapticHandler.ImpactLight()
     const { pincode, pinConfirm } = this.data
+    if (pincode.length === 6) {
+      return null
+    }
+    HapticHandler.ImpactLight()
     const pinData = pincode + number
     return new Promise((resolve, reject) => {
       if (pinData.length === 6) {
