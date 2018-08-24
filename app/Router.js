@@ -37,6 +37,7 @@ import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStep
 import UnlockPincode from './modules/ChangePincode/screen/UnlockPincode'
 import PrivacyTermsScreen from './modules/Setting/screen/PrivacyTermsScreen'
 import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScreen'
+import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAvailableScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -317,6 +318,12 @@ const Router = StackNavigator(
     },
     EnterNameScreen: {
       screen: EnterNameScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    NewUpdatedAvailableScreen: {
+      screen: NewUpdatedAvailableScreen,
       navigationOptions: {
         header: null
       }

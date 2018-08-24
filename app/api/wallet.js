@@ -119,3 +119,8 @@ export const fetchTokenDetail = (address, contract) => {
   const url = `${URL.Skylab.apiURL()}/balance/${address}/${contract}`
   return caller.get(url, {}, true)
 }
+
+export const changelogsLatest = () => {
+  const url = `${URL.Skylab.apiURL()}/changelogs/latest`
+  return caller.get(url, {}, true)
+}
