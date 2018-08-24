@@ -23,7 +23,7 @@ import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
-import SecureDS from '../../../AppStores/DataSource/SecureDS';
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -41,11 +41,18 @@ export default class ListWalletScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
+    this.state = {
+      isShowExportPrivateKeyBtn: true
+    }
   }
 
   onActionPress = (index) => {
     this.selectedWallet = this.wallets[index]
-    this.actionSheet.show()
+    this.setState({
+      isShowExportPrivateKeyBtn: this.selectedWallet.importType !== 'Address'
+    }, () => {
+      this.actionSheet.show()
+    })
   }
 
   onCancelAction = () => {
@@ -105,8 +112,7 @@ export default class ListWalletScreen extends Component {
                     NavStore.hideLoading()
                     NavStore.pushToScreen('ExportPrivateKeyScreen', {
                       pk,
-                      walletName: this.selectedWallet.title,
-                      address: this.selectedWallet.address
+                      walletName: this.selectedWallet.title
                     })
                   }).catch(e => NavStore.hideLoading())
                 }
@@ -295,6 +301,7 @@ export default class ListWalletScreen extends Component {
 
   render() {
     const { navigation } = this.props
+    const { isShowExportPrivateKeyBtn } = this.state
     return (
       <TouchableWithoutFeedback onPress={() => { this.actionSheet.hide() }}>
         <SafeAreaView style={styles.container}>
@@ -316,11 +323,13 @@ export default class ListWalletScreen extends Component {
                 <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.onExportPrivateKey}>
-              <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-                <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
-              </View>
-            </TouchableOpacity>
+            {isShowExportPrivateKeyBtn &&
+              <TouchableOpacity onPress={this.onExportPrivateKey}>
+                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
+                </View>
+              </TouchableOpacity>
+            }
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
                 <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>

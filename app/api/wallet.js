@@ -22,10 +22,11 @@ export const fetchWalletInfo = (address) => {
     }
     return new Promise((resolve, reject) => {
       caller.get(urlTest, data, true).then((res) => {
+        const balance = res && res.data && res.data.result ? new BigNumber(`${res.data.result}e-18`) : new BigNumber('0')
         const result = {
           data: {
             data: {
-              ETH: { balance: new BigNumber(`${res.data.result}e-18`).toString(10) },
+              ETH: { balance: balance.toString(10) },
               address,
               tokens: []
             }
@@ -117,5 +118,15 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
 
 export const fetchTokenDetail = (address, contract) => {
   const url = `${URL.Skylab.apiURL()}/balance/${address}/${contract}`
+  return caller.get(url, {}, true)
+}
+
+export const changelogsLatest = () => {
+  const url = `${URL.Skylab.apiURL()}/changelogs/latest`
+  return caller.get(url, {}, true)
+}
+
+export const changelogsList = () => {
+  const url = `${URL.Skylab.apiURL()}/changelogs`
   return caller.get(url, {}, true)
 }

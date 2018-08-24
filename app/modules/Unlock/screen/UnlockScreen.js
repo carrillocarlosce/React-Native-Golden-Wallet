@@ -13,13 +13,13 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
-import images from '../../commons/images'
+import images from '../../../commons/images'
 /* eslint-disable-next-line */
-import GoldenLoading from '../../components/elements/GoldenLoading'
-import UnlockStore from './UnlockStore'
-import NavStore from '../../AppStores/NavStore'
-import DisableView from './elements/DisableView'
-import AppStyle from '../../commons/AppStyle'
+import GoldenLoading from '../../../components/elements/GoldenLoading'
+import UnlockStore from '../UnlockStore'
+import NavStore from '../../../AppStores/NavStore'
+import DisableView from '../elements/DisableView'
+import AppStyle from '../../../commons/AppStyle'
 
 const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
@@ -116,7 +116,10 @@ export default class UnlockScreen extends Component {
         return (
           <TouchableOpacity
             onPress={() => {
-              UnlockStore.handlePress(num.number).then(res => onUnlock(res))
+              UnlockStore.handlePress(num.number).then((res) => {
+                if (!res) return
+                onUnlock(res)
+              })
             }}
             key={num.number}
           >

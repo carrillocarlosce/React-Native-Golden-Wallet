@@ -192,7 +192,7 @@ export default class PopupCustom extends Component {
       return <View key="invisible" />
     }
     return (
-      <View key="visible" style={{ position: 'absolute', right: 10, top: 28 }}>
+      <View key="visible" style={{ position: 'absolute', right: 10, top: Platform.OS === 'ios' ? 28 : 32 }}>
         <TouchableOpacity onPress={this.clearText}>
           <Image source={images.iconCloseSearch} style={styles.iconClose} />
         </TouchableOpacity>

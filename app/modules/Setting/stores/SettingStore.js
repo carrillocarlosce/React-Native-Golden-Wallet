@@ -57,10 +57,8 @@ export default class SettingStore {
     },
     {
       mainText: 'App Version',
-      onPress: () => { },
-      subText: DeviceInfo.getVersion(),
-      disable: true,
-      showArrow: false
+      onPress: () => { NavStore.pushToScreen('AppVersionScreen') },
+      subText: DeviceInfo.getVersion()
     }
   ]
 

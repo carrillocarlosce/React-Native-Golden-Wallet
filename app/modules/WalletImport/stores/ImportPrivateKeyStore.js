@@ -36,6 +36,7 @@ export default class ImportPrivateKeyStore {
       await w.save()
       await MainStore.appState.syncWallets()
       MainStore.appState.autoSetSelectedWallet()
+      MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
       NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })

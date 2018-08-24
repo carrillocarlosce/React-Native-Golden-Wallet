@@ -29,6 +29,7 @@ class CreateWalletStore {
       MainStore.appState.autoSetSelectedWallet()
       MainStore.appState.setCurrentWalletIndex(index + 1)
       MainStore.appState.save()
+      MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
       NavStore.pushToScreen('TokenScreen', {
