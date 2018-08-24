@@ -46,6 +46,10 @@ export default class ImportViaPrivateKeyScreen extends Component {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importPrivateKeyStore = new ImportPrivateKeyStore()
+    this.state = {
+      isNameFocus: false,
+      isPrivateKeyFocus: false
+    }
   }
 
   componentWillMount() {
@@ -162,6 +166,8 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   render() {
     const { navigation } = this.props
+    const { isNameFocus, isPrivateKeyFocus } = this.state
+    console.log(isNameFocus)
     const {
       privateKey, loading, title, isErrorTitle, isErrorPrivateKey, isReadyCreate
     } = this.importPrivateKeyStore
@@ -187,17 +193,19 @@ export default class ImportViaPrivateKeyScreen extends Component {
                   navigation.goBack()
                 }}
               />
-              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
+              <Text style={[styles.titleText, { marginTop: 15 }, { color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 value={title}
+                onFocus={() => this.setState({ isNameFocus: true })}
+                onBlur={() => this.setState({ isNameFocus: false })}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
                 <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
-              <Text style={[styles.titleText, { marginTop: 20 }]}>Private Key</Text>
+              <Text style={[styles.titleText, { marginTop: 20 }, { color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text>
               <InputWithAction
                 ref={(ref) => { this.privKeyField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
@@ -205,6 +213,8 @@ export default class ImportViaPrivateKeyScreen extends Component {
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={privateKey}
+                onFocus={() => this.setState({ isPrivateKeyFocus: true })}
+                onBlur={() => this.setState({ isPrivateKeyFocus: false })}
               />
               {isErrorPrivateKey &&
                 <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
