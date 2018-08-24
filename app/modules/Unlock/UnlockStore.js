@@ -9,7 +9,7 @@ import MigrateData from '../../../MigrateData'
 import UnlockDS from './UnlockDS'
 import AppDS from '../../AppStores/DataSource/AppDS'
 
-const minute = 6000
+const minute = 60000
 class UnlockStore {
   @observable data = {
     pinTyped: 0,
@@ -43,7 +43,7 @@ class UnlockStore {
   @action countdown() {
     this.timer = setInterval(() => {
       if (this.timeRemaining > 0) {
-        this.timeRemaining -= 10000
+        this.timeRemaining -= 1000
         this.saveDisableData()
       } else {
         this.timer && clearInterval(this.timer)
