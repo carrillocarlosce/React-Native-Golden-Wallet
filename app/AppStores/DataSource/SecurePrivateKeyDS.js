@@ -1,11 +1,10 @@
 import { AsyncStorage } from 'react-native'
-import Starypto from '../../../Libs/react-native-starypto'
-
+import { encryptString, decryptString } from '../../Utils/DataCrypto'
 // Use for unlocking wallet with private key
 // Data stored: cipher
 // Encryption: DES
 
-const dataKey = (address) => `${address}-privateKey`.toLowerCase()
+const dataKey = address => `${address}-privateKey`.toLowerCase()
 const trackDataKey = 'address-privatekey-added'
 
 class SecurePrivateKeyDataSource {
@@ -29,11 +28,11 @@ class SecurePrivateKeyDataSource {
   async getPrivateKey(address) {
     const privateKeyCipher = await AsyncStorage.getItem(dataKey(address))
     if (!privateKeyCipher) return null
-    return Starypto.decryptString(privateKeyCipher, this.password, this.iv, 'aes-256-cbc')
+    return decryptString(privateKeyCipher, this.password, this.iv, 'aes-256-cbc')
   }
 
   savePrivateKey(address, privateKey) {
-    const cipher = Starypto.encryptString(privateKey, this.password, this.iv, 'aes-256-cbc')
+    const cipher = encryptString(privateKey, this.password, this.iv, 'aes-256-cbc')
     this.updateTrackDataKey(address, false)
     return AsyncStorage.setItem(dataKey(address), cipher)
   }
@@ -47,7 +46,7 @@ class SecurePrivateKeyDataSource {
     const keysStr = await AsyncStorage.getItem(trackDataKey)
     const keysObj = keysStr ? JSON.parse(keysStr) : {}
 
-    Object.keys(keysObj).forEach(k => AsyncStorage.removeItem(dataKey(address)))
+    Object.keys(keysObj).forEach(k => AsyncStorage.removeItem(dataKey(k)))
     await AsyncStorage.removeItem(trackDataKey)
   }
 }

@@ -2,10 +2,10 @@ import { observable, computed, action } from 'mobx'
 import { AsyncStorage, Animated } from 'react-native'
 import * as Keychain from 'react-native-keychain'
 import HapticHandler from '../../../Handler/HapticHandler'
-import Starypto from '../../../../Libs/react-native-starypto'
 import MainStore from '../../../AppStores/MainStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import NavStore from '../../../AppStores/NavStore'
+import { decryptString } from '../../../Utils/DataCrypto'
 
 const IVKey = `IVKey`
 
@@ -146,7 +146,7 @@ export default class ChangePincodeStore {
   }
 
   decryptData(dataEncrypted, pinCode, iv) {
-    const dataDecrypted = Starypto.decryptString(dataEncrypted, pinCode, iv, 'aes-256-cbc')
+    const dataDecrypted = decryptString(dataEncrypted, pinCode, iv, 'aes-256-cbc')
     return dataDecrypted
   }
 
