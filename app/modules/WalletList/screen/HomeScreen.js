@@ -51,12 +51,13 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
       this.props.navigation.navigate('UnlockScreen', {
         isLaunchApp: true,
         onUnlock: () => {
+          TickerStore.callApi()
+          MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
             if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()

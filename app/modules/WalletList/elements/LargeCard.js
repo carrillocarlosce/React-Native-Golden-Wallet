@@ -62,7 +62,7 @@ export default class LargeCard extends Component {
   }
 
   componentDidMount() {
-    this.wallet && this.wallet.fetchingBalance()
+    // this.wallet && this.wallet.fetchingBalance()
   }
 
   get wallet() {
