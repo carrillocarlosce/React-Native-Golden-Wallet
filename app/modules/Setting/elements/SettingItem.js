@@ -22,7 +22,9 @@ export default class SettingItem extends PureComponent {
     onSwitch: PropTypes.func,
     enableSwitch: PropTypes.bool,
     disable: PropTypes.bool,
-    showArrow: PropTypes.bool
+    showArrow: PropTypes.bool,
+    data: PropTypes.string,
+    expanse: PropTypes.bool
   }
 
   static defaultProps = {
@@ -34,12 +36,14 @@ export default class SettingItem extends PureComponent {
     onSwitch: () => { },
     enableSwitch: false,
     disable: false,
-    showArrow: true
+    showArrow: true,
+    data: '',
+    expanse: false
   }
 
   renderRightField = () => {
     const {
-      type, onSwitch, enableSwitch, subText, showArrow
+      type, onSwitch, enableSwitch, subText, showArrow, expanse
     } = this.props
     if (type === 'switch') {
       return (
@@ -49,6 +53,16 @@ export default class SettingItem extends PureComponent {
             onSwitch(isActive)
           }}
         />
+      )
+    }
+    if (type === 'expanse') {
+      return (
+        <View style={styles.rightField}>
+          <Text style={[styles.text, { marginRight: 10 }]}>{subText}</Text>
+          {showArrow &&
+            <Image source={expanse ? images.iconUp : images.iconDown} />
+          }
+        </View>
       )
     }
     return (
@@ -63,15 +77,21 @@ export default class SettingItem extends PureComponent {
 
   render() {
     const {
-      style, iconRight, mainText, onPress, disable
+      style, iconRight, mainText, onPress, disable, data, expanse
     } = this.props
     return (
-      <TouchableOpacity onPress={onPress} disabled={disable}>
-        <View style={[styles.container, style]}>
-          <Text style={styles.text}>{mainText}</Text>
-          {iconRight && this.renderRightField()}
-        </View>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity onPress={onPress} disabled={disable}>
+          <View style={[styles.container, style]}>
+            <Text style={styles.text}>{mainText}</Text>
+            {iconRight && this.renderRightField()}
+          </View>
+        </TouchableOpacity>
+        {expanse && data !== '' &&
+          <View style={styles.textView}>
+            <Text style={styles.textStyle}>{data}</Text>
+          </View>}
+      </View>
     )
   }
 }
@@ -94,5 +114,16 @@ const styles = StyleSheet.create({
   },
   rightField: {
     flexDirection: 'row'
+  },
+  textStyle: {
+    fontFamily: 'OpenSans',
+    fontSize: 14,
+    color: AppStyle.backgroundGrey
+  },
+  textView: {
+    paddingBottom: 20,
+    paddingTop: 20,
+    paddingLeft: 20,
+    backgroundColor: AppStyle.backgroundTextInput
   }
 })

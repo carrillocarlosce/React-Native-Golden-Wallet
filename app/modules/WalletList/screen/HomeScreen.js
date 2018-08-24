@@ -54,6 +54,7 @@ export default class HomeScreen extends Component {
 
   componentDidMount() {
     AppVersion.getChangelogsLatest()
+    AppVersion.getChangelogsList()
     TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
@@ -61,8 +62,6 @@ export default class HomeScreen extends Component {
         isLaunchApp: true,
         onUnlock: () => {
           const version = DeviceInfo.getVersion()
-          console.log(version)
-          console.log(AppVersion.latestVersion.version_number)
           if (version !== AppVersion.latestVersion.version_number) {
             this._gotoNewUpdatedAvailableScreen()
           }
