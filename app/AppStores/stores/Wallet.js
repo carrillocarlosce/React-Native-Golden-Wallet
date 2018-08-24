@@ -6,6 +6,7 @@ import Starypto from '../../../Libs/react-native-starypto'
 import WalletDS from '../DataSource/WalletDS'
 import api from '../../api'
 import MainStore from '../MainStore'
+import GetAddress, { chainNames } from '../../Utils/WalletAddresses'
 
 // Object Wallet:
 // title: 'I am cold wallet',
@@ -61,18 +62,18 @@ export default class Wallet {
     if (!secureDS) throw new Error('Secure data source is required')
     const mnemonic = await secureDS.deriveMnemonic()
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', path, index)
-    const w = Starypto.fromPrivateKey(private_key)
-    secureDS.savePrivateKey(w.address, private_key)
+    const { address } = GetAddress(private_key, chainNames.ETH)
+    secureDS.savePrivateKey(address, private_key)
     return new Wallet({
-      address: w.address, balance: '0', index, title
+      address, balance: '0', index, title
     }, secureDS)
   }
 
   static importPrivateKey(privateKey, title, secureDS) {
-    const w = Starypto.fromPrivateKey(privateKey)
-    secureDS.savePrivateKey(w.address, privateKey)
+    const { address } = GetAddress(privateKey, chainNames.ETH)
+    secureDS.savePrivateKey(address, privateKey)
     return new Wallet({
-      address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Private Key', isFetchingBalance: true, title
+      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Private Key', isFetchingBalance: true, title
     }, secureDS)
   }
 
@@ -84,10 +85,10 @@ export default class Wallet {
 
   static async unlockFromMnemonic(mnemonic, title, index, secureDS) {
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', Keystore.CoinType.ETH.path, index)
-    const w = Starypto.fromPrivateKey(private_key)
-    secureDS.savePrivateKey(w.address, private_key)
+    const { address } = GetAddress(private_key, chainNames.ETH)
+    secureDS.savePrivateKey(address, private_key)
     return new Wallet({
-      address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
+      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
     }, secureDS)
   }
 
@@ -98,9 +99,9 @@ export default class Wallet {
   static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
     const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
     const wallets = keys.map((k) => {
-      const w = Starypto.fromPrivateKey(k.private_key)
+      const { address } = GetAddress(k.private_key, chainNames.ETH)
       return new Wallet({
-        address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
+        address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
       })
     })
 
@@ -176,8 +177,8 @@ export default class Wallet {
   async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
-    const w = Starypto.fromPrivateKey(privateKey)
-    if (w.address.toLowerCase() !== this.address.toLowerCase()) {
+    const { address } = GetAddress(privateKey, chainNames.ETH)
+    if (address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
     await WalletDS.updateWallet(this)
