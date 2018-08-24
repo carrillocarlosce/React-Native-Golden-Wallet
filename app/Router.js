@@ -19,7 +19,7 @@ import ImportViaAddressScreen from './modules/WalletImport/screen/ImportViaAddre
 import ChooseAddressScreen from './modules/WalletImport/screen/ChooseAddressScreen'
 import TokenScreen from './modules/WalletDetail/screen/TokenScreen'
 import SendTransactionScreen from './modules/SendTransaction/screen/SendTransactionScreen'
-import UnlockScreen from './modules/Unlock'
+import UnlockScreen from './modules/Unlock/screen/UnlockScreen'
 import ScanQRCodeScreen from './modules/ScanQRCode'
 import PrivacyTermsWebView from './modules/Setting/screen/PrivacyTermsWebView'
 import ImplementPrivateKeyScreen from './modules/WalletImport/screen/ImplementPrivateKeyScreen'
@@ -39,6 +39,7 @@ import PrivacyTermsScreen from './modules/Setting/screen/PrivacyTermsScreen'
 import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScreen'
 import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAvailableScreen'
 import AppVersionScreen from './modules/Setting/screen/AppVersionScreen'
+import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -331,6 +332,12 @@ const Router = StackNavigator(
     },
     NewUpdatedAvailableScreen: {
       screen: NewUpdatedAvailableScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    EnraseNotifScreen: {
+      screen: EnraseNotifScreen,
       navigationOptions: {
         header: null
       }

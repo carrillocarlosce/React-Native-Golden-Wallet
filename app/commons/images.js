@@ -77,5 +77,6 @@ export default {
   backupNoteBook: require('./../assets/images/backup_note_book.png'),
   scanFrame: require('./../assets/images/scan_frame.png'),
   iconDown: require('./../assets/images/icon_down.png'),
-  iconUp: require('./../assets/images/icon_up.png')
+  iconUp: require('./../assets/images/icon_up.png'),
+  imgEnrase: require('../assets/images/img_enrase.png')
 }

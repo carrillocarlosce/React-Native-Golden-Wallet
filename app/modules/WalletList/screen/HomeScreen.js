@@ -60,14 +60,13 @@ export default class HomeScreen extends Component {
       this.props.navigation.navigate('UnlockScreen', {
         isLaunchApp: true,
         onUnlock: () => {
-          const version = DeviceInfo.getVersion()
-          if (version !== AppVersion.latestVersion.version_number) {
-            this._gotoNewUpdatedAvailableScreen()
-          }
           TickerStore.callApi()
           MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
-            if (MainStore.appState.wallets.length === 0) {
+            const version = DeviceInfo.getVersion()
+            if (version !== AppVersion.latestVersion.version_number) {
+              this._gotoNewUpdatedAvailableScreen()
+            } else if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()
             }
           } else {
