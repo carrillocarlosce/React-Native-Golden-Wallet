@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: AppStyle.backgroundDarkBlue,
     borderRadius: 5,
-    bottom: isIPX ? 20 : 40,
+    bottom: isIPX ? 54 : 20,
     left: 20,
     right: 20,
     height: 50,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   viewStyle: {
     flex: 1,
     marginTop: 30,
-    marginBottom: 194,
+    marginBottom: isIPX ? 124 : 84,
     marginHorizontal: 20
   }
 })
