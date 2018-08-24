@@ -55,7 +55,6 @@ export default class HomeScreen extends Component {
   componentDidMount() {
     AppVersion.getChangelogsLatest()
     AppVersion.getChangelogsList()
-    TickerStore.callApi()
     setTimeout(() => {
       SplashScreen.hide()
       this.props.navigation.navigate('UnlockScreen', {
@@ -65,6 +64,8 @@ export default class HomeScreen extends Component {
           if (version !== AppVersion.latestVersion.version_number) {
             this._gotoNewUpdatedAvailableScreen()
           }
+          TickerStore.callApi()
+          MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
             if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()

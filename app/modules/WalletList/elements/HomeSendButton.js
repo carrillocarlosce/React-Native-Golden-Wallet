@@ -22,10 +22,10 @@ export default class HomeSendButton extends Component {
     const { isShowSendButton } = MainStore.appState
 
     if (!isShowSendButton) {
-      return <View />
+      return <View key="invisible" />
     }
     return (
-      <TouchableOpacity onPress={action}>
+      <TouchableOpacity key="visible" onPress={action}>
         <View style={styles.btnSend}>
           <Image
             source={images.iconSend}

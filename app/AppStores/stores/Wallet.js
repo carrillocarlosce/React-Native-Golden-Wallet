@@ -64,7 +64,7 @@ export default class Wallet {
     const w = Starypto.fromPrivateKey(private_key)
     secureDS.savePrivateKey(w.address, private_key)
     return new Wallet({
-      address: w.address, balance: '0', index, title
+      address: w.address, balance: '0', index, title, isFetchingBalance: true
     }, secureDS)
   }
 
@@ -190,13 +190,15 @@ export default class Wallet {
     this.loading = false
   }
 
-  @action fetchingBalance(isRefresh = false, isBackground = false) {
+  @action async fetchingBalance(isRefresh = false, isBackground = false) {
     if (this.loading) return
 
     this.loading = true
     this.isRefresh = isRefresh
     this.isFetchingBalance = !isRefresh && !isBackground
-    api.fetchWalletInfo(this.address).then(async (res) => {
+    try {
+      const res = await api.fetchWalletInfo(this.address)
+
       const { data } = res.data
       const tokens = data.tokens ? data.tokens.map(t => new WalletToken(t, this.address)) : []
       const tokenETH = this.getTokenETH(data)
@@ -206,11 +208,10 @@ export default class Wallet {
       this.balance = new BigNumber(`${data.ETH.balance}e+18`)
       this.totalBalance = totalTokenETH
       this.update()
-      MainStore.appState.syncWallets()
       this.offLoading()
-    }).catch((e) => {
+    } catch (e) {
       this.offLoading()
-    })
+    }
   }
 
   @action setTokens(tokens) {
