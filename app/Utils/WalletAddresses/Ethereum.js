@@ -1,6 +1,5 @@
 import { ec as Ec } from 'elliptic'
 import sha3 from 'js-sha3'
-// var convert = require('./convert.js');
 
 const secp256k1 = new Ec('secp256k1')
 
@@ -9,7 +8,7 @@ export default class EthereumAddress {
 
   constructor(privateKey) {
     if (!privateKey) throw new Error('Private key is required')
-    this.privateKey = privateKey
+    this.privateKey = privateKey.substring(0, 2) !== '0x' ? `0x${privateKey}` : privateKey
   }
 
   keccak256 = data => `0x${sha3.keccak_256(this.arrayify(data))}`
