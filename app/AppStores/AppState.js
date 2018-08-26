@@ -79,35 +79,6 @@ class AppState {
     this.save()
   }
 
-  // @action async syncWalletsFromDS() {
-  //   const wallets = WalletDS.getWallets()
-
-  //   const walletMap = wallets.reduce((_rs, w, i) => {
-  //     const rs = _rs
-  //     rs[w.address] = i
-  //     return rs
-  //   }, {})
-
-  //   this.wallets.forEach((w) => {
-  //     const index = walletMap[w.address]
-  //     wallets[index] = w
-  //   })
-
-  //   this.wallets = wallets
-  // }
-
-  // @action async syncWallets() {
-  //   WalletDS.saveWallets(this.wallets)
-  // }
-
-  // @action async removeWalletAndSync(wallet) {
-  //   const address = typeof wallet === 'string' ? wallet : wallet.address
-  //   this.wallets = this.wallets.filter(w => w.address !== address)
-  //   this.syncWallets()
-  // }
-
-  // @action addNewWallet(wallet)
-
   @action async syncAddressBooks() {
     await AddressBookDS.getAddressBooks().then((_addressBooks) => {
       const addressBooks = _addressBooks
