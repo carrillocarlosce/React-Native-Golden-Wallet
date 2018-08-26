@@ -2,7 +2,6 @@ import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import WalletToken from './WalletToken'
 import Keystore from '../../../Libs/react-native-golden-keystore'
-import Starypto from '../../../Libs/react-native-starypto'
 import WalletDS from '../DataSource/WalletDS'
 import api from '../../api'
 import MainStore from '../MainStore'
@@ -181,7 +180,6 @@ export default class Wallet {
     if (address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
-    // await WalletDS.updateWallet(this)
     secureDS.savePrivateKey(this.address, privateKey)
   }
 

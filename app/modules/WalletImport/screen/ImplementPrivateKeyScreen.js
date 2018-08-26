@@ -25,6 +25,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import BottomButton from '../../../components/elements/BottomButton'
 import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
+import GetAddress, { chainNames } from '../../../Utils/WalletAddresses'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -149,6 +150,13 @@ export default class ImplementPrivateKeyScreen extends Component {
       NavStore.popupCustom.show('Invalid private key')
       return
     }
+
+    const { address } = GetAddress(privateKey, chainNames.ETH)
+    if (this.selectedWallet.address !== address) {
+      NavStore.popupCustom.show('This private key does not belong to your wallet')
+      return
+    }
+
     const ds = MainStore.secureStorage
     try {
       await this.selectedWallet.implementPrivateKey(ds, privateKey)
