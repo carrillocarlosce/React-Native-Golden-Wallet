@@ -81,6 +81,15 @@ class CreateWalletStore {
       'The Recovery Phrase protects your wallet and can be used to restore your assets if your device will be lost or damaged. Don’t skip the backup step!'
     )
   }
+
+  onBackup = () => {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        await MainStore.gotoBackup(pincode)
+        NavStore.pushToScreen('BackupStack')
+      }
+    }, true)
+  }
 }
 
 export default CreateWalletStore
