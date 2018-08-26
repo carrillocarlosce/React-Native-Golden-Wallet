@@ -114,7 +114,7 @@ class MigrateData {
       }
       await this.saveItem(KeyLocal.DATA_ENCRYPTED, '')
       MainStore.appState.save()
-      MainStore.appState.syncWallets()
+      MainStore.appState.appWalletsStore.getWalletFromDS()
     } catch (error) {
       console.error(error)
     }

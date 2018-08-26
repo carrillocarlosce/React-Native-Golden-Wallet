@@ -71,8 +71,8 @@ export default class ImportMnemonicStore {
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
     NotificationStore.addWallet(title, wallet.address)
     NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await wallet.save()
-    await MainStore.appState.syncWallets()
+
+    await MainStore.appState.appWalletsStore.addOne(wallet)
     MainStore.appState.autoSetSelectedWallet()
     MainStore.appState.selectedWallet.fetchingBalance()
     NavStore.reset()

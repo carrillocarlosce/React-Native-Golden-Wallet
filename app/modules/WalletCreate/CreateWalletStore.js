@@ -24,8 +24,8 @@ class CreateWalletStore {
       this.finished = true
       NotificationStore.addWallet(title, w.address)
       NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
-      await w.save()
-      await MainStore.appState.syncWallets()
+
+      MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()
       MainStore.appState.setCurrentWalletIndex(index + 1)
       MainStore.appState.save()

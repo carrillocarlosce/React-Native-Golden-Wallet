@@ -152,7 +152,7 @@ export default class ImplementPrivateKeyScreen extends Component {
     const ds = MainStore.secureStorage
     try {
       await this.selectedWallet.implementPrivateKey(ds, privateKey)
-      MainStore.appState.syncWallets()
+      await MainStore.appState.appWalletsStore.save()
       NavStore.goBack()
     } catch (e) {
       NavStore.popupCustom.show(e.message)

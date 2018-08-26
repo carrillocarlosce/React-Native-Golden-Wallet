@@ -29,8 +29,7 @@ export default class ImportAddressStore {
     const w = Wallet.importAddress(address, title, ds)
     NotificationStore.addWallet(title, w.address)
     NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await w.save()
-    await MainStore.appState.syncWallets()
+    await MainStore.appState.appWalletsStore.addOne(w)
     MainStore.appState.autoSetSelectedWallet()
     MainStore.appState.selectedWallet.fetchingBalance()
     this.loading = false

@@ -181,7 +181,7 @@ export default class Wallet {
     if (address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
-    await WalletDS.updateWallet(this)
+    // await WalletDS.updateWallet(this)
     secureDS.savePrivateKey(this.address, privateKey)
   }
 

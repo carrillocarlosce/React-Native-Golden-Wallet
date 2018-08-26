@@ -1,8 +1,8 @@
-import { observable, action, computed, autorun } from 'mobx'
+import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import Config from './stores/Config'
 import Constants from '../commons/constant'
-import WalletDS from './DataSource/WalletDS'
+import AppWalletsStore from './AppWalletsStore'
 import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
@@ -30,7 +30,6 @@ class AppState {
   @observable defaultWallet = null // for web3 dapp
   @observable selectedWallet = null // for sending transaction
   @observable selectedToken = null // for sending transaction
-  @observable wallets = []
   @observable addressBooks = []
   @observable rateETHDollar = new BigNumber(0)
   @observable hasPassword = false
@@ -48,6 +47,7 @@ class AppState {
   static TIME_INTERVAL = 20000
 
   constructor() {
+    this.appWalletsStore = new AppWalletsStore()
     this.BgJobs = {
       CheckBalance: new BgJobs.CheckBalance(this, this.TIME_INTERVAL),
       CheckPendingTransaction: new BgJobs.CheckPendingTransaction(this, this.TIME_INTERVAL)
@@ -79,23 +79,34 @@ class AppState {
     this.save()
   }
 
-  @action async syncWallets() {
-    await WalletDS.getWallets().then((_wallets) => {
-      const wallets = _wallets
-      const walletMap = wallets.reduce((_rs, w, i) => {
-        const rs = _rs
-        rs[w.address] = i
-        return rs
-      }, {})
+  // @action async syncWalletsFromDS() {
+  //   const wallets = WalletDS.getWallets()
 
-      this.wallets.forEach((w) => {
-        const index = walletMap[w.address]
-        wallets[index] = w
-      })
+  //   const walletMap = wallets.reduce((_rs, w, i) => {
+  //     const rs = _rs
+  //     rs[w.address] = i
+  //     return rs
+  //   }, {})
 
-      this.wallets = wallets
-    })
-  }
+  //   this.wallets.forEach((w) => {
+  //     const index = walletMap[w.address]
+  //     wallets[index] = w
+  //   })
+
+  //   this.wallets = wallets
+  // }
+
+  // @action async syncWallets() {
+  //   WalletDS.saveWallets(this.wallets)
+  // }
+
+  // @action async removeWalletAndSync(wallet) {
+  //   const address = typeof wallet === 'string' ? wallet : wallet.address
+  //   this.wallets = this.wallets.filter(w => w.address !== address)
+  //   this.syncWallets()
+  // }
+
+  // @action addNewWallet(wallet)
 
   @action async syncAddressBooks() {
     await AddressBookDS.getAddressBooks().then((_addressBooks) => {
@@ -173,14 +184,14 @@ class AppState {
     this.didBackup = data.didBackup
     this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
     this.currentWalletIndex = data.currentWalletIndex
-    const wallets = await WalletDS.getWallets()
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     const unspendTransactions = await UnspendTransactionDS.getTransactions()
     this.unpendTransactions = unspendTransactions
-    this.wallets = wallets
 
-    if (wallets.length > 0) {
+    await this.appWalletsStore.getWalletFromDS()
+
+    if (this.wallets.length > 0) {
       this.setSelectedWallet(this.wallets[0])
     }
     // if (data.defaultWallet) {
@@ -208,6 +219,10 @@ class AppState {
 
   @computed get networkName() {
     return this.config.network
+  }
+
+  @computed get wallets() {
+    return this.appWalletsStore.wallets
   }
 
   resetAppState() {
