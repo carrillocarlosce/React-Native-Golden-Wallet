@@ -5,12 +5,14 @@ import {
   TouchableWithoutFeedback,
   StyleSheet
 } from 'react-native'
+import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
 import MoreButton from '../../../components/elements/MoreButton'
 
+@observer
 export default class ManageWalletItem extends Component {
   static propTypes = {
     style: PropTypes.object,
