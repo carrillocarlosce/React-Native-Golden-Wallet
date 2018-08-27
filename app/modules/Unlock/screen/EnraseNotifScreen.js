@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Image,
   Text,
-  Dimensions
+  Dimensions,
+  SafeAreaView
 } from 'react-native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -26,21 +27,23 @@ export default class EnraseNotifScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigationHeader
-          style={{ marginTop: marginTop + 20 }}
-          headerItem={{
-            title: null,
-            icon: null,
-            button: images.closeButton
-          }}
-          action={this.goBack}
-        />
-        <Image source={images.imgEnrase} style={styles.imgEnrase} />
-        <Text style={styles.mainText}>{mainText}</Text>
-        <Text style={styles.subText}>{subText}</Text>
-        <BottomButton Text="Create new PIN Code" onPress={this.goBack} />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <NavigationHeader
+            style={{ marginTop: marginTop + 20 }}
+            headerItem={{
+              title: null,
+              icon: null,
+              button: images.closeButton
+            }}
+            action={this.goBack}
+          />
+          <Image source={images.imgEnrase} style={styles.imgEnrase} />
+          <Text style={styles.mainText}>{mainText}</Text>
+          <Text style={styles.subText}>{subText}</Text>
+          <BottomButton Text="Create new PIN Code" onPress={this.goBack} />
+        </View>
+      </SafeAreaView>
     )
   }
 }
