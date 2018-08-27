@@ -3,7 +3,8 @@ import {
   View,
   StyleSheet,
   Text,
-  Dimensions
+  Dimensions,
+  SafeAreaView
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import BottomButton from '../../../components/elements/BottomButton'
@@ -120,25 +121,27 @@ export default class BackupThirdStepScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigationHeader
-          style={{ marginTop: marginTop + 20 }}
-          headerItem={{
-            title: null,
-            icon: null,
-            button: images.backButton
-          }}
-          action={this.onBack}
-        />
-        <Text style={styles.content}>{content}</Text>
-        {this.renderListTop()}
-        {this.renderListBottom()}
-        <BottomButton
-          disable={!this.backupStore.isReadyConfirm}
-          text="Confirm"
-          onPress={this.onPress}
-        />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <NavigationHeader
+            style={{ marginTop: marginTop + 20 }}
+            headerItem={{
+              title: null,
+              icon: null,
+              button: images.backButton
+            }}
+            action={this.onBack}
+          />
+          <Text style={styles.content}>{content}</Text>
+          {this.renderListTop()}
+          {this.renderListBottom()}
+          <BottomButton
+            disable={!this.backupStore.isReadyConfirm}
+            text="Confirm"
+            onPress={this.onPress}
+          />
+        </View>
+      </SafeAreaView>
     )
   }
 }
