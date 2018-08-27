@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View
 } from 'react-native'
-
+import WKWebView from 'react-native-wkwebview-reborn'
 import PropTypes from 'prop-types'
 import RNFS from 'react-native-fs'
 import web3 from './web3'
@@ -92,7 +92,7 @@ export default class GoldenDWebBrowser extends Component {
 
     return (
       <View style={[styles.container, style]}>
-        {/* {jsContent && <WKWebView
+        {jsContent && <WKWebView
           ref={(ref) => { this.webview = ref }}
           source={{ uri }}
           onMessage={(e) => { this._onMessage(e.nativeEvent) }}
@@ -101,7 +101,7 @@ export default class GoldenDWebBrowser extends Component {
           mixedContentMode="compatibility"
           javaScriptEnabled={true}
           style={styles.webView}
-        />} */}
+        />}
       </View>
     )
   }

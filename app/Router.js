@@ -40,6 +40,7 @@ import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScr
 import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAvailableScreen'
 import AppVersionScreen from './modules/Setting/screen/AppVersionScreen'
 import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
+import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -183,6 +184,12 @@ const HomeStack = StackNavigator(
     },
     AppVersionScreen: {
       screen: AppVersionScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppWebScreen: {
+      screen: DAppBrowserScreen,
       navigationOptions: {
         header: null
       }
