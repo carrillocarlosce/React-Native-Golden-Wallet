@@ -283,7 +283,7 @@ export default class AdressInputScreen extends Component {
 
   returnData = (address) => {
     const { addressInputStore } = MainStore.sendTransaction
-    const resChecker = Checker.checkAddress(address)
+    const resChecker = Checker.checkAddressQR(address)
     if (!resChecker || resChecker.length === 0) {
       addressInputStore.setAddress(address)
       addressInputStore.validateAddress()
