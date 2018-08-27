@@ -46,6 +46,9 @@ export default class ImportMnemonicStore {
   }
 
   @action gotoEnterName() {
+    this.stopCheckTitle = false
+    this.customTitle = ''
+
     if (!this.selectedWallet) {
       NavStore.popupCustom.show('No wallet have not selected.')
       return
