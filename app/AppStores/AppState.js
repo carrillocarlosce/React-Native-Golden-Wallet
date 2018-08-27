@@ -148,6 +148,11 @@ class AppState {
     }, 0)
   }
 
+  @action async loadPendingTxs() {
+    const unspendTransactions = await UnspendTransactionDS.getTransactions()
+    this.unpendTransactions = unspendTransactions
+  }
+
   @action async import(orgData) {
     const data = orgData
     this.config = new Config(data.config.network, data.config.infuraKey)
@@ -157,9 +162,8 @@ class AppState {
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
-    const unspendTransactions = await UnspendTransactionDS.getTransactions()
-    this.unpendTransactions = unspendTransactions
 
+    await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
 
     if (this.wallets.length > 0) {
