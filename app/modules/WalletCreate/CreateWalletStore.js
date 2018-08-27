@@ -32,9 +32,6 @@ class CreateWalletStore {
       MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
-      if (!MainStore.appState.didBackup) {
-        setTimeout(this.showAlertBackup, 2500)
-      }
     }, ds)
   }
 

@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  Text,
   ScrollView
 } from 'react-native'
 import PropTypes from 'prop-types'
@@ -11,7 +10,6 @@ import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import SettingItem from '../elements/SettingItem'
-import AppStyle from '../../../commons/AppStyle'
 import URL from '../../../api/url'
 
 const marginTop = LayoutUtils.getExtraTop()
@@ -29,14 +27,16 @@ export default class PrivacyTermsScreen extends Component {
   onPrivacyPress = () => {
     const { navigation } = this.props
     navigation.navigate('PrivacyTermsWebView', {
-      url: URL.Skylab.privacyURL()
+      url: URL.Skylab.privacyURL(),
+      title: 'Privacy Policy'
     })
   }
 
   onTermsPress = () => {
     const { navigation } = this.props
     navigation.navigate('PrivacyTermsWebView', {
-      url: URL.Skylab.termsURL()
+      url: URL.Skylab.termsURL(),
+      title: 'Terms'
     })
   }
 

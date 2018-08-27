@@ -15,6 +15,7 @@ import { opensansRegular } from '../../../commons/commonStyles'
 import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
+const isSmallScreen = LayoutUtils.isSmallScreen()
 const content = [
   'The Recovery Phrase will allow you to recover your wallet in case of the phone loss.',
   'Golden cannot restore it once lost, so please keep it safe.',
@@ -54,9 +55,9 @@ export default class BackupFirstStepScreen extends Component {
           />
           <Image style={styles.image} source={images.backupNoteBook} />
           <Text style={styles.attention}>No backup, No wallet!</Text>
-          {this.renderContent(content[0], { marginTop: 40 })}
-          {this.renderContent(content[1], { marginTop: 30 })}
-          {this.renderContent(content[2], { marginTop: 30 })}
+          {this.renderContent(content[0], { marginTop: isSmallScreen ? 20 : 40 })}
+          {this.renderContent(content[1], { marginTop: isSmallScreen ? 15 : 30 })}
+          {this.renderContent(content[2], { marginTop: isSmallScreen ? 15 : 30 })}
           <BottomButton
             text="Got it"
             onPress={this.onPress}

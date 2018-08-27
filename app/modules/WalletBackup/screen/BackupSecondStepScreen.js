@@ -69,7 +69,7 @@ export default class BackupSecondStepScreen extends Component {
         isShowOrder
         arrayMnemonic={MainStore.backupStore.listMnemonic.slice()}
         style={{
-          paddingVerticalOfItem: 12,
+          paddingVerticalOfItem: 20,
           numberOfWordInRow: 3,
           margin: 20,
           marginTop: 20,
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 45,
     textAlign: 'center',
     position: 'absolute',
-    bottom: 70 + marginTop
+    bottom: 70 + marginTop,
+    alignSelf: 'center'
   }
 })

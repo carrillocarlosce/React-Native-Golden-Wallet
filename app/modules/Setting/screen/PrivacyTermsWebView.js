@@ -33,14 +33,14 @@ export default class PrivacyTermsWebView extends Component {
 
   render() {
     const { navigation } = this.props
-    const { url } = navigation.state.params
-    const style = this.state.isShow ? { flex: 1 } : { width: 0 }
+    const { url, title } = navigation.state.params
+    const style = this.state.isShow ? { flex: 1, marginTop: 15 } : { width: 0 }
     return (
       <View style={styles.container}>
         <NavigationHeader
           style={{ marginTop: marginTop + 20, width }}
           headerItem={{
-            title: null,
+            title,
             icon: null,
             button: images.backButton
           }}

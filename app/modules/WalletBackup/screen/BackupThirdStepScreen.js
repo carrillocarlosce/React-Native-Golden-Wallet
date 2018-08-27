@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   content: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 12 : 16,
     color: AppStyle.mainTextColor,
     fontFamily: 'OpenSans-Semibold',
     paddingHorizontal: 20,
