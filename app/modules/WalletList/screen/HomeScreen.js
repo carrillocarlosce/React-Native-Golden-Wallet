@@ -168,7 +168,7 @@ export default class HomeScreen extends Component {
             : this._gotoCreateWallet()
         }}
         onAddPrivateKey={() => {
-          this.props.navigation.navigate('ImplementPrivateKeyScreen')
+          this.props.navigation.navigate('ImplementPrivateKeyScreen', { index })
         }}
         onBackup={this.onBackup}
         onAlertBackup={this.onAlertBackup}

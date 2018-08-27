@@ -42,17 +42,24 @@ export default class ListWalletScreen extends Component {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
     this.state = {
-      isShowExportPrivateKeyBtn: true
+      isShowExportPrivateKeyBtn: true,
+      isShowImplementPrivateKey: false
     }
   }
 
   onActionPress = (index) => {
     this.selectedWallet = this.wallets[index]
     this.setState({
-      isShowExportPrivateKeyBtn: this.selectedWallet.importType !== 'Address'
+      isShowExportPrivateKeyBtn: this.shouldShowExportPrivateKey,
+      isShowImplementPrivateKey: this.selectedWallet.importType === 'Address'
     }, () => {
       this.actionSheet.show()
     })
+  }
+
+  onAddPrivateKey = () => {
+    NavStore.pushToScreen('ImplementPrivateKeyScreen', { index: this.selectedIndex })
+    this.actionSheet.hide()
   }
 
   onCancelAction = () => {
@@ -192,6 +199,13 @@ export default class ListWalletScreen extends Component {
     return this.selectedWallet.derivePrivateKey()
   }
 
+  get shouldShowExportPrivateKey() {
+    if (!this.selectedWallet.importType) {
+      return MainStore.appState.didBackup
+    }
+    return this.selectedWallet.importType !== 'Address'
+  }
+
   get wallets() {
     return MainStore.appState.wallets
   }
@@ -200,7 +214,10 @@ export default class ListWalletScreen extends Component {
     (
       <ManageWalletItem
         index={index}
-        action={() => { this.onActionPress(index) }}
+        action={() => {
+          this.selectedIndex = index
+          this.onActionPress(index)
+        }}
       />
     )
 
@@ -301,7 +318,7 @@ export default class ListWalletScreen extends Component {
 
   render() {
     const { navigation } = this.props
-    const { isShowExportPrivateKeyBtn } = this.state
+    const { isShowExportPrivateKeyBtn, isShowImplementPrivateKey } = this.state
     return (
       <TouchableWithoutFeedback onPress={() => { this.actionSheet.hide() }}>
         <SafeAreaView style={styles.container}>
@@ -327,6 +344,13 @@ export default class ListWalletScreen extends Component {
               <TouchableOpacity onPress={this.onExportPrivateKey}>
                 <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
                   <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
+                </View>
+              </TouchableOpacity>
+            }
+            {isShowImplementPrivateKey &&
+              <TouchableOpacity onPress={this.onAddPrivateKey}>
+                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
                 </View>
               </TouchableOpacity>
             }
