@@ -8,7 +8,8 @@ import {
   Keyboard,
   Animated,
   TouchableWithoutFeedback,
-  SafeAreaView
+  SafeAreaView,
+  StatusBar
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -28,6 +29,7 @@ import ImportAddressStore from '../stores/ImportAddressStore'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
+const statusBarHeight = Platform.OS == 'ios' ? 20 : StatusBar.currentHeight
 @observer
 export default class ImportViaAddressScreen extends Component {
   static propTypes = {
@@ -44,7 +46,8 @@ export default class ImportViaAddressScreen extends Component {
     this.importAddressStore = new ImportAddressStore()
     this.state = {
       isNameFocus: false,
-      isAddressFocus: false
+      isAddressFocus: false,
+      showHeader: true
     }
   }
 
@@ -105,12 +108,14 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
+    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY - (Platform.OS == 'ios' ? 0 : 20))
+      this.setState({ showHeader: false })
     }
   }
 
   _keyboardDidHide(e) {
+    this.setState({ showHeader: true })
     this._runExtraHeight(0)
   }
 
@@ -163,7 +168,7 @@ export default class ImportViaAddressScreen extends Component {
               ]
             }]}
             >
-              <NavigationHeader
+              {this.state.showHeader && <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
                   title: 'Add Address',
@@ -171,8 +176,8 @@ export default class ImportViaAddressScreen extends Component {
                   button: images.backButton
                 }}
                 action={this.goBack}
-              />
-              <Text style={[styles.titleText, { marginTop: 15 }, { color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
+              />}
+              <Text style={[styles.titleText, { marginTop: this.state.showHeader ? 15 : 50 + statusBarHeight, marginLeft: this.state.showHeader ? 20 : 0, color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
@@ -182,9 +187,9 @@ export default class ImportViaAddressScreen extends Component {
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
-                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
+                <Text style={[styles.errorText, { marginLeft: this.state.showHeader ? 20 : 0 }]}>{constant.EXISTED_NAME}</Text>
               }
-              <Text style={[styles.titleText, { marginTop: 20 }, { color: isAddressFocus ? AppStyle.mainColor : 'white' }]}>Address</Text>
+              <Text style={[styles.titleText, { marginTop: 20, marginLeft: this.state.showHeader ? 20 : 0, color: isAddressFocus ? AppStyle.mainColor : 'white' }]}>Address</Text>
               <InputWithAction
                 ref={(ref) => { this.addressField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
@@ -196,7 +201,7 @@ export default class ImportViaAddressScreen extends Component {
                 onBlur={() => this.setState({ isAddressFocus: false })}
               />
               {errorAddress !== '' &&
-                <Text style={styles.errorText}>{errorAddress}</Text>
+                <Text style={[styles.errorText, { marginLeft: this.state.showHeader ? 20 : 0 }]}>{errorAddress}</Text>
               }
               <ActionButton
                 style={{ height: 40, marginTop: 30 }}
@@ -233,15 +238,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'OpenSans-Semibold',
     color: 'white',
-    alignSelf: 'flex-start',
-    marginLeft: 20
+    alignSelf: 'flex-start'
   },
   errorText: {
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
     color: AppStyle.errorColor,
     alignSelf: 'flex-start',
-    marginLeft: 20,
     marginTop: 10
   }
 })

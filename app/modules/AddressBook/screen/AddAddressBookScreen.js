@@ -3,13 +3,14 @@ import React, { Component } from 'react'
 import {
   View,
   TouchableWithoutFeedback,
-  Dimensions,
+  // Dimensions,
   Text,
   Keyboard,
   Animated,
   StyleSheet,
   SafeAreaView,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -26,7 +27,8 @@ import Checker from '../../../Handler/Checker'
 import AddressBookStore from '../AddressBookStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { height } = Dimensions.get('window')
+// const { height } = Dimensions.get('window')
+const statusBarHeight = Platform.OS == 'ios' ? 20 : StatusBar.currentHeight
 
 @observer
 export default class AddAddressBookScreen extends Component {
@@ -44,7 +46,8 @@ export default class AddAddressBookScreen extends Component {
     this.addressBookStore = new AddressBookStore()
     this.state = {
       isNameFocus: false,
-      isAddressFocus: false
+      isAddressFocus: false,
+      showHeader: true
     }
   }
 
@@ -80,22 +83,27 @@ export default class AddAddressBookScreen extends Component {
   }
 
   _runTraslateTop(toValue) {
-    Animated.timing(this.traslateTop, {
-      toValue,
-      duration: 180
-    }).start()
+    Animated.timing(
+      // Animate value over time
+      this.traslateTop, // The value to drive
+      {
+        toValue: -toValue, // Animate to final value of 1
+        duration: 250,
+        useNativeDriver: true
+      }
+    ).start()
   }
 
   _keyboardDidShow(e) {
-    if (height <= 568) {
-      this._runTraslateTop(-80)
+    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+      this._runTraslateTop(437 + marginTop - e.endCoordinates.screenY - (Platform.OS == 'ios' ? 0 : 20))
+      this.setState({ showHeader: false })
     }
   }
 
   _keyboardDidHide() {
-    if (height <= 568) {
-      this._runTraslateTop(0)
-    }
+    this.setState({ showHeader: true })
+    this._runTraslateTop(0)
   }
 
   returnData(codeScanned) {
@@ -117,7 +125,7 @@ export default class AddAddressBookScreen extends Component {
   _renderNameField = (isNameFocus) => {
     const { title, isErrorTitle } = this.addressBookStore
     return (
-      <View style={{ marginTop: 15, marginHorizontal: 20 }}>
+      <View style={{ marginTop: this.state.showHeader ? 15 : 50 + statusBarHeight, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
@@ -210,33 +218,35 @@ export default class AddAddressBookScreen extends Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => { Keyboard.dismiss() }} >
-          <Animated.View
-            style={[
-              styles.container,
-              {
-                transform: [
-                  {
-                    translateY: traslateTop
-                  }]
-              }
-            ]}
-          >
-            <NavigationHeader
-              style={{ marginTop: 20 + marginTop }}
-              headerItem={{
-                title: 'Add New Address',
-                icon: null,
-                button: images.backButton
-              }}
-              action={() => {
-                navigation.goBack()
-              }}
-            />
-            {this._renderNameField(isNameFocus)}
-            {this._renderAddressField(isAddressFocus)}
-            {this._scanQRCodeButton()}
+          <View style={styles.container}>
+            <Animated.View
+              style={[
+                styles.container,
+                {
+                  transform: [
+                    {
+                      translateY: traslateTop
+                    }]
+                }
+              ]}
+            >
+              {this.state.showHeader && <NavigationHeader
+                style={{ marginTop: 20 + marginTop }}
+                headerItem={{
+                  title: 'Add New Address',
+                  icon: null,
+                  button: images.backButton
+                }}
+                action={() => {
+                  navigation.goBack()
+                }}
+              />}
+              {this._renderNameField(isNameFocus)}
+              {this._renderAddressField(isAddressFocus)}
+              {this._scanQRCodeButton()}
+            </Animated.View>
             {this._renderSaveButton()}
-          </Animated.View>
+          </View>
         </TouchableWithoutFeedback>
       </SafeAreaView>
     )
