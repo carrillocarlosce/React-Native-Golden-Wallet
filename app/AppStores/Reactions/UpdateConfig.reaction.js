@@ -12,6 +12,7 @@ export default (appState) => {
         })
       })
       appState.getGasPriceEstimate()
+      appState.loadPendingTxs()
     }
   )
 }

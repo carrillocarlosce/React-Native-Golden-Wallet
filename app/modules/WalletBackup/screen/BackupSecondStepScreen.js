@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  Text
+  Text,
+  SafeAreaView
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import BottomButton from '../../../components/elements/BottomButton'
@@ -68,7 +69,7 @@ export default class BackupSecondStepScreen extends Component {
         isShowOrder
         arrayMnemonic={MainStore.backupStore.listMnemonic.slice()}
         style={{
-          paddingVerticalOfItem: 12,
+          paddingVerticalOfItem: 20,
           numberOfWordInRow: 3,
           margin: 20,
           marginTop: 20,
@@ -85,24 +86,26 @@ export default class BackupSecondStepScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigationHeader
-          style={{ marginTop: marginTop + 20 }}
-          headerItem={{
-            title: null,
-            icon: null,
-            button: images.backButton
-          }}
-          action={this.onBack}
-        />
-        <Text style={styles.mainText}>{mainText}</Text>
-        {this.renderMnemonic()}
-        <Text style={styles.subText}>{subText}</Text>
-        <BottomButton
-          text="Next Step"
-          onPress={this.onPress}
-        />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <NavigationHeader
+            style={{ marginTop: marginTop + 20 }}
+            headerItem={{
+              title: null,
+              icon: null,
+              button: images.backButton
+            }}
+            action={this.onBack}
+          />
+          <Text style={styles.mainText}>{mainText}</Text>
+          {this.renderMnemonic()}
+          <Text style={styles.subText}>{subText}</Text>
+          <BottomButton
+            text="Next Step"
+            onPress={this.onPress}
+          />
+        </View>
+      </SafeAreaView>
     )
   }
 }
@@ -127,6 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 45,
     textAlign: 'center',
     position: 'absolute',
-    bottom: 70 + marginTop
+    bottom: 70 + marginTop,
+    alignSelf: 'center'
   }
 })

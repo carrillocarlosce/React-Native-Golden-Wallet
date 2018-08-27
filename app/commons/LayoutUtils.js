@@ -24,4 +24,8 @@ export default class LayoutUtils {
   static get heightNotif() {
     return isIPX ? 84 : 60
   }
+
+  static isSmallScreen() {
+    return height < 569
+  }
 }
