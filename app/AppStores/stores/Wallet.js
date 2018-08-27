@@ -54,8 +54,7 @@ export default class Wallet {
   @observable tokens = []
   @observable transactions = []
   @observable isRefresh = false
-
-  workerID = null // for update balance polling
+  @observable importType = null
 
   static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
     if (!secureDS) throw new Error('Secure data source is required')
@@ -129,18 +128,6 @@ export default class Wallet {
     if (!obj.address) throw new Error('Address is required')
   }
 
-  startWorker() {
-    if (this.workerID) clearTimeout(this.workerID)
-
-    this.workerID = setTimeout(() => this.doJob(), 10000)
-  }
-
-  doJob() {
-    // fetch().then(res => {
-    //   this.startWorker()
-    // })
-  }
-
   // May get from local and decrypt or from mnemonic
   async derivePrivateKey() {
     if (!this.secureDS) throw new Error('Secure data source is required')
@@ -150,11 +137,6 @@ export default class Wallet {
     const mnemonic = await this.secureDS.deriveMnemonic()
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', this.path, this.index)
     return private_key
-  }
-
-  // Should call this function before remove instance
-  destroy() {
-    if (this.workerID) clearTimeout(this.workerID)
   }
 
   async update() {
@@ -173,7 +155,7 @@ export default class Wallet {
     return this.tokens.find(t => t.address === address)
   }
 
-  async implementPrivateKey(secureDS, privateKey) {
+  @action async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
     const { address } = GetAddress(privateKey, chainNames.ETH)
