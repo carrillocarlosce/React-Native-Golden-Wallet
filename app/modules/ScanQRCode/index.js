@@ -23,13 +23,14 @@ import HapticHandler from '../../Handler/HapticHandler'
 import LayoutUtils from '../../commons/LayoutUtils'
 import { isIphoneX } from '../../../node_modules/react-native-iphone-x-helper'
 
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 // const widthButton = (width - 60) / 2
 const heightBottomView = (width * 65) / 375
 const marginTop = LayoutUtils.getExtraTop()
-const heightCamera = (width * 591) / 375
-const a = (width * 177) / 375
-const ratio = a / heightCamera
+const bottomPadding = isIphoneX() ? 33 : 0
+const topPadding = isIphoneX() ? 64 : marginTop + 20
+const heightCamera = height - heightBottomView - topPadding - bottomPadding
+const ratio = 0.3
 @observer
 export default class ScanQRCodeScreen extends PureComponent {
   static propTypes = {
@@ -279,7 +280,7 @@ export default class ScanQRCodeScreen extends PureComponent {
   render() {
     const triggerRender = NavStore.triggerRenderAndroid
     return (
-      <View style={{ flex: 1, paddingTop: isIphoneX() ? 64 : marginTop + 20, paddingBottom: isIphoneX() ? 33 : 0 }}>
+      <View style={{ flex: 1, paddingTop: topPadding, paddingBottom: bottomPadding }}>
         <NavigationHeader
           headerItem={{
             title: 'Scan QR Code',
@@ -322,7 +323,7 @@ export default class ScanQRCodeScreen extends PureComponent {
               <Text
                 style={[styles.description, {
                   position: 'absolute',
-                  bottom: ratio * heightCamera - (isIphoneX() ? 25 : 40)
+                  bottom: ratio * heightCamera - (isIphoneX() ? 20 : 30)
                 }]}
               >
                 Automatically scan the QR code into the frame

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 14,
     fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNewBold',
-    fontWeight: Platform.OS === 'ios' ? 'bold' : '',
+    fontWeight: Platform.OS === 'ios' ? 'bold' : 'normal',
     color: '#8A8D97',
     textAlign: 'center',
     marginLeft: 18,
