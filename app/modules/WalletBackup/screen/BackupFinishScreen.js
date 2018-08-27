@@ -8,14 +8,17 @@ import {
   Dimensions,
   Platform
 } from 'react-native'
+import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
+import LayoutUtils from '../../../commons/LayoutUtils'
 
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
+const marginTop = LayoutUtils.getExtraTop()
 
 export default class CreateWalletScreen extends Component {
   componentDidMount() {
@@ -29,6 +32,15 @@ export default class CreateWalletScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <NavigationHeader
+          style={{ marginTop: marginTop + 20, width }}
+          headerItem={{
+            title: null,
+            icon: null,
+            button: images.closeButton
+          }}
+          action={this.gotoHome}
+        />
         <Image
           source={images.imgLock}
         />
@@ -58,7 +70,6 @@ export default class CreateWalletScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
     flex: 1
   },
   textDes: {
