@@ -25,7 +25,7 @@ class Notification {
   }
 
   addWallet(name, address) {
-    if (!this.deviceToken || !MainStore.appState.enableNotification) {
+    if (!this.deviceToken) {
       return null
     }
 
