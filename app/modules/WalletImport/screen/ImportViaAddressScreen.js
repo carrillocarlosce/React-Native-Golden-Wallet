@@ -134,7 +134,7 @@ export default class ImportViaAddressScreen extends Component {
     if (this.importAddressStore.title === '') {
       setTimeout(() => this.nameField.focus(), 250)
     }
-    const resChecker = Checker.checkAddress(codeScanned)
+    const resChecker = Checker.checkAddressQR(codeScanned)
     if (resChecker && resChecker.length > 0) {
       [address] = resChecker
     }
