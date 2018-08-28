@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import images from '../../../commons/images'
 
-export default class DAppBrowserScreen extends Component {
+export default class DAppListItem extends Component {
   render() {
     const {
       title,
