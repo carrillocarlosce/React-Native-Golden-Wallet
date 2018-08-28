@@ -9,8 +9,7 @@ import {
   Animated,
   StyleSheet,
   SafeAreaView,
-  Platform,
-  StatusBar
+  Platform
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -28,7 +27,6 @@ import AddressBookStore from '../AddressBookStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 // const { height } = Dimensions.get('window')
-const statusBarHeight = Platform.OS == 'ios' ? 20 : StatusBar.currentHeight
 
 @observer
 export default class AddAddressBookScreen extends Component {
@@ -46,8 +44,7 @@ export default class AddAddressBookScreen extends Component {
     this.addressBookStore = new AddressBookStore()
     this.state = {
       isNameFocus: false,
-      isAddressFocus: false,
-      showHeader: true
+      isAddressFocus: false
     }
   }
 
@@ -88,21 +85,18 @@ export default class AddAddressBookScreen extends Component {
       this.traslateTop, // The value to drive
       {
         toValue: -toValue, // Animate to final value of 1
-        duration: 250,
-        useNativeDriver: true
+        duration: 250
       }
     ).start()
   }
 
   _keyboardDidShow(e) {
     if (e.endCoordinates.screenY < 437 + marginTop + 60) {
-      this._runTraslateTop(437 + marginTop - e.endCoordinates.screenY - (Platform.OS == 'ios' ? 0 : 20))
-      this.setState({ showHeader: false })
+      this._runTraslateTop(437 + marginTop - e.endCoordinates.screenY + 15)
     }
   }
 
   _keyboardDidHide() {
-    this.setState({ showHeader: true })
     this._runTraslateTop(0)
   }
 
@@ -125,7 +119,7 @@ export default class AddAddressBookScreen extends Component {
   _renderNameField = (isNameFocus) => {
     const { title, isErrorTitle } = this.addressBookStore
     return (
-      <View style={{ marginTop: this.state.showHeader ? 15 : 50 + statusBarHeight, marginHorizontal: 20 }}>
+      <View style={{ marginTop: 15, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
@@ -223,14 +217,11 @@ export default class AddAddressBookScreen extends Component {
               style={[
                 styles.container,
                 {
-                  transform: [
-                    {
-                      translateY: traslateTop
-                    }]
+                  marginTop: traslateTop
                 }
               ]}
             >
-              {this.state.showHeader && <NavigationHeader
+              <NavigationHeader
                 style={{ marginTop: 20 + marginTop }}
                 headerItem={{
                   title: 'Add New Address',
@@ -240,7 +231,7 @@ export default class AddAddressBookScreen extends Component {
                 action={() => {
                   navigation.goBack()
                 }}
-              />}
+              />
               {this._renderNameField(isNameFocus)}
               {this._renderAddressField(isAddressFocus)}
               {this._scanQRCodeButton()}
