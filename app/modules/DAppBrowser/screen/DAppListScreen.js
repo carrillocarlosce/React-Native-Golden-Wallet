@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  View
+  View,
+  FlatList,
+  Dimensions
 } from 'react-native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import NavStore from '../../../AppStores/NavStore'
@@ -10,7 +12,8 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import DAppListItem from '../elements/DAppListItem'
 
 const marginTop = LayoutUtils.getExtraTop()
-
+const { height } = Dimensions.get('window')
+const isIPX = height === 812
 export default class DAppListScreen extends Component {
   onBack = () => NavStore.goBack()
 
@@ -20,15 +23,28 @@ export default class DAppListScreen extends Component {
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
-            title: 'DApp Browser',
+            title: 'Exchanges & Finance',
             icon: null,
             button: images.backButton
           }}
           action={this.onBack}
         />
-        <View>
-          <DAppListItem />
-        </View>
+        <FlatList
+          style={{ marginTop: 30, marginBottom: isIPX ? 68 : 34 }}
+          data={dumpData}
+          keyExtractor={v => v.title}
+          renderItem={({ item, index }) =>
+            (
+              <View>
+                <DAppListItem
+                  title={item.title}
+                  subTitle={item.subTitle}
+                  line={index != 0}
+                />
+              </View>
+            )
+          }
+        />
       </View>
     )
   }
@@ -39,3 +55,38 @@ const styles = StyleSheet.create({
     flex: 1
   }
 })
+
+const dumpData = [
+  {
+    title: 'AirSwap',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'Kyber Network',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'AirSwap',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'Kyber Network',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'AirSwap',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'Kyber Network',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'AirSwap',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  },
+  {
+    title: 'Kyber Network',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+  }
+]
