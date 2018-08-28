@@ -41,6 +41,7 @@ import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAva
 import AppVersionScreen from './modules/Setting/screen/AppVersionScreen'
 import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
 import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
+import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -285,6 +286,21 @@ const CreateWalletStack = StackNavigator(
   }
 )
 
+const DAppStack = StackNavigator(
+  {
+    DAppListScreen: {
+      screen: DAppListScreen,
+      navigationOptions: {
+        header: null
+      }
+    }
+  },
+  {
+    initialRouteName: 'DAppListScreen',
+    cardStyle: { backgroundColor: AppStyle.backgroundColor }
+  }
+)
+
 const Router = StackNavigator(
   {
     HomeStack: {
@@ -345,6 +361,12 @@ const Router = StackNavigator(
     },
     EnraseNotifScreen: {
       screen: EnraseNotifScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppStack: {
+      screen: DAppStack,
       navigationOptions: {
         header: null
       }
