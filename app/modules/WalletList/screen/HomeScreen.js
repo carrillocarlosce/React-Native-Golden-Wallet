@@ -84,7 +84,8 @@ export default class HomeScreen extends Component {
     MainStore.goToSendTx()
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
-    navigation.navigate('SendTransactionStack')
+    // navigation.navigate('SendTransactionStack')
+    navigation.navigate('DAppStack')
   }
 
   onBackup = () => {
