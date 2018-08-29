@@ -105,7 +105,7 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+    if (e.endCoordinates.screenY < 437 + marginTop + 15) {
       this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
       // this.setState({ pushScreen: true })
     }
