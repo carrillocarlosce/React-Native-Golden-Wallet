@@ -68,7 +68,8 @@ class UnlockStore {
     const unlockDes = MainStore.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
     this.setData({
       unlockDes,
-      pincode: ''
+      pincode: '',
+      pinConfirm: ''
     })
     AsyncStorage.getItem('USER_WALLET_ENCRYPTED').then((oldData) => {
       if (oldData) {
