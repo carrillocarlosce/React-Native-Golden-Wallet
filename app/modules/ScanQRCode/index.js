@@ -23,11 +23,14 @@ import HapticHandler from '../../Handler/HapticHandler'
 import LayoutUtils from '../../commons/LayoutUtils'
 import { isIphoneX } from '../../../node_modules/react-native-iphone-x-helper'
 
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 // const widthButton = (width - 60) / 2
 const heightBottomView = (width * 65) / 375
 const marginTop = LayoutUtils.getExtraTop()
-
+const bottomPadding = isIphoneX() ? 33 : 0
+const topPadding = isIphoneX() ? 64 : marginTop + 20
+const heightCamera = height - heightBottomView - topPadding - bottomPadding
+const ratio = 0.3
 @observer
 export default class ScanQRCodeScreen extends PureComponent {
   static propTypes = {
@@ -266,7 +269,7 @@ export default class ScanQRCodeScreen extends PureComponent {
           </View>
         </TouchableWithoutFeedback>
         <Text
-          style={styles.description}
+          style={[styles.description, { marginTop: 25 }]}
         >
           Automatically scan the QR code into the frame
         </Text>
@@ -275,10 +278,9 @@ export default class ScanQRCodeScreen extends PureComponent {
   }
 
   render() {
-    console.log('render')
     const triggerRender = NavStore.triggerRenderAndroid
     return (
-      <View style={{ flex: 1, paddingTop: isIphoneX() ? 64 : marginTop + 20, paddingBottom: isIphoneX() ? 33 : 0 }}>
+      <View style={{ flex: 1, paddingTop: topPadding, paddingBottom: bottomPadding }}>
         <NavigationHeader
           headerItem={{
             title: 'Scan QR Code',
@@ -289,7 +291,7 @@ export default class ScanQRCodeScreen extends PureComponent {
             this.props.navigation.goBack()
           }}
           rightView={{
-            rightViewIcon: this.state.enableFlash ? images.iconFlashOn : images.iconFlashOff,
+            rightViewIcon: this.state.enableFlash ? images.iconFlashOff : images.iconFlashOn,
             rightViewAction: () => {
               this.setState({ enableFlash: !this.state.enableFlash })
             }
@@ -313,12 +315,16 @@ export default class ScanQRCodeScreen extends PureComponent {
             type={RNCamera.Constants.Type.back}
             flashMode={this.state.enableFlash ? RNCamera.Constants.FlashMode.torch : RNCamera.Constants.FlashMode.off}
           >
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={images.imgScanFrame}
+                style={{ width, flex: 1 }}
+                source={images.scanFrame}
               />
               <Text
-                style={styles.description}
+                style={[styles.description, {
+                  position: 'absolute',
+                  bottom: ratio * heightCamera - (isIphoneX() ? 20 : 30)
+                }]}
               >
                 Automatically scan the QR code into the frame
               </Text>
@@ -356,9 +362,6 @@ const styles = StyleSheet.create({
   buttonBlue: {
     width,
     height: heightBottomView,
-    // backgroundColor: AppStyle.backgroundDarkBlue,
-    // position: 'absolute',
-    // bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
@@ -370,8 +373,7 @@ const styles = StyleSheet.create({
     color: AppStyle.mainTextColor
   },
   description: {
-    marginTop: 20,
-    fontFamily: 'OpenSans-Light',
+    fontFamily: 'OpenSans-Bold',
     fontSize: 14,
     color: AppStyle.mainTextColor
   }

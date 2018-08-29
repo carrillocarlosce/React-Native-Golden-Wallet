@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import {
   View,
   TouchableWithoutFeedback,
-  Dimensions,
+  // Dimensions,
   Text,
   Keyboard,
   Animated,
@@ -26,7 +26,7 @@ import Checker from '../../../Handler/Checker'
 import AddressBookStore from '../AddressBookStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { height } = Dimensions.get('window')
+// const { height } = Dimensions.get('window')
 
 @observer
 export default class AddAddressBookScreen extends Component {
@@ -42,6 +42,10 @@ export default class AddAddressBookScreen extends Component {
     super(props)
     this.traslateTop = new Animated.Value(0)
     this.addressBookStore = new AddressBookStore()
+    this.state = {
+      isNameFocus: false,
+      isAddressFocus: false
+    }
   }
 
   componentDidMount() {
@@ -76,22 +80,24 @@ export default class AddAddressBookScreen extends Component {
   }
 
   _runTraslateTop(toValue) {
-    Animated.timing(this.traslateTop, {
-      toValue,
-      duration: 180
-    }).start()
+    Animated.timing(
+      // Animate value over time
+      this.traslateTop, // The value to drive
+      {
+        toValue: -toValue, // Animate to final value of 1
+        duration: 250
+      }
+    ).start()
   }
 
   _keyboardDidShow(e) {
-    if (height <= 568) {
-      this._runTraslateTop(-80)
+    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+      this._runTraslateTop(437 + marginTop - e.endCoordinates.screenY + 15)
     }
   }
 
   _keyboardDidHide() {
-    if (height <= 568) {
-      this._runTraslateTop(0)
-    }
+    this._runTraslateTop(0)
   }
 
   returnData(codeScanned) {
@@ -103,21 +109,21 @@ export default class AddAddressBookScreen extends Component {
     if (this.addressBookStore.title === '') {
       setTimeout(() => this.nameField.focus(), 250)
     }
-    const resChecker = Checker.checkAddress(codeScanned)
+    const resChecker = Checker.checkAddressQR(codeScanned)
     if (resChecker && resChecker.length > 0) {
       [address] = resChecker
     }
     addressBookStore.setAddress(address)
   }
 
-  _renderNameField = () => {
+  _renderNameField = (isNameFocus) => {
     const { title, isErrorTitle } = this.addressBookStore
     return (
       <View style={{ marginTop: 15, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
-          color: AppStyle.titleDarkModeColor
+          color: isNameFocus ? AppStyle.mainColor : AppStyle.titleDarkModeColor
         }}
         >Name
         </Text>
@@ -126,6 +132,8 @@ export default class AddAddressBookScreen extends Component {
           style={{ marginTop: 10 }}
           value={title}
           onChangeText={this.onChangeTitle}
+          onFocus={() => this.setState({ isNameFocus: true })}
+          onBlur={() => this.setState({ isNameFocus: false })}
         />
         {isErrorTitle &&
           <Text style={styles.errorText}>{constant.EXISTED_NAME_AB}</Text>
@@ -134,14 +142,14 @@ export default class AddAddressBookScreen extends Component {
     )
   }
 
-  _renderAddressField = () => {
+  _renderAddressField = (isAddressFocus) => {
     const { address, errorAddressBook } = this.addressBookStore
     return (
       <View style={{ marginTop: 20, marginHorizontal: 20 }}>
         <Text style={{
           fontSize: 16,
           fontFamily: AppStyle.mainFontSemiBold,
-          color: AppStyle.titleDarkModeColor
+          color: isAddressFocus ? AppStyle.mainColor : AppStyle.titleDarkModeColor
         }}
         >Address
         </Text>
@@ -151,6 +159,8 @@ export default class AddAddressBookScreen extends Component {
           onChangeText={this.onChangeAddress}
           needPasteButton
           value={address}
+          onFocus={() => this.setState({ isAddressFocus: true })}
+          onBlur={() => this.setState({ isAddressFocus: false })}
         />
         {errorAddressBook !== '' &&
           <Text style={styles.errorText}>{errorAddressBook}</Text>
@@ -196,38 +206,38 @@ export default class AddAddressBookScreen extends Component {
   }
 
   render() {
+    const { isNameFocus, isAddressFocus } = this.state
     const { navigation } = this.props
     const { traslateTop } = this
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback style={{ flex: 1 }} onPress={() => { Keyboard.dismiss() }} >
-          <Animated.View
-            style={[
-              styles.container,
-              {
-                transform: [
-                  {
-                    translateY: traslateTop
-                  }]
-              }
-            ]}
-          >
-            <NavigationHeader
-              style={{ marginTop: 20 + marginTop }}
-              headerItem={{
-                title: 'Add New Address',
-                icon: null,
-                button: images.backButton
-              }}
-              action={() => {
-                navigation.goBack()
-              }}
-            />
-            {this._renderNameField()}
-            {this._renderAddressField()}
-            {this._scanQRCodeButton()}
+          <View style={styles.container}>
+            <Animated.View
+              style={[
+                styles.container,
+                {
+                  marginTop: traslateTop
+                }
+              ]}
+            >
+              <NavigationHeader
+                style={{ marginTop: 20 + marginTop }}
+                headerItem={{
+                  title: 'Add New Address',
+                  icon: null,
+                  button: images.backButton
+                }}
+                action={() => {
+                  navigation.goBack()
+                }}
+              />
+              {this._renderNameField(isNameFocus)}
+              {this._renderAddressField(isAddressFocus)}
+              {this._scanQRCodeButton()}
+            </Animated.View>
             {this._renderSaveButton()}
-          </Animated.View>
+          </View>
         </TouchableWithoutFeedback>
       </SafeAreaView>
     )

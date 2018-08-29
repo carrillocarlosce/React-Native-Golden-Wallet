@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
+import DeviceInfo from 'react-native-device-info'
 import SplashScreen from 'react-native-splash-screen'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import LargeCard from '../elements/LargeCard'
@@ -27,6 +28,7 @@ import Config from '../../../AppStores/stores/Config'
 import Ticker from '../elements/Ticker'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import AppVersion from '../../../AppStores/stores/AppVersion'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -51,18 +53,28 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    TickerStore.callApi()
+    AppVersion.getChangelogsLatest()
+    AppVersion.getChangelogsList()
     setTimeout(() => {
       SplashScreen.hide()
-      if (!NotificationStore.isInitFromNotification) {
-        MainStore.gotoUnlock()
-        this.props.navigation.navigate('UnlockScreen', {
-          isLaunchApp: true,
-          onUnlock: () => {
-            this._gotoCreateWallet()
+      this.props.navigation.navigate('UnlockScreen', {
+        isLaunchApp: true,
+        onUnlock: () => {
+          TickerStore.callApi()
+          MainStore.appState.startAllBgJobs()
+          if (!NotificationStore.isInitFromNotification) {
+            const version = DeviceInfo.getVersion()
+            if (version !== AppVersion.latestVersion.version_number) {
+              this._gotoNewUpdatedAvailableScreen()
+            } else if (MainStore.appState.wallets.length === 0) {
+              this._gotoCreateWallet()
+            }
+          } else {
+            NotificationStore.isInitFromNotification = false
+            NotificationStore.gotoTransactionList()
           }
-        })
-      }
+        }
+      })
     }, 100)
   }
 
@@ -73,6 +85,37 @@ export default class HomeScreen extends Component {
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
     navigation.navigate('SendTransactionStack')
+  }
+
+  onBackup = () => {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        await MainStore.gotoBackup(pincode)
+        this.props.navigation.navigate('BackupStack')
+      }
+    }, true)
+  }
+
+  onAlertBackup = () => {
+    NavStore.popupCustom.show(
+      'No backup, No wallet!',
+      [
+        {
+          text: 'Later',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+          }
+        },
+        {
+          text: 'Backup now',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+            this.onBackup()
+          }
+        }
+      ],
+      'The Recovery Phrase protects your wallet and can be used to restore your assets if your device will be lost or damaged. Don’t skip the backup step!'
+    )
   }
 
   onSnapToItem = (index) => {
@@ -109,6 +152,10 @@ export default class HomeScreen extends Component {
     this.props.navigation.navigate('CreateWalletStack')
   }
 
+  _gotoNewUpdatedAvailableScreen() {
+    this.props.navigation.navigate('NewUpdatedAvailableScreen')
+  }
+
   _renderCard = ({ item, index }) =>
     (
       <LargeCard
@@ -121,12 +168,10 @@ export default class HomeScreen extends Component {
             : this._gotoCreateWallet()
         }}
         onAddPrivateKey={() => {
-          this.props.navigation.navigate('ImplementPrivateKeyScreen')
+          this.props.navigation.navigate('ImplementPrivateKeyScreen', { index })
         }}
-        onBackup={async () => {
-          await MainStore.gotoBackup()
-          this.props.navigation.navigate('BackupScreen')
-        }}
+        onBackup={this.onBackup}
+        onAlertBackup={this.onAlertBackup}
         onCopy={() => {
           Clipboard.setString(MainStore.appState.selectedWallet.address)
           NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
@@ -207,7 +252,7 @@ export default class HomeScreen extends Component {
     })
     this.wallets = MainStore.appState.wallets.slice()
     this.cards = this.wallets
-    if (this.cards.length < 5) {
+    if (this.cards.length < 10) {
       this.cards = [...this.cards, {
         balance: '0 ETH',
         balanceUSD: '$0',

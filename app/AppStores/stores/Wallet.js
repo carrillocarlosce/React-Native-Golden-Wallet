@@ -2,10 +2,10 @@ import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import WalletToken from './WalletToken'
 import Keystore from '../../../Libs/react-native-golden-keystore'
-import Starypto from '../../../Libs/react-native-starypto'
 import WalletDS from '../DataSource/WalletDS'
 import api from '../../api'
 import MainStore from '../MainStore'
+import GetAddress, { chainNames } from '../../Utils/WalletAddresses'
 
 // Object Wallet:
 // title: 'I am cold wallet',
@@ -54,25 +54,24 @@ export default class Wallet {
   @observable tokens = []
   @observable transactions = []
   @observable isRefresh = false
-
-  workerID = null // for update balance polling
+  @observable importType = null
 
   static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
     if (!secureDS) throw new Error('Secure data source is required')
     const mnemonic = await secureDS.deriveMnemonic()
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', path, index)
-    const w = Starypto.fromPrivateKey(private_key)
-    secureDS.savePrivateKey(w.address, private_key)
+    const { address } = GetAddress(private_key, chainNames.ETH)
+    secureDS.savePrivateKey(address, private_key)
     return new Wallet({
-      address: w.address, balance: '0', index, title
+      address, balance: '0', index, title, isFetchingBalance: true
     }, secureDS)
   }
 
   static importPrivateKey(privateKey, title, secureDS) {
-    const w = Starypto.fromPrivateKey(privateKey)
-    secureDS.savePrivateKey(w.address, privateKey)
+    const { address } = GetAddress(privateKey, chainNames.ETH)
+    secureDS.savePrivateKey(address, privateKey)
     return new Wallet({
-      address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Private Key', isFetchingBalance: true, title
+      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Private Key', isFetchingBalance: true, title
     }, secureDS)
   }
 
@@ -84,10 +83,10 @@ export default class Wallet {
 
   static async unlockFromMnemonic(mnemonic, title, index, secureDS) {
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', Keystore.CoinType.ETH.path, index)
-    const w = Starypto.fromPrivateKey(private_key)
-    secureDS.savePrivateKey(w.address, private_key)
+    const { address } = GetAddress(private_key, chainNames.ETH)
+    secureDS.savePrivateKey(address, private_key)
     return new Wallet({
-      address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
+      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
     }, secureDS)
   }
 
@@ -98,9 +97,9 @@ export default class Wallet {
   static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
     const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
     const wallets = keys.map((k) => {
-      const w = Starypto.fromPrivateKey(k.private_key)
+      const { address } = GetAddress(k.private_key, chainNames.ETH)
       return new Wallet({
-        address: w.address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
+        address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
       })
     })
 
@@ -129,18 +128,6 @@ export default class Wallet {
     if (!obj.address) throw new Error('Address is required')
   }
 
-  startWorker() {
-    if (this.workerID) clearTimeout(this.workerID)
-
-    this.workerID = setTimeout(() => this.doJob(), 10000)
-  }
-
-  doJob() {
-    // fetch().then(res => {
-    //   this.startWorker()
-    // })
-  }
-
   // May get from local and decrypt or from mnemonic
   async derivePrivateKey() {
     if (!this.secureDS) throw new Error('Secure data source is required')
@@ -150,11 +137,6 @@ export default class Wallet {
     const mnemonic = await this.secureDS.deriveMnemonic()
     const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', this.path, this.index)
     return private_key
-  }
-
-  // Should call this function before remove instance
-  destroy() {
-    if (this.workerID) clearTimeout(this.workerID)
   }
 
   async update() {
@@ -173,14 +155,13 @@ export default class Wallet {
     return this.tokens.find(t => t.address === address)
   }
 
-  async implementPrivateKey(secureDS, privateKey) {
+  @action async implementPrivateKey(secureDS, privateKey) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
-    const w = Starypto.fromPrivateKey(privateKey)
-    if (w.address.toLowerCase() !== this.address.toLowerCase()) {
+    const { address } = GetAddress(privateKey, chainNames.ETH)
+    if (address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
-    await WalletDS.updateWallet(this)
     secureDS.savePrivateKey(this.address, privateKey)
   }
 
@@ -190,27 +171,28 @@ export default class Wallet {
     this.loading = false
   }
 
-  @action fetchingBalance(isRefresh = false, isBackground = false) {
+  @action async fetchingBalance(isRefresh = false, isBackground = false) {
     if (this.loading) return
 
     this.loading = true
     this.isRefresh = isRefresh
     this.isFetchingBalance = !isRefresh && !isBackground
-    api.fetchWalletInfo(this.address).then(async (res) => {
+    try {
+      const res = await api.fetchWalletInfo(this.address)
+
       const { data } = res.data
-      const tokens = data.tokens.map(t => new WalletToken(t, this.address))
+      const tokens = data.tokens ? data.tokens.map(t => new WalletToken(t, this.address)) : []
       const tokenETH = this.getTokenETH(data)
       this.autoSetSelectedTokenIfNeeded([tokenETH, ...tokens])
       const totalTokenDollar = this.tokens.reduce((rs, item) => rs.plus(item.balanceInDollar), new BigNumber('0'))
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
-      this.balance = new BigNumber(`${data.ETH.balance}e+18`)
+      this.balance = new BigNumber(`${data.ETH.balance}`).times(new BigNumber('1e+18'))
       this.totalBalance = totalTokenETH
       this.update()
-      MainStore.appState.syncWallets()
       this.offLoading()
-    }).catch((e) => {
+    } catch (e) {
       this.offLoading()
-    })
+    }
   }
 
   @action setTokens(tokens) {

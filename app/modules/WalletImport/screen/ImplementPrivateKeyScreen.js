@@ -15,20 +15,21 @@ import {
   SafeAreaView
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import ActionButton from '../../../components/elements/ActionButton'
-import Checker from '../../../Handler/Checker'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import BottomButton from '../../../components/elements/BottomButton'
-import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
+import ImplementPrivateKeyStore from '../stores/ImplementPrivateKeyStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
 
+@observer
 export default class ImplementPrivateKeyScreen extends Component {
   static propTypes = {
     navigation: PropTypes.object
@@ -38,9 +39,10 @@ export default class ImplementPrivateKeyScreen extends Component {
     navigation: {}
   }
 
-  state = {
-    extraHeight: new Animated.Value(0),
-    privateKey: ''
+  constructor(props) {
+    super(props)
+    this.extraHeight = new Animated.Value(0)
+    this.implementPrivateKeyStore = new ImplementPrivateKeyStore()
   }
 
   componentWillMount() {
@@ -58,14 +60,26 @@ export default class ImplementPrivateKeyScreen extends Component {
     this.keyboardDidHideListener.remove()
   }
 
+  onChangePrivateKey = (text) => {
+    this.implementPrivateKeyStore.setPrivateKey(text)
+  }
+
+  onPaste = async () => {
+    const content = await Clipboard.getString()
+    if (content) {
+      this.implementPrivateKeyStore.setPrivateKey(content)
+    }
+  }
+
   get selectedWallet() {
-    return MainStore.appState.selectedWallet
+    const { index } = this.props.navigation.state.params
+    return MainStore.appState.wallets[index]
   }
 
   _runExtraHeight(toValue) {
     Animated.timing(
       // Animate value over time
-      this.state.extraHeight, // The value to drive
+      this.extraHeight, // The value to drive
       {
         toValue: -toValue, // Animate to final value of 1
         duration: 250,
@@ -85,23 +99,14 @@ export default class ImplementPrivateKeyScreen extends Component {
   }
 
   returnData(codeScanned) {
-    this.setState({
-      privateKey: codeScanned
-    })
+    this.implementPrivateKeyStore.setPrivateKey(codeScanned)
   }
 
   _renderPasteButton() {
     return (
       <View style={{ position: 'absolute', right: 0 }}>
         <TouchableOpacity
-          onPress={async () => {
-            const content = await Clipboard.getString()
-            if (content) {
-              this.setState({
-                privateKey: content
-              })
-            }
-          }}
+          onPress={this.onPaste}
         >
           <View style={{ padding: 15 }}>
             <Text style={styles.pasteText}>Paste</Text>
@@ -112,9 +117,7 @@ export default class ImplementPrivateKeyScreen extends Component {
   }
 
   clearText = () => {
-    this.setState({
-      privateKey: ''
-    })
+    this.implementPrivateKeyStore.setPrivateKey('')
   }
 
   _renderClearButton() {
@@ -127,41 +130,13 @@ export default class ImplementPrivateKeyScreen extends Component {
     )
   }
 
-  _checkInvalidKeyStore() {
-    const { privateKey } = this.state
-    if (privateKey === '') {
-      return true
-    }
-    if (!Checker.checkPrivateKey(privateKey)) {
-      // NavStore.popupCustom.show('Invalid private key')
-      return true
-    }
-    return false
-  }
-
   _handleConfirm = async () => {
-    const { privateKey } = this.state
-    if (privateKey === '') {
-      NavStore.popupCustom.show('Private key can not be empty')
-      return
-    }
-    if (!Checker.checkPrivateKey(privateKey)) {
-      NavStore.popupCustom.show('Invalid private key')
-      return
-    }
-    const ds = MainStore.secureStorage
-    try {
-      await this.selectedWallet.implementPrivateKey(ds, privateKey)
-      MainStore.appState.syncWallets()
-      NavStore.goBack()
-    } catch (e) {
-      NavStore.popupCustom.show(e.message)
-    }
+    this.implementPrivateKeyStore.implementPrivateKey(this.selectedWallet)
   }
 
   render() {
     const { navigation } = this.props
-    const { privateKey } = this.state
+    const { privateKey, isReadyCreate, isErrorPrivateKey } = this.implementPrivateKeyStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
@@ -169,7 +144,7 @@ export default class ImplementPrivateKeyScreen extends Component {
             <Animated.View
               style={[styles.container, {
                 transform: [
-                  { translateY: this.state.extraHeight }
+                  { translateY: this.extraHeight }
                 ]
               }]}
             >
@@ -194,15 +169,14 @@ export default class ImplementPrivateKeyScreen extends Component {
                   style={[
                     styles.textInput
                   ]}
-                  onChangeText={(text) => {
-                    this.setState({
-                      privateKey: text
-                    })
-                  }}
-                  value={this.state.privateKey}
+                  onChangeText={this.onChangePrivateKey}
+                  value={privateKey}
                 />
                 {privateKey === '' && this._renderPasteButton()}
                 {privateKey !== '' && this._renderClearButton()}
+                {isErrorPrivateKey &&
+                  <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
+                }
               </View>
               <View style={styles.actionButton}>
                 <ActionButton
@@ -228,7 +202,7 @@ export default class ImplementPrivateKeyScreen extends Component {
             </Animated.View>
             <BottomButton
               onPress={this._handleConfirm}
-              disable={this._checkInvalidKeyStore()}
+              disable={!isReadyCreate}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -271,7 +245,6 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     color: AppStyle.errorColor,
     alignSelf: 'flex-start',
-    marginLeft: 20,
     marginTop: 10
   }
 })

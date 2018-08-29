@@ -102,7 +102,11 @@ class SendStore {
       const err = { message: 'Not enough gas to send this transaction' }
       return Promise.reject(err)
     }
-    const valueFormat = transaction.value ? transaction.value.times(new BigNumber(1e+18)).minus(new BigNumber(10000)).toString(16) : transaction.value
+    // transaction.value.times(new BigNumber(1e+18)).minus(new BigNumber(10000))
+    const valueFormat = transaction.value
+      ? transaction.value.times(new BigNumber(1e+18)).toString(16)
+      : transaction.value
+
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
     return new Promise((resolve, reject) => {
       try {

@@ -283,7 +283,7 @@ export default class AdressInputScreen extends Component {
 
   returnData = (address) => {
     const { addressInputStore } = MainStore.sendTransaction
-    const resChecker = Checker.checkAddress(address)
+    const resChecker = Checker.checkAddressQR(address)
     if (!resChecker || resChecker.length === 0) {
       addressInputStore.setAddress(address)
       addressInputStore.validateAddress()
@@ -308,7 +308,8 @@ export default class AdressInputScreen extends Component {
         position="bottom"
         keyboardTopOffset={isIPX ? 30 : 22}
         onClosed={() => {
-
+          const { advanceStore } = MainStore.sendTransaction
+          advanceStore.reset()
         }}
         ref={(ref) => { MainStore.sendTransaction.addressInputStore.confirmModal = ref }}
       >

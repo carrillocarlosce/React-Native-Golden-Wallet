@@ -23,6 +23,7 @@ import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -40,11 +41,25 @@ export default class ListWalletScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
+    this.state = {
+      isShowExportPrivateKeyBtn: true,
+      isShowImplementPrivateKey: false
+    }
   }
 
   onActionPress = (index) => {
     this.selectedWallet = this.wallets[index]
-    this.actionSheet.show()
+    this.setState({
+      isShowExportPrivateKeyBtn: this.shouldShowExportPrivateKey,
+      isShowImplementPrivateKey: this.selectedWallet.importType === 'Address'
+    }, () => {
+      this.actionSheet.show()
+    })
+  }
+
+  onAddPrivateKey = () => {
+    NavStore.pushToScreen('ImplementPrivateKeyScreen', { index: this.selectedIndex })
+    this.actionSheet.hide()
   }
 
   onCancelAction = () => {
@@ -81,10 +96,10 @@ export default class ListWalletScreen extends Component {
     })
   }
 
-  onDelete = () => {
+  onExportPrivateKey = () => {
     this.actionSheet.hide(() => {
       NavStore.popupCustom.show(
-        'Are you sure you want to remove this wallet ?',
+        'WARNING!',
         [
           {
             text: 'Cancel',
@@ -93,20 +108,102 @@ export default class ListWalletScreen extends Component {
             }
           },
           {
-            text: 'Remove',
-            onClick: async () => {
-              const { wallets, selectedWallet } = MainStore.appState
-              const index = wallets.indexOf(selectedWallet)
-              if (index === wallets.length - 1) {
-                MainStore.appState.setSelectedWallet(null)
-              }
-              await this.manageWalletStore.removeWallet(this.selectedWallet)
+            text: 'Continue',
+            onClick: async (text) => {
               NavStore.popupCustom.hide()
+              NavStore.lockScreen({
+                onUnlock: (pincode) => {
+                  NavStore.showLoading()
+                  const ds = new SecureDS(pincode)
+                  this.getPrivateKey(ds).then((pk) => {
+                    NavStore.hideLoading()
+                    NavStore.pushToScreen('ExportPrivateKeyScreen', {
+                      pk,
+                      walletName: this.selectedWallet.title
+                    })
+                  }).catch(e => NavStore.hideLoading())
+                }
+              }, true)
             }
           }
-        ]
+        ],
+        'It is essential to understand that the Private Key is the most important and sensitive part of your account information.\n\nWhoever has knowledge of a Private Key has full control over the associated funds and assets.\n\nIt is important for restoring your account so you should never lose it, but also keep it top secret.'
       )
     })
+  }
+
+  onDelete = () => {
+    this.actionSheet.hide(() => {
+      NavStore.lockScreen({
+        onUnlock: (pincode) => {
+          NavStore.popupCustom.show(
+            'Remove Wallet',
+            [
+              {
+                text: 'Cancel',
+                onClick: () => {
+                  NavStore.popupCustom.hide()
+                }
+              },
+              {
+                text: 'Remove',
+                onClick: async (text) => {
+                  const { wallets, selectedWallet } = MainStore.appState
+                  const index = wallets.indexOf(selectedWallet)
+                  if (index === wallets.length - 1) {
+                    MainStore.appState.setSelectedWallet(null)
+                  }
+                  await this.manageWalletStore.removeWallet(this.selectedWallet)
+                  NavStore.popupCustom.hide()
+                }
+              }
+            ],
+            'Enter your wallet name to remove',
+            'input',
+            false,
+            this.selectedWallet.title,
+            true,
+            null,
+            true
+          )
+          // NavStore.popupCustom.show(
+          //   'Are you sure you want to remove this wallet ?',
+          //   [
+          //     {
+          //       text: 'Cancel',
+          //       onClick: () => {
+          //         NavStore.popupCustom.hide()
+          //       }
+          //     },
+          //     {
+          //       text: 'Remove',
+          //       onClick: async () => {
+          //         const { wallets, selectedWallet } = MainStore.appState
+          //         const index = wallets.indexOf(selectedWallet)
+          //         if (index === wallets.length - 1) {
+          //           MainStore.appState.setSelectedWallet(null)
+          //         }
+          //         await this.manageWalletStore.removeWallet(this.selectedWallet)
+          //         NavStore.popupCustom.hide()
+          //       }
+          //     }
+          //   ]
+          // )
+        }
+      }, true)
+    })
+  }
+
+  getPrivateKey(ds) {
+    this.selectedWallet.setSecureDS(ds)
+    return this.selectedWallet.derivePrivateKey()
+  }
+
+  get shouldShowExportPrivateKey() {
+    if (!this.selectedWallet.importType) {
+      return MainStore.appState.didBackup
+    }
+    return this.selectedWallet.importType !== 'Address'
   }
 
   get wallets() {
@@ -115,7 +212,13 @@ export default class ListWalletScreen extends Component {
 
   _renderItem = ({ item, index }) =>
     (
-      <ManageWalletItem index={index} action={() => { this.onActionPress(index) }} />
+      <ManageWalletItem
+        index={index}
+        action={() => {
+          this.selectedIndex = index
+          this.onActionPress(index)
+        }}
+      />
     )
 
   returnData = (isCreateSuccess, index, isCreate) => {
@@ -125,12 +228,41 @@ export default class ListWalletScreen extends Component {
     }
   }
 
+  _renderNoWalletView() {
+    return (
+      <View style={{ alignItems: 'center', flex: 1, marginBottom: 30 }}>
+        <Image
+          source={images.noWalletImage}
+          style={styles.contactImageStyle}
+        />
+        <Text style={{
+          fontSize: 26,
+          fontFamily: AppStyle.mainFontBold,
+          marginTop: 60,
+          color: AppStyle.titleDarkModeColor
+        }}
+        >No wallets yet
+        </Text>
+        <Text style={{
+          fontSize: 18,
+          fontFamily: AppStyle.mainFontSemiBold,
+          marginTop: 20,
+          color: '#8A8D97'
+        }}
+        >
+          Get started by adding your first one.
+        </Text>
+      </View>
+    )
+  }
+
   _renderAddressList() {
     const { wallets } = this
     return (
       <FlatList
         style={{ flex: 1, marginTop: 15 }}
         data={wallets}
+        ListEmptyComponent={this._renderNoWalletView()}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => item.address}
         renderItem={this._renderItem}
@@ -146,13 +278,18 @@ export default class ListWalletScreen extends Component {
   _renderFooter = () => {
     const { navigation } = this.props
     const { wallets } = this
-    if (wallets.length === 5) {
+    let backgroundColor
+    if (wallets.length === 10) {
       return null
+    }
+    if (wallets.length === 0) {
+      backgroundColor = { backgroundColor: AppStyle.backgroundColor }
     }
     return (
       <TouchableOpacity
         style={[
-          styles.addContactButtonStyle
+          styles.addContactButtonStyle,
+          backgroundColor
         ]}
         onPress={() => {
           navigation.navigate('CreateWalletStack', {
@@ -181,6 +318,7 @@ export default class ListWalletScreen extends Component {
 
   render() {
     const { navigation } = this.props
+    const { isShowExportPrivateKeyBtn, isShowImplementPrivateKey } = this.state
     return (
       <TouchableWithoutFeedback onPress={() => { this.actionSheet.hide() }}>
         <SafeAreaView style={styles.container}>
@@ -202,6 +340,20 @@ export default class ListWalletScreen extends Component {
                 <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
               </View>
             </TouchableOpacity>
+            {isShowExportPrivateKeyBtn &&
+              <TouchableOpacity onPress={this.onExportPrivateKey}>
+                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
+                </View>
+              </TouchableOpacity>
+            }
+            {isShowImplementPrivateKey &&
+              <TouchableOpacity onPress={this.onAddPrivateKey}>
+                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
+                </View>
+              </TouchableOpacity>
+            }
             <TouchableOpacity onPress={this.onDelete}>
               <View style={styles.actionButton}>
                 <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
@@ -242,5 +394,10 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     fontFamily: 'OpenSans-Semibold'
+  },
+  contactImageStyle: {
+    resizeMode: 'contain',
+    width: 168,
+    marginTop: 40
   }
 })

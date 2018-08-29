@@ -23,8 +23,7 @@ class ObservableNavStore {
   @observable.ref navigator = null
   @observable.ref popupCustom = null
   @observable.ref toastTop = null
-  @observable.ref lock = null
-  @observable.ref currentRouteName = ''
+  currentRouteName = ''
   @observable.ref loading = null
   @observable.ref preventOpenUnlockScreen = false
   @observable triggerRenderAndroid = false
@@ -64,8 +63,8 @@ class ObservableNavStore {
         }
       })
     }
-
-    this.lock && this.lock._show(params, shouldShowCancel)
+    this.popupCustom.hide()
+    this.pushToScreen('UnlockScreen', { ...params, shouldShowCancel })
   }
 
   @action UnlockScreen() {

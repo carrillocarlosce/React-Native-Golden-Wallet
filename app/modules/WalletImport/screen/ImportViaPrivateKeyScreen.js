@@ -46,6 +46,10 @@ export default class ImportViaPrivateKeyScreen extends Component {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importPrivateKeyStore = new ImportPrivateKeyStore()
+    this.state = {
+      isNameFocus: false,
+      isPrivateKeyFocus: false
+    }
   }
 
   componentWillMount() {
@@ -65,6 +69,10 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   onChangePrivKey = (text) => {
     this.importPrivateKeyStore.setPrivateKey(text)
+    const { isErrorPrivateKey } = this.importPrivateKeyStore
+    if (isErrorPrivateKey) {
+      this.privKeyField.shake()
+    }
   }
 
   onChangeName = (text) => {
@@ -77,15 +85,14 @@ export default class ImportViaPrivateKeyScreen extends Component {
       this.extraHeight, // The value to drive
       {
         toValue: -toValue, // Animate to final value of 1
-        duration: 250,
-        useNativeDriver: true
+        duration: 250
       }
     ).start()
   }
 
   _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
+    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
     }
   }
 
@@ -158,6 +165,8 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   render() {
     const { navigation } = this.props
+    const { isNameFocus, isPrivateKeyFocus } = this.state
+    console.log(isNameFocus)
     const {
       privateKey, loading, title, isErrorTitle, isErrorPrivateKey, isReadyCreate
     } = this.importPrivateKeyStore
@@ -167,9 +176,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
           <View style={styles.container}>
             <Animated.View
               style={[styles.container, {
-                transform: [
-                  { translateY: this.extraHeight }
-                ]
+                marginTop: this.extraHeight
               }]}
             >
               <NavigationHeader
@@ -183,29 +190,34 @@ export default class ImportViaPrivateKeyScreen extends Component {
                   navigation.goBack()
                 }}
               />
-              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
+              <Text style={[styles.titleText, { marginTop: 15, color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 value={title}
+                onFocus={() => this.setState({ isNameFocus: true })}
+                onBlur={() => this.setState({ isNameFocus: false })}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
                 <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
-              <Text style={[styles.titleText, { marginTop: 20 }]}>Private Key</Text>
+              <Text style={[styles.titleText, { marginTop: 20, color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text>
               <InputWithAction
+                ref={(ref) => { this.privKeyField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 onChangeText={this.onChangePrivKey}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={privateKey}
+                onFocus={() => this.setState({ isPrivateKeyFocus: true })}
+                onBlur={() => this.setState({ isPrivateKeyFocus: false })}
               />
               {isErrorPrivateKey &&
                 <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
               }
               <ActionButton
-                style={{ height: 40, marginTop: 30 }}
+                style={{ height: 40, marginTop: 25 }}
                 buttonItem={{
                   name: constant.SCAN_QR_CODE,
                   icon: images.iconQrCode,
@@ -225,7 +237,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
             }
           </View>
         </TouchableWithoutFeedback>
-      </SafeAreaView>
+      </SafeAreaView >
     )
   }
 }
@@ -252,7 +264,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     color: AppStyle.errorColor,
     alignSelf: 'flex-start',
-    marginLeft: 20,
-    marginTop: 10
+    marginTop: 10,
+    marginLeft: 20
   }
 })

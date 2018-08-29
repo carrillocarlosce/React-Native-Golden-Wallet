@@ -11,7 +11,7 @@ export default class AddressBookStore {
   finished = false
 
   @action setTitle = (t) => { this.title = t }
-  @action setAddress = (add) => { this.address = add.toLowerCase() }
+  @action setAddress = (add) => { this.address = add }
 
   @action async saveAddressBook() {
     const validate = Checker.checkAddress(this.address)
@@ -27,7 +27,7 @@ export default class AddressBookStore {
   }
 
   get addressBookIsExisted() {
-    return MainStore.appState.addressBooks.find(ab => ab.address === this.address)
+    return MainStore.appState.addressBooks.find(ab => ab.address === this.address.toLowerCase())
   }
 
   get titleIsExisted() {

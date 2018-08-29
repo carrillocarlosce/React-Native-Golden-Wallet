@@ -24,11 +24,12 @@ class CreateWalletStore {
       this.finished = true
       NotificationStore.addWallet(title, w.address)
       NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
-      await w.save()
-      await MainStore.appState.syncWallets()
+
+      MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()
       MainStore.appState.setCurrentWalletIndex(index + 1)
       MainStore.appState.save()
+      MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
     }, ds)
@@ -54,6 +55,37 @@ class CreateWalletStore {
 
   @computed get isReadCreate() {
     return this.title !== '' && !this.isShowError
+  }
+
+  showAlertBackup = () => {
+    NavStore.popupCustom.show(
+      'No backup, No wallet!',
+      [
+        {
+          text: 'Later',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+          }
+        },
+        {
+          text: 'Backup now',
+          onClick: () => {
+            NavStore.popupCustom.hide()
+            this.onBackup()
+          }
+        }
+      ],
+      'The Recovery Phrase protects your wallet and can be used to restore your assets if your device will be lost or damaged. Don’t skip the backup step!'
+    )
+  }
+
+  onBackup = () => {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        await MainStore.gotoBackup(pincode)
+        NavStore.pushToScreen('BackupStack')
+      }
+    }, true)
   }
 }
 

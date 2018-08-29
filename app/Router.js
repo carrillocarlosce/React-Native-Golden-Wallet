@@ -19,10 +19,9 @@ import ImportViaAddressScreen from './modules/WalletImport/screen/ImportViaAddre
 import ChooseAddressScreen from './modules/WalletImport/screen/ChooseAddressScreen'
 import TokenScreen from './modules/WalletDetail/screen/TokenScreen'
 import SendTransactionScreen from './modules/SendTransaction/screen/SendTransactionScreen'
-import UnlockScreen from './modules/Unlock'
+import UnlockScreen from './modules/Unlock/screen/UnlockScreen'
 import ScanQRCodeScreen from './modules/ScanQRCode'
-import BackupScreen from './modules/WalletBackup/screen/BackupScreen'
-import PrivacyPolicyWebView from './modules/Setting/screen/PrivacyPolicyWebView'
+import PrivacyTermsWebView from './modules/Setting/screen/PrivacyTermsWebView'
 import ImplementPrivateKeyScreen from './modules/WalletImport/screen/ImplementPrivateKeyScreen'
 import AddressBookScreen from './modules/AddressBook/screen/AddressBookScreen'
 import AddAddressBookScreen from './modules/AddressBook/screen/AddAddressBookScreen'
@@ -32,6 +31,42 @@ import TxHashWebViewScreen from './modules/TransactionDetail/screen/TxHashWebVie
 import NetworkScreen from './modules/Setting/screen/NetworkScreen'
 import AddressInputScreen from './modules/SendTransaction/screen/AddressInputScreen'
 import EnterNameViaMnemonic from './modules/WalletImport/screen/EnterNameViaMnemonic'
+import BackupFirstStepScreen from './modules/WalletBackup/screen/BackupFirstStepScreen'
+import BackupSecondStepScreen from './modules/WalletBackup/screen/BackupSecondStepScreen'
+import BackupThirdStepScreen from './modules/WalletBackup/screen/BackupThirdStepScreen'
+import UnlockPincode from './modules/ChangePincode/screen/UnlockPincode'
+import PrivacyTermsScreen from './modules/Setting/screen/PrivacyTermsScreen'
+import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScreen'
+import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAvailableScreen'
+import AppVersionScreen from './modules/Setting/screen/AppVersionScreen'
+import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
+
+const BackupStack = StackNavigator(
+  {
+    BackupFirstStepScreen: {
+      screen: BackupFirstStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BackupSecondStepScreen: {
+      screen: BackupSecondStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BackupThirdStepScreen: {
+      screen: BackupThirdStepScreen,
+      navigationOptions: {
+        header: null
+      }
+    }
+  },
+  {
+    initialRouteName: 'BackupFirstStepScreen',
+    cardStyle: { backgroundColor: AppStyle.backgroundColor }
+  }
+)
 
 const AddressBookStack = StackNavigator(
   {
@@ -74,6 +109,12 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
+    ChangePincodeScreen: {
+      screen: UnlockPincode,
+      navigationOptions: {
+        header: null
+      }
+    },
     AddAddressBookScreen: {
       screen: AddAddressBookScreen,
       navigationOptions: {
@@ -82,6 +123,12 @@ const HomeStack = StackNavigator(
     },
     ManageWalletScreen: {
       screen: ManageWalletScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ExportPrivateKeyScreen: {
+      screen: ExportPrivateKeyScreen,
       navigationOptions: {
         header: null
       }
@@ -98,15 +145,8 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
-    BackupScreen: {
-      screen: BackupScreen,
-      navigationOptions: {
-        header: null,
-        gesturesEnabled: false
-      }
-    },
-    PrivacyPolicyWebView: {
-      screen: PrivacyPolicyWebView,
+    PrivacyTermsWebView: {
+      screen: PrivacyTermsWebView,
       navigationOptions: {
         header: null
       }
@@ -131,6 +171,18 @@ const HomeStack = StackNavigator(
     },
     TxHashWebViewScreen: {
       screen: TxHashWebViewScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    PrivacyTermsScreen: {
+      screen: PrivacyTermsScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AppVersionScreen: {
+      screen: AppVersionScreen,
       navigationOptions: {
         header: null
       }
@@ -254,6 +306,12 @@ const Router = StackNavigator(
         header: null
       }
     },
+    BackupStack: {
+      screen: BackupStack,
+      navigationOptions: {
+        header: null
+      }
+    },
     BackupFinishScreen: {
       screen: BackupFinishScreen,
       navigationOptions: {
@@ -268,6 +326,18 @@ const Router = StackNavigator(
     },
     EnterNameScreen: {
       screen: EnterNameScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    NewUpdatedAvailableScreen: {
+      screen: NewUpdatedAvailableScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    EnraseNotifScreen: {
+      screen: EnraseNotifScreen,
       navigationOptions: {
         header: null
       }

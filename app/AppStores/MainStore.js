@@ -1,12 +1,11 @@
 import { observable, action } from 'mobx'
-import { AsyncStorage } from 'react-native'
 import SendStore from '../modules/SendTransaction/stores/SendStore'
 import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
-import UnlockStore from '../modules/Unlock/UnlockStore'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
+import ChangePincodeStore from '../modules/ChangePincode/stores/ChangePincodeStore'
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
@@ -20,6 +19,7 @@ class MainStore {
   unlock = null
   importStore = null
   backupStore = null
+  changePincode = null
 
   importMnemonicStore = null
 
@@ -42,25 +42,13 @@ class MainStore {
     this.sendTransaction = null
   }
 
-  async gotoUnlock() {
-    this.unlock = new UnlockStore()
-    const unlockDes = this.appState.hasPassword ? 'Unlock your Golden' : 'Create your Pincode'
-    this.unlock.setData({
-      unlockDes
-    })
-
-    AsyncStorage.getItem('USER_WALLET_ENCRYPTED').then((oldData) => {
-      if (oldData) {
-        this.unlock.setData({
-          unlockDes: 'Unlock your Golden'
-        })
-      }
-    })
+  goToChangePincode() {
+    this.changePincode = new ChangePincodeStore()
   }
 
-  async gotoBackup() {
+  async gotoBackup(pincode) {
     this.backupStore = new BackupStore()
-    const mnemonic = await this.secureStorage.deriveMnemonic()
+    const mnemonic = await new SecureDS(pincode).deriveMnemonic()
     this.backupStore.setMnemonic(mnemonic)
     this.backupStore.setup()
   }

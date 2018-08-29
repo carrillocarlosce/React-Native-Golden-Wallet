@@ -28,6 +28,7 @@ import ImportAddressStore from '../stores/ImportAddressStore'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
+
 @observer
 export default class ImportViaAddressScreen extends Component {
   static propTypes = {
@@ -42,6 +43,10 @@ export default class ImportViaAddressScreen extends Component {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importAddressStore = new ImportAddressStore()
+    this.state = {
+      isNameFocus: false,
+      isAddressFocus: false
+    }
   }
 
   componentWillMount() {
@@ -66,6 +71,10 @@ export default class ImportViaAddressScreen extends Component {
 
   onChangeAddress = (text) => {
     this.importAddressStore.setAddress(text)
+    const { errorAddress } = this.importAddressStore
+    if (errorAddress) {
+      this.addressField.shake()
+    }
   }
 
   gotoScan = () => {
@@ -90,19 +99,20 @@ export default class ImportViaAddressScreen extends Component {
       this.extraHeight, // The value to drive
       {
         toValue: -toValue, // Animate to final value of 1
-        duration: 250,
-        useNativeDriver: true
+        duration: 250
       }
     ).start()
   }
 
   _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
+    if (e.endCoordinates.screenY < 437 + marginTop + 60) {
+      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
+      // this.setState({ pushScreen: true })
     }
   }
 
   _keyboardDidHide(e) {
+    // this.setState({ pushScreen: false })
     this._runExtraHeight(0)
   }
 
@@ -124,7 +134,7 @@ export default class ImportViaAddressScreen extends Component {
     if (this.importAddressStore.title === '') {
       setTimeout(() => this.nameField.focus(), 250)
     }
-    const resChecker = Checker.checkAddress(codeScanned)
+    const resChecker = Checker.checkAddressQR(codeScanned)
     if (resChecker && resChecker.length > 0) {
       [address] = resChecker
     }
@@ -141,6 +151,7 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   render() {
+    const { isNameFocus, isAddressFocus } = this.state
     const {
       address, title, loading, isErrorTitle, errorAddress, isReadyCreate
     } = this.importAddressStore
@@ -149,9 +160,7 @@ export default class ImportViaAddressScreen extends Component {
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
           <View style={styles.container}>
             <Animated.View style={[styles.container, {
-              transform: [
-                { translateY: this.extraHeight }
-              ]
+              marginTop: this.extraHeight
             }]}
             >
               <NavigationHeader
@@ -163,29 +172,34 @@ export default class ImportViaAddressScreen extends Component {
                 }}
                 action={this.goBack}
               />
-              <Text style={[styles.titleText, { marginTop: 15 }]}>Name</Text>
+              <Text style={[styles.titleText, { marginTop: 15, color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
               <InputWithAction
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 value={title}
+                onFocus={() => this.setState({ isNameFocus: true })}
+                onBlur={() => this.setState({ isNameFocus: false })}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
                 <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
               }
-              <Text style={[styles.titleText, { marginTop: 20 }]}>Address</Text>
+              <Text style={[styles.titleText, { marginTop: 20, color: isAddressFocus ? AppStyle.mainColor : 'white' }]}>Address</Text>
               <InputWithAction
+                ref={(ref) => { this.addressField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 onChangeText={this.onChangeAddress}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={address}
+                onFocus={() => this.setState({ isAddressFocus: true })}
+                onBlur={() => this.setState({ isAddressFocus: false })}
               />
               {errorAddress !== '' &&
                 <Text style={styles.errorText}>{errorAddress}</Text>
               }
               <ActionButton
-                style={{ height: 40, marginTop: 30 }}
+                style={{ height: 40, marginTop: 25 }}
                 buttonItem={{
                   name: constant.SCAN_QR_CODE,
                   icon: images.iconQrCode,
@@ -227,7 +241,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     color: AppStyle.errorColor,
     alignSelf: 'flex-start',
-    marginLeft: 20,
-    marginTop: 10
+    marginTop: 10,
+    marginLeft: 20
   }
 })

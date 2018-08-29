@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx'
+import { observable, action, computed, toJS } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
@@ -14,6 +14,7 @@ export default class ImportMnemonicStore {
   @observable loading = false
   @observable selectedWallet = null
   @observable isErrorMnemonic = false
+  stopCheckTitle = false
 
   @action setTitle = (title) => { this.customTitle = title }
   @action onChangeMnemonic = (mn) => {
@@ -45,6 +46,9 @@ export default class ImportMnemonicStore {
   }
 
   @action gotoEnterName() {
+    this.stopCheckTitle = false
+    this.customTitle = ''
+
     if (!this.selectedWallet) {
       NavStore.popupCustom.show('No wallet have not selected.')
       return
@@ -58,23 +62,22 @@ export default class ImportMnemonicStore {
   }
 
   @action async unlockWallet() {
+    this.stopCheckTitle = true
+
     const index = this.mnemonicWallets
       .findIndex(w => w.address.toLowerCase() === this.selectedWallet.address.toLowerCase())
     const title = this.customTitle
-    // TO DO: remove below line when done check wallet name
-    if (!title) {
-      alert('Wallet name can not be blank')
-      return
-    }
 
     const ds = MainStore.secureStorage
     const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
     NotificationStore.addWallet(title, wallet.address)
     NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await wallet.save()
-    await MainStore.appState.syncWallets()
+
+    await MainStore.appState.appWalletsStore.addOne(wallet)
     MainStore.appState.autoSetSelectedWallet()
+    MainStore.appState.selectedWallet.fetchingBalance()
     NavStore.reset()
+    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
   }
 
   @computed get isLoading() {
@@ -98,6 +101,6 @@ export default class ImportMnemonicStore {
   }
 
   @computed get titleIsExisted() {
-    return MainStore.appState.wallets.find(w => w.title === this.title)
+    return !this.stopCheckTitle && MainStore.appState.wallets.find(w => w.title === this.title)
   }
 }

@@ -27,7 +27,9 @@ export default class TagList extends Component {
       itemTextColor: '#000',
       fontFamily: 'Helvetica',
       fontWeight: 'regular',
-      marginTop: 0
+      marginTop: 0,
+      backgroundDisable: '#dfdfdf',
+      itemTextColorDisable: '#000'
     },
     arrayMnemonic: [],
     onItemPress: () => { },
@@ -60,7 +62,9 @@ export default class TagList extends Component {
       itemTextColor,
       fontFamily,
       fontWeight,
-      marginTop
+      marginTop,
+      backgroundDisable,
+      itemTextColorDisable
     } = style
 
     const itemWidth = (width - paddingVerticalOfItem - margin * 2) / numberOfWordInRow
@@ -92,8 +96,9 @@ export default class TagList extends Component {
               style={{
                 height: width >= 375 ? 32 : 28,
                 borderRadius: 5,
-                backgroundColor: this._checkDisableButton(index) ? backgroundColor : (str === '' ? backgroundColor : itemBackgroundColor),
-                padding: 4,
+                backgroundColor: this._checkDisableButton(index) ? backgroundDisable : (str === '' ? backgroundDisable : itemBackgroundColor),
+                paddingHorizontal: 10,
+                paddingVertical: 4,
                 justifyContent: 'center'
               }}
             >
@@ -101,7 +106,7 @@ export default class TagList extends Component {
                 style={[{
                   fontFamily,
                   fontWeight,
-                  color: itemTextColor,
+                  color: this._checkDisableButton(index) ? itemTextColorDisable : itemTextColor,
                   fontSize: itemFontSize
                 }, textAlign]}
               >

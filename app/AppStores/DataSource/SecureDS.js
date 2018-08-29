@@ -1,9 +1,9 @@
 import { AsyncStorage } from 'react-native'
 import { randomBytes } from 'react-native-randombytes'
 import * as Keychain from 'react-native-keychain'
-import Starypto from '../../../Libs/react-native-starypto'
 import MnemonicDS from './SecureMnemonicDS'
 import PrivateKeyDS from './SecurePrivateKeyDS'
+import { encryptString, decryptString } from '../../Utils/DataCrypto'
 
 const dataKey = `PASSWORD`
 const IVKey = `IVKey`
@@ -23,7 +23,7 @@ export default class SecureDS {
     const iv = await AsyncStorage.getItem(IVKey)
 
     try {
-      const password = Starypto.decryptString(passCipher, pincode, iv, 'aes-256-cbc')
+      const password = decryptString(passCipher, pincode, iv, 'aes-256-cbc')
       return new SecureDS(pincode, false, password)
     } catch (err) {
       return null
@@ -54,7 +54,7 @@ export default class SecureDS {
   }
 
   static forceSavePassword(password, iv, pincode) {
-    const randomStrEncrypted = Starypto.encryptString(password, pincode, iv, 'aes-256-cbc')
+    const randomStrEncrypted = encryptString(password, pincode, iv, 'aes-256-cbc')
     return Keychain.setGenericPassword(dataKey, randomStrEncrypted)
   }
 
@@ -69,14 +69,14 @@ export default class SecureDS {
   _deriveNew = (iv) => {
     const password = this.randomKey()
 
-    const randomStrEncrypted = Starypto.encryptString(password, this.pincode, iv, 'aes-256-cbc')
+    const randomStrEncrypted = encryptString(password, this.pincode, iv, 'aes-256-cbc')
     // AsyncStorage.setItem(dataKey, randomStrEncrypted)
     Keychain.setGenericPassword(dataKey, randomStrEncrypted)
     return password
   }
 
   _deriveOld = (iv, password) => {
-    return Starypto.decryptString(password, this.pincode, iv, 'aes-256-cbc')
+    return decryptString(password, this.pincode, iv, 'aes-256-cbc')
   }
 
   derivePass = async () => {

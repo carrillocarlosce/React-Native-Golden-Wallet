@@ -6,7 +6,8 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  Clipboard
+  Clipboard,
+  Animated
 } from 'react-native'
 import PropsTypes from 'prop-types'
 import images from './../../commons/images'
@@ -28,7 +29,8 @@ export default class SearchInput extends Component {
     autoFocus: PropsTypes.bool,
     onFocus: PropsTypes.func,
     needPasteButton: PropsTypes.bool,
-    styleTextInput: PropsTypes.number
+    styleTextInput: PropsTypes.number,
+    onBlur: PropsTypes.func
   }
 
   static defaultProps = {
@@ -46,13 +48,17 @@ export default class SearchInput extends Component {
     autoFocus: false,
     onFocus: () => { },
     needPasteButton: false,
-    styleTextInput: 0
+    styleTextInput: 0,
+    onBlur: () => { }
   }
 
   onChangeText = (text) => {
     const { onChangeText = () => { } } = this.props
     onChangeText(text)
   }
+
+  animatedValue = new Animated.Value(0)
+  isShake = false
 
   clearText = () => {
     const { onChangeText = () => { } } = this.props
@@ -61,6 +67,26 @@ export default class SearchInput extends Component {
 
   focus() {
     this.textInput.focus()
+  }
+
+  isFocused() {
+    this.textInput.isFocused()
+  }
+
+  shake() {
+    // const { animatedValue, isShake } = this
+    // Animated.spring(
+    //   animatedValue,
+    //   {
+    //     toValue: isShake ? 0 : 1,
+    //     duration: 250,
+    //     tension: 80,
+    //     friction: 4
+    //   }
+    // ).start()
+    // setTimeout(() => {
+    //   this.isShake = !isShake
+    // }, 250)
   }
 
   render() {
@@ -79,9 +105,15 @@ export default class SearchInput extends Component {
       onFocus,
       onChangeText,
       needPasteButton,
-      styleTextInput
+      styleTextInput,
+      onBlur
     } = this.props
     // const { text } = this.state
+    const animationShake = this.animatedValue.interpolate({
+      inputRange: [0, 0.3, 0.7, 1],
+      outputRange: [0, -20, 20, 0],
+      useNativeDriver: true
+    })
 
     this.renderButtonAmout = () => {
       return (
@@ -175,7 +207,16 @@ export default class SearchInput extends Component {
     const font = value !== '' ? 'OpenSans-Semibold' : 'OpenSans'
 
     return (
-      <View style={[styles.container, style]}>
+      <Animated.View
+        style={[styles.container, {
+          transform: [
+            {
+              translateX: animationShake
+            }
+          ]
+        }, style]}
+      >
+        {/* <View style={[styles.container, style]}> */}
         {isShowDownButton &&
           this.renderDownButton()
         }
@@ -183,6 +224,7 @@ export default class SearchInput extends Component {
           ref={(ref) => { this.textInput = ref }}
           autoFocus={autoFocus}
           onFocus={onFocus}
+          onBlur={onBlur}
           numberOfLines={1}
           value={value}
           keyboardAppearance="dark"
@@ -202,7 +244,7 @@ export default class SearchInput extends Component {
         {value !== '' && !action && this.renderIconClear()}
         {value === '' && needPasteButton && this.renderPasteButton()}
         {(action === 'Paste' || action === 'Max') && this.renderIconSend()}
-      </View>
+      </Animated.View>
     )
   }
 }

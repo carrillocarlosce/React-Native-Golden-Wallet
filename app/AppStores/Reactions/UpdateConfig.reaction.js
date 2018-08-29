@@ -7,7 +7,12 @@ export default (appState) => {
       appState.wallets.forEach((w) => {
         w.offLoading()
         w.fetchingBalance()
+        w.tokens.forEach((t) => {
+          t.fetchTransactions(true)
+        })
       })
+      appState.getGasPriceEstimate()
+      appState.loadPendingTxs()
     }
   )
 }

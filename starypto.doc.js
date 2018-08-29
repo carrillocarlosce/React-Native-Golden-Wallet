@@ -1,5 +1,5 @@
 import Starypto from './Libs/react-native-starypto'
-
+import { encryptString, decryptString } from './app/Utils/DataCrypto'
 // {
 //   mnemonic,
 //   ethIndex: 0,
@@ -102,12 +102,12 @@ function hashPassword(password) {
 
 function encryptDataAES256(dataString, password, iv, algorithm = 'aes-256-cbc') {
   // dataEncrypted:
-  return Starypto.encryptString(dataString, password, iv, algorithm)
+  return encryptString(dataString, password, iv, algorithm)
 }
 
 function decryptDataAES256(dataEncrypted, password, iv, algorithm = 'aes-256-cbc') {
   // dataDecrypted:
-  return Starypto.decryptString(dataEncrypted, password, iv, algorithm)
+  return decryptString(dataEncrypted, password, iv, algorithm)
 }
 
 function sendERC20Token(

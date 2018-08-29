@@ -4,6 +4,7 @@ import DeviceInfo from 'react-native-device-info'
 import * as StoreReview from 'react-native-store-review'
 import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
+import MainStore from '../../../AppStores/MainStore'
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
 const PLAY_STORE_LINK = 'market://details?id=io.goldenwallet'
@@ -34,12 +35,8 @@ export default class SettingStore {
 
   @observable dataSecurity = [
     {
-      mainText: 'Payment Protection',
-      onPress: () => { }
-    },
-    {
       mainText: 'Change Pincode',
-      onPress: () => { }
+      onPress: () => { this.showChangePincode() }
     }
   ]
 
@@ -56,14 +53,12 @@ export default class SettingStore {
     },
     {
       mainText: 'Privacy & Terms',
-      onPress: () => { NavStore.pushToScreen('PrivacyPolicyWebView') }
+      onPress: () => { NavStore.pushToScreen('PrivacyTermsScreen') }
     },
     {
       mainText: 'App Version',
-      onPress: () => { },
-      subText: DeviceInfo.getVersion(),
-      disable: true,
-      showArrow: false
+      onPress: () => { NavStore.pushToScreen('AppVersionScreen') },
+      subText: DeviceInfo.getVersion()
     }
   ]
 
@@ -84,11 +79,18 @@ export default class SettingStore {
     ]
   }
 
+  showChangePincode() {
+    MainStore.goToChangePincode()
+    NavStore.pushToScreen('ChangePincodeScreen')
+  }
+
   showPopupRating() {
     if (Platform.OS === 'ios') {
       // This API is only available on iOS 10.3 or later
       if (StoreReview.isAvailable) {
         StoreReview.requestReview()
+      } else {
+        NavStore.popupCustom.show('Store review is not available')
       }
     } else {
       Alert.alert(

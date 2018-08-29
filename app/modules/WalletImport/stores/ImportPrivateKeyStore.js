@@ -33,11 +33,13 @@ export default class ImportPrivateKeyStore {
       this.finished = true
       NotificationStore.addWallet(this.title, w.address)
       NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-      await w.save()
-      await MainStore.appState.syncWallets()
+
+      await MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()
+      MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
+      NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
     } catch (_) {
       this.loading = false
       NavStore.popupCustom.show('Invalid private key.')

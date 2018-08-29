@@ -40,7 +40,8 @@ export default class LargeCard extends Component {
     onAddPrivateKey: PropTypes.func,
     index: PropTypes.number.isRequired,
     onCopy: PropTypes.func,
-    onBackup: PropTypes.func
+    onBackup: PropTypes.func,
+    onAlertBackup: PropTypes.func
   }
 
   static defaultProps = {
@@ -48,7 +49,8 @@ export default class LargeCard extends Component {
     onPress: () => { },
     onAddPrivateKey: () => { },
     onCopy: () => { },
-    onBackup: () => { }
+    onBackup: () => { },
+    onAlertBackup: () => { }
   }
 
   constructor(props) {
@@ -60,7 +62,7 @@ export default class LargeCard extends Component {
   }
 
   componentDidMount() {
-    this.wallet && this.wallet.fetchingBalance()
+    // this.wallet && this.wallet.fetchingBalance()
   }
 
   get wallet() {
@@ -127,7 +129,7 @@ export default class LargeCard extends Component {
 
   renderFrontCard = (wallet) => {
     const {
-      onPress, style, onAddPrivateKey, onBackup
+      onPress, style, onAddPrivateKey, onBackup, onAlertBackup
     } = this.props
     const {
       title,
@@ -142,11 +144,14 @@ export default class LargeCard extends Component {
     const isHide = isHideValue
     const backgroundCard = AppStyle.mode1
     // const numberOfPendingTransaction = unspendTransactions.length
-
     const actionButton = (
       <TouchableOpacity
         onPress={() => {
-          this.setState({ isFlipped: !this.state.isFlipped })
+          if (MainStore.appState.didBackup || importType !== undefined) {
+            this.setState({ isFlipped: !this.state.isFlipped })
+          } else {
+            onAlertBackup()
+          }
         }}
       >
         <Image

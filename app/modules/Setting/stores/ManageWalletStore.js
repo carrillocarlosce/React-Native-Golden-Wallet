@@ -3,13 +3,13 @@ import NotificationStore from '../../../AppStores/stores/Notification'
 
 export default class ManageWalletStore {
   async editWallet(wallet) {
-    await wallet.update()
-    MainStore.appState.syncWallets()
+    // await wallet.update()
+    MainStore.appState.appWalletsStore.save()
   }
 
   async removeWallet(wallet) {
-    await wallet.remove()
+    // await wallet.remove()
     await NotificationStore.removeWallet(wallet.address)
-    MainStore.appState.syncWallets()
+    MainStore.appState.appWalletsStore.removeOne(wallet)
   }
 }
