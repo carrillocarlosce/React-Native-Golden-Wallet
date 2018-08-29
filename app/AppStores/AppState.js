@@ -206,6 +206,9 @@ class AppState {
     this.didBackup = false
     this.enableNotification = true
     this.currentWalletIndex = 0
+    this.wallets = []
+    this.unpendTransactions = []
+    this.addressBooks = []
   }
 
   save() {
