@@ -28,6 +28,7 @@ export default class TagList extends Component {
       fontFamily: 'Helvetica',
       fontWeight: 'regular',
       marginTop: 0,
+      marginBottom: 0,
       backgroundDisable: '#dfdfdf',
       itemTextColorDisable: '#000'
     },
@@ -63,6 +64,7 @@ export default class TagList extends Component {
       fontFamily,
       fontWeight,
       marginTop,
+      marginBottom,
       backgroundDisable,
       itemTextColorDisable
     } = style
@@ -79,6 +81,7 @@ export default class TagList extends Component {
           padding: haflPaddingOfVerticalItem,
           margin,
           marginTop,
+          marginBottom,
           borderRadius: 14
         }}
       >
@@ -103,11 +106,12 @@ export default class TagList extends Component {
               }}
             >
               <Text
+                allowFontScaling={false}
                 style={[{
                   fontFamily,
                   fontWeight,
                   color: this._checkDisableButton(index) ? itemTextColorDisable : itemTextColor,
-                  fontSize: itemFontSize
+                  fontSize: isShowOrder ? itemFontSize - 2 : itemFontSize
                 }, textAlign]}
               >
                 {isShowOrder ? str === '' ? str : `${index + 1}. ${str}` : str}

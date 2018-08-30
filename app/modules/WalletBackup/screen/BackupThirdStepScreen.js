@@ -76,10 +76,11 @@ export default class BackupThirdStepScreen extends Component {
         arrayMnemonic={listKeyWordChoose.slice()}
         onItemPress={this.onRemoveWord}
         style={{
-          paddingVerticalOfItem: 12,
+          paddingVerticalOfItem: 20,
           numberOfWordInRow: 3,
-          margin: 20,
-          marginTop: isSmallScreen ? 12 : 20,
+          margin: 10,
+          marginTop: isSmallScreen ? 20 : 40,
+          marginBottom: isSmallScreen ? 20 : 40,
           backgroundColor: AppStyle.backgroundContentDarkMode,
           itemBackgroundColor: '#1E2336',
           itemTextColor: AppStyle.mainTextColor,
@@ -104,8 +105,7 @@ export default class BackupThirdStepScreen extends Component {
         style={{
           paddingVerticalOfItem: 10,
           numberOfWordInRow: 3,
-          margin: 20,
-          marginTop: 0,
+          margin: 10,
           backgroundDisable: AppStyle.backgroundDarkMode,
           itemBackgroundColor: AppStyle.backgroundContentDarkMode,
           itemTextColor: AppStyle.mainTextColor,
