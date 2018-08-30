@@ -90,7 +90,7 @@ export default class TagList extends Component {
             <TouchableOpacity
               onPress={() => {
                 HapticHandler.ImpactLight()
-                onItemPress(str)
+                onItemPress(str, index)
               }}
               disabled={this._checkDisableButton(index)}
               style={{

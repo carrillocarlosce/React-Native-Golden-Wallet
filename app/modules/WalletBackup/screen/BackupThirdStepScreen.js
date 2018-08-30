@@ -50,8 +50,8 @@ export default class BackupThirdStepScreen extends Component {
     )
   }
 
-  onAddWord = (word) => {
-    this.backupStore.addWord(word)
+  onAddWord = (word, index) => {
+    this.backupStore.addWord(word, index)
   }
 
   onRemoveWord = (word) => {
