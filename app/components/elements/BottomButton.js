@@ -123,7 +123,7 @@ export default class BottomButton extends Component {
 
 const styles = StyleSheet.create({
   saveButton: {
-    height: 50,
+    paddingVertical: 13,
     alignItems: 'center',
     justifyContent: 'center'
   }
