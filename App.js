@@ -20,6 +20,7 @@ import BlindScreen from './app/components/screens/BlindScreen'
 import Spinner from './app/components/elements/Spinner'
 import MainStore from './app/AppStores/MainStore'
 import NotificationStore from './app/AppStores/stores/Notification'
+import PushNotificationHelper from './app/commons/PushNotificationHelper'
 import AppStyle from './app/commons/AppStyle'
 
 console.ignoredYellowBox = ['Warning: isMounted']
@@ -78,6 +79,7 @@ export default class App extends Component {
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
+      PushNotificationHelper.resetBadgeNumber()
       NavStore.lockScreen({
         onUnlock: () => {
           if (NotificationStore.isOpenFromTray) {
