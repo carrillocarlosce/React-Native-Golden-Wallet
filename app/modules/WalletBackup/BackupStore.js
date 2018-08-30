@@ -14,7 +14,6 @@ export default class BackupStore {
   }
 
   @computed get listMnemonic() {
-    return 'axis able moment kite axis embody wise apart cushion arrest blind math'.split(' ').map(String)
     return this.mnemonic.split(' ').map(String)
   }
 
