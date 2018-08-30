@@ -129,7 +129,7 @@ export default class LargeCard extends Component {
 
   renderFrontCard = (wallet) => {
     const {
-      onPress, style, onAddPrivateKey, onBackup, onAlertBackup
+      onPress, style, onAddPrivateKey, onBackup, onAlertBackup, onCopy
     } = this.props
     const {
       title,
@@ -149,6 +149,7 @@ export default class LargeCard extends Component {
         onPress={() => {
           if (MainStore.appState.didBackup || importType !== undefined) {
             this.setState({ isFlipped: !this.state.isFlipped })
+            onCopy()
           } else {
             onAlertBackup()
           }
@@ -225,32 +226,32 @@ export default class LargeCard extends Component {
   }
 
   renderBackCard = () => {
-    const { style, onCopy } = this.props
+    const { style } = this.props
     const { address, title } = this.wallet
-    const copyText = Platform.OS === 'ios'
-      ? (
-        <View style={styles.backgroundCopy}>
-          <Text style={styles.copyButton}>
-            {constant.COPY}
-          </Text>
-        </View>
-      )
-      : (
-        <Text
-          style={[
-            styles.copyButton, styles.backgroundCopy
-          ]}
-        >
-          {constant.COPY}
-        </Text>
-      )
+    // const copyText = Platform.OS === 'ios'
+    //   ? (
+    //     <View style={styles.backgroundCopy}>
+    //       <Text style={styles.copyButton}>
+    //         {constant.COPY}
+    //       </Text>
+    //     </View>
+    //   )
+    //   : (
+    //     <Text
+    //       style={[
+    //         styles.copyButton, styles.backgroundCopy
+    //       ]}
+    //     >
+    //       {constant.COPY}
+    //     </Text>
+    //   )
     return (
       <TouchableWithoutFeedback
         onPress={() => {
           this.setState({ isFlipped: !this.state.isFlipped })
         }}
       >
-        <View style={[styles.container, { backgroundColor: 'white' }, style]}>
+        <View style={[styles.container, { backgroundColor: 'white', justifyContent: 'center' }, style]}>
           <Image
             style={{
               position: 'absolute',
@@ -261,7 +262,8 @@ export default class LargeCard extends Component {
             }}
             source={images.backgroundGrey}
           />
-          <View style={{ marginTop: cardHeight * 0.12 }}>
+          {/* <View style={{ marginTop: cardHeight * 0.12 }}> */}
+          <View>
             <QRCode
               value={address}
               size={isSmallScreen ? cardHeight * 0.36 : 200}
@@ -277,12 +279,12 @@ export default class LargeCard extends Component {
             {title}
           </Text>
           <Text style={[styles.cardBackAddress, commonStyle.fontAddress]}>{address}</Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={onCopy}
             style={{ marginTop: cardHeight * 0.06 }}
           >
             {copyText}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </TouchableWithoutFeedback>
     )
@@ -407,21 +409,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: AppStyle.secondaryTextColor,
     fontFamily: AppStyle.mainFontSemiBold
-  },
-  copyButton: {
-    fontFamily: 'OpenSans-Bold',
-    fontSize: isSmallScreen ? 10 : 14,
-    color: AppStyle.backgroundColor
-  },
-  backgroundCopy: {
-    backgroundColor: '#E5E5E5',
-    paddingHorizontal: isSmallScreen ? 15 : 26,
-    paddingVertical: isSmallScreen ? 4 : 7,
-    borderRadius: 16
   }
-  // homePending: {
-  //   alignSelf: 'flex-start',
-  //   marginLeft: 25,
-  //   marginTop: 10
+  // copyButton: {
+  //   fontFamily: 'OpenSans-Bold',
+  //   fontSize: isSmallScreen ? 10 : 14,
+  //   color: AppStyle.backgroundColor
+  // },
+  // backgroundCopy: {
+  //   backgroundColor: '#E5E5E5',
+  //   paddingHorizontal: isSmallScreen ? 15 : 26,
+  //   paddingVertical: isSmallScreen ? 4 : 7,
+  //   borderRadius: 16
   // }
 })
