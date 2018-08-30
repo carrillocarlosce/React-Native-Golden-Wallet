@@ -5,6 +5,7 @@ import MainStore from '../MainStore'
 import NavStore from '../../AppStores/NavStore'
 import NotificationDS from '../DataSource/NotificationDS'
 import API from '../../api'
+import Transaction from '../../AppStores/stores/Transaction'
 
 class Notification {
   @observable currentNotif = null
@@ -96,71 +97,31 @@ class Notification {
   @action setCurrentNotif = (notif) => { this.currentNotif = notif }
   @action setDeviceToken = (dt) => { this.deviceToken = dt }
   @action setTokenFromNotif = () => {
-    const { selectedWallet, selectedToken } = MainStore.appState
-
     if (!this.notif) {
       return
     }
-    if (!this.lastedWalletAddress && selectedWallet) {
-      this.lastedWalletAddress = selectedWallet.address
-    }
-    if (!this.lastedTokenAddress && selectedToken) {
-      this.lastedTokenAddress = selectedToken.address
-    }
 
     const { address, contract } = this.notif
-    MainStore.appState.setselectedToken(null)
+    MainStore.appState.setSelectedTransaction(null)
     WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
       const wallet = MainStore.appState.wallets
         .find(w => w.address.toLowerCase() === address.toLowerCase())
       if (!wallet) {
         return
       }
-      MainStore.appState.setSelectedWallet(wallet)
-      MainStore.appState.setselectedToken(token)
-      token.fetchTransactions(false)
+      const transaction = new Transaction(this.notif, token, this.notif.status)
+      MainStore.appState.setSelectedTransaction(transaction)
     })
   }
 
-  @action async resetSelectedAtAppState() {
-    if (!this.lastedWalletAddress) {
+  @action gotoTransaction() {
+    if (!this.notif) return
+    this.setTokenFromNotif()
+    if (this.notif && !this.checkExistedWallet(this.notif.address)) {
+      NavStore.popupCustom.show('Wallet not Found')
       return
     }
-
-    const prevSelectedWallet = MainStore.appState.wallets
-      .find(w => w.address.toLowerCase() === this.lastedWalletAddress.toLowerCase())
-
-    // prevSelectedWallet.fetchingBalance()
-    const prevSelectedToken = prevSelectedWallet.getTokenAtAddress(this.lastedTokenAddress)
-    this.lastedWalletAddress = null
-    this.lastedTokenAddress = null
-    // this.setCurrentNotif(null)
-    MainStore.appState.setSelectedWallet(prevSelectedWallet)
-    setTimeout(() => {
-      MainStore.appState.setselectedToken(prevSelectedToken)
-    }, 250)
-  }
-
-  @action gotoTransactionList() {
-    if (!this.notif) return
-
-    NavStore.closeTransactionDetail()
-    setTimeout(() => {
-      this.setTokenFromNotif()
-      if (this.notif && !this.checkExistedWallet(this.notif.address)) {
-        NavStore.popupCustom.show('Wallet not Found')
-        if (this.isInitFromNotification) {
-          NavStore.lockScreen({
-            onUnlock: (pincode) => {
-              this.isInitFromNotification = false
-              MainStore.setSecureStorage(pincode)
-            }
-          })
-        }
-        return
-      }
-      NavStore.pushToScreen('TransactionListScreen', { fromNotif: true })
-    }, 500)
+    NavStore.pushToScreen('TransactionDetailScreen', { fromNotif: true })
   }
 
   @computed get notif() {

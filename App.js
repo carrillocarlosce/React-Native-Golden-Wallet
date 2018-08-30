@@ -82,7 +82,7 @@ export default class App extends Component {
         onUnlock: () => {
           if (NotificationStore.isOpenFromTray) {
             NotificationStore.isOpenFromTray = false
-            NotificationStore.gotoTransactionList()
+            NotificationStore.gotoTransaction()
           }
         }
       })

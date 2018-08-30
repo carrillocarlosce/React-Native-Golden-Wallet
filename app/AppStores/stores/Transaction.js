@@ -70,7 +70,11 @@ export default class Transaction {
   }
 
   get isSent() {
-    return this.from.toLocaleLowerCase() === MainStore.appState.selectedWallet.address.toLocaleLowerCase()
+    const { selectedWallet } = MainStore.appState
+    if (!selectedWallet) {
+      return this.from.toLocaleLowerCase() === this.address.toLocaleLowerCase()
+    }
+    return this.from.toLocaleLowerCase() === selectedWallet.address.toLocaleLowerCase()
   }
 
   get type() {
