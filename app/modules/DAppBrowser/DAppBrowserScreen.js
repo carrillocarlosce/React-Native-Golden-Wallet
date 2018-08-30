@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  View
+  View,
+  Platform
 } from 'react-native'
+import RNFS from 'react-native-fs'
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
 import DAppBrowserStore from './DAppBrowserStore'
 
@@ -13,10 +15,29 @@ import NavStore from '../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 
+let jsContent = ''
 export default class DAppBrowserScreen extends Component {
   constructor(props) {
     super(props)
     this.store = new DAppBrowserStore()
+  }
+
+  componentWillMount() {
+    if (jsContent === '') {
+      if (Platform.OS === 'ios') {
+        RNFS.readFile(`${RNFS.MainBundlePath}/GoldenProvider.js`, 'utf8')
+          .then((content) => {
+            jsContent = content
+            this.setState({})
+          })
+      } else {
+        RNFS.readFileAssets(`GoldenProvider.js`, 'utf8')
+          .then((content) => {
+            jsContent = content
+            this.setState({})
+          })
+      }
+    }
   }
 
   onBack = () => NavStore.goBack()
@@ -34,13 +55,16 @@ export default class DAppBrowserScreen extends Component {
           }}
           action={this.onBack}
         />
-        <DAppBrowser
-          style={styles.container}
-          uri="https://web3.kyber.network"
-          addressHex={walletAddress}
-          network="mainnet"
-          infuraAPIKey="llyrtzQ3YhkdESt2Fzrk"
-        />
+        {jsContent !== '' &&
+          <DAppBrowser
+            style={styles.container}
+            uri="https://web3.kyber.network/"
+            addressHex={walletAddress}
+            network="mainnet"
+            infuraAPIKey="llyrtzQ3YhkdESt2Fzrk"
+            jsContent={jsContent}
+          />
+        }
       </View>
     )
   }

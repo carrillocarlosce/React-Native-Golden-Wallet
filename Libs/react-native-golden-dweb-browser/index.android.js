@@ -2,13 +2,11 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View
+  // WebView
 } from 'react-native'
-import WKWebView from 'react-native-wkwebview-reborn'
 import PropTypes from 'prop-types'
-import RNFS from 'react-native-fs'
+import WebView from '../react-native-webview-bridge'
 import web3 from './web3'
-
-let jsContent = ''
 
 export default class GoldenDWebBrowser extends Component {
   static propTypes = {
@@ -20,7 +18,8 @@ export default class GoldenDWebBrowser extends Component {
     onSignTransaction: PropTypes.func, // important
     onSignMessage: PropTypes.func,
     onSignPersonalMessage: PropTypes.func,
-    onSignTypedMessage: PropTypes.func
+    onSignTypedMessage: PropTypes.func,
+    jsContent: PropTypes.string.isRequired
   }
 
   static defaultProps = {
@@ -32,17 +31,26 @@ export default class GoldenDWebBrowser extends Component {
     onSignTypedMessage: (data) => { }
   }
 
-  componentWillMount() {
-    if (jsContent === '') {
-      RNFS.readFile(`${RNFS.MainBundlePath}/GoldenProvider.js`, 'utf8')
-        .then((content) => {
-          jsContent = content
-          this.setState({})
-        })
-    }
+  // componentWillMount() {
+  //   if (jsContent === '') {
+  //     RNFS.readFileAssets(`GoldenProvider.js`, 'utf8')
+  //       .then((content) => {
+  //         jsContent = content
+  //         this.setState({})
+  //       })
+  //   }
+  // }
+
+  componentDidMount() {
+    // const {
+    //   uri,
+    //   addressHex, network, infuraAPIKey, jsContent
+    // } = this.props
+    // this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))
   }
 
-  _onMessage(payload) {
+  _onBridgeMessage(payload) {
+    console.warn(payload)
     if (typeof payload === 'string') return
     const {
       onSignTransaction,
@@ -85,29 +93,30 @@ export default class GoldenDWebBrowser extends Component {
     const {
       style,
       uri,
-      addressHex,
-      network,
-      infuraAPIKey = 'llyrtzQ3YhkdESt2Fzrk'
+      addressHex, network, infuraAPIKey, jsContent
     } = this.props
 
     return (
       <View style={[styles.container, style]}>
-        {jsContent && <WKWebView
+        <WebView
           ref={(ref) => { this.webview = ref }}
-          source={{ uri }}
-          onMessage={(e) => { this._onMessage(e.nativeEvent) }}
-          injectJavaScript={getJavascript(addressHex, network, infuraAPIKey)}
-          injectJavaScriptForMainFrameOnly={true}
-          mixedContentMode="compatibility"
+          onBridgeMessage={this._onBridgeMessage}
+          // mixedContentMode="compatibility"
           javaScriptEnabled={true}
+          injectedJavaScript={`WebViewBridge.send("hello from webview");`}
+          // injectedJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent, uri)}
+          // onLoadStart={() => this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))}
+          injectedOnStartLoadingJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent)}
+          source={uri}
           style={styles.webView}
-        />}
+        />
       </View>
     )
   }
 }
 
-const getJavascript = function (addressHex, network, infuraAPIKey) {
+const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
+  // return `window.test = () => alert('AAA')`
   return `
     ${jsContent}
     ${web3}
@@ -206,7 +215,7 @@ const getJavascript = function (addressHex, network, infuraAPIKey) {
     window.web3 = new Web3(goldenProvider)
 
     web3.eth.defaultAccount = addressHex
-  
+
     web3.setProvider = function () {
       console.debug('Golden Wallet - overrode web3.setProvider')
     }
