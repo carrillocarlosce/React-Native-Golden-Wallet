@@ -70,5 +70,8 @@ export default {
   EXISTED_NAME_AB: 'Address Book name already exists.',
 
   CREATE_WALLET_SUCCESS: 'Create Wallet Success',
-  IMPORT_WALLET_SUCCESS: 'Import Wallet Success'
+  IMPORT_WALLET_SUCCESS: 'Import Wallet Success',
+
+  SCAN_QR_FRAME: 'Automatically scan the QR code into the frame'
+
 }
