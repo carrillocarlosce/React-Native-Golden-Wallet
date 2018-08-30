@@ -3,6 +3,7 @@ package com.golden;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.oblador.shimmer.RNShimmerPackage;
 import com.rnfingerprint.FingerprintAuthPackage;
 
@@ -56,7 +57,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new RNCameraPackage(),
                     new RCTQRCodeLocalImagePackage(),
                     new RNGoldenKeystorePackage(),
-                    new RNGoldenLoadingPackage()
+                    new RNGoldenLoadingPackage(),
+                    new WebViewBridgePackage()
             );
         }
 
