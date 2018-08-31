@@ -19,7 +19,7 @@ export default class TagList extends Component {
     style: {
       paddingVerticalOfItem: 20,
       numberOfWordInRow: 3,
-      margin: 20,
+      marginHorizontal: 20,
       backgroundColor: '#dfdfdf',
       itemBackgroundColor: '#eeeeee',
       itemFontSize: 14,
@@ -58,7 +58,7 @@ export default class TagList extends Component {
       paddingVerticalOfItem,
       backgroundColor,
       itemBackgroundColor,
-      margin,
+      marginHorizontal,
       itemFontSize,
       itemTextColor,
       fontFamily,
@@ -69,7 +69,7 @@ export default class TagList extends Component {
       itemTextColorDisable
     } = style
 
-    const itemWidth = (width - paddingVerticalOfItem - margin * 2) / numberOfWordInRow
+    const itemWidth = (width - paddingVerticalOfItem - marginHorizontal * 2) / numberOfWordInRow
     const haflPaddingOfVerticalItem = paddingVerticalOfItem / 2
     const textAlign = isCenter ? { textAlign: 'center' } : {}
     return (
@@ -79,7 +79,7 @@ export default class TagList extends Component {
           flexWrap: 'wrap',
           backgroundColor,
           padding: haflPaddingOfVerticalItem,
-          margin,
+          marginHorizontal,
           marginTop,
           marginBottom,
           borderRadius: 14

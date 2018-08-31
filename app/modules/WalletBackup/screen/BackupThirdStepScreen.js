@@ -19,6 +19,7 @@ import { opensansRegular } from '../../../commons/commonStyles'
 
 const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
+const isIPX = height === 812
 
 const marginTop = LayoutUtils.getExtraTop()
 const content = 'Verify your Recovery Phrase. Choose each word in the correct order.'
@@ -78,9 +79,7 @@ export default class BackupThirdStepScreen extends Component {
         style={{
           paddingVerticalOfItem: 20,
           numberOfWordInRow: 3,
-          margin: 10,
-          marginTop: isSmallScreen ? 20 : 40,
-          marginBottom: isSmallScreen ? 20 : 40,
+          marginHorizontal: 10,
           backgroundColor: AppStyle.backgroundContentDarkMode,
           itemBackgroundColor: '#1E2336',
           itemTextColor: AppStyle.mainTextColor,
@@ -105,7 +104,7 @@ export default class BackupThirdStepScreen extends Component {
         style={{
           paddingVerticalOfItem: 10,
           numberOfWordInRow: 3,
-          margin: 10,
+          marginHorizontal: 10,
           backgroundDisable: AppStyle.backgroundDarkMode,
           itemBackgroundColor: AppStyle.backgroundContentDarkMode,
           itemTextColor: AppStyle.mainTextColor,
@@ -132,9 +131,11 @@ export default class BackupThirdStepScreen extends Component {
             }}
             action={this.onBack}
           />
-          <Text style={styles.content}>{content}</Text>
-          {this.renderListTop()}
-          {this.renderListBottom()}
+          <View style={styles.content}>
+            <Text style={styles.desText}>{content}</Text>
+            {this.renderListTop()}
+            {this.renderListBottom()}
+          </View>
           <BottomButton
             disable={!this.backupStore.isReadyConfirm}
             text="Confirm"
@@ -150,11 +151,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  content: {
+  desText: {
     fontSize: isSmallScreen ? 12 : 16,
     color: AppStyle.mainTextColor,
     fontFamily: 'OpenSans-Semibold',
     paddingHorizontal: 20,
     textAlign: 'center'
+  },
+  content: {
+    justifyContent: 'space-between',
+    flex: 1,
+    marginBottom: isIPX ? 124 : 90
   }
 })
