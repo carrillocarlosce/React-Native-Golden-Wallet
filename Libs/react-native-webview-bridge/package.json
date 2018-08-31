@@ -1,0 +1,39 @@
+{
+  "name": "react-native-webview-bridge-updated",
+  "version": "1.0.9",
+  "description": "React Native WebView Javascript Bridge - updated",
+  "license": "MIT",
+  "author": "Ali Najafizadeh",
+  "contributors": [
+    "Daniel Zlotin <zlotindaniel@gmail.com>",
+    "Yedidya Kennard <yedidyak@gmail.com>"
+  ],
+  "directories": {
+    "example": "examples",
+    "lib": "webview-bridge"
+  },
+  "keywords": [
+    "react-native",
+    "react-component",
+    "ios",
+    "webview-bridge"
+  ],
+  "homepage": "https://github.com/wix/react-native-webview-bridge",
+  "bugs": {
+    "url": "https://github.com/wix/react-native-webview-bridge/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wix/react-native-webview-bridge.git"
+  },
+  "scripts": {
+    "build": ":",
+    "test": ":",
+    "release": "npm version patch && npm publish && git push"
+  },
+  "main": "webview-bridge",
+  "dependencies": {
+    "invariant": "2.2.0",
+    "keymirror": "0.1.1"
+  }
+}
