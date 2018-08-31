@@ -201,13 +201,13 @@ class AppState {
 
   resetAppState() {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
-    this.hasPassword = false
-    this.didBackup = false
-    this.enableNotification = true
+    this.setHasPassword(false)
+    this.setBackup(false)
+    this.setEnableNotification(true)
     this.currentWalletIndex = 0
-    this.wallets = []
-    this.unpendTransactions = []
+    this.setUnpendTransactions([])
     this.addressBooks = []
+    this.appWalletsStore.removeAll()
   }
 
   save() {
