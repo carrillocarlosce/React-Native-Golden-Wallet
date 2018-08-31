@@ -65,6 +65,7 @@
     "react-native-swipeable": "^0.6.0",
     "react-native-swiper": "^1.5.13",
     "react-native-touch-id": "^4.0.1",
+    "react-native-webview-bridge-updated": "git+https://github.com/HungNguyenBao/react-native-webview-bridge.git",
     "react-native-wkwebview-reborn": "^1.21.0",
     "react-navigation": "^2.11.2",
     "readable-stream": "^1.0.33",
