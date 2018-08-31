@@ -64,8 +64,7 @@ export default class HomeScreen extends Component {
           TickerStore.callApi()
           MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
-            const version = DeviceInfo.getVersion()
-            if (version !== AppVersion.latestVersion.version_number) {
+            if (this.shouldShowUpdatePopup) {
               this._gotoNewUpdatedAvailableScreen()
             } else if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()
@@ -135,6 +134,19 @@ export default class HomeScreen extends Component {
       wallets[this.lastIndex].walletCard && wallets[this.lastIndex].walletCard.reflipCard()
     }
     this.lastIndex = index
+  }
+
+  get lastestVersion() {
+    return AppVersion.latestVersion.version_number
+  }
+
+  get shouldShowUpdatePopup() {
+    const { lastestVersionRead, shouldShowUpdatePopup } = MainStore.appState
+    const version = DeviceInfo.getVersion()
+    if (version < this.lastestVersion) {
+      return lastestVersionRead < this.lastestVersion || shouldShowUpdatePopup
+    }
+    return false
   }
 
   _renderNetwork = () => {

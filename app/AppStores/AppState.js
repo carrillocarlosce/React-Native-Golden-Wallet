@@ -44,6 +44,8 @@ class AppState {
   }
   @observable enableNotification = true
   @observable currentCardIndex = 0
+  lastestVersionRead = ''
+  shouldShowUpdatePopup = true
 
   static TIME_INTERVAL = 20000
 
@@ -80,6 +82,9 @@ class AppState {
     this.enableNotification = isEnable
     this.save()
   }
+
+  @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
+  @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }
 
   @action async syncAddressBooks() {
     await AddressBookDS.getAddressBooks().then((_addressBooks) => {
@@ -168,6 +173,8 @@ class AppState {
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
+    this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
+    this.lastestVersionRead = data.lastestVersionRead
 
     await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
@@ -236,7 +243,9 @@ class AppState {
       currentWalletIndex: this.currentWalletIndex,
       didBackup: this.didBackup,
       gasPriceEstimate: this.gasPriceEstimate,
-      enableNotification: this.enableNotification
+      enableNotification: this.enableNotification,
+      lastestVersionRead: this.lastestVersionRead,
+      shouldShowUpdatePopup: this.shouldShowUpdatePopup
     }
   }
 }
