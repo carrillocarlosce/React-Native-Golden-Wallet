@@ -123,8 +123,9 @@ export default class HomeScreen extends Component {
   }
 
   onSnapToItem = (index) => {
+    MainStore.appState.setCurrentCardIndex(index)
     if (this.cards[index].address === '0') {
-      MainStore.appState.setSelectedWallet(null)
+      // MainStore.appState.setSelectedWallet({})
     } else {
       MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
     }

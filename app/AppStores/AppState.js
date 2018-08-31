@@ -43,6 +43,7 @@ class AppState {
     fast: 60
   }
   @observable enableNotification = true
+  @observable currentCardIndex = 0
 
   static TIME_INTERVAL = 20000
 
@@ -149,6 +150,10 @@ class AppState {
     }, 0)
   }
 
+  @action setCurrentCardIndex(index) {
+    this.currentCardIndex = index
+  }
+
   @action async loadPendingTxs() {
     const unspendTransactions = await UnspendTransactionDS.getTransactions()
     this.unpendTransactions = unspendTransactions
@@ -184,8 +189,9 @@ class AppState {
   }
 
   @computed get isShowSendButton() {
+    const idx = this.wallets.length
     const wallet = this.selectedWallet
-    if (!wallet) {
+    if (this.currentCardIndex === idx || !wallet) {
       return false
     }
     return wallet.canSendTransaction
