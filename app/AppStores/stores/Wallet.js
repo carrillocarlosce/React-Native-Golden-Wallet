@@ -186,7 +186,7 @@ export default class Wallet {
       this.autoSetSelectedTokenIfNeeded([tokenETH, ...tokens])
       const totalTokenDollar = this.tokens.reduce((rs, item) => rs.plus(item.balanceInDollar), new BigNumber('0'))
       const totalTokenETH = totalTokenDollar.dividedBy(MainStore.appState.rateETHDollar)
-      this.balance = new BigNumber(`${data.ETH.balance}e+18`)
+      this.balance = new BigNumber(`${data.ETH.balance}`).times(new BigNumber('1e+18'))
       this.totalBalance = totalTokenETH
       this.update()
       this.offLoading()

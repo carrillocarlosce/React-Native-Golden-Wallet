@@ -7,7 +7,6 @@ import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
-import NotificationStore from './stores/Notification'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
 
@@ -30,6 +29,7 @@ class AppState {
   @observable defaultWallet = null // for web3 dapp
   @observable selectedWallet = null // for sending transaction
   @observable selectedToken = null // for sending transaction
+  @observable selectedTransaction = null
   @observable addressBooks = []
   @observable rateETHDollar = new BigNumber(0)
   @observable hasPassword = false
@@ -73,6 +73,7 @@ class AppState {
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
+  @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
   @action setEnableNotification = (isEnable) => {
     this.enableNotification = isEnable
@@ -180,8 +181,6 @@ class AppState {
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
     // this.BgJobs.CheckBalance.doOnce(false)
-
-    if (NotificationStore.notif) NotificationStore.gotoTransactionList()
   }
 
   @computed get isShowSendButton() {
@@ -206,6 +205,9 @@ class AppState {
     this.didBackup = false
     this.enableNotification = true
     this.currentWalletIndex = 0
+    this.wallets = []
+    this.unpendTransactions = []
+    this.addressBooks = []
   }
 
   save() {

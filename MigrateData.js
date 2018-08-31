@@ -83,7 +83,7 @@ class MigrateData {
 
     try {
       const decriptDataObj = JSON.parse(decriptData)
-      console.log(decriptDataObj)
+
       const secureDS = MainStore.secureStorage
       const tmpWallets = decriptDataObj.ethWallets ? decriptDataObj.ethWallets : []
       if (decriptDataObj.mnemonic && tmpWallets.length > 0) {
@@ -112,11 +112,12 @@ class MigrateData {
         }
         await wallet.save()
       }
-      await this.saveItem(KeyLocal.DATA_ENCRYPTED, '')
+
+      AsyncStorage.removeItem(KeyLocal.DATA_ENCRYPTED)
       MainStore.appState.save()
       MainStore.appState.appWalletsStore.getWalletFromDS()
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 

@@ -20,6 +20,9 @@ const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
 const marginTop = LayoutUtils.getExtraTop()
 
+const subtext = 'Make sure to keep your Recovery Phrase safely. Be your own bank and take security seriously.'
+const maintext = 'Backup Complete! '
+
 export default class CreateWalletScreen extends Component {
   componentDidMount() {
     HapticHandler.NotificationSuccess()
@@ -44,14 +47,8 @@ export default class CreateWalletScreen extends Component {
         <Image
           source={images.imgLock}
         />
-        <Text
-          style={styles.textDes}
-        >
-          Remember to keep your Mnemonic
-          phrase in a safe place. You will need it to
-          restore your wallet. Be your own bank
-          and take security seriously.
-        </Text>
+        <Text style={styles.maintext}>{maintext}</Text>
+        <Text style={styles.textDes}>{subtext}</Text>
         <View style={{ position: 'absolute', left: 20, bottom: isIPX ? 40 : 20 }}>
           <TouchableOpacity
             style={styles.buttonGotIt}
@@ -72,13 +69,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1
   },
+  maintext: {
+    fontSize: 18,
+    fontFamily: 'OpenSans-Bold',
+    color: AppStyle.mainTextColor,
+    marginTop: 20
+  },
   textDes: {
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
     color: AppStyle.secondaryTextColor,
     paddingHorizontal: 30,
     textAlign: 'center',
-    marginBottom: 50
+    marginTop: 40
   },
   buttonGotIt: {
     width: width - 40,

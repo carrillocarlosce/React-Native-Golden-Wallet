@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  FlatList
+  FlatList,
+  SafeAreaView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -49,48 +50,50 @@ export default class ChooseAddressScreen extends Component {
     const { selectedWallet } = this.importMnemonicStore
 
     return (
-      <View
-        style={[styles.container]}
-      >
-        <NavigationHeader
-          style={{ marginTop: marginTop + 20, width }}
-          headerItem={{
-            title: null,
-            icon: null,
-            button: images.backButton
-          }}
-          action={() => {
-            navigation.goBack()
-          }}
-        />
-        <Text style={styles.description}>
-          Please select the address you would like to interact with.
-        </Text>
-        <View style={styles.rowTitle}>
-          <Text style={styles.title}>Your Address</Text>
-          <Text style={styles.title}>Balance</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          style={[styles.container]}
+        >
+          <NavigationHeader
+            style={{ marginTop: marginTop + 20, width }}
+            headerItem={{
+              title: null,
+              icon: null,
+              button: images.backButton
+            }}
+            action={() => {
+              navigation.goBack()
+            }}
+          />
+          <Text style={styles.description}>
+            Please select the address you would like to interact with.
+          </Text>
+          <View style={styles.rowTitle}>
+            <Text style={styles.title}>Your Address</Text>
+            <Text style={styles.title}>Balance</Text>
+          </View>
+          <View style={styles.line} />
+          <FlatList
+            style={{ flex: 1, marginBottom: isIPX ? 124 : 90 }}
+            data={data}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => `${index}`}
+            renderItem={({ item, index }) => {
+              return (
+                <ChooseAddressItem
+                  item={item}
+                  index={index}
+                  onItemSelect={this.handleSelect}
+                />
+              )
+            }}
+          />
+          <BottomButton
+            onPress={this.handleUnlock}
+            disable={!selectedWallet}
+          />
         </View>
-        <View style={styles.line} />
-        <FlatList
-          style={{ flex: 1, marginBottom: isIPX ? 124 : 90 }}
-          data={data}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => `${index}`}
-          renderItem={({ item, index }) => {
-            return (
-              <ChooseAddressItem
-                item={item}
-                index={index}
-                onItemSelect={this.handleSelect}
-              />
-            )
-          }}
-        />
-        <BottomButton
-          onPress={this.handleUnlock}
-          disable={!selectedWallet}
-        />
-      </View>
+      </SafeAreaView>
     )
   }
 }

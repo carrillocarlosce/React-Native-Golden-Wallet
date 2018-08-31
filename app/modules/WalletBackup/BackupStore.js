@@ -45,10 +45,9 @@ export default class BackupStore {
     }
   }
 
-  @action addWord = (word) => {
+  @action addWord = (word, index) => {
     HapticHandler.ImpactLight()
     const newObj = this.obj
-    const index = newObj.listKeywordRandom.indexOf(word)
     newObj.buttonStates[index] = false
     for (let i = 0; i < this.obj.listKeyWordChoose.length; ++i) {
       if (newObj.listKeyWordChoose[i] === '') {

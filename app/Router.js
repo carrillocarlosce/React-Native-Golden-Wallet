@@ -40,6 +40,7 @@ import ExportPrivateKeyScreen from './modules/Setting/screen/ExportPrivateKeyScr
 import NewUpdatedAvailableScreen from './modules/WalletList/screen/NewUpdatedAvailableScreen'
 import AppVersionScreen from './modules/Setting/screen/AppVersionScreen'
 import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
+import TransactionDetailScreen from './modules/TransactionDetail/screen/TransactionDetailScreen'
 import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
 
@@ -189,8 +190,15 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
+    TransactionDetailScreen: {
+      screen: TransactionDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
     DAppWebScreen: {
       screen: DAppBrowserScreen,
+
       navigationOptions: {
         header: null
       }
