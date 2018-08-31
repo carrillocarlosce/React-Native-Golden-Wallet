@@ -43,6 +43,7 @@ import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
 import TransactionDetailScreen from './modules/TransactionDetail/screen/TransactionDetailScreen'
 import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
+import ConfirmScreen from './modules/SendTransaction/screen/ConfirmScreen';
 
 const BackupStack = StackNavigator(
   {
@@ -226,6 +227,12 @@ const CreateSendTransactionStack = StackNavigator(
     },
     ScanQRCodeScreen: {
       screen: ScanQRCodeScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ConfirmScreen: {
+      screen: ConfirmScreen,
       navigationOptions: {
         header: null
       }

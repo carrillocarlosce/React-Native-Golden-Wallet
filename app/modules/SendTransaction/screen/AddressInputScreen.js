@@ -22,10 +22,10 @@ import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import ScanQRCodeScreen from './ScanQRCodeScreen'
 import ChooseAddressScreen from './ChooseAddressScreen'
-import ConfirmScreen from './ConfirmScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
+import NavStore from '../../../AppStores/NavStore'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
@@ -74,7 +74,6 @@ export default class AdressInputScreen extends Component {
   }
 
   _keyboardDidShow(e) {
-    this.confirm && this.confirm._keyboardDidShow(e)
     if (this.addressInput.isFocused()) {
       if (e.endCoordinates.screenY < 437 + marginTop) {
         this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
@@ -83,7 +82,6 @@ export default class AdressInputScreen extends Component {
   }
 
   _keyboardDidHide(e) {
-    this.confirm && this.confirm._keyboardDidHide(e)
     this._runExtraHeight(0)
   }
 
@@ -114,8 +112,9 @@ export default class AdressInputScreen extends Component {
     // if (Checker.checkAddress(address)) {
     //   this.confirmModal && this.confirmModal.open()
     // }
-    const { confirmModal } = MainStore.sendTransaction.addressInputStore
-    confirmModal && confirmModal.open()
+    // const { confirmModal } = MainStore.sendTransaction.addressInputStore
+    // confirmModal && confirmModal.open()
+    NavStore.pushToScreen('ConfirmScreen')
   }
 
   gotoScan = () => {
@@ -293,55 +292,55 @@ export default class AdressInputScreen extends Component {
     }
   }
 
-  _renderConfirmModal = () => {
-    return (
-      <Modal
-        style={{
-          height: isIPX ? 530 : 500 + extraBottom,
-          zIndex: 20,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          overflow: 'hidden',
-          backgroundColor: AppStyle.backgroundColor
-        }}
-        swipeToClose
-        position="bottom"
-        keyboardTopOffset={isIPX ? 30 : 22}
-        onClosed={() => {
-          const { advanceStore } = MainStore.sendTransaction
-          advanceStore.reset()
-        }}
-        ref={(ref) => { MainStore.sendTransaction.addressInputStore.confirmModal = ref }}
-      >
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              alignSelf: 'center',
-              height: 3,
-              width: 45,
-              borderRadius: 1.5,
-              backgroundColor: AppStyle.secondaryTextColor,
-              position: 'absolute',
-              zIndex: 30,
-              top: 10
-            }}
-          />
-          <View
-            style={{
-              backgroundColor: AppStyle.backgroundColor,
-              flex: 1,
-              paddingTop: 30,
-              paddingBottom: isIPX ? 30 : 0
-            }}
-          >
-            <ConfirmScreen
-              ref={ref => (this.confirm = ref)}
-            />
-          </View>
-        </View>
-      </Modal>
-    )
-  }
+  // _renderConfirmModal = () => {
+  //   return (
+  //     <Modal
+  //       style={{
+  //         height: isIPX ? 530 : 500 + extraBottom,
+  //         zIndex: 20,
+  //         borderTopLeftRadius: 10,
+  //         borderTopRightRadius: 10,
+  //         overflow: 'hidden',
+  //         backgroundColor: AppStyle.backgroundColor
+  //       }}
+  //       swipeToClose
+  //       position="bottom"
+  //       keyboardTopOffset={isIPX ? 30 : 22}
+  //       onClosed={() => {
+  //         const { advanceStore } = MainStore.sendTransaction
+  //         advanceStore.reset()
+  //       }}
+  //       ref={(ref) => { MainStore.sendTransaction.addressInputStore.confirmModal = ref }}
+  //     >
+  //       <View style={{ flex: 1 }}>
+  //         <View
+  //           style={{
+  //             alignSelf: 'center',
+  //             height: 3,
+  //             width: 45,
+  //             borderRadius: 1.5,
+  //             backgroundColor: AppStyle.secondaryTextColor,
+  //             position: 'absolute',
+  //             zIndex: 30,
+  //             top: 10
+  //           }}
+  //         />
+  //         <View
+  //           style={{
+  //             backgroundColor: AppStyle.backgroundColor,
+  //             flex: 1,
+  //             paddingTop: 30,
+  //             paddingBottom: isIPX ? 30 : 0
+  //           }}
+  //         >
+  //           <ConfirmScreen
+  //             ref={ref => (this.confirm = ref)}
+  //           />
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   )
+  // }
 
   renderHeader = (value) => {
     return (
@@ -432,7 +431,7 @@ export default class AdressInputScreen extends Component {
         </TouchableWithoutFeedback>
         {this._renderAddressModal(addressInputStore)}
         {/* {this._renderQRCodeModal()} */}
-        {this._renderConfirmModal()}
+        {/* {this._renderConfirmModal()} */}
       </View>
     )
   }

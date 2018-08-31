@@ -13,6 +13,7 @@ import {
   ScrollView
 } from 'react-native'
 import { observer } from 'mobx-react'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -27,6 +28,8 @@ import commonStyles from '../../../commons/commonStyles'
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
 const isIPX = height === 812
+const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() + 20 : 40
+
 @observer
 export default class ConfirmScreen extends Component {
   constructor(props) {
@@ -162,7 +165,7 @@ export default class ConfirmScreen extends Component {
           style={styles.closeBtn}
           onPress={() => this._onCancel()}
         >
-          <Image source={images.closeButton} style={styles.closeIcon} />
+          <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
         </TouchableOpacity>
         <Text style={styles.title}>Confirmation</Text>
         <TouchableOpacity
@@ -429,7 +432,7 @@ export default class ConfirmScreen extends Component {
 
   _onCancel() {
     NavStore.popupCustom.hide()
-    MainStore.sendTransaction.addressInputStore.confirmModal && MainStore.sendTransaction.addressInputStore.confirmModal.close()
+    NavStore.goBack()
   }
 
   _renderActionSheet() {
@@ -619,7 +622,8 @@ export default class ConfirmScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingTop: marginTop
   },
   confirmContainer: {
     flex: 1
@@ -628,7 +632,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0,
+    top: marginTop,
     bottom: 0
     // backgroundColor: AppStyle.backgroundColor
   },
@@ -648,7 +652,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold'
   },
   closeBtn: {
-    marginLeft: 20,
+    marginLeft: 15,
     padding: 5
   },
   advanceBtn: {

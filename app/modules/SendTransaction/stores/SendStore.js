@@ -88,7 +88,7 @@ class SendStore {
     HapticHandler.NotificationSuccess()
     NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.navigator.dispatch(NavigationActions.back())
-    // MainStore.clearSendStore()
+    NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.showToastTop('Your transaction has been pending', {}, { color: AppStyle.colorUp })
   }
 
@@ -110,9 +110,9 @@ class SendStore {
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
     return new Promise((resolve, reject) => {
       try {
-        this.getPrivateKey(ds).then((privateKey) => {
+        return this.getPrivateKey(ds).then((privateKey) => {
           const wallet = this.getWalletSendTransaction(privateKey)
-          wallet.sendTransaction(transactionSend)
+          return wallet.sendTransaction(transactionSend)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
               return resolve(tx)
