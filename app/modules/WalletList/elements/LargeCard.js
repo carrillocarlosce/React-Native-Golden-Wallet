@@ -71,6 +71,14 @@ export default class LargeCard extends Component {
     return index < length ? MainStore.appState.wallets[index] : null
   }
 
+  reflipCard() {
+    if (this.state.isFlipped) {
+      this.setState({
+        isFlipped: false
+      })
+    }
+  }
+
   _handleSecretBalance = debounce((wallet, index) => {
     // WalletStore.editWallet(wallet, index)
   }, 100)

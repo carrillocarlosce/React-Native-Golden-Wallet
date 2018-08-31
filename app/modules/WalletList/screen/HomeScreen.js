@@ -47,6 +47,7 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props)
     FCM.setBadgeNumber(0)
+    this.lastIndex = 0
     this.state = {
       translateY: new Animated.Value(0)
     }
@@ -123,12 +124,17 @@ export default class HomeScreen extends Component {
   }
 
   onSnapToItem = (index) => {
+    const { wallets } = MainStore.appState
     MainStore.appState.setCurrentCardIndex(index)
     if (this.cards[index].address === '0') {
       // MainStore.appState.setSelectedWallet({})
     } else {
-      MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
+      MainStore.appState.setSelectedWallet(wallets[index])
     }
+    if (this.lastIndex < wallets.length) {
+      wallets[this.lastIndex].walletCard && wallets[this.lastIndex].walletCard.reflipCard()
+    }
+    this.lastIndex = index
   }
 
   _renderNetwork = () => {
@@ -164,6 +170,12 @@ export default class HomeScreen extends Component {
   _renderCard = ({ item, index }) =>
     (
       <LargeCard
+        ref={(ref) => {
+          const { wallets } = MainStore.appState
+          if (index < wallets.length) {
+            wallets[index].setWalletCard(ref)
+          }
+        }}
         index={index}
         style={{ margin: 5, marginTop: 20 }}
         navigation={this.props.navigation}
