@@ -26,7 +26,7 @@ import NotificationStore from '../../../AppStores/stores/Notification'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 @observer
 export default class ListWalletScreen extends Component {
@@ -154,6 +154,9 @@ export default class ListWalletScreen extends Component {
                     MainStore.appState.setSelectedWallet(null)
                   }
                   await this.manageWalletStore.removeWallet(this.selectedWallet)
+                  if (MainStore.appState.wallets.length === 0) {
+                    MainStore.appState.setSelectedWallet(null)
+                  }
                   NavStore.popupCustom.hide()
                 }
               }
@@ -166,29 +169,6 @@ export default class ListWalletScreen extends Component {
             null,
             true
           )
-          // NavStore.popupCustom.show(
-          //   'Are you sure you want to remove this wallet ?',
-          //   [
-          //     {
-          //       text: 'Cancel',
-          //       onClick: () => {
-          //         NavStore.popupCustom.hide()
-          //       }
-          //     },
-          //     {
-          //       text: 'Remove',
-          //       onClick: async () => {
-          //         const { wallets, selectedWallet } = MainStore.appState
-          //         const index = wallets.indexOf(selectedWallet)
-          //         if (index === wallets.length - 1) {
-          //           MainStore.appState.setSelectedWallet(null)
-          //         }
-          //         await this.manageWalletStore.removeWallet(this.selectedWallet)
-          //         NavStore.popupCustom.hide()
-          //       }
-          //     }
-          //   ]
-          // )
         }
       }, true)
     })
@@ -230,7 +210,7 @@ export default class ListWalletScreen extends Component {
 
   _renderNoWalletView() {
     return (
-      <View style={{ alignItems: 'center', flex: 1, marginBottom: 30 }}>
+      <View style={{ alignItems: 'center', flex: 1, marginBottom: height * 0.03 }}>
         <Image
           source={images.noWalletImage}
           style={styles.contactImageStyle}
@@ -238,7 +218,7 @@ export default class ListWalletScreen extends Component {
         <Text style={{
           fontSize: 26,
           fontFamily: AppStyle.mainFontBold,
-          marginTop: 60,
+          marginTop: height * 0.07,
           color: AppStyle.titleDarkModeColor
         }}
         >No wallets yet
@@ -246,7 +226,7 @@ export default class ListWalletScreen extends Component {
         <Text style={{
           fontSize: 18,
           fontFamily: AppStyle.mainFontSemiBold,
-          marginTop: 20,
+          marginTop: height * 0.02,
           color: '#8A8D97'
         }}
         >
@@ -398,6 +378,6 @@ const styles = StyleSheet.create({
   contactImageStyle: {
     resizeMode: 'contain',
     width: 168,
-    marginTop: 40
+    marginTop: height * 0.05
   }
 })

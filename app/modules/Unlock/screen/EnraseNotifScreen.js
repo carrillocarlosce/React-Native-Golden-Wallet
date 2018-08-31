@@ -41,7 +41,7 @@ export default class EnraseNotifScreen extends Component {
           <Image source={images.imgEnrase} style={styles.imgEnrase} />
           <Text style={styles.mainText}>{mainText}</Text>
           <Text style={styles.subText}>{subText}</Text>
-          <BottomButton Text="Create new PIN Code" onPress={this.goBack} />
+          <BottomButton text="Create new PIN Code" onPress={this.goBack} />
         </View>
       </SafeAreaView>
     )

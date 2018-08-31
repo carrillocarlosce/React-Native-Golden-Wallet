@@ -14,7 +14,6 @@ export default class WalletToken {
   @observable balance = 1
 
   @observable transactions = []
-  @observable.ref selectedTransaction = null
   // @observable unspendTransactions = []
   @observable txFetcherInfo = {
     isLoading: false,
@@ -41,8 +40,6 @@ export default class WalletToken {
     // For identify
     this.belongsToWalletAddress = belongsToWalletAddress
   }
-
-  @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
 
   @action setBalance = (v) => { this.balance = v }
 

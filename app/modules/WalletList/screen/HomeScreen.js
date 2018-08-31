@@ -71,7 +71,7 @@ export default class HomeScreen extends Component {
             }
           } else {
             NotificationStore.isInitFromNotification = false
-            NotificationStore.gotoTransactionList()
+            NotificationStore.gotoTransaction()
           }
         }
       })
@@ -81,6 +81,9 @@ export default class HomeScreen extends Component {
   onSendPress = () => {
     const { navigation } = this.props
     const { selectedWallet } = MainStore.appState
+    if (!selectedWallet) {
+      return
+    }
     MainStore.goToSendTx()
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)

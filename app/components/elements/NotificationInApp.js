@@ -26,7 +26,7 @@ export default class NotificationInApp extends Component {
 
   onPress = () => {
     this.hideToast()
-    NotificationStore.gotoTransactionList()
+    NotificationStore.gotoTransaction()
   }
 
   get styleText() {

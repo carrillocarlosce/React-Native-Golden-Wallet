@@ -53,6 +53,9 @@ export default class Helper {
   }
   static formatETH(value, isAmountScreen = false, decimalAfterDot = 4) {
     if (value) {
+      if (value.toString().includes('e')) {
+        return 0
+      }
       const dataSplit = value.toString().split('.')
       const integer = dataSplit[0]
       let decimal = dataSplit[1] ? dataSplit[1] : 0
@@ -74,6 +77,9 @@ export default class Helper {
 
   static formatUSD(value, isAmountScreen = false, option = million, decimalAfterDot = 2) {
     if (value) {
+      if (value.toString().includes('e')) {
+        return 0
+      }
       const dataSplit = value.toString().split('.')
       const integer = dataSplit[0]
       let decimal = dataSplit[1] ? dataSplit[1] : 0

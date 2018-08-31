@@ -9,6 +9,7 @@ import {
   Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
+import debounce from 'lodash.debounce'
 import LayoutUtils from '../../commons/LayoutUtils'
 import AppStyle from '../../commons/AppStyle'
 import constant from '../../commons/constant'
@@ -51,6 +52,12 @@ export default class BottomButton extends Component {
     this.keyboardDidHideListener.remove()
   }
 
+  onPress = debounce(() => {
+    const { onPress } = this.props
+    Keyboard.dismiss()
+    onPress()
+  }, 250)
+
   _runKeyboardAnim(toValue) {
     const duration = Platform.OS === 'ios' ? 250 : 0
     Animated.parallel([
@@ -92,7 +99,7 @@ export default class BottomButton extends Component {
   }
 
   render() {
-    const { onPress, text, disable } = this.props
+    const { text, disable } = this.props
     return (
       <Animated.View style={{
         position: 'absolute',
@@ -106,10 +113,7 @@ export default class BottomButton extends Component {
       >
         <TouchableOpacity
           disabled={disable}
-          onPress={() => {
-            Keyboard.dismiss()
-            onPress()
-          }}
+          onPress={this.onPress}
           style={styles.saveButton}
         >
           <Text style={{ fontSize: 16, color: disable ? AppStyle.secondaryTextColor : AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>
@@ -123,7 +127,7 @@ export default class BottomButton extends Component {
 
 const styles = StyleSheet.create({
   saveButton: {
-    height: 50,
+    paddingVertical: 13,
     alignItems: 'center',
     justifyContent: 'center'
   }

@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     height: 70,
-    alignItems: 'center'
+    alignItems: 'flex-end'
   },
   waringStyle: {
     color: '#D0021B',

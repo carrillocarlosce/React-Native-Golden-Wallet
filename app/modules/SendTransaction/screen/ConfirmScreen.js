@@ -8,7 +8,6 @@ import {
   Image,
   Platform,
   Dimensions,
-  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView
@@ -23,6 +22,7 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import AppState from '../../../AppStores/AppState'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
+import commonStyles from '../../../commons/commonStyles'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
@@ -44,7 +44,6 @@ export default class ConfirmScreen extends Component {
   }
 
   componentWillMount() {
-    // MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
     MainStore.sendTransaction.confirmStore.estimateGas()
     MainStore.sendTransaction.confirmStore.validateAmount()
   }
@@ -130,6 +129,30 @@ export default class ConfirmScreen extends Component {
     }
   }
 
+  showInfoGasLimit = () => {
+    Keyboard.dismiss()
+    NavStore.popupCustom.show('Gas Limit', [
+      {
+        text: 'OK',
+        onClick: () => {
+          NavStore.popupCustom.hide()
+        }
+      }
+    ], 'Default gas limit for standard ETH transactions is 21000. Gas limit for tokens transactions are much higher, it may exceed 100000.')
+  }
+
+  showInfoGasPrice = () => {
+    Keyboard.dismiss()
+    NavStore.popupCustom.show('Gas Price (Gwei)', [
+      {
+        text: 'OK',
+        onClick: () => {
+          NavStore.popupCustom.hide()
+        }
+      }
+    ], 'If you want your transaction to be executed at a faster speed, then you have to be willing to pay a higher gas price.')
+  }
+
   _renderConfirmHeader() {
     return (
       <View
@@ -181,7 +204,7 @@ export default class ConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={styles.value}
+              style={[styles.value, commonStyles.fontAddress]}
             >
               {from}
             </Text>
@@ -194,7 +217,7 @@ export default class ConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={styles.value}
+              style={[styles.value, commonStyles.fontAddress]}
             >
               {to}
             </Text>
@@ -299,10 +322,15 @@ export default class ConfirmScreen extends Component {
             >
               Gas Limit
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
+            <TouchableOpacity
+              onPress={this.showInfoGasLimit}
+              style={styles.iconHolder}
+            >
+              <Image
+                style={styles.iconLabel}
+                source={images.iconInfo}
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <InputWithAction
@@ -330,10 +358,15 @@ export default class ConfirmScreen extends Component {
             >
               Gas Price (Gwei)
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
+            <TouchableOpacity
+              onPress={this.showInfoGasPrice}
+              style={styles.iconHolder}
+            >
+              <Image
+                style={styles.iconLabel}
+                source={images.iconInfo}
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <InputWithAction
@@ -361,23 +394,18 @@ export default class ConfirmScreen extends Component {
             >
               Network Fee
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
           </View>
-          <TextInput
-            editable={false}
-            keyboardAppearance="dark"
-            ref={ref => (this.fee = ref)}
-            value={`${tmpFee}`}
-            style={[styles.textInput, {
+          <Text
+            style={{
               color: AppStyle.secondaryTextColor,
-              padding: 15,
-              fontFamily: 'OpenSans-Semibold',
-              fontSize: 14
-            }]}
-          />
+              fontFamily: 'OpenSans-Light',
+              fontSize: 20,
+              marginTop: 10
+            }}
+          >
+            {`${tmpFee}`}
+          </Text>
+
         </View>
       </View >
     )
@@ -506,8 +534,6 @@ export default class ConfirmScreen extends Component {
     } = this.state
     const { advanceStore, confirmStore } = MainStore.sendTransaction
     const {
-      isShowClearGasLimit,
-      isShowClearGasPrice,
       gasLimit,
       gasPrice,
       gasLimitErr,
@@ -641,11 +667,10 @@ const styles = StyleSheet.create({
   key: {
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16,
-    color: AppStyle.mainTextColor
-    // marginTop: 15
+    color: AppStyle.mainTextColor,
+    marginTop: 15
   },
   value: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNew',
     fontSize: 16,
     color: AppStyle.secondaryTextColor,
     marginTop: 10,
@@ -682,30 +707,17 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   textInput: {
-    // height: 40,
     borderRadius: 5,
     backgroundColor: '#14192d',
     alignSelf: 'stretch',
     marginTop: 10
-    // paddingRight: 10
   },
-  // doneBtn: {
-  //   backgroundColor: AppStyle.backgroundDarkBlue,
-  //   height: 50,
-  //   alignItems: 'center',
-  //   justifyContent: 'center'
-  // },
   line: {
     height: 1,
     backgroundColor: '#14192D',
     marginLeft: 20,
     marginRight: 20
   },
-  // clearBtn: {
-  //   position: 'absolute',
-  //   right: 10,
-  //   top: 19
-  // },
   err: {
     color: 'red',
     marginTop: 10,
@@ -746,9 +758,14 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   iconLabel: {
-    marginLeft: 8,
     width: 16,
     height: 16
+  },
+  iconHolder: {
+    width: 38,
+    height: 38,
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
-
 })
