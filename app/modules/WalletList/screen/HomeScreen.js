@@ -64,7 +64,7 @@ export default class HomeScreen extends Component {
           MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
             const version = DeviceInfo.getVersion()
-            if (version !== AppVersion.latestVersion.version_number) {
+            if (version !== AppVersion.latestVersion.version_number && !__DEV__) {
               this._gotoNewUpdatedAvailableScreen()
             } else if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()

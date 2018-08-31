@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
-  Platform
+  Platform,
+  Dimensions
 } from 'react-native'
 import RNFS from 'react-native-fs'
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
@@ -12,6 +13,8 @@ import NavigationHeader from '../../components/elements/NavigationHeader'
 import images from '../../commons/images'
 import LayoutUtils from '../../commons/LayoutUtils'
 import NavStore from '../../AppStores/NavStore'
+
+const { width, height } = Dimensions.get('window')
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -42,6 +45,10 @@ export default class DAppBrowserScreen extends Component {
 
   onBack = () => NavStore.goBack()
 
+  onSignTransaction = ({ id, object }) => {
+    console.warn('onSign: ', object)
+  }
+
   render() {
     const { walletAddress } = this.store
     return (
@@ -58,11 +65,12 @@ export default class DAppBrowserScreen extends Component {
         {jsContent !== '' &&
           <DAppBrowser
             style={styles.container}
-            uri="https://web3.kyber.network/"
+            uri="https://web3.kyber.network"
             addressHex={walletAddress}
             network="mainnet"
             infuraAPIKey="llyrtzQ3YhkdESt2Fzrk"
             jsContent={jsContent}
+            onSignTransaction={this.onSignTransaction}
           />
         }
       </View>
@@ -72,6 +80,7 @@ export default class DAppBrowserScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    width,
+    height
   }
 })
