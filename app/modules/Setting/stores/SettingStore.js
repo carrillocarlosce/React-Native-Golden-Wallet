@@ -41,11 +41,11 @@ export default class SettingStore {
   ]
 
   @observable dataAbout = [
-    {
-      mainText: `Dapp Web - Do not touch`,
-      onPress: () => { NavStore.pushToScreen('DAppWebScreen') },
-      iconRight: false
-    },
+    // {
+    //   mainText: `Dapp Web - Do not touch`,
+    //   onPress: () => { NavStore.pushToScreen('DAppWebScreen') },
+    //   iconRight: false
+    // },
     {
       mainText: `Rate Golden on ${store}`,
       onPress: () => { this.showPopupRating() },
