@@ -20,7 +20,6 @@ import SyncBalance from './SyncBalance'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
-import HapticHandler from '../../../Handler/HapticHandler'
 import Helper from '../../../commons/Helper'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
@@ -311,9 +310,9 @@ export default class LargeCard extends Component {
         flipHorizontal
         flipVertical={false}
         flip={this.state.isFlipped}
-        onFlipStart={() => {
-          HapticHandler.ImpactLight()
-        }}
+      // onFlipStart={() => {
+      //   HapticHandler.ImpactLight()
+      // }}
       >
         {this.renderFrontCard(wallet)}
         {this.renderBackCard()}
