@@ -64,7 +64,6 @@ export default class AdvanceStore {
   }
 
   @computed get formatedTmpFee() {
-    // const gasLimit = Number(Starypto.Units.formatUnits(`${this.gasLimit}`, 9))
     const price = this.gasPrice !== '' ? this.gasPrice : 0
     const gas = this.gasLimit !== '' ? this.gasLimit : 0
     const gasLimit = new BigNumber(gas).div(1e+9)
