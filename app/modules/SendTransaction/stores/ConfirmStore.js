@@ -32,7 +32,6 @@ export default class ConfirmStore {
   }
 
   @action setGasPrice(gasPrice) {
-    // const gasP = new BigNumber(Starypto.Units.parseUnits(`${gasPrice}`, 9)._bn.toString(10))
     const gasP = new BigNumber(gasPrice).times(new BigNumber(1e+9))
     this.gasPrice = gasP
   }
@@ -62,7 +61,6 @@ export default class ConfirmStore {
   }
 
   @computed get formatedFee() {
-    // const fee = Starypto.Units.formatUnits(`${this.gasLimit.times(this.gasPrice)}`, 18)
     const fee = this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
     const usd = Helper.formatUSD(fee.times(this.rate)) !== '0'
       ? `($${Helper.formatUSD(fee.times(this.rate))})`
@@ -82,7 +80,6 @@ export default class ConfirmStore {
     return `$${Helper.formatUSD(amountDolar, false, 1000000, 2)}`
   }
   _onShowAdvance() {
-    // const formatedGasPrice = Number(Starypto.Units.formatUnits(`${this.gasPrice}`, 9)).toFixed(0)
     const formatedGasPrice = this.gasPrice.div(1e+9).toFixed(0)
 
     MainStore.sendTransaction.advanceStore.setGasLimit(this.gasLimit.toString(10))

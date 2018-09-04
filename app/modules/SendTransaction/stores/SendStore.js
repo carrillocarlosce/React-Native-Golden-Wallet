@@ -5,13 +5,13 @@ import AmountStore from './AmountStore'
 import AddressInputStore from './AddressInputStore'
 import ConfirmStore from './ConfirmStore'
 import AdvanceStore from './AdvanceStore'
-import Starypto from '../../../../Libs/react-native-starypto'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import HapticHandler from '../../../Handler/HapticHandler'
 import AppStyle from '../../../commons/AppStyle'
-
+import { sendTransaction } from '../../../api/ether-json-rpc'
+import Interface from '../../../Utils/Ethererum/Contract/interface'
 // import NavigationStore from '../../../navigation/NavigationStore'
 // import ScreenID from '../../../navigation/ScreenID'
 
@@ -44,11 +44,16 @@ class SendStore {
     return MainStore.appState.selectedWallet.derivePrivateKey()
   }
 
-  getWalletSendTransaction(privateKey) {
-    const { network } = MainStore.appState.config
-    const wallet = Starypto.fromPrivateKey(privateKey, Starypto.coinTypes.ETH, network)
-    wallet.initProvider('Infura', 'qMZ7EIind33NY9Azu836')
-    return wallet
+  @computed get rpcURL() {
+    return MainStore.appState.config.getRPCURL()
+  }
+
+  @computed get chainId() {
+    return MainStore.appState.config.chainID
+  }
+
+  @computed get fromAddress() {
+    return MainStore.appState.selectedWallet.address
   }
 
   @action changeIsToken(bool) {
@@ -111,8 +116,9 @@ class SendStore {
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
-          const wallet = this.getWalletSendTransaction(privateKey)
-          wallet.sendTransaction(transactionSend)
+          // const wallet = this.getWalletSendTransaction(privateKey)
+          // wallet.sendTransaction(transactionSend)
+          sendTransaction(this.rpcURL, transactionSend, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
               return resolve(tx)
@@ -142,10 +148,10 @@ class SendStore {
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
-          const wallet = this.getWalletSendTransaction(privateKey)
+          // const wallet = this.getWalletSendTransaction(privateKey)
           const numberOfDecimals = token.decimals
           const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
-          const inf = new Starypto.Interface(abi)
+          const inf = new Interface(abi)
           const transfer = inf.functions.transfer(to, numberOfTokens)
           const unspentTransaction = {
             data: transfer.data,
@@ -154,10 +160,12 @@ class SendStore {
             gasPrice: transaction.gasPrice
           }
 
-          return wallet.sendTransaction(unspentTransaction).then((tx) => {
-            this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
-            return resolve(tx)
-          }).catch(e => reject(e))
+          // return wallet.sendTransaction(unspentTransaction)
+          return sendTransaction(this.rpcURL, unspentTransaction, this.fromAddress, this.chainId, privateKey)
+            .then((tx) => {
+              this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              return resolve(tx)
+            }).catch(e => reject(e))
         })
       } catch (e) {
         return reject(e)
