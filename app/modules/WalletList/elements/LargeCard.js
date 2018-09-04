@@ -21,7 +21,6 @@ import SyncBalance from './SyncBalance'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
-import HapticHandler from '../../../Handler/HapticHandler'
 import Helper from '../../../commons/Helper'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
@@ -80,6 +79,14 @@ export default class LargeCard extends Component {
     const { index } = this.props
     const { length } = MainStore.appState.wallets
     return index < length ? MainStore.appState.wallets[index] : null
+  }
+
+  reflipCard() {
+    if (this.state.isFlipped) {
+      this.setState({
+        isFlipped: false
+      })
+    }
   }
 
   _handleSecretBalance = debounce((wallet, index) => {
@@ -314,9 +321,9 @@ export default class LargeCard extends Component {
         flipHorizontal
         flipVertical={false}
         flip={this.state.isFlipped}
-        onFlipStart={() => {
-          HapticHandler.ImpactLight()
-        }}
+      // onFlipStart={() => {
+      //   HapticHandler.ImpactLight()
+      // }}
       >
         {this.renderFrontCard(wallet)}
         {this.renderBackCard()}

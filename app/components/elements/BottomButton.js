@@ -9,7 +9,6 @@ import {
   Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
-import debounce from 'lodash.debounce'
 import LayoutUtils from '../../commons/LayoutUtils'
 import AppStyle from '../../commons/AppStyle'
 import constant from '../../commons/constant'
@@ -44,7 +43,7 @@ export default class BottomButton extends Component {
   }
 
   componentDidMount() {
-
+    this.isPress = false
   }
 
   componentWillUnmount() {
@@ -52,11 +51,15 @@ export default class BottomButton extends Component {
     this.keyboardDidHideListener.remove()
   }
 
-  onPress = debounce(() => {
+  onPress = () => {
+    if (this.isPress) {
+      return
+    }
+    this.isPress = true
     const { onPress } = this.props
     Keyboard.dismiss()
     onPress()
-  }, 250)
+  }
 
   _runKeyboardAnim(toValue) {
     const duration = Platform.OS === 'ios' ? 250 : 0

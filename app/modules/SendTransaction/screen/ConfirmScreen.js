@@ -398,7 +398,7 @@ export default class ConfirmScreen extends Component {
           <Text
             style={{
               color: AppStyle.secondaryTextColor,
-              fontFamily: 'OpenSans-Light',
+              fontFamily: 'OpenSans-Semibold',
               fontSize: 20,
               marginTop: 10
             }}

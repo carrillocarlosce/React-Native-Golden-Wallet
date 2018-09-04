@@ -61,6 +61,11 @@ class PushNotificationHelper {
     }
   }
 
+  async getToken() {
+    const token = await FCM.getFCMToken()
+    return token
+  }
+
   requestPermission() {
     return FCM.requestPermissions({ badge: true, sound: true, alert: false })
   }
