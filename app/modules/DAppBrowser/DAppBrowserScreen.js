@@ -47,6 +47,7 @@ export default class DAppBrowserScreen extends Component {
 
   onSignTransaction = ({ id, object }) => {
     console.warn('onSign: ', object)
+    // NavStore.pushToScreen('DAppConfirmScreen')
   }
 
   render() {

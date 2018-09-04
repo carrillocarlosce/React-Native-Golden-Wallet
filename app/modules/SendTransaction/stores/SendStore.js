@@ -115,16 +115,10 @@ class SendStore {
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
     return new Promise((resolve, reject) => {
       try {
-<<<<<<< HEAD
-        return this.getPrivateKey(ds).then((privateKey) => {
-          const wallet = this.getWalletSendTransaction(privateKey)
-          return wallet.sendTransaction(transactionSend)
-=======
         this.getPrivateKey(ds).then((privateKey) => {
           // const wallet = this.getWalletSendTransaction(privateKey)
           // wallet.sendTransaction(transactionSend)
           sendTransaction(this.rpcURL, transactionSend, this.fromAddress, this.chainId, privateKey)
->>>>>>> v.1.2
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
               return resolve(tx)

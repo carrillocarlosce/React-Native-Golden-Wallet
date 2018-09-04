@@ -43,7 +43,8 @@ import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
 import TransactionDetailScreen from './modules/TransactionDetail/screen/TransactionDetailScreen'
 import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
-import ConfirmScreen from './modules/SendTransaction/screen/ConfirmScreen';
+import ConfirmScreen from './modules/SendTransaction/screen/ConfirmScreen'
+import DAppConfirmScreen from './modules/DAppBrowser/screen/DappConfirmScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -305,6 +306,12 @@ const DAppStack = StackNavigator(
   {
     DAppListScreen: {
       screen: DAppListScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppConfirmScreen: {
+      screen: DAppConfirmScreen,
       navigationOptions: {
         header: null
       }
