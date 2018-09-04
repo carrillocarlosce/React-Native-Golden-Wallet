@@ -8,9 +8,9 @@ import NavStore from '../../AppStores/NavStore'
 import MigrateData from '../../../MigrateData'
 import UnlockDS from './UnlockDS'
 import AppDS from '../../AppStores/DataSource/AppDS'
-import api from '../../api';
-import NotificationStore from '../../AppStores/stores/Notification';
-import PushNotificationHelper from '../../commons/PushNotificationHelper';
+import api from '../../api'
+import NotificationStore from '../../AppStores/stores/Notification'
+import PushNotificationHelper from '../../commons/PushNotificationHelper'
 
 const minute = 60000
 class UnlockStore {
