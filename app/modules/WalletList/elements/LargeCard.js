@@ -15,7 +15,7 @@ import ViewShot from 'react-native-view-shot'
 import debounce from 'lodash.debounce'
 import PropTypes from 'prop-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import QRCode from 'react-native-qrcode'
+import QRCode from '../../../../Libs/react-native-qrcode'
 import FlipCard from '../../../../Libs/react-native-flip-card'
 import SyncBalance from './SyncBalance'
 import AppStyle from '../../../commons/AppStyle'
@@ -282,9 +282,10 @@ export default class LargeCard extends Component {
           />
           {/* <View style={{ marginTop: cardHeight * 0.12 }}> */}
           <ViewShot ref={(ref) => { this.viewShot = ref }}>
+            {/* <View style={styles.borderQRCode} /> */}
             <QRCode
               value={address}
-              size={isSmallScreen ? cardHeight * 0.36 : 200}
+              size={isSmallScreen ? 125 : 200}
               bgColor="black"
               fgColor="white"
             />
