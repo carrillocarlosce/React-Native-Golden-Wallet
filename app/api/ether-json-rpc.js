@@ -206,8 +206,11 @@ export const signDigest = (digest, privateKey) => {
   }
 }
 
-export const signTransaction = (transaction, chainId, privateKey) => {
+export const signTransaction = (transaction, _chainId, privateKey) => {
   const raw = []
+
+  const chainId = transaction.chainId || _chainId
+
   transactionFields.forEach((fieldInfo) => {
     let value = transaction[fieldInfo.name] || ([])
     value = utils.arrayify(utils.hexlify(value), fieldInfo.name)
