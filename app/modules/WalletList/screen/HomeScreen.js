@@ -10,6 +10,8 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
+import Share from 'react-native-share'
+import RNFS from 'react-native-fs'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
 import DeviceInfo from 'react-native-device-info'
@@ -149,6 +151,17 @@ export default class HomeScreen extends Component {
     return false
   }
 
+  openShare = (filePath) => {
+    RNFS.readFile(filePath, 'base64').then((file) => {
+      const shareOptions = {
+        title: 'Golden',
+        message: `My address: ${MainStore.appState.selectedWallet.address}`,
+        url: `data:image/png;base64,${file}`
+      }
+      Share.open(shareOptions).catch(() => { })
+    })
+  }
+
   _renderNetwork = () => {
     let currentNetwork = MainStore.appState.config.network
     const color = { backgroundColor: AppStyle.mainColor }
@@ -205,6 +218,7 @@ export default class HomeScreen extends Component {
           Clipboard.setString(MainStore.appState.selectedWallet.address)
           NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
         }}
+        onShare={this.openShare}
       />
     )
 

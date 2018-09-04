@@ -1,7 +1,5 @@
-import typeforce from 'typeforce'
 import bs58check from 'bs58check'
 import wif from 'wif'
-import types from '../types'
 import { bitcoin } from '../networks'
 import bcrypto from '../crypto'
 

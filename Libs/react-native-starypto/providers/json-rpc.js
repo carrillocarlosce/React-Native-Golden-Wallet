@@ -194,6 +194,16 @@ export default class JSONRPC {
     const self = this
 
     return Promise.all([gasPricePromise, noncePromise]).then(function (results) {
+      console.log({
+        to: transaction.to,
+        data: data,
+        gasLimit: gasLimit,
+        gasPrice: results[0],
+        nonce: results[1],
+        value: value,
+        chainId: chainId
+      })
+
       const signedTransaction = self.signTransation({
         to: transaction.to,
         data: data,

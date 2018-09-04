@@ -1,7 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { randomBytes } from 'react-native-randombytes'
 import * as Keychain from 'react-native-keychain'
-import Starypto from './Libs/react-native-starypto'
 import MainStore from './app/AppStores/MainStore'
 import Wallet from './app/AppStores/stores/Wallet'
 import { encryptString, decryptString } from './app/Utils/DataCrypto'
