@@ -223,7 +223,7 @@ class UnlockStore {
 
     PushNotificationHelper.getToken().then((token) => {
       if (token) {
-        api.initNotification({}, token)
+        api.initNotification([], token)
         NotificationStore.setDeviceToken(token)
       }
     })
