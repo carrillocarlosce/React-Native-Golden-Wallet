@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import { observer } from 'mobx-react/native'
+import ViewShot from 'react-native-view-shot'
 import debounce from 'lodash.debounce'
 import PropTypes from 'prop-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -41,7 +42,8 @@ export default class LargeCard extends Component {
     index: PropTypes.number.isRequired,
     onCopy: PropTypes.func,
     onBackup: PropTypes.func,
-    onAlertBackup: PropTypes.func
+    onAlertBackup: PropTypes.func,
+    onShare: PropTypes.func
   }
 
   static defaultProps = {
@@ -50,7 +52,8 @@ export default class LargeCard extends Component {
     onAddPrivateKey: () => { },
     onCopy: () => { },
     onBackup: () => { },
-    onAlertBackup: () => { }
+    onAlertBackup: () => { },
+    onShare: () => { }
   }
 
   constructor(props) {
@@ -63,6 +66,14 @@ export default class LargeCard extends Component {
 
   componentDidMount() {
     // this.wallet && this.wallet.fetchingBalance()
+  }
+
+  onShare = () => {
+    const { onShare } = this.props
+    this.viewShot.capture().then((uri) => {
+      const filePath = Platform.OS === 'ios' ? uri : uri.replace('file://', '')
+      onShare(filePath)
+    })
   }
 
   get wallet() {
@@ -228,23 +239,23 @@ export default class LargeCard extends Component {
   renderBackCard = () => {
     const { style } = this.props
     const { address, title } = this.wallet
-    // const copyText = Platform.OS === 'ios'
-    //   ? (
-    //     <View style={styles.backgroundCopy}>
-    //       <Text style={styles.copyButton}>
-    //         {constant.COPY}
-    //       </Text>
-    //     </View>
-    //   )
-    //   : (
-    //     <Text
-    //       style={[
-    //         styles.copyButton, styles.backgroundCopy
-    //       ]}
-    //     >
-    //       {constant.COPY}
-    //     </Text>
-    //   )
+    const shareText = Platform.OS === 'ios'
+      ? (
+        <View style={styles.backgroundCopy}>
+          <Text style={styles.copyButton}>
+            {constant.SHARE}
+          </Text>
+        </View>
+      )
+      : (
+        <Text
+          style={[
+            styles.copyButton, styles.backgroundCopy
+          ]}
+        >
+          {constant.SHARE}
+        </Text>
+      )
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -263,14 +274,14 @@ export default class LargeCard extends Component {
             source={images.backgroundGrey}
           />
           {/* <View style={{ marginTop: cardHeight * 0.12 }}> */}
-          <View>
+          <ViewShot ref={(ref) => { this.viewShot = ref }}>
             <QRCode
               value={address}
               size={isSmallScreen ? cardHeight * 0.36 : 200}
               bgColor="black"
               fgColor="white"
             />
-          </View>
+          </ViewShot>
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -279,12 +290,12 @@ export default class LargeCard extends Component {
             {title}
           </Text>
           <Text style={[styles.cardBackAddress, commonStyle.fontAddress]}>{address}</Text>
-          {/* <TouchableOpacity
-            onPress={onCopy}
+          <TouchableOpacity
+            onPress={this.onShare}
             style={{ marginTop: cardHeight * 0.06 }}
           >
-            {copyText}
-          </TouchableOpacity> */}
+            {shareText}
+          </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -409,16 +420,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: AppStyle.secondaryTextColor,
     fontFamily: AppStyle.mainFontSemiBold
+  },
+  copyButton: {
+    fontFamily: 'OpenSans-Bold',
+    fontSize: isSmallScreen ? 10 : 14,
+    color: AppStyle.backgroundColor
+  },
+  backgroundCopy: {
+    backgroundColor: '#E5E5E5',
+    paddingHorizontal: isSmallScreen ? 15 : 26,
+    paddingVertical: isSmallScreen ? 4 : 7,
+    borderRadius: 16
   }
-  // copyButton: {
-  //   fontFamily: 'OpenSans-Bold',
-  //   fontSize: isSmallScreen ? 10 : 14,
-  //   color: AppStyle.backgroundColor
-  // },
-  // backgroundCopy: {
-  //   backgroundColor: '#E5E5E5',
-  //   paddingHorizontal: isSmallScreen ? 15 : 26,
-  //   paddingVertical: isSmallScreen ? 4 : 7,
-  //   borderRadius: 16
-  // }
 })
