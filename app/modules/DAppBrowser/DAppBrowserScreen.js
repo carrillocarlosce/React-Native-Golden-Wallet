@@ -7,12 +7,15 @@ import {
 } from 'react-native'
 import RNFS from 'react-native-fs'
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
-import DAppBrowserStore from './DAppBrowserStore'
+// import DAppBrowserStore from './DAppBrowserStore'
 
 import NavigationHeader from '../../components/elements/NavigationHeader'
 import images from '../../commons/images'
 import LayoutUtils from '../../commons/LayoutUtils'
 import NavStore from '../../AppStores/NavStore'
+import DAppStore from './stores/DAppStore'
+import DappConfirmScreen from './screen/DappConfirmScreen'
+import MainStore from '../../AppStores/MainStore'
 
 const { width, height } = Dimensions.get('window')
 
@@ -20,10 +23,6 @@ const marginTop = LayoutUtils.getExtraTop()
 
 let jsContent = ''
 export default class DAppBrowserScreen extends Component {
-  constructor(props) {
-    super(props)
-    this.store = new DAppBrowserStore()
-  }
 
   componentWillMount() {
     if (jsContent === '') {
@@ -47,11 +46,14 @@ export default class DAppBrowserScreen extends Component {
 
   onSignTransaction = ({ id, object }) => {
     console.warn('onSign: ', object)
-    // NavStore.pushToScreen('DAppConfirmScreen')
+    // DAppBrowserStore.setUnconfirmTransaction(object)
+    MainStore.goToDApp()
+    NavStore.pushToScreen('DAppConfirmScreen')
   }
 
   render() {
-    const { walletAddress } = this.store
+    // const { walletAddress } = this.store
+    const walletAddress = MainStore.appState.selectedWallet.address
     return (
       <View style={styles.container}>
         <NavigationHeader

@@ -8,12 +8,12 @@ import {
   Image,
   Platform,
   Dimensions,
-  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView
 } from 'react-native'
 import { observer } from 'mobx-react'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -23,10 +23,13 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import AppState from '../../../AppStores/AppState'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
+import commonStyles from '../../../commons/commonStyles'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
 const isIPX = height === 812
+const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() + 20 : 40
+
 @observer
 export default class DappConfirmScreen extends Component {
   constructor(props) {
@@ -44,13 +47,12 @@ export default class DappConfirmScreen extends Component {
   }
 
   componentWillMount() {
-    // MainStore.sendTransaction.confirmStore.setGasPrice(MainStore.appState.gasPriceEstimate.standard)
-    MainStore.sendTransaction.confirmStore.estimateGas()
-    MainStore.sendTransaction.confirmStore.validateAmount()
+    // MainStore.dapp.confirmStore.estimateGas()
+    // MainStore.dapp.confirmStore.validateAmount()
   }
 
   onDefaultPress() {
-    const { advanceStore } = MainStore.sendTransaction
+    const { advanceStore } = MainStore.dapp
     const { gasPriceEstimate } = AppState
     advanceStore.reset()
     advanceStore.setGasLimit('21000')
@@ -58,7 +60,7 @@ export default class DappConfirmScreen extends Component {
   }
 
   onDone() {
-    // const { advanceStore } = MainStore.sendTransaction
+    const { advanceStore } = MainStore.dapp
     Animated.parallel([
       Animated.timing(
         this.state.translateX,
@@ -77,12 +79,12 @@ export default class DappConfirmScreen extends Component {
         }
       )
     ]).start()
-    // advanceStore._onDone()
+    advanceStore._onDone()
     setTimeout(() => this.setState({ isShowAdvance: false }), 200)
   }
 
   showAdvance = () => {
-    // MainStore.sendTransaction.confirmStore._onShowAdvance()
+    MainStore.dapp.confirmStore._onShowAdvance()
     this.setState({ isShowAdvance: true }, () => {
       Animated.parallel([
         Animated.timing(
@@ -106,10 +108,8 @@ export default class DappConfirmScreen extends Component {
   }
 
   hideAdvance = () => {
-    // const { advanceStore } = MainStore.sendTransaction
-    // advanceStore.validateGas
-    const validate = true
-    if (validate) {
+    const { advanceStore } = MainStore.dapp
+    if (advanceStore.validateGas) {
       this.onDone()
     } else {
       Keyboard.dismiss()
@@ -132,6 +132,30 @@ export default class DappConfirmScreen extends Component {
     }
   }
 
+  showInfoGasLimit = () => {
+    Keyboard.dismiss()
+    NavStore.popupCustom.show('Gas Limit', [
+      {
+        text: 'OK',
+        onClick: () => {
+          NavStore.popupCustom.hide()
+        }
+      }
+    ], 'Default gas limit for standard ETH transactions is 21000. Gas limit for tokens transactions are much higher, it may exceed 100000.')
+  }
+
+  showInfoGasPrice = () => {
+    Keyboard.dismiss()
+    NavStore.popupCustom.show('Gas Price (Gwei)', [
+      {
+        text: 'OK',
+        onClick: () => {
+          NavStore.popupCustom.hide()
+        }
+      }
+    ], 'If you want your transaction to be executed at a faster speed, then you have to be willing to pay a higher gas price.')
+  }
+
   _renderConfirmHeader() {
     return (
       <View
@@ -141,7 +165,7 @@ export default class DappConfirmScreen extends Component {
           style={styles.closeBtn}
           onPress={() => this._onCancel()}
         >
-          <Image source={images.closeButton} style={styles.closeIcon} />
+          <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
         </TouchableOpacity>
         <Text style={styles.title}>Confirmation</Text>
         <TouchableOpacity
@@ -155,7 +179,7 @@ export default class DappConfirmScreen extends Component {
   }
 
   _renderConfirmContent(ethAmount, usdAmount, from, to, fee) {
-    const { confirmStore } = MainStore.sendTransaction
+    const { confirmStore } = MainStore.dapp
     return (
       <View>
         <View
@@ -183,7 +207,7 @@ export default class DappConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={styles.value}
+              style={[styles.value, commonStyles.fontAddress]}
             >
               {from}
             </Text>
@@ -196,7 +220,7 @@ export default class DappConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="middle"
-              style={styles.value}
+              style={[styles.value, commonStyles.fontAddress]}
             >
               {to}
             </Text>
@@ -301,10 +325,15 @@ export default class DappConfirmScreen extends Component {
             >
               Gas Limit
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
+            <TouchableOpacity
+              onPress={this.showInfoGasLimit}
+              style={styles.iconHolder}
+            >
+              <Image
+                style={styles.iconLabel}
+                source={images.iconInfo}
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <InputWithAction
@@ -332,10 +361,15 @@ export default class DappConfirmScreen extends Component {
             >
               Gas Price (Gwei)
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
+            <TouchableOpacity
+              onPress={this.showInfoGasPrice}
+              style={styles.iconHolder}
+            >
+              <Image
+                style={styles.iconLabel}
+                source={images.iconInfo}
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <InputWithAction
@@ -363,23 +397,18 @@ export default class DappConfirmScreen extends Component {
             >
               Network Fee
             </Text>
-            <Image
-              style={styles.iconLabel}
-              source={images.iconInfo}
-            />
           </View>
-          <TextInput
-            editable={false}
-            keyboardAppearance="dark"
-            ref={ref => (this.fee = ref)}
-            value={`${tmpFee}`}
-            style={[styles.textInput, {
+          <Text
+            style={{
               color: AppStyle.secondaryTextColor,
-              padding: 15,
-              fontFamily: 'OpenSans-Semibold',
-              fontSize: 14
-            }]}
-          />
+              fontFamily: 'OpenSans-Light',
+              fontSize: 20,
+              marginTop: 10
+            }}
+          >
+            {`${tmpFee}`}
+          </Text>
+
         </View>
       </View >
     )
@@ -398,12 +427,12 @@ export default class DappConfirmScreen extends Component {
   }
 
   _onSend(advanceStore) {
-    MainStore.sendTransaction.sendTx()
+    MainStore.dapp.sendTx()
   }
 
   _onCancel() {
     NavStore.popupCustom.hide()
-    MainStore.sendTransaction.addressInputStore.confirmModal && MainStore.sendTransaction.addressInputStore.confirmModal.close()
+    NavStore.goBack()
   }
 
   _renderActionSheet() {
@@ -489,9 +518,9 @@ export default class DappConfirmScreen extends Component {
   }
 
   _onPressAction = (gasPrice, adj) => {
-    MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
-    MainStore.sendTransaction.confirmStore.validateAmount()
-    MainStore.sendTransaction.confirmStore.setAdjust(adj)
+    MainStore.dapp.confirmStore.setGasPrice(gasPrice)
+    MainStore.dapp.confirmStore.validateAmount()
+    MainStore.dapp.confirmStore.setAdjust(adj)
     this.actionSheet.hide()
   }
 
@@ -506,7 +535,7 @@ export default class DappConfirmScreen extends Component {
       isFocusGasLimit,
       isFocusGasPrice
     } = this.state
-    const { advanceStore, confirmStore } = MainStore.sendTransaction
+    const { advanceStore, confirmStore } = MainStore.dapp
     const {
       gasLimit,
       gasPrice,
@@ -519,7 +548,7 @@ export default class DappConfirmScreen extends Component {
       formatedAmount,
       formatedDolar
     } = confirmStore
-    const to = MainStore.sendTransaction.address
+    const { to } = MainStore.dapp.confirmStore
     const { address } = MainStore.appState.selectedWallet
     return (
       <TouchableWithoutFeedback onPress={this._onCancelAction}>
@@ -593,7 +622,8 @@ export default class DappConfirmScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingTop: marginTop
   },
   confirmContainer: {
     flex: 1
@@ -602,7 +632,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0,
+    top: marginTop,
     bottom: 0
     // backgroundColor: AppStyle.backgroundColor
   },
@@ -622,7 +652,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold'
   },
   closeBtn: {
-    marginLeft: 20,
+    marginLeft: 15,
     padding: 5
   },
   advanceBtn: {
@@ -641,11 +671,10 @@ const styles = StyleSheet.create({
   key: {
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16,
-    color: AppStyle.mainTextColor
-    // marginTop: 15
+    color: AppStyle.mainTextColor,
+    marginTop: 15
   },
   value: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNew',
     fontSize: 16,
     color: AppStyle.secondaryTextColor,
     marginTop: 10,
@@ -682,30 +711,17 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   textInput: {
-    // height: 40,
     borderRadius: 5,
     backgroundColor: '#14192d',
     alignSelf: 'stretch',
     marginTop: 10
-    // paddingRight: 10
   },
-  // doneBtn: {
-  //   backgroundColor: AppStyle.backgroundDarkBlue,
-  //   height: 50,
-  //   alignItems: 'center',
-  //   justifyContent: 'center'
-  // },
   line: {
     height: 1,
     backgroundColor: '#14192D',
     marginLeft: 20,
     marginRight: 20
   },
-  // clearBtn: {
-  //   position: 'absolute',
-  //   right: 10,
-  //   top: 19
-  // },
   err: {
     color: 'red',
     marginTop: 10,
@@ -746,9 +762,14 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   iconLabel: {
-    marginLeft: 8,
     width: 16,
     height: 16
+  },
+  iconHolder: {
+    width: 38,
+    height: 38,
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
-
 })
