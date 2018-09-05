@@ -209,6 +209,10 @@ export const signDigest = (digest, privateKey) => {
 export const signTransaction = (transaction, _chainId, privateKey) => {
   const raw = []
 
+  if (transaction.gas) {
+    transaction.gasLimit = transaction.gas
+    delete (transaction.gas)
+  }
   const chainId = transaction.chainId || _chainId
 
   transactionFields.forEach((fieldInfo) => {

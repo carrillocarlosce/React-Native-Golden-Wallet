@@ -6,6 +6,7 @@ import appState from './AppState'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
 import ChangePincodeStore from '../modules/ChangePincode/stores/ChangePincodeStore'
+import DAppStore from '../modules/DAppBrowser/stores/DAppStore';
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
@@ -20,6 +21,7 @@ class MainStore {
   importStore = null
   backupStore = null
   changePincode = null
+  dapp = null
 
   importMnemonicStore = null
 
@@ -38,12 +40,12 @@ class MainStore {
     this.sendTransaction = new SendStore()
   }
 
-  @action clearSendStore() {
-    this.sendTransaction = null
-  }
-
   goToChangePincode() {
     this.changePincode = new ChangePincodeStore()
+  }
+
+  goToDApp() {
+    this.dapp = new DAppStore()
   }
 
   async gotoBackup(pincode) {

@@ -63,6 +63,8 @@ export default class TokenScreen extends Component {
     }, true)
   }
 
+  onPressCollectibles = () => NavStore.pushToScreen('CollectibleScreen')
+
   get wallet() {
     return MainStore.appState.selectedWallet
   }
@@ -162,6 +164,11 @@ export default class TokenScreen extends Component {
             button: images.backButton
           }}
           action={this.onBack}
+          rightView={{
+            rightViewIcon: images.iconCollectibles,
+            rightViewAction: this.onPressCollectibles,
+            rightViewTitle: 'Collectibles'
+          }}
         />
         <FlatList
           style={{

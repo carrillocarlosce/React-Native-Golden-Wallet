@@ -10,6 +10,7 @@ import NavStore from '../../../AppStores/NavStore'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import DAppListItem from '../elements/DAppListItem'
+import MainStore from '../../../AppStores/MainStore';
 
 const marginTop = LayoutUtils.getExtraTop()
 const { height } = Dimensions.get('window')
@@ -17,13 +18,18 @@ const isIPX = height === 812
 export default class DAppListScreen extends Component {
   onBack = () => NavStore.goBack()
 
+  _goToBrowser = (url) => {
+    MainStore.dapp.setUrl(url)
+    NavStore.pushToScreen('DAppBrowserScreen')
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
-            title: 'Exchanges & Finance',
+            title: 'Dapp',
             icon: null,
             button: images.backButton
           }}
@@ -40,6 +46,7 @@ export default class DAppListScreen extends Component {
                   title={item.title}
                   subTitle={item.subTitle}
                   line={index != 0}
+                  onPress={() => this._goToBrowser(item.url)}
                 />
               </View>
             )
@@ -59,34 +66,17 @@ const styles = StyleSheet.create({
 const dumpData = [
   {
     title: 'AirSwap',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    url: 'https://idex.market/'
   },
   {
-    title: 'Kyber Network',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+    title: 'Skylab',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    url: 'https://skylab.vn/voting'
   },
   {
-    title: 'AirSwap',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
-  },
-  {
-    title: 'Kyber Network',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
-  },
-  {
-    title: 'AirSwap',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
-  },
-  {
-    title: 'Kyber Network',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
-  },
-  {
-    title: 'AirSwap',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
-  },
-  {
-    title: 'Kyber Network',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.'
+    title: 'Skylab',
+    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    url: 'https://web3.kyber.network'
   }
 ]

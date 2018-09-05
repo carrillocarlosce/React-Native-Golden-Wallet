@@ -93,7 +93,7 @@ class SendStore {
     HapticHandler.NotificationSuccess()
     NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.navigator.dispatch(NavigationActions.back())
-    // MainStore.clearSendStore()
+    NavStore.navigator.dispatch(NavigationActions.back())
     NavStore.showToastTop('Your transaction has been pending', {}, { color: AppStyle.colorUp })
   }
 

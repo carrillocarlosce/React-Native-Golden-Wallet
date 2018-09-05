@@ -21,7 +21,7 @@ export default class DAppListItem extends Component {
       <View style={{ backgroundColor: AppStyle.backgroundTextInput }}>
         {line && <View style={styles.line} />}
 
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
           <Image
             source={images.iconEther}
             style={styles.image}

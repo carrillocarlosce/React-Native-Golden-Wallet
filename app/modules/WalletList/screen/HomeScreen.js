@@ -6,7 +6,8 @@ import {
   Dimensions,
   Animated,
   Clipboard,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
@@ -143,6 +144,7 @@ export default class HomeScreen extends Component {
   }
 
   get shouldShowUpdatePopup() {
+    if (__DEV__) return false
     const { lastestVersionRead, shouldShowUpdatePopup } = MainStore.appState
     const version = DeviceInfo.getVersion()
     if (version < this.lastestVersion) {
@@ -274,6 +276,11 @@ export default class HomeScreen extends Component {
     }
   }
 
+  _goToDapp = () => {
+    MainStore.goToDApp()
+    NavStore.pushToScreen('DAppStack')
+  }
+
   checkPrivateKey(privateKey) {
     return privateKey !== undefined && privateKey !== ''
   }
@@ -308,6 +315,7 @@ export default class HomeScreen extends Component {
       <View style={styles.container}>
         <View style={styles.homeHeader}>
           <Hamburger
+            style={{ flex: 0 }}
             onPressHamburger={(isShow) => {
               Animated.timing(
                 translateY,
@@ -318,24 +326,9 @@ export default class HomeScreen extends Component {
               ).start()
             }}
           />
-          <View>
-            <Animated.View
-              style={{
-                overflow: 'hidden',
-                opacity: changeOpacityListCoin,
-                position: 'absolute',
-                top: 2,
-                height: 60,
-                width: width - 77
-              }}
-            >
-              <Ticker
-                data={tickers}
-                style={{
-                  width: width - 77
-                }}
-              />
-            </Animated.View>
+          <View
+            style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Animated.Text
               style={{
                 opacity: changeOpacitySetting,
@@ -346,6 +339,37 @@ export default class HomeScreen extends Component {
             >
               {constant.SETTING}
             </Animated.Text>
+            <Animated.View
+              style={{
+                overflow: 'hidden',
+                opacity: changeOpacityListCoin,
+                height: 40,
+                alignItems: 'flex-end',
+                justifyContent: 'center'
+              }}
+            >
+              {/* <Ticker
+                data={tickers}
+                style={{
+                  width: width - 77
+                }}
+              /> */}
+              <TouchableOpacity
+                style={{
+                  height: 40,
+                  backgroundColor: '#121734',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 20,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  borderRadius: 20
+                }}
+                onPress={this._goToDapp}
+              >
+                <Text style={{ color: AppStyle.mainColor }}>Đapp Browser</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </View>
         <View style={{ height: heightCarousel }}>

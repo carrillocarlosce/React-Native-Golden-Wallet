@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  View
-  // WebView
+  View,
+  // WebView,
+  Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
-import WebView from '../react-native-webview-bridge'
+import WebView from 'react-native-webview-bridge-updated/webview-bridge'
 import web3 from './web3'
+
+const { width, height } = Dimensions.get('window')
+
 
 export default class GoldenDWebBrowser extends Component {
   static propTypes = {
@@ -47,32 +51,39 @@ export default class GoldenDWebBrowser extends Component {
     //   addressHex, network, infuraAPIKey, jsContent
     // } = this.props
     // this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))
+    // setTimeout(() => this.test(), 10000)
   }
 
-  _onBridgeMessage(payload) {
-    console.warn(payload)
-    if (typeof payload === 'string') return
+  _onBridgeMessage(resTX) {
+    // console.warn(resTX)
+    let payload = {}
+    try {
+      payload = JSON.parse(resTX)
+    } catch (error) {
+      console.warn(error)
+    }
+    if (typeof payload !== 'object') return
     const {
       onSignTransaction,
       onSignMessage = () => { },
       onSignPersonalMessage = () => { },
       onSignTypedMessage = () => { }
     } = this.props
-    switch (payload.data.name) {
+    switch (payload.name) {
       case 'signTransaction': {
-        onSignTransaction({ id: payload.data.id, object: payload.data.object })
+        onSignTransaction({ id: payload.id, object: payload.tx })
         break
       }
       case 'signMessage': {
-        onSignMessage({ id: payload.data.id, object: payload.data.object })
+        onSignMessage({ id: payload.id, object: payload.tx })
         break
       }
       case 'signPersonalMessage': {
-        onSignPersonalMessage({ id: payload.data.id, object: payload.data.object })
+        onSignPersonalMessage({ id: payload.id, object: payload.tx })
         break
       }
       case 'signTypedMessage': {
-        onSignTypedMessage({ id: payload.data.id, object: payload.data.object })
+        onSignTypedMessage({ id: payload.id, object: payload.tx })
         break
       }
       default: break
@@ -82,11 +93,12 @@ export default class GoldenDWebBrowser extends Component {
   executeCallback(id, error, value) {
     const v = (typeof value === 'object') ? JSON.stringify(value) : `${value}`
     const e = error ? `'${error}'` : 'null'
-    this.webview.evaluateJavaScript(`executeCallback(${id}, ${e}, '${v}')`)
+    this.webview.sendToBridge(`executeCallback(${id}, ${e}, '${v}')`)
   }
 
   test() {
-    this.webview.evaluateJavaScript(`alert(typeof executeCallback)`)
+    // this.webview.evaluateJS(`WebViewBridge.onMessage = () => {}`)
+    // this.webview.sendToBridge(`hello`)
   }
 
   render() {
@@ -97,20 +109,16 @@ export default class GoldenDWebBrowser extends Component {
     } = this.props
 
     return (
-      <View style={[styles.container, style]}>
-        <WebView
-          ref={(ref) => { this.webview = ref }}
-          onBridgeMessage={this._onBridgeMessage}
-          // mixedContentMode="compatibility"
-          javaScriptEnabled={true}
-          injectedJavaScript={`WebViewBridge.send("hello from webview");`}
-          // injectedJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent, uri)}
-          // onLoadStart={() => this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))}
-          injectedOnStartLoadingJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent)}
-          source={uri}
-          style={styles.webView}
-        />
-      </View>
+      <WebView
+        ref={(ref) => { this.webview = ref }}
+        onBridgeMessage={this._onBridgeMessage.bind(this)}
+        // mixedContentMode="compatibility"
+        javaScriptEnabled={true}
+        // injectedJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent, uri)}
+        // onLoadStart={() => this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))}
+        injectedOnStartLoadingJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent)}
+        source={uri}
+      />
     )
   }
 }
@@ -162,6 +170,7 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
     let wssUrl = getInfuraWSSURL(chainID, infuraAPIKey);
 
     function executeCallback (id, error, value) {
+      console.log(JSON.stringify(value))
       goldenProvider.executeCallback(id, error, value)
     }
 
@@ -173,7 +182,6 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
         address: addressHex,
         networkVersion: chainID,
         rpcUrl,
-        wssUrl,
         getAccounts: function (cb) {
           cb(null, [addressHex]) 
         },
@@ -181,28 +189,35 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
           console.log('signing a transaction', tx)
           const { id = 8888 } = tx
           goldenProvider.addCallback(id, cb)
-          window.webkit.messageHandlers.reactNative.postMessage({"name": "signTransaction", "object": tx, id: id})
+          const resTx = {name: 'signTransaction', id, tx} 
+          WebViewBridge.send(JSON.stringify(resTx))
         },
         signMessage: function (msgParams, cb) {
           const { data } = msgParams
           const { id = 8888 } = msgParams
           console.log("signing a message", msgParams)
           goldenProvider.addCallback(id, cb)
-          window.webkit.messageHandlers.reactNative.postMessage({"name": "signMessage", "object": { data }, id: id})
+          console.log("signMessage")
+          const resTx = {name: "signMessage", id, tx} 
+          WebViewBridge.send(JSON.stringify(resTx))
         },
         signPersonalMessage: function (msgParams, cb) {
           const { data } = msgParams
           const { id = 8888 } = msgParams
           console.log("signing a personal message", msgParams)
           goldenProvider.addCallback(id, cb)
-          window.webkit.messageHandlers.reactNative.postMessage({"name": "signPersonalMessage", "object": { data }, id: id})
+          console.log("signPersonalMessage")
+          const resTx = {name: "signPersonalMessage", id, tx} 
+          WebViewBridge.send(JSON.stringify(resTx))
         },
         signTypedMessage: function (msgParams, cb) {
           const { data } = msgParams
           const { id = 8888 } = msgParams
           console.log("signing a typed message", msgParams)
           goldenProvider.addCallback(id, cb)
-          window.webkit.messageHandlers.reactNative.postMessage({"name": "signTypedMessage", "object": { data }, id: id})
+          console.log("signTypedMessage")
+          const resTx = {name: "signTypedMessage", id, tx} 
+          WebViewBridge.send(JSON.stringify(resTx))
         }
       },
       {
@@ -231,9 +246,12 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    width,
+    height
   },
   webView: {
-    flex: 1
+    position: 'absolute',
+    width,
+    height
   }
 })

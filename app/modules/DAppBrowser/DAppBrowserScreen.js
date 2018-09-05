@@ -2,25 +2,24 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
-  Platform
+  Platform,
+  Dimensions
 } from 'react-native'
 import RNFS from 'react-native-fs'
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
-import DAppBrowserStore from './DAppBrowserStore'
 
 import NavigationHeader from '../../components/elements/NavigationHeader'
 import images from '../../commons/images'
 import LayoutUtils from '../../commons/LayoutUtils'
 import NavStore from '../../AppStores/NavStore'
+import MainStore from '../../AppStores/MainStore'
+
+const { width, height } = Dimensions.get('window')
 
 const marginTop = LayoutUtils.getExtraTop()
 
 let jsContent = ''
 export default class DAppBrowserScreen extends Component {
-  constructor(props) {
-    super(props)
-    this.store = new DAppBrowserStore()
-  }
 
   componentWillMount() {
     if (jsContent === '') {
@@ -42,8 +41,16 @@ export default class DAppBrowserScreen extends Component {
 
   onBack = () => NavStore.goBack()
 
+  onSignTransaction = ({ id, object }) => {
+    console.warn('onSign: ', object)
+    MainStore.dapp.setTransaction(id, object)
+    NavStore.pushToScreen('DAppConfirmScreen')
+  }
+
   render() {
-    const { walletAddress } = this.store
+    // const { walletAddress } = this.store
+    const walletAddress = MainStore.appState.selectedWallet.address
+    const { url } = MainStore.dapp
     return (
       <View style={styles.container}>
         <NavigationHeader
@@ -57,12 +64,14 @@ export default class DAppBrowserScreen extends Component {
         />
         {jsContent !== '' &&
           <DAppBrowser
+            ref={ref => (MainStore.dapp.setWebview(ref))}
             style={styles.container}
-            uri="https://web3.kyber.network/"
+            uri={url}
             addressHex={walletAddress}
-            network="mainnet"
-            infuraAPIKey="llyrtzQ3YhkdESt2Fzrk"
+            network={MainStore.appState.networkName}
+            infuraAPIKey="qMZ7EIind33NY9Azu836"
             jsContent={jsContent}
+            onSignTransaction={this.onSignTransaction}
           />
         }
       </View>
@@ -72,6 +81,7 @@ export default class DAppBrowserScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    width,
+    height
   }
 })
