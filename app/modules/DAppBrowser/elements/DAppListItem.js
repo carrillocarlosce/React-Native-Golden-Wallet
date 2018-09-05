@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    backgroundColor: AppStyle.secondaryTextColor,
+    backgroundColor: AppStyle.colorLines,
     marginLeft: 80,
     marginRight: 20
   }
