@@ -32,7 +32,12 @@ export default class CollectibleDetailScreen extends Component {
 
   onBack = () => NavStore.goBack()
 
-  onPress = () => { }
+  onPress = () => {
+    MainStore.goToDApp()
+    const url = `https://www.cryptokitties.co/kitty/${this.collectible.id}`
+    MainStore.dapp.setUrl(url)
+    NavStore.pushToScreen('DAppBrowserScreen')
+  }
 
   get collectible() {
     const { index } = this.props.navigation.state.params
