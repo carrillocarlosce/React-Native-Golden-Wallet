@@ -38,7 +38,7 @@ export default class DAppListScreen extends Component {
         <FlatList
           style={{ marginTop: 30, marginBottom: isIPX ? 68 : 34 }}
           data={dumpData}
-          keyExtractor={v => v.title}
+          keyExtractor={(v, i) => `${v.title}-${i}`}
           renderItem={({ item, index }) =>
             (
               <View>
