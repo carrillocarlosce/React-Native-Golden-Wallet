@@ -10,7 +10,7 @@ import {
   Clipboard
 } from 'react-native'
 import PropsType from 'prop-types'
-import QRCode from '../../../../Libs/react-native-qrcode'
+import QRCode from 'react-native-qrcode'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
