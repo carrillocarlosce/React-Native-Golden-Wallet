@@ -56,6 +56,8 @@ export default class Wallet {
   @observable isRefresh = false
   @observable importType = null
 
+  walletCard = null
+
   static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
     if (!secureDS) throw new Error('Secure data source is required')
     const mnemonic = await secureDS.deriveMnemonic()
@@ -163,6 +165,10 @@ export default class Wallet {
       throw new Error('Invalid Private Key')
     }
     secureDS.savePrivateKey(this.address, privateKey)
+  }
+
+  @action setWalletCard(card) {
+    this.walletCard = card
   }
 
   @action offLoading() {

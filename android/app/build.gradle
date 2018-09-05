@@ -172,6 +172,8 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-share')
+    compile project(':react-native-view-shot')
     compile project(':react-native-webview-bridge')
     compile project(':react-native-shimmer')
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'

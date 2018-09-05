@@ -45,6 +45,10 @@ target 'golden' do
 
   pod 'react-native-shimmer', :path => "#{node_modules_path}/react-native-shimmer"
 
+  pod 'RNShare', :path => '../node_modules/react-native-share'
+
+  pod 'RNViewShot', :path => '../node_modules/react-native-view-shot'
+
 end
 
 post_install do |installer|

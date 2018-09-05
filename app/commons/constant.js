@@ -7,6 +7,7 @@ export default {
   ADD_NEW_WALLET: 'Add new wallet',
   SCAN_QR_CODE: 'Scan QR Code',
   COPY: 'Copy',
+  SHARE: 'Share',
   TRANSACTIONS: 'Transactions',
   TOKEN: 'Token',
   ETHEREUM: 'Ethereum',

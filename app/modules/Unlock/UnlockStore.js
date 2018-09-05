@@ -8,6 +8,9 @@ import NavStore from '../../AppStores/NavStore'
 import MigrateData from '../../../MigrateData'
 import UnlockDS from './UnlockDS'
 import AppDS from '../../AppStores/DataSource/AppDS'
+import api from '../../api'
+import NotificationStore from '../../AppStores/stores/Notification'
+import PushNotificationHelper from '../../commons/PushNotificationHelper'
 
 const minute = 60000
 class UnlockStore {
@@ -216,6 +219,13 @@ class UnlockStore {
       pinConfirm: pincode,
       unlockDes: 'Confirm your Pincode',
       pincode: ''
+    })
+
+    PushNotificationHelper.getToken().then((token) => {
+      if (token) {
+        api.initNotification([], token)
+        NotificationStore.setDeviceToken(token)
+      }
     })
   }
 
