@@ -43,6 +43,9 @@ class AppState {
     fast: 60
   }
   @observable enableNotification = true
+  @observable currentCardIndex = 0
+  lastestVersionRead = ''
+  shouldShowUpdatePopup = true
 
   static TIME_INTERVAL = 20000
 
@@ -79,6 +82,9 @@ class AppState {
     this.enableNotification = isEnable
     this.save()
   }
+
+  @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
+  @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }
 
   @action async syncAddressBooks() {
     await AddressBookDS.getAddressBooks().then((_addressBooks) => {
@@ -149,6 +155,10 @@ class AppState {
     }, 0)
   }
 
+  @action setCurrentCardIndex(index) {
+    this.currentCardIndex = index
+  }
+
   @action async loadPendingTxs() {
     const unspendTransactions = await UnspendTransactionDS.getTransactions()
     this.unpendTransactions = unspendTransactions
@@ -163,6 +173,8 @@ class AppState {
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
+    this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
+    this.lastestVersionRead = data.lastestVersionRead
 
     await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
@@ -184,8 +196,9 @@ class AppState {
   }
 
   @computed get isShowSendButton() {
+    const idx = this.wallets.length
     const wallet = this.selectedWallet
-    if (!wallet) {
+    if (this.currentCardIndex === idx || !wallet) {
       return false
     }
     return wallet.canSendTransaction
@@ -201,13 +214,13 @@ class AppState {
 
   resetAppState() {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
-    this.hasPassword = false
-    this.didBackup = false
-    this.enableNotification = true
+    this.setHasPassword(false)
+    this.setBackup(false)
+    this.setEnableNotification(true)
     this.currentWalletIndex = 0
-    this.wallets = []
-    this.unpendTransactions = []
+    this.setUnpendTransactions([])
     this.addressBooks = []
+    this.appWalletsStore.removeAll()
   }
 
   save() {
@@ -230,7 +243,9 @@ class AppState {
       currentWalletIndex: this.currentWalletIndex,
       didBackup: this.didBackup,
       gasPriceEstimate: this.gasPriceEstimate,
-      enableNotification: this.enableNotification
+      enableNotification: this.enableNotification,
+      lastestVersionRead: this.lastestVersionRead,
+      shouldShowUpdatePopup: this.shouldShowUpdatePopup
     }
   }
 }

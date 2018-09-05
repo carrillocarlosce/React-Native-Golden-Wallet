@@ -1,10 +1,12 @@
 import { observable, action, computed } from 'mobx'
+import chunk from 'lodash.chunk'
 import BigNumber from 'bignumber.js'
 import WalletToken from './WalletToken'
 import Keystore from '../../../Libs/react-native-golden-keystore'
 import WalletDS from '../DataSource/WalletDS'
 import api from '../../api'
 import MainStore from '../MainStore'
+import Collectible from './Collectible'
 import GetAddress, { chainNames } from '../../Utils/WalletAddresses'
 
 // Object Wallet:
@@ -55,6 +57,10 @@ export default class Wallet {
   @observable transactions = []
   @observable isRefresh = false
   @observable importType = null
+  @observable isFetchingCollectibles = false
+  @observable collectibles = []
+
+  walletCard = null
 
   static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
     if (!secureDS) throw new Error('Secure data source is required')
@@ -165,6 +171,10 @@ export default class Wallet {
     secureDS.savePrivateKey(this.address, privateKey)
   }
 
+  @action setWalletCard(card) {
+    this.walletCard = card
+  }
+
   @action offLoading() {
     this.isFetchingBalance = false
     this.isRefresh = false
@@ -193,6 +203,17 @@ export default class Wallet {
     } catch (e) {
       this.offLoading()
     }
+  }
+
+  @action fetchCollectibles() {
+    this.isFetchingCollectibles = this.collectibles.length === 0
+    api.fetchCollectibles(this.address).then((res) => {
+      this.isFetchingCollectibles = false
+      if (!res.data.assets) return
+      this.collectibles = res.data.assets.map(collectible => new Collectible(collectible, this.address))
+    }).catch((e) => {
+      this.isFetchingCollectibles = false
+    })
   }
 
   @action setTokens(tokens) {
@@ -241,6 +262,27 @@ export default class Wallet {
       const rs = [..._rs, ...t.unspendTransactions.slice()]
       return rs
     }, [])
+  }
+
+  @computed get collectiblesSeparate() {
+    const collectibles = this.collectibles.map((_collectible, i) => {
+      const collectible = _collectible
+      collectible.index = i
+      return collectible
+    })
+    const collectibleObj = {}
+    collectibles.forEach((collectible) => {
+      if (!collectibleObj[collectible.assetContractName]) {
+        collectibleObj[collectible.assetContractName] = [collectible]
+      } else {
+        collectibleObj[collectible.assetContractName].push(collectible)
+      }
+    })
+    return Object.values(collectibleObj)
+  }
+
+  @computed get collectiblesChunk() {
+    return this.collectiblesSeparate.map(c => chunk(c, 3))
   }
 
   findToken(tokenAddress) {

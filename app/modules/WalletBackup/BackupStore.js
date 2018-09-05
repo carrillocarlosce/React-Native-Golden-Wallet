@@ -1,5 +1,5 @@
 import { observable, action, computed } from 'mobx'
-import lodash from 'lodash'
+import shuffle from 'lodash.shuffle'
 import HapticHandler from '../../Handler/HapticHandler'
 import NavStore from '../../AppStores/NavStore'
 import MainStore from '../../AppStores/MainStore'
@@ -19,7 +19,7 @@ export default class BackupStore {
 
   @action setup() {
     this.obj = {
-      listKeywordRandom: lodash.shuffle(this.listMnemonic),
+      listKeywordRandom: shuffle(this.listMnemonic),
       listKeyWordChoose: this.listMnemonic.map(str => ''),
       buttonStates: this.listMnemonic.map(str => true)
     }

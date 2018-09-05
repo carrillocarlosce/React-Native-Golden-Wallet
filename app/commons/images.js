@@ -78,5 +78,7 @@ export default {
   scanFrame: require('./../assets/images/scan_frame.png'),
   iconDown: require('./../assets/images/icon_down.png'),
   iconUp: require('./../assets/images/icon_up.png'),
-  imgEnrase: require('../assets/images/img_enrase.png')
+  imgEnrase: require('../assets/images/img_enrase.png'),
+  iconCollectibles: require('../assets/images/icon_collectible.png'),
+  imgEmptyBox: require('../assets/images/empty_box.png')
 }

@@ -10,6 +10,7 @@ import AppStyle from '../../../commons/AppStyle'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
 import MoreButton from '../../../components/elements/MoreButton'
+import AddressElement from '../../../components/elements/AddressElement';
 
 export default class AddressBookItem extends Component {
   static propTypes = {
@@ -44,13 +45,18 @@ export default class AddressBookItem extends Component {
         <View style={[styles.container, style]}>
           <View style={{}}>
             <Text style={styles.name}>{title}</Text>
-            <Text
+            <AddressElement
+              address={address}
+              style={{ width: 281, marginTop: 10 }}
+              textStyle={{ fontSize: 12 }}
+            />
+            {/* <Text
               style={[styles.address, commonStyle.fontAddress]}
               numberOfLines={1}
               ellipsizeMode="middle"
             >
               {address}
-            </Text>
+            </Text> */}
           </View>
           <MoreButton onPress={action} />
         </View>

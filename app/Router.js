@@ -45,6 +45,9 @@ import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
 import ConfirmScreen from './modules/SendTransaction/screen/ConfirmScreen'
 import DAppConfirmScreen from './modules/DAppBrowser/screen/DappConfirmScreen'
+import CollectibleScreen from './modules/Collectibles/screen/CollectibleScreen'
+import CollectibleDetailScreen from './modules/Collectibles/screen/CollectibleDetailScreen'
+import CollectibleListScreen from './modules/Collectibles/screen/CollectibleListScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -200,7 +203,24 @@ const HomeStack = StackNavigator(
     },
     DAppWebScreen: {
       screen: DAppBrowserScreen,
-
+      navigationOptions: {
+        header: null
+      }
+    },
+    CollectibleScreen: {
+      screen: CollectibleScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    CollectibleDetailScreen: {
+      screen: CollectibleDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    CollectibleListScreen: {
+      screen: CollectibleListScreen,
       navigationOptions: {
         header: null
       }

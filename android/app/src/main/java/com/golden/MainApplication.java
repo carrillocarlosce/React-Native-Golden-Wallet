@@ -3,6 +3,10 @@ package com.golden;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
+import cl.json.RNSharePackage;
+import cl.json.ShareApplication;
+
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.oblador.shimmer.RNShimmerPackage;
 import com.rnfingerprint.FingerprintAuthPackage;
@@ -31,7 +35,7 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends Application implements ReactApplication, ShareApplication {
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
@@ -43,6 +47,8 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new RNViewShotPackage(),
+            new RNSharePackage(),
                     new RNShimmerPackage(),
                     new FingerprintAuthPackage(),
                     new SplashScreenReactPackage(),
@@ -77,5 +83,10 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
+    }
+
+    @Override
+    public String getFileProviderAuthority() {
+        return "io.goldenwallet.provider";
     }
 }

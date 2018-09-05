@@ -9,8 +9,8 @@ import {
   Platform,
   Clipboard
 } from 'react-native'
-import QRCode from 'react-native-qrcode'
 import PropsType from 'prop-types'
+import QRCode from 'react-native-qrcode'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -30,7 +30,7 @@ export default class ExportPrivateKeyScreen extends Component {
   }
 
   render() {
-    const { pk, walletName, address } = this.props.navigation ? this.props.navigation.state.params : {}
+    const { pk, walletName } = this.props.navigation ? this.props.navigation.state.params : {}
     return (
       <SafeAreaView style={styles.container}>
         <NavigationHeader

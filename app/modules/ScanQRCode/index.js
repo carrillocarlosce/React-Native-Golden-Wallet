@@ -29,20 +29,6 @@ const topPadding = isIphoneX() ? 64 : marginTop + 20
 const heightCamera = height - heightBottomView - topPadding - bottomPadding
 const ratio = 0.3
 
-const _getQRCode = (url) => {
-  if (url) {
-    QRCode.decode(url, (error, result) => {
-      if (error === null) {
-        HapticHandler.NotificationSuccess()
-        this.props.navigation.state.params.returnData(result.toLowerCase())
-        this.setState({ showCamera: false })
-        this.props.navigation.goBack()
-      } else {
-        NavStore.popupCustom.show('Can’t detect this code')
-      }
-    })
-  }
-}
 @observer
 export default class ScanQRCodeScreen extends Component {
   static propTypes = {
@@ -99,6 +85,21 @@ export default class ScanQRCodeScreen extends Component {
         this.resetCamera()
       }
     })
+  }
+
+  _getQRCode = (url) => {
+    if (url) {
+      QRCode.decode(url, (error, result) => {
+        if (error === null) {
+          HapticHandler.NotificationSuccess()
+          this.props.navigation.state.params.returnData(result.toLowerCase())
+          this.setState({ showCamera: false })
+          this.props.navigation.goBack()
+        } else {
+          NavStore.popupCustom.show('Can’t detect this code')
+        }
+      })
+    }
   }
 
   showPopupPermissionCamera() {
@@ -188,7 +189,7 @@ export default class ScanQRCodeScreen extends Component {
         this.showPopupPermissionPhoto()
       } else {
         const url = Platform.OS === 'ios' ? res.uri : res.path
-        _getQRCode(url)
+        this._getQRCode(url)
       }
     })
   }

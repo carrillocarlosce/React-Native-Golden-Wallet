@@ -130,3 +130,14 @@ export const changelogsList = () => {
   const url = `${URL.Skylab.apiURL()}/changelogs`
   return caller.get(url, {}, true)
 }
+
+export const fetchCollectibles = (address) => {
+  const url = `${URL.OpenSea.apiURL()}/assets`
+  const data = {
+    limit: 100,
+    order_by: 'auction_created_date',
+    order_direction: 'desc',
+    owner: address
+  }
+  return caller.get(url, data, true)
+}
