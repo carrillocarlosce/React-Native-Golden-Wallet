@@ -98,17 +98,17 @@ export default class ManageWalletDetailScreen extends Component {
           keyExtractor={v => v.mainText}
           scrollEnabled={false}
           renderItem={({ item, index }) => {
-            if (index == this.manageWalletStore.options.length - 1) {
-              return (
-                <SettingItem
-                  mainText={item.mainText}
-                  disable
-                  type="switch"
-                  enableSwitch={enableNotif}
-                // onSwitch={this.onNotificationSwitch(!enableNotif)}
-                />
-              )
-            }
+            // if (index == this.manageWalletStore.options.length - 1) {
+            //   return (
+            //     <SettingItem
+            //       mainText={item.mainText}
+            //       disable
+            //       type="switch"
+            //       enableSwitch={enableNotif}
+            //     // onSwitch={this.onNotificationSwitch(!enableNotif)}
+            //     />
+            //   )
+            // }
             if (index == 1 && !this.shouldShowExportPrivateKey) {
               return (
                 <SettingItem

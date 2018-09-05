@@ -252,6 +252,24 @@ const HomeStack = StackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    DAppListScreen: {
+      screen: DAppListScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppBrowserScreen: {
+      screen: DAppBrowserScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppConfirmScreen: {
+      screen: DAppConfirmScreen,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {
@@ -350,33 +368,6 @@ const CreateWalletStack = StackNavigator(
   }
 )
 
-const DAppStack = StackNavigator(
-  {
-    DAppListScreen: {
-      screen: DAppListScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DAppBrowserScreen: {
-      screen: DAppBrowserScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DAppConfirmScreen: {
-      screen: DAppConfirmScreen,
-      navigationOptions: {
-        header: null
-      }
-    }
-  },
-  {
-    initialRouteName: 'DAppListScreen',
-    cardStyle: { backgroundColor: AppStyle.backgroundColor }
-  }
-)
-
 const Router = StackNavigator(
   {
     HomeStack: {
@@ -444,12 +435,6 @@ const Router = StackNavigator(
     },
     EnraseNotifScreen: {
       screen: EnraseNotifScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DAppStack: {
-      screen: DAppStack,
       navigationOptions: {
         header: null
       }

@@ -29,7 +29,7 @@ export default class DAppListScreen extends Component {
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
-            title: 'Dapp',
+            title: 'ĐApp',
             icon: null,
             button: images.backButton
           }}
@@ -38,7 +38,7 @@ export default class DAppListScreen extends Component {
         <FlatList
           style={{ marginTop: 30, marginBottom: isIPX ? 68 : 34 }}
           data={dumpData}
-          keyExtractor={v => v.title}
+          keyExtractor={(v, i) => `${v.title}-${i}`}
           renderItem={({ item, index }) =>
             (
               <View>
@@ -75,7 +75,7 @@ const dumpData = [
     url: 'https://skylab.vn/voting'
   },
   {
-    title: 'Skylab',
+    title: 'Kyber Network',
     subTitle: 'Instant and Secure Token to Token Swaps',
     url: 'https://web3.kyber.network'
   },

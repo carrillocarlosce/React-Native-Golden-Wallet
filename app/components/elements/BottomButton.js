@@ -58,6 +58,7 @@ export default class BottomButton extends Component {
     this.isPress = true
     const { onPress } = this.props
     Keyboard.dismiss()
+    setTimeout(() => { this.isPress = false }, 500)
     onPress()
   }
 

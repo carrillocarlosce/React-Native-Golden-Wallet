@@ -277,8 +277,12 @@ export default class HomeScreen extends Component {
   }
 
   _goToDapp = () => {
+    if (!MainStore.appState.selectedWallet.canSendTransaction) {
+      NavStore.popupCustom.show('Your wallet is read only')
+      return
+    }
     MainStore.goToDApp()
-    NavStore.pushToScreen('DAppStack')
+    NavStore.pushToScreen('DAppListScreen')
   }
 
   checkPrivateKey(privateKey) {
@@ -327,7 +331,9 @@ export default class HomeScreen extends Component {
             }}
           />
           <View
-            style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+            style={{
+              flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+            }}
           >
             <Animated.Text
               style={{

@@ -56,7 +56,7 @@ export default class DAppBrowserScreen extends Component {
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
-            title: 'DApp Browser',
+            title: 'ĐApp Browser',
             icon: null,
             button: images.backButton
           }}
