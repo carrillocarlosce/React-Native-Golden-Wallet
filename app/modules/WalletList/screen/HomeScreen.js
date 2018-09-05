@@ -367,7 +367,7 @@ export default class HomeScreen extends Component {
                 }}
                 onPress={this._goToDapp}
               >
-                <Text style={{ color: AppStyle.mainColor }}>Đapp Browser</Text>
+                <Text style={{ color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>Đapp Browser</Text>
               </TouchableOpacity>
             </Animated.View>
           </View>

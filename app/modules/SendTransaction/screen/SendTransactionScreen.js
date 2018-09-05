@@ -7,58 +7,29 @@ import {
   Platform,
   TouchableOpacity,
   Image,
-  Dimensions,
-  Animated
+  Dimensions
 } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
-import debounce from 'lodash.debounce'
 import { NavigationActions } from 'react-navigation'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import Modal from '../../../../Libs/react-native-modalbox'
 import constant from '../../../commons/constant'
-import KeyboardButton from '../elements/KeyboardButton'
 import AnimationInput from '../elements/AnimationInput'
 import SelectedCoinScreen from './SelectedCoinScreen'
-import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
 import Config from '../../../AppStores/stores/Config'
 import NavStore from '../../../AppStores/NavStore'
+import KeyBoard from '../elements/Keyboard'
 
 // const BN = require('bn.js')
 
 const { height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-const isSmallScreen = height < 650
 const isIPX = height === 812
 
-const dataNumber1 = [
-  { number: '1' },
-  { number: '2' },
-  { number: '3' }
-]
-const dataNumber2 = [
-  { number: '4' },
-  { number: '5' },
-  { number: '6' }
-]
-const dataNumber3 = [
-  { number: '7' },
-  { number: '8' },
-  { number: '9' }
-]
-const dataNumber4 = [
-  {
-    number: '.'
-  },
-  { number: '0' },
-  {
-    icon: images.imgDeletePin,
-    actions: 'delete'
-  }
-]
 @observer
 export default class SendTransactionScreen extends Component {
   static propTypes = {
@@ -79,26 +50,8 @@ export default class SendTransactionScreen extends Component {
     }
   }
 
-  _onKeyPress = debounce((text) => {
-    HapticHandler.ImpactLight()
-    this.amountStore.add({ text })
-  }, 0)
-
-  _onBackPress = debounce(() => {
-    this.amountStore.remove()
-  }, 0)
-
-  _onLongPress = debounce(() => {
-    this.amountStore.clearAll()
-  }, 0)
-
-  _onMaxPress = () => {
-    this.amountStore.max()
-  }
-
   _onCancelTrasaction = () => {
     this.props.navigation.dispatch(NavigationActions.back())
-    // MainStore.clearSendStore()
   }
 
   _onSendPress = () => {
@@ -167,48 +120,6 @@ export default class SendTransactionScreen extends Component {
     )
   }
 
-  renderNumber(arrayNumber) {
-    const nums = arrayNumber.map((num, i) => {
-      if (num.number) {
-        return (
-          <KeyboardButton
-            key={`${num.number}`}
-            style={styles.numberField}
-            content={num.number}
-            contentStyle={styles.numberText}
-            onPress={() => this._onKeyPress(num.number)}
-          />
-        )
-      }
-      return (
-        <TouchableOpacity
-          key={num.actions}
-          onLongPress={() => {
-            this._onLongPress()
-          }}
-          onPress={() => {
-            HapticHandler.ImpactLight()
-            if (num.actions === 'delete') {
-              this._onBackPress()
-            }
-          }}
-        >
-          <Animated.View style={styles.numberField} >
-            <Image
-              source={num.icon}
-            />
-          </Animated.View >
-        </TouchableOpacity>
-      )
-    })
-
-    return (
-      <View style={styles.arrayNumber}>
-        {nums}
-      </View>
-    )
-  }
-
   renderInput = (data, subData, postfix) => {
     return (
       <View>
@@ -218,25 +129,6 @@ export default class SendTransactionScreen extends Component {
           postfix={postfix}
           subData={subData}
         />
-      </View>
-    )
-  }
-
-  renderKeyboard = () => {
-    return (
-      <View
-        style={styles.keyboard}
-      >
-        <TouchableOpacity
-          style={styles.maxButton}
-          onPress={this._onMaxPress}
-        >
-          <Text style={{ fontSize: 16, color: '#4A90E2', fontFamily: 'OpenSans-Semibold' }}>Max</Text>
-        </TouchableOpacity>
-        {this.renderNumber(dataNumber1)}
-        {this.renderNumber(dataNumber2)}
-        {this.renderNumber(dataNumber3)}
-        {this.renderNumber(dataNumber4)}
       </View>
     )
   }
@@ -256,7 +148,6 @@ export default class SendTransactionScreen extends Component {
   }
 
   render() {
-    // console.log(new BigNumber('111111.12e+18').toString(10))
     return (
       <SafeAreaView
         style={styles.container}
@@ -265,7 +156,7 @@ export default class SendTransactionScreen extends Component {
           {this.renderHeader()}
           {this.renderInput(this.amountStore.getAmountText, this.amountStore.amountSubTextString, this.amountStore.postfix)}
           <View>
-            {this.renderKeyboard()}
+            <KeyBoard />
             {this.renderSendBtn()}
           </View>
         </View>
@@ -325,29 +216,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20
   },
-  numberField: {
-    width: isSmallScreen ? 65 : 75,
-    height: isSmallScreen ? 65 : 75,
-    // borderRadius: 37.5,
-    // backgroundColor: AppStyle.colorPinCode,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 13
-  },
-  numberText: {
-    // fontFamily: 'OpenSans-Semibold',
-    fontSize: 30,
-    color: 'white'
-  },
-  arrayNumber: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-    // marginTop: height * 0.01
-  },
-  keyboard: {
-    marginLeft: 30,
-    marginRight: 30
-  },
   sendTo: {
     margin: 20,
     alignItems: 'center',
@@ -359,15 +227,5 @@ const styles = StyleSheet.create({
   sendText: {
     fontSize: 18,
     fontFamily: 'OpenSans-Semibold'
-  },
-  maxButton: {
-    height: 40,
-    paddingLeft: 32,
-    paddingRight: 32,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: '#0E1428',
-    marginBottom: 10
   }
 })

@@ -65,18 +65,43 @@ const styles = StyleSheet.create({
 
 const dumpData = [
   {
-    title: 'AirSwap',
+    title: 'Idex',
     subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
     url: 'https://idex.market/'
   },
   {
     title: 'Skylab',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    subTitle: 'A Simple Hello World Voting Application',
     url: 'https://skylab.vn/voting'
   },
   {
     title: 'Skylab',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    subTitle: 'Instant and Secure Token to Token Swaps',
     url: 'https://web3.kyber.network'
+  },
+  {
+    title: '0xproject',
+    subTitle: 'Powering decentralized exchange',
+    url: 'https://www.0xproject.com'
+  },
+  {
+    title: 'Opensea',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://opensea.io'
+  },
+  {
+    title: 'Etheremon',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://www.etheremon.com'
+  },
+  {
+    title: 'Forkdelta',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://forkdelta.app'
+  },
+  {
+    title: 'Cryptokitties',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://www.cryptokitties.co'
   }
 ]
