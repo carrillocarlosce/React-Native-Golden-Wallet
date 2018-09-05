@@ -310,6 +310,12 @@ const DAppStack = StackNavigator(
         header: null
       }
     },
+    DAppBrowserScreen: {
+      screen: DAppBrowserScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
     DAppConfirmScreen: {
       screen: DAppConfirmScreen,
       navigationOptions: {
