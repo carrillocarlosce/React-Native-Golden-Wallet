@@ -242,7 +242,11 @@ export default class PopupCustom extends Component {
         visible={visible}
         onRequestClose={() => { }}
       >
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchableWithoutFeedback onPress={() => {
+          Keyboard.dismiss()
+          this.hide()
+        }}
+        >
           <Animated.View
             style={[styles.overlayPopup, {
               transform: [

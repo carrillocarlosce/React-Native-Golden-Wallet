@@ -48,6 +48,10 @@ import DAppConfirmScreen from './modules/DAppBrowser/screen/DappConfirmScreen'
 import CollectibleScreen from './modules/Collectibles/screen/CollectibleScreen'
 import CollectibleDetailScreen from './modules/Collectibles/screen/CollectibleDetailScreen'
 import CollectibleListScreen from './modules/Collectibles/screen/CollectibleListScreen'
+import ManageWalletDetailScreen from './modules/Setting/screen/ManageWalletDetailScreen'
+import EditWalletNameScreen from './modules/Setting/screen/EditWalletNameScreen'
+import RemoveWalletScreen from './modules/Setting/screen/RemoveWalletScreen'
+import AddPrivateKeyScreen from './modules/Setting/screen/AddPrivateKeyScreen'
 
 const BackupStack = StackNavigator(
   {
@@ -131,6 +135,30 @@ const HomeStack = StackNavigator(
     },
     ManageWalletScreen: {
       screen: ManageWalletScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ManageWalletDetailScreen: {
+      screen: ManageWalletDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    EditWalletNameScreen: {
+      screen: EditWalletNameScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    RemoveWalletScreen: {
+      screen: RemoveWalletScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AddPrivateKeyScreen: {
+      screen: AddPrivateKeyScreen,
       navigationOptions: {
         header: null
       }
@@ -377,6 +405,13 @@ const Router = StackNavigator(
         header: null
       }
     },
+    // ManageWalletStack: {
+    //   screen: ManageWalletStack,
+    //   navigationOptions: {
+    //     header: null
+    //     // gesturesEnabled: false
+    //   }
+    // },
     BackupStack: {
       screen: BackupStack,
       navigationOptions: {

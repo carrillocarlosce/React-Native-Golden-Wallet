@@ -73,6 +73,8 @@ export default {
   CREATE_WALLET_SUCCESS: 'Create Wallet Success',
   IMPORT_WALLET_SUCCESS: 'Import Wallet Success',
 
-  SCAN_QR_FRAME: 'Automatically scan the QR code into the frame'
+  SCAN_QR_FRAME: 'Automatically scan the QR code into the frame',
+  EXISTED_WALLET_NAME: 'Wallet name already exists.',
+  NO_WALLET_NAME_FOUND: 'Wallet name does not match.'
 
 }
