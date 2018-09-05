@@ -18,11 +18,9 @@ import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import Spinner from '../../../components/elements/Spinner'
-import Starypto from '../../../../Libs/react-native-starypto'
 import BottomButton from '../../../components/elements/BottomButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
-import NavStore from '../../../AppStores/NavStore'
 import AppStyle from '../../../commons/AppStyle'
 import ImportMnemonicStore from '../stores/ImportMnemonicStore'
 import ActionButton from '../../../components/elements/ActionButton'
@@ -132,11 +130,7 @@ export default class ImportViaMnemonicScreen extends Component {
   _handleConfirm = () => {
     Keyboard.dismiss()
     const { navigation } = this.props
-    const { mnemonic } = this.importMnemonicStore
-    if (!Starypto.validateMnemonic(mnemonic)) {
-      NavStore.popupCustom.show('Invalid mnemonic')
-      return
-    }
+
     this.importMnemonicStore.generateWallets()
       .then((res) => {
         navigation.navigate('ChooseAddressScreen')
