@@ -51,7 +51,7 @@ export default class GoldenDWebBrowser extends Component {
     //   addressHex, network, infuraAPIKey, jsContent
     // } = this.props
     // this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))
-    setTimeout(() => this.test(), 10000)
+    // setTimeout(() => this.test(), 10000)
   }
 
   _onBridgeMessage(resTX) {
@@ -93,7 +93,7 @@ export default class GoldenDWebBrowser extends Component {
   executeCallback(id, error, value) {
     const v = (typeof value === 'object') ? JSON.stringify(value) : `${value}`
     const e = error ? `'${error}'` : 'null'
-    this.webview.evaluateJavaScript(`executeCallback(${id}, ${e}, '${v}')`)
+    this.webview.sendToBridge(`executeCallback(${id}, ${e}, '${v}')`)
   }
 
   test() {
@@ -170,6 +170,7 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
     let wssUrl = getInfuraWSSURL(chainID, infuraAPIKey);
 
     function executeCallback (id, error, value) {
+      console.log(JSON.stringify(value))
       goldenProvider.executeCallback(id, error, value)
     }
 
@@ -181,7 +182,6 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
         address: addressHex,
         networkVersion: chainID,
         rpcUrl,
-        wssUrl,
         getAccounts: function (cb) {
           cb(null, [addressHex]) 
         },

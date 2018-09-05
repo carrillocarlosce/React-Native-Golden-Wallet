@@ -153,7 +153,6 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
         address: addressHex,
         networkVersion: chainID,
         rpcUrl,
-        wssUrl,
         getAccounts: function (cb) {
           cb(null, [addressHex]) 
         },
