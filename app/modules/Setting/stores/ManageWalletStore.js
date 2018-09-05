@@ -21,10 +21,10 @@ export default class ManageWalletStore {
       onPress: () => {
         this.onExportPrivateKey()
       }
-    },
-    {
-      mainText: 'Enable Notification'
     }
+    // {
+    //   mainText: 'Enable Notification'
+    // }
   ]
 
   onExportPrivateKey = () => {
