@@ -75,7 +75,7 @@ const dumpData = [
     url: 'https://skylab.vn/voting'
   },
   {
-    title: 'Skylab',
+    title: 'Kyber Network',
     subTitle: 'Instant and Secure Token to Token Swaps',
     url: 'https://web3.kyber.network'
   },
