@@ -8,27 +8,19 @@ import {
 import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
-import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
-import MoreButton from '../../../components/elements/MoreButton'
-import AddressElement from '../../../components/elements/AddressElement';
-import Helper from '../../../commons/Helper';
+import AddressElement from '../../../components/elements/AddressElement'
+import Helper from '../../../commons/Helper'
 
 @observer
 export default class ManageWalletItem extends Component {
   static propTypes = {
     style: PropTypes.object,
-    index: PropTypes.number.isRequired,
-    action: PropTypes.func
-    // onDeletePress: PropTypes.func,
-    // onEditPress: PropTypes.func
+    index: PropTypes.number.isRequired
   }
 
   static defaultProps = {
-    style: {},
-    action: () => { }
-    // onEditPress: () => { },
-    // onDeletePress: () => { }
+    style: {}
   }
 
   get wallet() {
@@ -38,11 +30,10 @@ export default class ManageWalletItem extends Component {
 
   render() {
     const {
-      style, action, index
+      style, index
     } = this.props
-    console.log(this.wallet)
 
-    const { title, address, totalBalance } = this.wallet
+    const { title, address, totalBalanceETH } = this.wallet
     const borderBottomWidth = {
       borderBottomWidth: index == 9 ? 0 : 1
     }
@@ -65,7 +56,7 @@ export default class ManageWalletItem extends Component {
           </View>
           {/* <MoreButton onPress={action} /> */}
           <Text style={styles.balance}>
-            {`${Helper.formatETH(totalBalance.toString(10))} ETH`}
+            {`${Helper.formatETH(totalBalanceETH)} ETH`}
           </Text>
         </View>
       </TouchableWithoutFeedback >
@@ -86,12 +77,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
     color: '#3B7CEC'
-  },
-  address: {
-    fontSize: 12,
-    color: AppStyle.secondaryTextColor,
-    fontWeight: 'bold',
-    marginTop: 10
   },
   balance: {
     fontSize: 16,
