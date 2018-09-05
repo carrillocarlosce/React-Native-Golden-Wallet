@@ -21,5 +21,8 @@ export default {
     apiURL: () => `http://wallet.skylab.vn`,
     privacyURL: () => `https://goldenwallet.io/privacy`,
     termsURL: () => `https://goldenwallet.io/terms`
+  },
+  OpenSea: {
+    apiURL: () => `https://opensea-api.herokuapp.com`
   }
 }
