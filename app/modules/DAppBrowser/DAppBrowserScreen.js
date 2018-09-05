@@ -7,14 +7,11 @@ import {
 } from 'react-native'
 import RNFS from 'react-native-fs'
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
-// import DAppBrowserStore from './DAppBrowserStore'
 
 import NavigationHeader from '../../components/elements/NavigationHeader'
 import images from '../../commons/images'
 import LayoutUtils from '../../commons/LayoutUtils'
 import NavStore from '../../AppStores/NavStore'
-import DAppStore from './stores/DAppStore'
-import DappConfirmScreen from './screen/DappConfirmScreen'
 import MainStore from '../../AppStores/MainStore'
 
 const { width, height } = Dimensions.get('window')
@@ -46,14 +43,14 @@ export default class DAppBrowserScreen extends Component {
 
   onSignTransaction = ({ id, object }) => {
     console.warn('onSign: ', object)
-    // DAppBrowserStore.setUnconfirmTransaction(object)
-    MainStore.goToDApp()
+    MainStore.dapp.setTransaction(id, object)
     NavStore.pushToScreen('DAppConfirmScreen')
   }
 
   render() {
     // const { walletAddress } = this.store
     const walletAddress = MainStore.appState.selectedWallet.address
+    const { url } = MainStore.dapp
     return (
       <View style={styles.container}>
         <NavigationHeader
@@ -67,11 +64,12 @@ export default class DAppBrowserScreen extends Component {
         />
         {jsContent !== '' &&
           <DAppBrowser
+            ref={ref => (MainStore.dapp.setWebview(ref))}
             style={styles.container}
-            uri="https://web3.kyber.network"
+            uri={url}
             addressHex={walletAddress}
-            network="mainnet"
-            infuraAPIKey="llyrtzQ3YhkdESt2Fzrk"
+            network={MainStore.appState.networkName}
+            infuraAPIKey="qMZ7EIind33NY9Azu836"
             jsContent={jsContent}
             onSignTransaction={this.onSignTransaction}
           />

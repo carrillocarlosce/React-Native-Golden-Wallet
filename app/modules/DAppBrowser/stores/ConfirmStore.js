@@ -12,9 +12,11 @@ export default class ConfirmStore {
   @observable gasPrice = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
-  // @action setToAddress(address) {
-  //   this.transaction.to = address
-  // }
+  @observable.ref to = ''
+
+  @action setToAddress(address) {
+    this.to = address
+  }
 
   @action setAdjust(value) {
     this.adjust = value

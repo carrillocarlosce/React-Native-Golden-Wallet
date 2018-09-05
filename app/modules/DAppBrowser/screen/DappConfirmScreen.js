@@ -427,7 +427,7 @@ export default class DappConfirmScreen extends Component {
   }
 
   _onSend(advanceStore) {
-    MainStore.dapp.sendTx()
+    MainStore.dapp.signTransaction()
   }
 
   _onCancel() {

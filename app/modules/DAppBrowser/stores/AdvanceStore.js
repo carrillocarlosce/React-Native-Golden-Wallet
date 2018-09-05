@@ -58,9 +58,9 @@ export default class AdvanceStore {
   }
 
   _onDone() {
-    MainStore.sendTransaction.confirmStore.setGasLimit(this.gasLimit)
-    MainStore.sendTransaction.confirmStore.setGasPrice(this.gasPrice)
-    MainStore.sendTransaction.confirmStore.validateAmount()
+    MainStore.dapp.confirmStore.setGasLimit(this.gasLimit)
+    MainStore.dapp.confirmStore.setGasPrice(this.gasPrice)
+    MainStore.dapp.confirmStore.validateAmount()
   }
 
   @computed get formatedTmpFee() {
