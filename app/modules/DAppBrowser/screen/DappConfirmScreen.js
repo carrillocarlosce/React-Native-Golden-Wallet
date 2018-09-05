@@ -31,7 +31,7 @@ const isIPX = height === 812
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() + 20 : 40
 
 @observer
-export default class ConfirmScreen extends Component {
+export default class DappConfirmScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -47,12 +47,12 @@ export default class ConfirmScreen extends Component {
   }
 
   componentWillMount() {
-    MainStore.sendTransaction.confirmStore.estimateGas()
-    MainStore.sendTransaction.confirmStore.validateAmount()
+    // MainStore.dapp.confirmStore.estimateGas()
+    // MainStore.dapp.confirmStore.validateAmount()
   }
 
   onDefaultPress() {
-    const { advanceStore } = MainStore.sendTransaction
+    const { advanceStore } = MainStore.dapp
     const { gasPriceEstimate } = AppState
     advanceStore.reset()
     advanceStore.setGasLimit('21000')
@@ -60,7 +60,7 @@ export default class ConfirmScreen extends Component {
   }
 
   onDone() {
-    const { advanceStore } = MainStore.sendTransaction
+    const { advanceStore } = MainStore.dapp
     Animated.parallel([
       Animated.timing(
         this.state.translateX,
@@ -84,7 +84,7 @@ export default class ConfirmScreen extends Component {
   }
 
   showAdvance = () => {
-    MainStore.sendTransaction.confirmStore._onShowAdvance()
+    MainStore.dapp.confirmStore._onShowAdvance()
     this.setState({ isShowAdvance: true }, () => {
       Animated.parallel([
         Animated.timing(
@@ -108,7 +108,7 @@ export default class ConfirmScreen extends Component {
   }
 
   hideAdvance = () => {
-    const { advanceStore } = MainStore.sendTransaction
+    const { advanceStore } = MainStore.dapp
     if (advanceStore.validateGas) {
       this.onDone()
     } else {
@@ -179,7 +179,7 @@ export default class ConfirmScreen extends Component {
   }
 
   _renderConfirmContent(ethAmount, usdAmount, from, to, fee) {
-    const { confirmStore } = MainStore.sendTransaction
+    const { confirmStore } = MainStore.dapp
     return (
       <View>
         <View
@@ -401,7 +401,7 @@ export default class ConfirmScreen extends Component {
           <Text
             style={{
               color: AppStyle.secondaryTextColor,
-              fontFamily: 'OpenSans-Semibold',
+              fontFamily: 'OpenSans-Light',
               fontSize: 20,
               marginTop: 10
             }}
@@ -427,7 +427,7 @@ export default class ConfirmScreen extends Component {
   }
 
   _onSend(advanceStore) {
-    MainStore.sendTransaction.sendTx()
+    MainStore.dapp.signTransaction()
   }
 
   _onCancel() {
@@ -518,9 +518,9 @@ export default class ConfirmScreen extends Component {
   }
 
   _onPressAction = (gasPrice, adj) => {
-    MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
-    MainStore.sendTransaction.confirmStore.validateAmount()
-    MainStore.sendTransaction.confirmStore.setAdjust(adj)
+    MainStore.dapp.confirmStore.setGasPrice(gasPrice)
+    MainStore.dapp.confirmStore.validateAmount()
+    MainStore.dapp.confirmStore.setAdjust(adj)
     this.actionSheet.hide()
   }
 
@@ -535,7 +535,7 @@ export default class ConfirmScreen extends Component {
       isFocusGasLimit,
       isFocusGasPrice
     } = this.state
-    const { advanceStore, confirmStore } = MainStore.sendTransaction
+    const { advanceStore, confirmStore } = MainStore.dapp
     const {
       gasLimit,
       gasPrice,
@@ -548,7 +548,7 @@ export default class ConfirmScreen extends Component {
       formatedAmount,
       formatedDolar
     } = confirmStore
-    const to = MainStore.sendTransaction.address
+    const { to } = MainStore.dapp.confirmStore
     const { address } = MainStore.appState.selectedWallet
     return (
       <TouchableWithoutFeedback onPress={this._onCancelAction}>

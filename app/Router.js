@@ -43,6 +43,8 @@ import EnraseNotifScreen from './modules/Unlock/screen/EnraseNotifScreen'
 import TransactionDetailScreen from './modules/TransactionDetail/screen/TransactionDetailScreen'
 import DAppBrowserScreen from './modules/DAppBrowser/DAppBrowserScreen'
 import DAppListScreen from './modules/DAppBrowser/screen/DAppListScreen'
+import ConfirmScreen from './modules/SendTransaction/screen/ConfirmScreen'
+import DAppConfirmScreen from './modules/DAppBrowser/screen/DappConfirmScreen'
 import CollectibleScreen from './modules/Collectibles/screen/CollectibleScreen'
 import CollectibleDetailScreen from './modules/Collectibles/screen/CollectibleDetailScreen'
 import CollectibleListScreen from './modules/Collectibles/screen/CollectibleListScreen'
@@ -249,6 +251,12 @@ const CreateSendTransactionStack = StackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    ConfirmScreen: {
+      screen: ConfirmScreen,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {
@@ -318,6 +326,18 @@ const DAppStack = StackNavigator(
   {
     DAppListScreen: {
       screen: DAppListScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppBrowserScreen: {
+      screen: DAppBrowserScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DAppConfirmScreen: {
+      screen: DAppConfirmScreen,
       navigationOptions: {
         header: null
       }
