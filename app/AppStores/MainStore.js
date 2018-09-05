@@ -6,7 +6,7 @@ import appState from './AppState'
 import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
 import ChangePincodeStore from '../modules/ChangePincode/stores/ChangePincodeStore'
-import DAppStore from '../modules/DAppBrowser/stores/DAppStore';
+import DAppStore from '../modules/DAppBrowser/stores/DAppStore'
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
