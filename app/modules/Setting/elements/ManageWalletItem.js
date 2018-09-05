@@ -16,11 +16,19 @@ import Helper from '../../../commons/Helper'
 export default class ManageWalletItem extends Component {
   static propTypes = {
     style: PropTypes.object,
-    index: PropTypes.number.isRequired
+    index: PropTypes.number.isRequired,
+    action: PropTypes.func,
+    onPress: PropTypes.func
+    // onDeletePress: PropTypes.func,
+    // onEditPress: PropTypes.func
   }
 
   static defaultProps = {
-    style: {}
+    style: {},
+    action: () => { },
+    onPress: () => { }
+    // onEditPress: () => { },
+    // onDeletePress: () => { }
   }
 
   get wallet() {
@@ -30,7 +38,7 @@ export default class ManageWalletItem extends Component {
 
   render() {
     const {
-      style, index
+      style, action, index, onPress = () => { }
     } = this.props
 
     const { title, address, totalBalanceETH } = this.wallet
@@ -38,7 +46,9 @@ export default class ManageWalletItem extends Component {
       borderBottomWidth: index == 9 ? 0 : 1
     }
     return (
-      <TouchableWithoutFeedback>
+      <TouchableWithoutFeedback
+        onPress={onPress}
+      >
         <View style={[styles.container, borderBottomWidth, style]}>
           <View style={{}}>
             <Text style={styles.name}>{title}</Text>

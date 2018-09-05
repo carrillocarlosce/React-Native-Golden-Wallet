@@ -22,8 +22,6 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
-import NotificationStore from '../../../AppStores/stores/Notification'
-import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -57,121 +55,8 @@ export default class ListWalletScreen extends Component {
     })
   }
 
-  onAddPrivateKey = () => {
-    NavStore.pushToScreen('ImplementPrivateKeyScreen', { index: this.selectedIndex })
-    this.actionSheet.hide()
-  }
-
   onCancelAction = () => {
     this.actionSheet.hide()
-  }
-
-  onEdit = () => {
-    this.actionSheet.hide(() => {
-      NavStore.popupCustom.show(
-        'Wallet Name',
-        [
-          {
-            text: 'Cancel',
-            onClick: () => {
-              NavStore.popupCustom.hide()
-            }
-          },
-          {
-            text: 'OK',
-            onClick: async (text) => {
-              this.selectedWallet.title = text
-              await this.manageWalletStore.editWallet(this.selectedWallet)
-              NotificationStore.addWallets()
-              NavStore.popupCustom.hide()
-            }
-          }
-        ],
-        'Enter your wallet name',
-        'input',
-        false,
-        this.selectedWallet.title,
-        true
-      )
-    })
-  }
-
-  onExportPrivateKey = () => {
-    this.actionSheet.hide(() => {
-      NavStore.popupCustom.show(
-        'WARNING!',
-        [
-          {
-            text: 'Cancel',
-            onClick: () => {
-              NavStore.popupCustom.hide()
-            }
-          },
-          {
-            text: 'Continue',
-            onClick: async (text) => {
-              NavStore.popupCustom.hide()
-              NavStore.lockScreen({
-                onUnlock: (pincode) => {
-                  NavStore.showLoading()
-                  const ds = new SecureDS(pincode)
-                  this.getPrivateKey(ds).then((pk) => {
-                    NavStore.hideLoading()
-                    NavStore.pushToScreen('ExportPrivateKeyScreen', {
-                      pk,
-                      walletName: this.selectedWallet.title
-                    })
-                  }).catch(e => NavStore.hideLoading())
-                }
-              }, true)
-            }
-          }
-        ],
-        'It is essential to understand that the Private Key is the most important and sensitive part of your account information.\n\nWhoever has knowledge of a Private Key has full control over the associated funds and assets.\n\nIt is important for restoring your account so you should never lose it, but also keep it top secret.'
-      )
-    })
-  }
-
-  onDelete = () => {
-    this.actionSheet.hide(() => {
-      NavStore.lockScreen({
-        onUnlock: (pincode) => {
-          NavStore.popupCustom.show(
-            'Remove Wallet',
-            [
-              {
-                text: 'Cancel',
-                onClick: () => {
-                  NavStore.popupCustom.hide()
-                }
-              },
-              {
-                text: 'Remove',
-                onClick: async (text) => {
-                  const { wallets, selectedWallet } = MainStore.appState
-                  const index = wallets.indexOf(selectedWallet)
-                  if (index === wallets.length - 1) {
-                    MainStore.appState.setSelectedWallet(null)
-                  }
-                  await this.manageWalletStore.removeWallet(this.selectedWallet)
-                  if (MainStore.appState.wallets.length === 0) {
-                    MainStore.appState.setSelectedWallet(null)
-                  }
-                  NavStore.popupCustom.hide()
-                }
-              }
-            ],
-            'Enter your wallet name to remove',
-            'input',
-            false,
-            this.selectedWallet.title,
-            true,
-            null,
-            true
-          )
-        }
-      }, true)
-    })
   }
 
   getPrivateKey(ds) {
@@ -197,6 +82,12 @@ export default class ListWalletScreen extends Component {
         action={() => {
           this.selectedIndex = index
           this.onActionPress(index)
+        }}
+        onPress={() => {
+          // manageWalletStore.selectedWallet = this.wallets[index]
+          NavStore.pushToScreen('ManageWalletDetailScreen', {
+            wallet: this.wallets[index]
+          })
         }}
       />
     )

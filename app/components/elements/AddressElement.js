@@ -6,7 +6,7 @@ import {
   Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
-import AppStyle from '../../commons/AppStyle';
+import AppStyle from '../../commons/AppStyle'
 
 export default class AddressElement extends PureComponent {
   static propTypes = {
