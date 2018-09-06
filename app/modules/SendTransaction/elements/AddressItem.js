@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
-import AddressElement from '../../../components/elements/AddressElement';
+import AddressElement from '../../../components/elements/AddressElement'
 
 export default class AddressItem extends PureComponent {
   static propTypes = {
@@ -60,12 +60,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'OpenSans-Semibold',
     color: '#4a90e2'
-  },
-  address: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNewBold',
-    fontWeight: 'bold',
-    fontSize: 12,
-    color: AppStyle.warmGreyColor,
-    marginTop: 9
   }
 })

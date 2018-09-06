@@ -23,7 +23,7 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import AppState from '../../../AppStores/AppState'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
-import commonStyles from '../../../commons/commonStyles'
+import AddressElement from '../../../components/elements/AddressElement'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
@@ -204,26 +204,29 @@ export default class ConfirmScreen extends Component {
             <Text style={styles.key}>
               From
             </Text>
-            <Text
+            {/* <Text
               numberOfLines={1}
               ellipsizeMode="middle"
               style={[styles.value, commonStyles.fontAddress]}
             >
               {from}
-            </Text>
+            </Text> */}
+            <AddressElement
+              address={from}
+              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
+              style={{ width: 328 }}
+            />
           </View>
           <View style={styles.line} />
           <View style={styles.item}>
             <Text style={styles.key}>
               To
             </Text>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              style={[styles.value, commonStyles.fontAddress]}
-            >
-              {to}
-            </Text>
+            <AddressElement
+              address={to}
+              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
+              style={{ width: 328 }}
+            />
           </View>
           <View style={styles.line} />
           <View style={styles.item}>
