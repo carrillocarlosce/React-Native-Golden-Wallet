@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
+import AddressElement from '../../../components/elements/AddressElement';
 
 export default class AddressItem extends PureComponent {
   static propTypes = {
@@ -36,13 +37,11 @@ export default class AddressItem extends PureComponent {
           >
             {name}
           </Text>
-          <Text
-            style={styles.address}
-            numberOfLines={1}
-            ellipsizeMode="middle"
-          >
-            {address}
-          </Text>
+          <AddressElement
+            address={address}
+            textStyle={{ fontSize: 12, marginTop: 10 }}
+            style={{ width: 281 }}
+          />
         </View>
       </TouchableOpacity>
     )
