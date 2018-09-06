@@ -19,7 +19,6 @@ import PropTypes from 'prop-types'
 import Modal from 'react-native-modalbox'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
-import LayoutUtils from '../../../commons/LayoutUtils'
 import ScanQRCodeScreen from './ScanQRCodeScreen'
 import ChooseAddressScreen from './ChooseAddressScreen'
 import Checker from '../../../Handler/Checker'
@@ -29,10 +28,7 @@ import NavStore from '../../../AppStores/NavStore'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-// const isSmallScreen = height < 569
 const isIPX = height === 812
-// const extraTop = LayoutUtils.getExtraTop()
-const extraBottom = LayoutUtils.getExtraBottom()
 
 @observer
 export default class AdressInputScreen extends Component {
@@ -109,11 +105,6 @@ export default class AdressInputScreen extends Component {
     const { addressInputStore } = MainStore.sendTransaction
     Keyboard.dismiss()
     addressInputStore.onConfirm()
-    // if (Checker.checkAddress(address)) {
-    //   this.confirmModal && this.confirmModal.open()
-    // }
-    // const { confirmModal } = MainStore.sendTransaction.addressInputStore
-    // confirmModal && confirmModal.open()
     NavStore.pushToScreen('ConfirmScreen')
   }
 
@@ -152,8 +143,6 @@ export default class AdressInputScreen extends Component {
         <TouchableOpacity
           onPress={() => {
             Keyboard.dismiss()
-            // const { qrCodeModal } = MainStore.sendTransaction.addressInputStore
-            // qrCodeModal && qrCodeModal.open()
             this.gotoScan()
           }}
         >
@@ -165,7 +154,6 @@ export default class AdressInputScreen extends Component {
             >
               Scan QR Code
             </Text>
-            {/* <Image source={images.icon_qrcode2} style={styles.buttonIcon} /> */}
           </View>
         </TouchableOpacity>
         <View style={styles.line} />
@@ -184,7 +172,6 @@ export default class AdressInputScreen extends Component {
             >
               Address Book
             </Text>
-            {/* <Image source={images.addressIcon} style={styles.buttonIcon} /> */}
           </View>
         </TouchableOpacity>
       </View>
@@ -292,56 +279,6 @@ export default class AdressInputScreen extends Component {
     }
   }
 
-  // _renderConfirmModal = () => {
-  //   return (
-  //     <Modal
-  //       style={{
-  //         height: isIPX ? 530 : 500 + extraBottom,
-  //         zIndex: 20,
-  //         borderTopLeftRadius: 10,
-  //         borderTopRightRadius: 10,
-  //         overflow: 'hidden',
-  //         backgroundColor: AppStyle.backgroundColor
-  //       }}
-  //       swipeToClose
-  //       position="bottom"
-  //       keyboardTopOffset={isIPX ? 30 : 22}
-  //       onClosed={() => {
-  //         const { advanceStore } = MainStore.sendTransaction
-  //         advanceStore.reset()
-  //       }}
-  //       ref={(ref) => { MainStore.sendTransaction.addressInputStore.confirmModal = ref }}
-  //     >
-  //       <View style={{ flex: 1 }}>
-  //         <View
-  //           style={{
-  //             alignSelf: 'center',
-  //             height: 3,
-  //             width: 45,
-  //             borderRadius: 1.5,
-  //             backgroundColor: AppStyle.secondaryTextColor,
-  //             position: 'absolute',
-  //             zIndex: 30,
-  //             top: 10
-  //           }}
-  //         />
-  //         <View
-  //           style={{
-  //             backgroundColor: AppStyle.backgroundColor,
-  //             flex: 1,
-  //             paddingTop: 30,
-  //             paddingBottom: isIPX ? 30 : 0
-  //           }}
-  //         >
-  //           <ConfirmScreen
-  //             ref={ref => (this.confirm = ref)}
-  //           />
-  //         </View>
-  //       </View>
-  //     </Modal>
-  //   )
-  // }
-
   renderHeader = (value) => {
     return (
       <View
@@ -373,7 +310,6 @@ export default class AdressInputScreen extends Component {
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback
-          // style={{ backgroundColor: AppStyle.backgroundColor }}
           onPress={() => { Keyboard.dismiss() }}
         >
           <View
@@ -430,8 +366,6 @@ export default class AdressInputScreen extends Component {
           </View>
         </TouchableWithoutFeedback>
         {this._renderAddressModal(addressInputStore)}
-        {/* {this._renderQRCodeModal()} */}
-        {/* {this._renderConfirmModal()} */}
       </View>
     )
   }
