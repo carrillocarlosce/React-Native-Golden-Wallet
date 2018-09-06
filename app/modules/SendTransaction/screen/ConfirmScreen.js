@@ -338,7 +338,7 @@ export default class ConfirmScreen extends Component {
               value={gasLimit}
               onFocus={() => this.setState({ isFocusGasLimit: true })}
               onBlur={() => this.setState({ isFocusGasLimit: false })}
-              keyboardType="number-pad"
+              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
               onChangeText={(t) => {
                 advanceStore.setGasLimit(t)
                 this.validateGasLimit(advanceStore, t)
@@ -370,7 +370,7 @@ export default class ConfirmScreen extends Component {
           <View>
             <InputWithAction
               ref={ref => (this.gasGwei = ref)}
-              keyboardType="number-pad"
+              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
               value={gasGwei}
               onFocus={() => this.setState({ isFocusGasPrice: true })}
               onBlur={() => this.setState({ isFocusGasPrice: false })}
