@@ -204,13 +204,6 @@ export default class ConfirmScreen extends Component {
             <Text style={styles.key}>
               From
             </Text>
-            {/* <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              style={[styles.value, commonStyles.fontAddress]}
-            >
-              {from}
-            </Text> */}
             <AddressElement
               address={from}
               textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
@@ -234,7 +227,7 @@ export default class ConfirmScreen extends Component {
               Fee
             </Text>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={[styles.value, { fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular', fontSize: 14 }]}>
+              <Text style={[styles.value, { fontFamily: 'OpenSans-Semibold', fontSize: 16 }]}>
                 {fee}
               </Text>
               <TouchableOpacity
