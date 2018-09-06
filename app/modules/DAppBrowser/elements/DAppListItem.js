@@ -6,10 +6,24 @@ import {
   Text,
   View
 } from 'react-native'
+import PropTypes from 'prop-types'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 
 export default class DAppListItem extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    subTitle: PropTypes.string,
+    onPress: PropTypes.func,
+    line: PropTypes.bool
+  }
+
+  static defaultProps = {
+    title: '',
+    subTitle: '',
+    onPress: () => {},
+    line: false
+  }
   render() {
     const {
       title,

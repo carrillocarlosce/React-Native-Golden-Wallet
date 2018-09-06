@@ -41,8 +41,12 @@ export default class ManageWalletDetailScreen extends Component {
     this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
   }
 
+  onNotificationSwitch(isEnable, wallet) {
+    this.manageWalletStore.switchEnableNotification(isEnable, wallet)
+  }
+
   get currentStateEnableNotification() {
-    return MainStore.appState.enableNotification
+    return this.wallet.enableNotification
   }
 
   get shouldShowExportPrivateKey() {
@@ -81,7 +85,8 @@ export default class ManageWalletDetailScreen extends Component {
       >
         <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ETH`}</Text>
         <AddressElement
-          style={{ marginTop: 15, width: width - 40 }}
+          style={{ marginTop: 15, width: 328 }}
+          textStyle={{ fontSize: 16 }}
           address={this.wallet.address}
         />
       </View>
@@ -98,17 +103,17 @@ export default class ManageWalletDetailScreen extends Component {
           keyExtractor={v => v.mainText}
           scrollEnabled={false}
           renderItem={({ item, index }) => {
-            // if (index == this.manageWalletStore.options.length - 1) {
-            //   return (
-            //     <SettingItem
-            //       mainText={item.mainText}
-            //       disable
-            //       type="switch"
-            //       enableSwitch={enableNotif}
-            //     // onSwitch={this.onNotificationSwitch(!enableNotif)}
-            //     />
-            //   )
-            // }
+            if (index == this.manageWalletStore.options.length - 1) {
+              return (
+                <SettingItem
+                  mainText={item.mainText}
+                  disable
+                  type="switch"
+                  enableSwitch={enableNotif}
+                  onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
+                />
+              )
+            }
             if (index == 1 && !this.shouldShowExportPrivateKey) {
               return (
                 <SettingItem

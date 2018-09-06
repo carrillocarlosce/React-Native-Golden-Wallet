@@ -52,6 +52,7 @@ export default class Wallet {
   @observable isFetchingBalance = false
   @observable totalBalance = new BigNumber('0')
   @observable isHideValue = false
+  @observable enableNotification = true
 
   @observable tokens = []
   @observable transactions = []
@@ -240,6 +241,10 @@ export default class Wallet {
     this.isHideValue = isHide
   }
 
+  @action setEnableNotification(isEnable) {
+    this.enableNotification = isEnable
+  }
+
   @computed get refreshing() {
     return this.isRefresh
   }
@@ -321,7 +326,7 @@ export default class Wallet {
       title, address, balance, type,
       external, didBackup, index, isCold,
       canSendTransaction, nonce, isFetchingBalance,
-      totalBalance, importType, isHideValue
+      totalBalance, importType, isHideValue, enableNotification
     } = this
     return {
       title,
@@ -337,7 +342,8 @@ export default class Wallet {
       isFetchingBalance,
       totalBalance: totalBalance.toString(10),
       importType,
-      isHideValue
+      isHideValue,
+      enableNotification
     }
   }
 }
