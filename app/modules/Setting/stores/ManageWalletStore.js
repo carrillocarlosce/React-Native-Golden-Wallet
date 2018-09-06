@@ -156,8 +156,6 @@ export default class ManageWalletStore {
     // MainStore.appState.wallets.forEach((w) => {
     //   if (wallet.address === w.address) w.setEnableNotification(isEnable)
     // })
-    console.log(isEnable)
-    console.log(title + " " + address)
     wallet.setEnableNotification(isEnable)
     if (isEnable) {
       NotificationStore.addWallet(title, address).then(res => console.log(res))
