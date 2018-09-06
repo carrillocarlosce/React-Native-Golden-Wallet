@@ -81,7 +81,8 @@ export default class ManageWalletDetailScreen extends Component {
       >
         <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ETH`}</Text>
         <AddressElement
-          style={{ marginTop: 15, width: width - 40 }}
+          style={{ marginTop: 15, width: 328 }}
+          textStyle={{ fontSize: 16 }}
           address={this.wallet.address}
         />
       </View>
