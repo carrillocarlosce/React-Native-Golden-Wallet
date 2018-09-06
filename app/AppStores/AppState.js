@@ -42,7 +42,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  @observable enableNotification = true
+  // @observable enableNotification = true
   @observable currentCardIndex = 0
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
@@ -79,7 +79,7 @@ class AppState {
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
   @action setEnableNotification = (isEnable) => {
-    this.enableNotification = isEnable
+    this.wallets.map((wallet) => { return wallet.setEnableNotification(isEnable) })
     this.save()
   }
 
@@ -169,7 +169,7 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
+    // this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
@@ -210,6 +210,13 @@ class AppState {
 
   @computed get wallets() {
     return this.appWalletsStore.wallets
+  }
+
+  @computed get enableNotification() {
+    for (let i = 0; i < this.wallets.length; i++) {
+      if (this.wallets[i].enableNotification) return true
+    }
+    return false
   }
 
   resetAppState() {

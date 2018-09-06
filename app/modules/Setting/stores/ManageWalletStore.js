@@ -21,10 +21,10 @@ export default class ManageWalletStore {
       onPress: () => {
         this.onExportPrivateKey()
       }
+    },
+    {
+      mainText: 'Enable Notification'
     }
-    // {
-    //   mainText: 'Enable Notification'
-    // }
   ]
 
   onExportPrivateKey = () => {
@@ -145,6 +145,24 @@ export default class ManageWalletStore {
       NavStore.pushToScreen('ManageWalletScreen')
     } catch (e) {
       NavStore.popupCustom.show(e.message)
+    }
+  }
+  switchEnableNotification(isEnable, wallet) {
+    const { title, address } = wallet
+    if (MainStore.appState.internetConnection === 'offline') {
+      NavStore.popupCustom.show('Network Error.')
+      return
+    }
+    // MainStore.appState.wallets.forEach((w) => {
+    //   if (wallet.address === w.address) w.setEnableNotification(isEnable)
+    // })
+    console.log(isEnable)
+    console.log(title + " " + address)
+    wallet.setEnableNotification(isEnable)
+    if (isEnable) {
+      NotificationStore.addWallet(title, address).then(res => console.log(res))
+    } else {
+      NotificationStore.removeWallet(address).then(res => console.log(res))
     }
   }
 }
