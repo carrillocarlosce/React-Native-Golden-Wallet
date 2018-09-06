@@ -175,7 +175,7 @@ export default class ScanQRCodeScreen extends Component {
     }
   }
 
-  pickPhotosFromGallery() {
+  pickPhotosFromGallery = () => {
     NavStore.preventOpenUnlockScreen = true
     const options = {
       title: 'QRCode Image',
