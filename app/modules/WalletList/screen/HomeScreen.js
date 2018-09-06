@@ -277,6 +277,10 @@ export default class HomeScreen extends Component {
   }
 
   _goToDapp = () => {
+    if (!MainStore.appState.selectedWallet) {
+      NavStore.popupCustom.show('You have no wallet')
+      return
+    }
     if (!MainStore.appState.selectedWallet.canSendTransaction) {
       NavStore.popupCustom.show('Your wallet is read only')
       return
