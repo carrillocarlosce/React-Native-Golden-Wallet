@@ -5,9 +5,7 @@ import {
 } from 'react-native'
 import WKWebView from 'react-native-wkwebview-reborn'
 import PropTypes from 'prop-types'
-import RNFS from 'react-native-fs'
 import web3 from './web3'
-import web3New from './web3.v1'
 
 export default class GoldenDWebBrowser extends Component {
   static propTypes = {
@@ -192,7 +190,8 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
     }
     
     init();
-    window.web3 = new Web3(goldenProvider)
+    
+    web3 = new Web3(goldenProvider)
 
     web3.eth.defaultAccount = addressHex
   

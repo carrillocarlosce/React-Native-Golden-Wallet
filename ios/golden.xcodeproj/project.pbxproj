@@ -1090,7 +1090,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = UDCV6ZY8CU;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1914,8 +1914,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1950,8 +1950,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "824108ac-ad3b-40ec-bc0c-48f119d4f70d";
+				PROVISIONING_PROFILE_SPECIFIER = GoldenAppStore;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1962,8 +1962,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UDCV6ZY8CU;
@@ -1997,8 +1997,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "824108ac-ad3b-40ec-bc0c-48f119d4f70d";
+				PROVISIONING_PROFILE_SPECIFIER = GoldenAppStore;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
