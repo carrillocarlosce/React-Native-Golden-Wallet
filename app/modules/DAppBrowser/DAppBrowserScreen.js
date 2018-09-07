@@ -70,6 +70,7 @@ export default class DAppBrowserScreen extends Component {
   }
 
   onSubmitEditing = () => {
+    if (Platform.OS === 'ios') return
     MainStore.dapp.loadSource()
   }
 
