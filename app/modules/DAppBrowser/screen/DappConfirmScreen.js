@@ -167,8 +167,8 @@ export default class DappConfirmScreen extends Component {
           onPress={() => this._onCancel()}
         >
           <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
+          <Text style={styles.title}>Confirmation</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Confirmation</Text>
         <TouchableOpacity
           style={styles.advanceBtn}
           onPress={() => this.showAdvance()}
@@ -654,7 +654,8 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     width: 20,
-    height: 20
+    height: 20,
+    marginRight: 10
   },
   title: {
     color: '#E5E5E5',
@@ -662,8 +663,9 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold'
   },
   closeBtn: {
-    marginLeft: 15,
-    padding: 5
+    flexDirection: 'row',
+    marginLeft: 20,
+    alignItems: 'center'
   },
   advanceBtn: {
     marginRight: 20
