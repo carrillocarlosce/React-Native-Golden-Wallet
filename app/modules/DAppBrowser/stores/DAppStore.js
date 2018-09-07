@@ -93,6 +93,10 @@ export default class DAppStore {
     return MainStore.appState.selectedWallet.derivePrivateKey()
   }
 
+  onCancel() {
+    this.webview.executeCallback(this.id, 'User cancel this transaction!', null)
+  }
+
   signTransaction() {
     const { value, gasLimit, gasPrice } = this.confirmStore
     this.unconfirmTransaction.value && (this.unconfirmTransaction.value = `0x${value.times(new BigNumber(1e18)).toString(16)}`)

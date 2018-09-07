@@ -105,14 +105,14 @@ export default class ConfirmStore {
     if (this.title !== 'ETH') return maxBN.gte(new BigNumber('0')) // token
 
     if (maxBN.lt(new BigNumber('0'))) {
-      this.updateValue(new BigNumber('0'))
+      // this.updateValue(new BigNumber('0'))
       return false
     }
-    if (this.inputValue.gt(maxBN)) {
-      this.updateValue(maxBN)
-    } else {
-      this.updateValue(this.inputValue)
-    }
+    // if (this.inputValue.gt(maxBN)) {
+    //   this.updateValue(maxBN)
+    // } else {
+    //   this.updateValue(this.inputValue)
+    // }
     return true
   }
 }
