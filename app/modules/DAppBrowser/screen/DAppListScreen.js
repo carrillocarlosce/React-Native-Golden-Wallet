@@ -70,11 +70,6 @@ const dumpData = [
     url: 'https://idex.market/'
   },
   {
-    title: 'Skylab',
-    subTitle: 'A Simple Hello World Voting Application',
-    url: 'https://skylab.vn/voting'
-  },
-  {
     title: 'Kyber Network',
     subTitle: 'Instant and Secure Token to Token Swaps',
     url: 'https://web3.kyber.network'
