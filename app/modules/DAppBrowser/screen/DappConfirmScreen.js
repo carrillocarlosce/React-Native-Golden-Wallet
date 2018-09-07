@@ -178,7 +178,7 @@ export default class DappConfirmScreen extends Component {
     )
   }
 
-  _renderConfirmContent(ethAmount, usdAmount, from, to, fee) {
+  _renderConfirmContent(ethAmount, usdAmount, from, to, url, fee) {
     const { confirmStore } = MainStore.dapp
     return (
       <View>
@@ -223,6 +223,19 @@ export default class DappConfirmScreen extends Component {
               style={[styles.value, commonStyles.fontAddress]}
             >
               {to}
+            </Text>
+          </View>
+          <View style={styles.line} />
+          <View style={styles.item}>
+            <Text style={styles.key}>
+              DApp
+            </Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={[styles.value, commonStyles.fontAddress]}
+            >
+              {url}
             </Text>
           </View>
           <View style={styles.line} />
@@ -433,6 +446,7 @@ export default class DappConfirmScreen extends Component {
   _onCancel() {
     NavStore.popupCustom.hide()
     NavStore.goBack()
+    MainStore.dapp.onCancel()
   }
 
   _renderActionSheet() {
@@ -546,7 +560,8 @@ export default class DappConfirmScreen extends Component {
     const {
       formatedFee,
       formatedAmount,
-      formatedDolar
+      formatedDolar,
+      url
     } = confirmStore
     const { to } = MainStore.dapp.confirmStore
     const { address } = MainStore.appState.selectedWallet
@@ -563,7 +578,7 @@ export default class DappConfirmScreen extends Component {
             ]}
           >
             {this._renderConfirmHeader()}
-            {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, formatedFee)}
+            {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, url, formatedFee)}
             {this._renderSendBtn()}
           </Animated.View>
           {isShowAdvance &&
