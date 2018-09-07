@@ -24,6 +24,7 @@ import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import AppState from '../../../AppStores/AppState'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyles from '../../../commons/commonStyles'
+import AddressElement from '../../../components/elements/AddressElement'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
@@ -166,8 +167,8 @@ export default class DappConfirmScreen extends Component {
           onPress={() => this._onCancel()}
         >
           <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
+          <Text style={styles.title}>Confirmation</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Confirmation</Text>
         <TouchableOpacity
           style={styles.advanceBtn}
           onPress={() => this.showAdvance()}
@@ -204,26 +205,22 @@ export default class DappConfirmScreen extends Component {
             <Text style={styles.key}>
               From
             </Text>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              style={[styles.value, commonStyles.fontAddress]}
-            >
-              {from}
-            </Text>
+            <AddressElement
+              address={from}
+              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
+              style={{ width: 328 }}
+            />
           </View>
           <View style={styles.line} />
           <View style={styles.item}>
             <Text style={styles.key}>
               To
             </Text>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              style={[styles.value, commonStyles.fontAddress]}
-            >
-              {to}
-            </Text>
+            <AddressElement
+              address={to}
+              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
+              style={{ width: 328 }}
+            />
           </View>
           <View style={styles.line} />
           <View style={styles.item}>
@@ -233,7 +230,7 @@ export default class DappConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={[styles.value, commonStyles.fontAddress]}
+              style={[styles.key, { color: AppStyle.secondaryTextColor, marginBottom: 15 }]}
             >
               {url}
             </Text>
@@ -244,7 +241,7 @@ export default class DappConfirmScreen extends Component {
               Fee
             </Text>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={[styles.value, { fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular', fontSize: 14 }]}>
+              <Text style={[styles.value, { fontFamily: 'OpenSans-Semibold', fontSize: 16 }]}>
                 {fee}
               </Text>
               <TouchableOpacity
@@ -412,7 +409,7 @@ export default class DappConfirmScreen extends Component {
           <Text
             style={{
               color: AppStyle.secondaryTextColor,
-              fontFamily: 'OpenSans-Light',
+              fontFamily: 'OpenSans-Semibold',
               fontSize: 20,
               marginTop: 10
             }}
@@ -657,7 +654,8 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     width: 20,
-    height: 20
+    height: 20,
+    marginRight: 10
   },
   title: {
     color: '#E5E5E5',
@@ -665,8 +663,9 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold'
   },
   closeBtn: {
-    marginLeft: 15,
-    padding: 5
+    flexDirection: 'row',
+    marginLeft: 20,
+    alignItems: 'center'
   },
   advanceBtn: {
     marginRight: 20
