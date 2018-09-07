@@ -60,6 +60,7 @@ export default class DAppBrowserScreen extends Component {
 
   onLoadStart = (event) => {
     this.startProgress(0.7, 2000)
+    MainStore.dapp.setUrl(event.nativeEvent.url)
   }
 
   onSubmitEditing = () => {
