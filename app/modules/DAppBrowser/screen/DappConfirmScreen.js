@@ -228,7 +228,7 @@ export default class DappConfirmScreen extends Component {
           <View style={styles.line} />
           <View style={styles.item}>
             <Text style={styles.key}>
-              DApp
+              ĐApp
             </Text>
             <Text
               numberOfLines={1}
