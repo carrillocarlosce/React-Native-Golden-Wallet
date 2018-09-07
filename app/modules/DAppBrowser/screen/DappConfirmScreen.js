@@ -230,7 +230,7 @@ export default class DappConfirmScreen extends Component {
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={styles.key}
+              style={[styles.key, { color: AppStyle.secondaryTextColor, marginBottom: 15 }]}
             >
               {url}
             </Text>
@@ -409,7 +409,7 @@ export default class DappConfirmScreen extends Component {
           <Text
             style={{
               color: AppStyle.secondaryTextColor,
-              fontFamily: 'OpenSans-Light',
+              fontFamily: 'OpenSans-Semibold',
               fontSize: 20,
               marginTop: 10
             }}
@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
   key: {
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16,
-    color: AppStyle.secondaryTextColor,
+    color: AppStyle.mainTextColor,
     marginTop: 15
   },
   value: {
