@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { computed, action } from 'mobx'
+import { computed, action, observable } from 'mobx'
 import ConfirmStore from './ConfirmStore'
 import AdvanceStore from './AdvanceStore'
 import { signTransaction } from '../../../api/ether-json-rpc'
@@ -13,7 +13,7 @@ export default class DAppStore {
   webview = null
   unconfirmTransaction = {}
   id = null
-  url = null
+  @observable url = null
 
   constructor() {
     this.confirmStore = new ConfirmStore()
@@ -44,6 +44,14 @@ export default class DAppStore {
 
   @computed get fromAddress() {
     return MainStore.appState.selectedWallet.address
+  }
+
+  goBack() {
+    this.webview.goBack()
+  }
+
+  goForward() {
+    this.webview.goForward()
   }
 
   goToConfirm() {

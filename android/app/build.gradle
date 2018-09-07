@@ -110,8 +110,8 @@ android {
         applicationId "io.goldenwallet"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 15
-        versionName "1.1.1"
+        versionCode 16
+        versionName "1.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

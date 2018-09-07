@@ -10,8 +10,6 @@ import WebView from 'react-native-webview-bridge-updated/webview-bridge'
 import web3 from './web3'
 
 const { width, height } = Dimensions.get('window')
-
-
 export default class GoldenDWebBrowser extends Component {
   static propTypes = {
     style: PropTypes.any,
@@ -23,7 +21,9 @@ export default class GoldenDWebBrowser extends Component {
     onSignMessage: PropTypes.func,
     onSignPersonalMessage: PropTypes.func,
     onSignTypedMessage: PropTypes.func,
-    jsContent: PropTypes.string.isRequired
+    jsContent: PropTypes.string.isRequired,
+    onLoadEnd: PropTypes.func,
+    onLoadStart: PropTypes.func
   }
 
   static defaultProps = {
@@ -32,7 +32,9 @@ export default class GoldenDWebBrowser extends Component {
     onSignTransaction: (data) => { },
     onSignMessage: (data) => { },
     onSignPersonalMessage: (data) => { },
-    onSignTypedMessage: (data) => { }
+    onSignTypedMessage: (data) => { },
+    onLoadEnd: () => { },
+    onLoadStart: () => { }
   }
 
   // componentWillMount() {
@@ -46,12 +48,7 @@ export default class GoldenDWebBrowser extends Component {
   // }
 
   componentDidMount() {
-    // const {
-    //   uri,
-    //   addressHex, network, infuraAPIKey, jsContent
-    // } = this.props
-    // this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))
-    // setTimeout(() => this.test(), 10000)
+
   }
 
   _onBridgeMessage(resTX) {
@@ -96,16 +93,19 @@ export default class GoldenDWebBrowser extends Component {
     this.webview.sendToBridge(`executeCallback(${id}, ${e}, '${v}')`)
   }
 
-  test() {
-    // this.webview.evaluateJS(`WebViewBridge.onMessage = () => {}`)
-    // this.webview.sendToBridge(`hello`)
+  goBack() {
+    this.webview.goBack()
+  }
+
+  goForward() {
+    this.webview.goForward()
   }
 
   render() {
     const {
       style,
       uri,
-      addressHex, network, infuraAPIKey, jsContent
+      addressHex, network, infuraAPIKey, jsContent, onLoadEnd, onLoadStart
     } = this.props
 
     return (
@@ -118,6 +118,8 @@ export default class GoldenDWebBrowser extends Component {
         // onLoadStart={() => this.webview.injectJavaScript(getJavascript(addressHex, network, infuraAPIKey, jsContent))}
         injectedOnStartLoadingJavaScript={getJavascript(addressHex, network, infuraAPIKey, jsContent)}
         source={uri}
+        onLoadEnd={onLoadEnd}
+        onLoadStart={onLoadStart}
       />
     )
   }

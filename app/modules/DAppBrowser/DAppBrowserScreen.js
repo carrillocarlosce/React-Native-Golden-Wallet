@@ -3,23 +3,30 @@ import {
   StyleSheet,
   View,
   Platform,
-  Dimensions
+  Dimensions,
+  Animated
 } from 'react-native'
 import RNFS from 'react-native-fs'
+/* eslint-disable-next-line */
 import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
-
-import NavigationHeader from '../../components/elements/NavigationHeader'
-import images from '../../commons/images'
-import LayoutUtils from '../../commons/LayoutUtils'
 import NavStore from '../../AppStores/NavStore'
 import MainStore from '../../AppStores/MainStore'
+import DAppHeader from './elements/DAppHeader'
+import DAppFooter from './elements/DAppFooter'
+import AppStyle from '../../commons/AppStyle'
 
 const { width, height } = Dimensions.get('window')
-
-const marginTop = LayoutUtils.getExtraTop()
+const isIPX = height === 812
 
 let jsContent = ''
 export default class DAppBrowserScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { loadNew: false }
+    this.webProgress = new Animated.Value(0)
+    this.webHistory = []
+    this.currentWebState = -1
+  }
 
   componentWillMount() {
     if (jsContent === '') {
@@ -42,38 +49,94 @@ export default class DAppBrowserScreen extends Component {
   onBack = () => NavStore.goBack()
 
   onSignTransaction = ({ id, object }) => {
-    console.warn('onSign: ', object)
     MainStore.dapp.setTransaction(id, object)
     NavStore.pushToScreen('DAppConfirmScreen')
   }
 
+  onLoadEnd = (event) => {
+    this.startProgress(1, 500, this.resetProgress)
+    // console.log(event.nativeEvent)
+  }
+
+  onLoadStart = (event) => {
+    this.startProgress(0.7, 2000)
+  }
+
+  onSubmitEditing = () => {
+    this.hackLoadNewPage()
+  }
+
+  onClose = () => NavStore.goBack()
+
+  onReload = () => this.hackLoadNewPage(this.currentPage)
+
+  startProgress = (val, t, onEndAnim = () => { }) => {
+    Animated.timing(this.webProgress, {
+      toValue: val,
+      duration: t
+    }).start(onEndAnim)
+  }
+
+  resetProgress = () => {
+    Animated.timing(this.webProgress, {
+      toValue: 0,
+      duration: 0
+    }).start()
+  }
+
+  goBack = () => MainStore.dapp.goBack()
+  goForward = () => MainStore.dapp.goForward()
+
+  hackLoadNewPage = (currentPage = null) => {
+    if (currentPage) {
+      MainStore.dapp.setUrl(currentPage)
+    }
+    this.setState({
+      loadNew: true
+    }, () => {
+      this.setState({
+        loadNew: false
+      })
+    })
+  }
+
   render() {
-    // const { walletAddress } = this.store
     const walletAddress = MainStore.appState.selectedWallet.address
     const { url } = MainStore.dapp
+    this.currentPage = url
+    const { loadNew } = this.state
+    const progress = this.webProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, width]
+    })
     return (
       <View style={styles.container}>
-        <NavigationHeader
-          style={{ marginTop: 20 + marginTop }}
-          headerItem={{
-            title: 'ĐApp Browser',
-            icon: null,
-            button: images.backButton
-          }}
-          action={this.onBack}
+        <DAppHeader
+          onSubmitEditing={this.onSubmitEditing}
+          onClose={this.onClose}
         />
-        {jsContent !== '' &&
-          <DAppBrowser
-            ref={ref => (MainStore.dapp.setWebview(ref))}
-            style={styles.container}
-            uri={url}
-            addressHex={walletAddress}
-            network={MainStore.appState.networkName}
-            infuraAPIKey="qMZ7EIind33NY9Azu836"
-            jsContent={jsContent}
-            onSignTransaction={this.onSignTransaction}
-          />
+        <Animated.View style={[styles.progress, { width: progress }]} />
+        {jsContent !== '' && !loadNew &&
+          <View style={styles.webview}>
+            <DAppBrowser
+              ref={ref => (MainStore.dapp.setWebview(ref))}
+              uri={url}
+              addressHex={walletAddress}
+              network={MainStore.appState.networkName}
+              infuraAPIKey="qMZ7EIind33NY9Azu836"
+              jsContent={jsContent}
+              onSignTransaction={this.onSignTransaction}
+              onLoadEnd={this.onLoadEnd}
+              onLoadStart={this.onLoadStart}
+            />
+          </View>
         }
+        <DAppFooter
+          goBack={this.goBack}
+          goForward={this.goForward}
+          onReload={this.onReload}
+          style={styles.footer}
+        />
       </View>
     )
   }
@@ -81,7 +144,18 @@ export default class DAppBrowserScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    width,
-    height
+    flex: 1
+  },
+  webview: {
+    flex: 1,
+    marginBottom: isIPX ? 84 : 50
+  },
+  footer: {
+    position: 'absolute',
+    bottom: isIPX ? 34 : 0
+  },
+  progress: {
+    height: 1,
+    backgroundColor: AppStyle.mainColor
   }
 })

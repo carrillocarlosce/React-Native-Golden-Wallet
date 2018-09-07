@@ -80,5 +80,8 @@ export default {
   iconUp: require('./../assets/images/icon_up.png'),
   imgEnrase: require('../assets/images/img_enrase.png'),
   iconCollectibles: require('../assets/images/icon_collectible.png'),
-  imgEmptyBox: require('../assets/images/empty_box.png')
+  imgEmptyBox: require('../assets/images/empty_box.png'),
+  arrowBack: require('../assets/images/arrow_back.png'),
+  arrowForward: require('../assets/images/arrow_forward.png'),
+  iconRefresh: require('../assets/images/icon_refresh.png')
 }
