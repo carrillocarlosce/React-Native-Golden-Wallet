@@ -319,8 +319,6 @@ export default class DappConfirmScreen extends Component {
   validateGasLimit(advanceStore, t) {
     if (t < 21000) {
       advanceStore.setGasLimitErr('Gas limit must be greater than 21000')
-    } else if (t > 150000) {
-      advanceStore.setGasLimitErr('Gas limit must be lesser than 150000')
     } else {
       advanceStore.setGasLimitErr('')
     }
@@ -560,11 +558,11 @@ export default class DappConfirmScreen extends Component {
     const {
       formatedFee,
       formatedAmount,
-      formatedDolar,
-      url
+      formatedDolar
     } = confirmStore
     const { to } = MainStore.dapp.confirmStore
     const { address } = MainStore.appState.selectedWallet
+    const { url } = MainStore.dapp
     return (
       <TouchableWithoutFeedback onPress={this._onCancelAction}>
         <View
