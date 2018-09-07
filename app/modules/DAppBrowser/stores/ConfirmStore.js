@@ -13,9 +13,14 @@ export default class ConfirmStore {
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
   @observable.ref to = ''
+  @observable.ref url = ''
 
   @action setToAddress(address) {
     this.to = address
+  }
+
+  @action setUrl(url) {
+    this.url = url
   }
 
   @action setAdjust(value) {
