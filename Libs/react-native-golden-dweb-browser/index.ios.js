@@ -20,7 +20,8 @@ export default class GoldenDWebBrowser extends Component {
     onSignTypedMessage: PropTypes.func,
     jsContent: PropTypes.string.isRequired,
     onLoadEnd: PropTypes.func,
-    onLoadStart: PropTypes.func
+    onLoadStart: PropTypes.func,
+    onProgress: PropTypes.func
   }
 
   static defaultProps = {
@@ -31,7 +32,8 @@ export default class GoldenDWebBrowser extends Component {
     onSignPersonalMessage: (data) => { },
     onSignTypedMessage: (data) => { },
     onLoadEnd: () => { },
-    onLoadStart: () => { }
+    onLoadStart: () => { },
+    onProgress: () => { }
   }
 
   _onMessage(payload) {
@@ -73,6 +75,18 @@ export default class GoldenDWebBrowser extends Component {
     this.webview.evaluateJavaScript(`alert(typeof executeCallback)`)
   }
 
+  reload() {
+    this.webview.reload()
+  }
+
+  goBack() {
+    this.webview.goBack()
+  }
+
+  goForward() {
+    this.webview.goForward()
+  }
+
   render() {
     const {
       style,
@@ -82,7 +96,8 @@ export default class GoldenDWebBrowser extends Component {
       infuraAPIKey = 'llyrtzQ3YhkdESt2Fzrk',
       jsContent,
       onLoadEnd,
-      onLoadStart
+      onLoadStart,
+      onProgress
     } = this.props
 
     return (
@@ -98,6 +113,7 @@ export default class GoldenDWebBrowser extends Component {
           style={styles.webView}
           onLoadEnd={onLoadEnd}
           onLoadStart={onLoadStart}
+          onProgress={onProgress}
         />
       </View>
     )

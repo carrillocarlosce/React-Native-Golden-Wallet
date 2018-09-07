@@ -65,6 +65,7 @@ export default class DAppBrowserScreen extends Component {
   onLoadStart = (event) => {
     const { url } = event.nativeEvent
     MainStore.dapp.setUrl(url)
+    console.warn(event.nativeEvent)
     MainStore.dapp.setWebviewState(event.nativeEvent)
   }
 
@@ -76,6 +77,16 @@ export default class DAppBrowserScreen extends Component {
 
   onReload = () => {
     MainStore.dapp.reload()
+  }
+
+  onProgress = (p) => {
+    if (Platform.OS === 'android') return
+    if (p === 1) {
+      this.startProgress(100, 250)
+      setTimeout(() => this.startProgress(0, 0), 250)
+    } else {
+      this.startProgress(100 * p, 250)
+    }
   }
 
   startProgress = (val, t, onEndAnim = () => { }) => {
