@@ -17,7 +17,10 @@ export default class GoldenDWebBrowser extends Component {
     onSignTransaction: PropTypes.func, // important
     onSignMessage: PropTypes.func,
     onSignPersonalMessage: PropTypes.func,
-    onSignTypedMessage: PropTypes.func
+    onSignTypedMessage: PropTypes.func,
+    jsContent: PropTypes.string.isRequired,
+    onLoadEnd: PropTypes.func,
+    onLoadStart: PropTypes.func
   }
 
   static defaultProps = {
@@ -26,7 +29,9 @@ export default class GoldenDWebBrowser extends Component {
     onSignTransaction: (data) => { },
     onSignMessage: (data) => { },
     onSignPersonalMessage: (data) => { },
-    onSignTypedMessage: (data) => { }
+    onSignTypedMessage: (data) => { },
+    onLoadEnd: () => { },
+    onLoadStart: () => { }
   }
 
   _onMessage(payload) {
@@ -75,7 +80,9 @@ export default class GoldenDWebBrowser extends Component {
       addressHex,
       network,
       infuraAPIKey = 'llyrtzQ3YhkdESt2Fzrk',
-      jsContent
+      jsContent,
+      onLoadEnd,
+      onLoadStart
     } = this.props
 
     return (
@@ -89,6 +96,8 @@ export default class GoldenDWebBrowser extends Component {
           mixedContentMode="compatibility"
           javaScriptEnabled={true}
           style={styles.webView}
+          onLoadEnd={onLoadEnd}
+          onLoadStart={onLoadStart}
         />
       </View>
     )
