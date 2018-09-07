@@ -14,6 +14,10 @@ export default class DAppStore {
   unconfirmTransaction = {}
   id = null
   @observable url = null
+  @observable webviewState = {
+    canGoBack: false,
+    canGoForward: false
+  }
 
   constructor() {
     this.confirmStore = new ConfirmStore()
@@ -30,8 +34,20 @@ export default class DAppStore {
     this.webview = webview
   }
 
+  @action setWebviewState(state) {
+    this.webviewState = state
+  }
+
   @action setUrl(url) {
     this.url = url
+  }
+
+  @computed get canGoBack() {
+    return this.webviewState.canGoBack
+  }
+
+  @computed get canGoForward() {
+    return this.webviewState.canGoForward
   }
 
   @computed get rpcURL() {
@@ -52,6 +68,14 @@ export default class DAppStore {
 
   goForward() {
     this.webview.goForward()
+  }
+
+  reload() {
+    this.webview.reload()
+  }
+
+  loadSource() {
+    this.webview.loadSource(this.url)
   }
 
   goToConfirm() {

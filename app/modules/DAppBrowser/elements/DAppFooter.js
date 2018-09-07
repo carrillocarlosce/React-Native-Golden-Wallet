@@ -7,37 +7,41 @@ import {
   Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { observer } from 'mobx-react/native'
 import images from '../../../commons/images'
+import MainStore from '../../../AppStores/MainStore'
 
 const { width } = Dimensions.get('window')
 
+@observer
 export default class DAppFooter extends Component {
   static propTypes = {
     style: PropTypes.number,
-    onBack: PropTypes.func,
-    onForward: PropTypes.func,
+    goBack: PropTypes.func,
+    goForward: PropTypes.func,
     onReload: PropTypes.func
   }
 
   static defaultProps = {
     style: 0,
-    onBack: () => { },
-    onForward: () => { },
+    goBack: () => { },
+    goForward: () => { },
     onReload: () => { }
   }
 
   render() {
     const {
-      style, onBack, onForward, onReload
+      style, goBack, goForward, onReload
     } = this.props
+    const { canGoBack, canGoForward } = MainStore.dapp
     return (
       <View style={[styles.container, style]}>
         <View style={styles.arrowButton}>
-          <TouchableOpacity onPress={onBack}>
-            <Image source={images.arrowBack} />
+          <TouchableOpacity onPress={goBack} disabled={!canGoBack}>
+            <Image source={images.arrowBack} style={{ tintColor: canGoBack ? 'white' : '#4A4A4A' }} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={onForward} style={{ marginLeft: 70 }}>
-            <Image source={images.arrowForward} />
+          <TouchableOpacity onPress={goForward} style={{ marginLeft: 70 }} disabled={!canGoForward}>
+            <Image source={images.arrowForward} style={{ tintColor: canGoForward ? 'white' : '#4A4A4A' }} />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={onReload}>
