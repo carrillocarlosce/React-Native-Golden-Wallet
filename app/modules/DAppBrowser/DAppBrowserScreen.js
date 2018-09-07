@@ -54,22 +54,29 @@ export default class DAppBrowserScreen extends Component {
   }
 
   onLoadEnd = (event) => {
-    this.startProgress(1, 500, this.resetProgress)
-    // console.log(event.nativeEvent)
+    const { progress } = event.nativeEvent
+    let reset = null
+    if (progress === 100) {
+      reset = this.resetProgress
+    }
+    this.startProgress(event.nativeEvent.progress, 250, reset)
   }
 
   onLoadStart = (event) => {
-    this.startProgress(0.7, 2000)
-    MainStore.dapp.setUrl(event.nativeEvent.url)
+    const { url } = event.nativeEvent
+    MainStore.dapp.setUrl(url)
+    MainStore.dapp.setWebviewState(event.nativeEvent)
   }
 
   onSubmitEditing = () => {
-    this.hackLoadNewPage()
+    MainStore.dapp.loadSource()
   }
 
   onClose = () => NavStore.goBack()
 
-  onReload = () => this.hackLoadNewPage(this.currentPage)
+  onReload = () => {
+    MainStore.dapp.reload()
+  }
 
   startProgress = (val, t, onEndAnim = () => { }) => {
     Animated.timing(this.webProgress, {
@@ -88,26 +95,12 @@ export default class DAppBrowserScreen extends Component {
   goBack = () => MainStore.dapp.goBack()
   goForward = () => MainStore.dapp.goForward()
 
-  hackLoadNewPage = (currentPage = null) => {
-    if (currentPage) {
-      MainStore.dapp.setUrl(currentPage)
-    }
-    this.setState({
-      loadNew: true
-    }, () => {
-      this.setState({
-        loadNew: false
-      })
-    })
-  }
-
   render() {
     const walletAddress = MainStore.appState.selectedWallet.address
     const { url } = MainStore.dapp
-    this.currentPage = url
     const { loadNew } = this.state
     const progress = this.webProgress.interpolate({
-      inputRange: [0, 1],
+      inputRange: [0, 100],
       outputRange: [0, width]
     })
     return (
@@ -129,6 +122,7 @@ export default class DAppBrowserScreen extends Component {
               onSignTransaction={this.onSignTransaction}
               onLoadEnd={this.onLoadEnd}
               onLoadStart={this.onLoadStart}
+              onProgress={this.onProgress}
             />
           </View>
         }
