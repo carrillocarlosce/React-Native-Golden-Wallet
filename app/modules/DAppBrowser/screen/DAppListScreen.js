@@ -77,7 +77,7 @@ const dumpData = [
   {
     title: '0xproject',
     subTitle: 'Powering decentralized exchange',
-    url: 'https://www.0xproject.com'
+    url: 'https://www.0xproject.com/portal'
   },
   {
     title: 'Opensea',
