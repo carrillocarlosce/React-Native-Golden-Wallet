@@ -9,6 +9,7 @@ import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
+import NavStore from './NavStore';
 
 // const defaultAppData = {
 //   config: new Config('mainnet', Constants.INFURA_API_KEY),
@@ -79,6 +80,10 @@ class AppState {
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
   @action setEnableNotification = (isEnable) => {
+    if (this.wallets.length == 0) {
+      NavStore.popupCustom.show('You have no wallet')
+      return
+    }
     this.wallets.map((wallet) => {
       wallet.setEnableNotification(isEnable)
       return wallet.update()
@@ -216,6 +221,7 @@ class AppState {
   }
 
   @computed get enableNotification() {
+    if (this.wallets.length == 0) return true
     for (let i = 0; i < this.wallets.length; i++) {
       if (this.wallets[i].enableNotification) return true
     }
