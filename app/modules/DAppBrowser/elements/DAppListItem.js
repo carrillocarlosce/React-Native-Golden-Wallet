@@ -15,13 +15,15 @@ export default class DAppListItem extends Component {
     title: PropTypes.string,
     subTitle: PropTypes.string,
     onPress: PropTypes.func,
-    line: PropTypes.bool
+    line: PropTypes.bool,
+    img: PropTypes.object
   }
 
   static defaultProps = {
     title: '',
     subTitle: '',
-    onPress: () => {},
+    onPress: () => { },
+    img: {},
     line: false
   }
   render() {
@@ -29,7 +31,8 @@ export default class DAppListItem extends Component {
       title,
       subTitle,
       onPress,
-      line
+      line,
+      img
     } = this.props
     return (
       <View style={{ backgroundColor: AppStyle.backgroundTextInput }}>
@@ -37,7 +40,7 @@ export default class DAppListItem extends Component {
 
         <TouchableOpacity style={styles.container} onPress={onPress}>
           <Image
-            source={images.iconEther}
+            source={img.uri ? img : images.iconEther}
             style={styles.image}
             resizeMode="contain"
           />
