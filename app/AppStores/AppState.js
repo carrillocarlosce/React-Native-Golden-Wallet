@@ -79,7 +79,10 @@ class AppState {
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
   @action setEnableNotification = (isEnable) => {
-    this.wallets.map((wallet) => { return wallet.setEnableNotification(isEnable) })
+    this.wallets.map((wallet) => {
+      wallet.setEnableNotification(isEnable)
+      return wallet.update()
+    })
     this.save()
   }
 
@@ -223,7 +226,7 @@ class AppState {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
     this.setHasPassword(false)
     this.setBackup(false)
-    this.setEnableNotification(true)
+    // this.setEnableNotification(true)
     this.currentWalletIndex = 0
     this.setUnpendTransactions([])
     this.addressBooks = []
