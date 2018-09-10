@@ -65,7 +65,6 @@ export default class DAppBrowserScreen extends Component {
   onLoadStart = (event) => {
     const { url } = event.nativeEvent
     MainStore.dapp.setUrl(url)
-    console.warn(event.nativeEvent)
     MainStore.dapp.setWebviewState(event.nativeEvent)
   }
 
