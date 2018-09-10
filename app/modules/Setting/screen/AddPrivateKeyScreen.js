@@ -175,10 +175,10 @@ export default class AddPrivateKeyScreen extends Component {
                   navigation.goBack()
                 }}
               />
-              <Text style={styles.description}>
+              {/* <Text style={styles.description}>
                 Your Private Key will be deleted after signing the transaction
               </Text>
-              <Text style={[styles.titleText, { marginTop: 20, color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text>
+              <Text style={[styles.titleText, { marginTop: 20, color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text> */}
               <InputWithAction
                 ref={(ref) => { this.privKeyField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
