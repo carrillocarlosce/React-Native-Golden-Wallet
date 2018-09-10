@@ -94,7 +94,9 @@ export default class ManageWalletStore {
   }
 
   @computed get isAllowedToSave() {
-    return this.customTitle !== '' && !this.isShowError
+    const title = this.customTitle
+    const currentTitle = this.selectedWallet ? this.selectedWallet.title : ''
+    return title !== '' && title != currentTitle && !this.isShowError
   }
 
   @computed get isAllowedToRemove() {
@@ -112,7 +114,8 @@ export default class ManageWalletStore {
 
   @computed get isShowError() {
     const title = this.customTitle
-    return !this.finished && this.titleMap[title]
+    const currentTitle = this.selectedWallet ? this.selectedWallet.title : ''
+    return !this.finished && title != currentTitle && this.titleMap[title]
   }
 
   @computed get isShowErrorRemove() {
