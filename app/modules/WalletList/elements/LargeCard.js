@@ -281,9 +281,9 @@ export default class LargeCard extends Component {
             source={images.backgroundGrey}
           />
           {/* <View style={{ marginTop: cardHeight * 0.12 }}> */}
-          <ViewShot ref={(ref) => { this.viewShot = ref }}>
-            {/* <View style={styles.borderQRCode} /> */}
+          <ViewShot style={styles.borderQRCode} ref={(ref) => { this.viewShot = ref }}>
             <QRCode
+              style={{ marginTop: 10, marginLeft: 10 }}
               value={address}
               size={isSmallScreen ? 125 : 200}
               bgColor="black"
@@ -439,5 +439,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: isSmallScreen ? 15 : 26,
     paddingVertical: isSmallScreen ? 4 : 7,
     borderRadius: 16
+  },
+  borderQRCode: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'white'
   }
 })
