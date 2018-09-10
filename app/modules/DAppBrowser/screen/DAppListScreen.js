@@ -71,7 +71,7 @@ const dumpData = [
   },
   {
     title: 'Idex',
-    subTitle: 'AirSwap is a global marketplace for trading Ethereum tokens.',
+    subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
     url: 'https://idex.market/',
     img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
   },
