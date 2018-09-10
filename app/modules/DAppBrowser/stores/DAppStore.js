@@ -121,4 +121,21 @@ export default class DAppStore {
       }
     }, true)
   }
+
+  sign(id, tx) {
+    console.warn(JSON.stringify(tx))
+    NavStore.lockScreen({
+      onUnlock: (pincode) => {
+        NavStore.showLoading()
+        const ds = new SecureDS(pincode)
+        this.getPrivateKey(ds).then((privateKey) => {
+          const signedTx = signTransaction(tx, this.chainId, privateKey)
+          console.warn(signedTx)
+          this.webview.executeCallback(id, null, signedTx)
+          NavStore.hideLoading()
+          // NavStore.goBack()
+        })
+      }
+    }, true)
+  }
 }

@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  View,
   // WebView,
   Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
 import WebView from 'react-native-webview-bridge-updated/webview-bridge'
-import web3 from './web3'
 
 const { width, height } = Dimensions.get('window')
 export default class GoldenDWebBrowser extends Component {
@@ -65,7 +63,7 @@ export default class GoldenDWebBrowser extends Component {
     const {
       onSignTransaction,
       onSignMessage = () => { },
-      onSignPersonalMessage = () => { },
+      onSignPersonalMessage,
       onSignTypedMessage = () => { }
     } = this.props
     switch (payload.name) {
@@ -78,7 +76,7 @@ export default class GoldenDWebBrowser extends Component {
         break
       }
       case 'signPersonalMessage': {
-        onSignPersonalMessage({ id: payload.id, object: payload.tx })
+        onSignPersonalMessage({ id: payload.id, object: { data: payload.data } })
         break
       }
       case 'signTypedMessage': {
@@ -113,9 +111,13 @@ export default class GoldenDWebBrowser extends Component {
 
   render() {
     const {
-      style,
       uri,
-      addressHex, network, infuraAPIKey, jsContent, onLoadEnd, onLoadStart, onProgress
+      addressHex,
+      network,
+      infuraAPIKey,
+      jsContent,
+      onLoadEnd,
+      onLoadStart
     } = this.props
 
     return (
@@ -139,7 +141,6 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
   // return `window.test = () => alert('AAA')`
   return `
     ${jsContent}
-    ${web3}
 
     function getChainID(name) {
       switch(name) {
@@ -219,7 +220,7 @@ const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
           console.log("signing a personal message", msgParams)
           goldenProvider.addCallback(id, cb)
           console.log("signPersonalMessage")
-          const resTx = {name: "signPersonalMessage", id, tx} 
+          const resTx = {name: "signPersonalMessage", id, data} 
           WebViewBridge.send(JSON.stringify(resTx))
         },
         signTypedMessage: function (msgParams, cb) {

@@ -53,6 +53,15 @@ export default class DAppBrowserScreen extends Component {
     NavStore.pushToScreen('DAppConfirmScreen')
   }
 
+  onSignPersonalMessage = ({ id, object }) => {
+    MainStore.dapp.sign(id, object)
+  }
+
+  onHistoryStateChange = ({ navState }) => {
+    MainStore.dapp.setUrl(navState.url)
+    console.warn(navState.url.toString())
+  }
+
   onLoadEnd = (event) => {
     const { progress } = event.nativeEvent
     let reset = null
@@ -69,7 +78,7 @@ export default class DAppBrowserScreen extends Component {
   }
 
   onSubmitEditing = () => {
-    if (Platform.OS === 'ios') return
+    // if (Platform.OS === 'ios') return
     MainStore.dapp.loadSource()
   }
 
@@ -134,6 +143,8 @@ export default class DAppBrowserScreen extends Component {
               onLoadEnd={this.onLoadEnd}
               onLoadStart={this.onLoadStart}
               onProgress={this.onProgress}
+              onSignPersonalMessage={this.onSignPersonalMessage}
+              onHistoryStateChange={this.onHistoryStateChange}
             />
           </View>
         }
