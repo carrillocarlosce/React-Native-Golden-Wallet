@@ -27,7 +27,7 @@ export default class DAppListScreen extends Component {
     return (
       <View style={styles.container}>
         <NavigationHeader
-          style={{ marginTop: 20 + marginTop }}
+          style={{ marginTop: 20 + marginTop, marginBottom: 15 }}
           headerItem={{
             title: 'ĐApp',
             icon: null,
@@ -41,7 +41,6 @@ export default class DAppListScreen extends Component {
           renderItem={({ item, index }) =>
             (
               <DAppListItem
-                style={{ marginTop: index === 0 ? 15 : 0 }}
                 title={item.title}
                 subTitle={item.subTitle}
                 line={index != 0}
