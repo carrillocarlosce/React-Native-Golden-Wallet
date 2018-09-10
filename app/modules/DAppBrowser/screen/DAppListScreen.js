@@ -36,20 +36,18 @@ export default class DAppListScreen extends Component {
           action={this.onBack}
         />
         <FlatList
-          style={{ marginTop: 15 }}
           data={dumpData}
           keyExtractor={(v, i) => `${v.title}-${i}`}
           renderItem={({ item, index }) =>
             (
-              <View>
-                <DAppListItem
-                  title={item.title}
-                  subTitle={item.subTitle}
-                  line={index != 0}
-                  img={{ uri: item.img }}
-                  onPress={() => this._goToBrowser(item.url)}
-                />
-              </View>
+              <DAppListItem
+                style={{ marginTop: index === 0 ? 15 : 0 }}
+                title={item.title}
+                subTitle={item.subTitle}
+                line={index != 0}
+                img={{ uri: item.img }}
+                onPress={() => this._goToBrowser(item.url)}
+              />
             )
           }
         />
