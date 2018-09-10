@@ -71,20 +71,17 @@ export default class GoldenDWebBrowser extends Component {
     this.webview.evaluateJavaScript(`executeCallback(${id}, ${e}, '${v}')`)
   }
 
-  test() {
-    this.webview.evaluateJavaScript(`alert(typeof executeCallback)`)
-  }
 
   reload() {
-    this.webview.reload()
+    this.webview.evaluateJavaScript(`location.reload();`)
   }
 
   goBack() {
-    this.webview.goBack()
+    this.webview.evaluateJavaScript(`window.history.back();`)
   }
 
   goForward() {
-    this.webview.goForward()
+    this.webview.evaluateJavaScript(`window.history.forward();`)
   }
 
   render() {
