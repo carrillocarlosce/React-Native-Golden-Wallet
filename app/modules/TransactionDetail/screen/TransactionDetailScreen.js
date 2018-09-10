@@ -65,10 +65,11 @@ export default class TransactionDetailScreen extends Component {
   get value() {
     const { operator } = this
     let symbol = ''
-    if (this.selectedToken) {
-      symbol = this.selectedToken.symbol
-    } else {
+
+    if (this.selectedTransaction.tokenSymbol) {
       symbol = this.selectedTransaction.tokenSymbol
+    } else {
+      symbol = this.selectedToken.symbol
     }
 
     return `${operator} ${this.selectedTransaction.balance.toString(10)} ${symbol}`
