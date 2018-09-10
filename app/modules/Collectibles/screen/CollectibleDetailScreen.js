@@ -33,8 +33,14 @@ export default class CollectibleDetailScreen extends Component {
   onBack = () => NavStore.goBack()
 
   onPress = () => {
+    const { assetContractName } = this.collectible
     MainStore.goToDApp()
-    const url = `https://www.cryptokitties.co/kitty/${this.collectible.id}`
+    let url = ''
+    if (assetContractName === 'Etheremon') {
+      url = `https://www.etheremon.com/mons-info/${this.collectible.id}`
+    } else if (assetContractName === 'CryptoKitties') {
+      url = `https://www.cryptokitties.co/kitty/${this.collectible.id}`
+    }
     MainStore.dapp.setUrl(url)
     NavStore.pushToScreen('DAppBrowserScreen')
   }
