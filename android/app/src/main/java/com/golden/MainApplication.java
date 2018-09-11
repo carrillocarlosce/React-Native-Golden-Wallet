@@ -1,7 +1,7 @@
 package com.golden;
 
 import android.app.Application;
-
+import com.skyward.NotificationManager.NotificationManager;
 import com.facebook.react.ReactApplication;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import cl.json.RNSharePackage;
@@ -64,6 +64,7 @@ public class MainApplication extends Application implements ReactApplication, Sh
                     new RCTQRCodeLocalImagePackage(),
                     new RNGoldenKeystorePackage(),
                     new RNGoldenLoadingPackage(),
+                    new NotificationManager(),
                     new WebViewBridgePackage()
             );
         }
