@@ -265,8 +265,8 @@ export const signTransaction = (transaction, _chainId, privateKey) => {
   return utils.RLP.encode(raw)
 }
 
-export const signMessage = (message) => {
-  const sig = signDigest(hashMessage(message))
+export const signMessage = (message, privateKey) => {
+  const sig = signDigest(hashMessage(message), privateKey)
   return (utils.hexZeroPad(sig.r, 32) + utils.hexZeroPad(sig.s, 32).substring(2) + (sig.recoveryParam ? '1c' : '1b'))
 }
 
@@ -278,3 +278,5 @@ export const hashMessage = (message) => {
   ])
   return utils.keccak256(payload)
 }
+
+export const hexToString = hex => utils.toUtf8String(hex)
