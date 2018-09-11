@@ -35,5 +35,6 @@ include ':react-native-golden-keystore'
 project(':react-native-golden-keystore').projectDir = new File(rootProject.projectDir, '../Libs/react-native-golden-keystore/android')
 include ':rn-golden-loading'
 project(':rn-golden-loading').projectDir = new File(rootProject.projectDir, '../Libs/rn-golden-loading/android')
-
+include ':react-native-check-notification-enable', ':app'
+project(':react-native-check-notification-enable').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-check-notification-enable/android')
 include ':app'
