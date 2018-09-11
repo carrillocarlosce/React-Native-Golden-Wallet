@@ -67,14 +67,14 @@ const dumpData = [
     url: 'https://web3.kyber.network',
     img: 'https://cdn.cryptostats.net/assets/images/coins/310497-KNC.png'
   },
-  // {
-  //   title: 'Idex',
-  //   subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
-  //   url: 'https://idex.market/',
-  //   img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
-  // },
   {
-    title: 'Opensea',
+    title: 'IDEX',
+    subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
+    url: 'https://idex.market/',
+    img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
+  },
+  {
+    title: 'OpenSea',
     subTitle: 'The largest market for crypto collectibles. Make offers on favorite..',
     url: 'https://opensea.io',
     img: 'https://pbs.twimg.com/profile_images/988983240458305538/KNIW8ufg_400x400.jpg'
@@ -84,23 +84,23 @@ const dumpData = [
     subTitle: 'A world of Ether monster where you can captures, transform,...',
     url: 'https://www.etheremon.com',
     img: 'https://pbs.twimg.com/profile_images/960520740196909056/3RBArulO_400x400.jpg'
+  },
+  {
+    title: '0x Portal',
+    subTitle: 'Learn about 0x and discover 0x Relayers...',
+    url: 'https://www.0xproject.com/portal',
+    img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
+  },
+  {
+    title: 'Fork Delta',
+    subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
+    url: 'https://forkdelta.app',
+    img: 'https://forkdelta.io/images/logo.png'
+  },
+  {
+    title: 'Cryptokitties',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://www.cryptokitties.co',
+    img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
   }
-  // {
-  //   title: '0x Portal',
-  //   subTitle: 'Learn about 0x and discover 0x Relayers...',
-  //   url: 'https://www.0xproject.com/portal',
-  //   img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
-  // },
-  // {
-  //   title: 'Forkdelta',
-  //   subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
-  //   url: 'https://forkdelta.app',
-  //   img: 'https://forkdelta.io/images/logo.png'
-  // },
-  // {
-  //   title: 'Cryptokitties',
-  //   subTitle: 'The largest marketplace for crypto collectibles',
-  //   url: 'https://www.cryptokitties.co',
-  //   img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
-  // }
 ]

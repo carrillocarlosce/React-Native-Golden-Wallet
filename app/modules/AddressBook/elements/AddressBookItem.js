@@ -10,7 +10,7 @@ import AppStyle from '../../../commons/AppStyle'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
 import MoreButton from '../../../components/elements/MoreButton'
-import AddressElement from '../../../components/elements/AddressElement';
+import AddressElement from '../../../components/elements/AddressElement'
 
 export default class AddressBookItem extends Component {
   static propTypes = {

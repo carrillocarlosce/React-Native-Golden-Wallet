@@ -207,8 +207,8 @@ export default class DappConfirmScreen extends Component {
             </Text>
             <AddressElement
               address={from}
-              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
-              style={{ width: 328 }}
+              textStyle={{ fontSize: 16 }}
+              style={{ width: 328, marginTop: 10, marginBottom: 15 }}
             />
           </View>
           <View style={styles.line} />
@@ -218,8 +218,8 @@ export default class DappConfirmScreen extends Component {
             </Text>
             <AddressElement
               address={to}
-              textStyle={{ fontSize: 16, marginTop: 10, marginBottom: 15 }}
-              style={{ width: 328 }}
+              textStyle={{ fontSize: 16 }}
+              style={{ width: 328, marginTop: 10, marginBottom: 15 }}
             />
           </View>
           <View style={styles.line} />
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: AppStyle.backgroundDarkBlue,
     borderRadius: 5,
-    bottom: 20,
+    bottom: isIPX ? 54 : 20,
     left: 20,
     right: 20,
     height: 50,
