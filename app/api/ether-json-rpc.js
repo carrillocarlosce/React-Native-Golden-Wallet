@@ -264,3 +264,17 @@ export const signTransaction = (transaction, _chainId, privateKey) => {
 
   return utils.RLP.encode(raw)
 }
+
+export const signMessage = (message) => {
+  const sig = signDigest(hashMessage(message))
+  return (utils.hexZeroPad(sig.r, 32) + utils.hexZeroPad(sig.s, 32).substring(2) + (sig.recoveryParam ? '1c' : '1b'))
+}
+
+export const hashMessage = (message) => {
+  const payload = utils.concat([
+    utils.toUtf8Bytes('\x19Ethereum Signed Message:\n'),
+    utils.toUtf8Bytes(String(message.length)),
+    ((typeof (message) === 'string') ? utils.toUtf8Bytes(message) : message)
+  ])
+  return utils.keccak256(payload)
+}
