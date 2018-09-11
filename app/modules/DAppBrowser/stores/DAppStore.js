@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { computed, action, observable } from 'mobx'
 import ConfirmStore from './ConfirmStore'
 import AdvanceStore from './AdvanceStore'
-import { signTransaction } from '../../../api/ether-json-rpc'
+import { signTransaction, signMessage, hexToString } from '../../../api/ether-json-rpc'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
@@ -129,7 +129,7 @@ export default class DAppStore {
         NavStore.showLoading()
         const ds = new SecureDS(pincode)
         this.getPrivateKey(ds).then((privateKey) => {
-          const signedTx = signTransaction(tx, this.chainId, privateKey)
+          const signedTx = signMessage(hexToString(tx), privateKey)
           console.warn(signedTx)
           this.webview.executeCallback(id, null, signedTx)
           NavStore.hideLoading()

@@ -54,7 +54,7 @@ export default class DAppBrowserScreen extends Component {
   }
 
   onSignPersonalMessage = ({ id, object }) => {
-    MainStore.dapp.sign(id, object)
+    MainStore.dapp.sign(id, object.data)
   }
 
   onHistoryStateChange = ({ navState }) => {
