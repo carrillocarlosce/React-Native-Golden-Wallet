@@ -23,7 +23,7 @@ import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width } = Dimensions.get('window')
+// const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {

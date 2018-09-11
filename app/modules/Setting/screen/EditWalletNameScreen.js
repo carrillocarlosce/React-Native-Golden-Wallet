@@ -38,6 +38,8 @@ export default class EditWalletNameScreen extends Component {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
     this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
+    this.manageWalletStore.selectedWallet = this.wallet
+    this.manageWalletStore.customTitle = this.wallet ? this.wallet.title : ''
   }
 
   state = {
@@ -77,6 +79,7 @@ export default class EditWalletNameScreen extends Component {
   }
 
   render() {
+    console.log(this.wallet)
     const { customTitle, isAllowedToSave } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
