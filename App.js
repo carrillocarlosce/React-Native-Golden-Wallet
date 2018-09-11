@@ -10,8 +10,11 @@ import {
   View,
   AppState,
   Keyboard,
-  NetInfo
+  NetInfo,
+  Platform,
+  PermissionsAndroid
 } from 'react-native'
+import Permissions from 'react-native-permissions'
 import crashlytics from 'react-native-fabric-crashlytics'
 import Router from './app/Router'
 import currencyStore from './app/AppStores/CurrencyStore'
@@ -58,6 +61,18 @@ export default class App extends Component {
     MainStore.appState.setInternetConnection(connectionType)
   }
 
+  switchEnableNotification(isEnable) {
+    if (MainStore.appState.internetConnection === 'offline') {
+      NavStore.popupCustom.show('Network Error.')
+      return
+    }
+    if (isEnable) {
+      NotificationStore.onNotif().then(res => console.log(res))
+    } else {
+      NotificationStore.offNotif().then(res => console.log(res))
+    }
+  }
+
   appState = 'active'
 
   _handleAppStateChange = (nextAppState) => {
@@ -79,6 +94,11 @@ export default class App extends Component {
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
+      if (Platform.OS === 'ios') {
+        Permissions.check('notification', { type: 'always' }).then(res => this.switchEnableNotification(res === 'authorized'))
+      } else {
+        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_WAP_PUSH).then(res => console.log(res))
+      }
       PushNotificationHelper.resetBadgeNumber()
       NavStore.lockScreen({
         onUnlock: () => {
