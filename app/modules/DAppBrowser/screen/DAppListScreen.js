@@ -84,6 +84,12 @@ const dumpData = [
     subTitle: 'A world of Ether monster where you can captures, transform,...',
     url: 'https://www.etheremon.com',
     img: 'https://pbs.twimg.com/profile_images/960520740196909056/3RBArulO_400x400.jpg'
+  },
+  {
+    title: 'DDex',
+    subTitle: 'DDEX is the first decentralized exchange built on Hydro Protocol...',
+    url: 'https://ddex.io/trade/ZRX-WETH',
+    img: 'https://pbs.twimg.com/profile_images/996789325823074304/huBkgZg4.jpg'
   }
   // {
   //   title: '0x Portal',
