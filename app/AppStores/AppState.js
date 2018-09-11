@@ -9,7 +9,7 @@ import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
-import NavStore from './NavStore';
+import NavStore from './NavStore'
 
 // const defaultAppData = {
 //   config: new Config('mainnet', Constants.INFURA_API_KEY),
@@ -79,17 +79,17 @@ class AppState {
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  @action setEnableNotification = (isEnable) => {
-    if (this.wallets.length == 0) {
-      NavStore.popupCustom.show('You have no wallet')
-      return
-    }
-    this.wallets.map((wallet) => {
-      wallet.setEnableNotification(isEnable)
-      return wallet.update()
-    })
-    this.save()
-  }
+  // @action setEnableNotification = (isEnable) => {
+  //   if (this.wallets.length == 0) {
+  //     NavStore.popupCustom.show('You have no wallet')
+  //     return
+  //   }
+  //   this.wallets.map((wallet) => {
+  //     wallet.setEnableNotification(isEnable)
+  //     return wallet.update()
+  //   })
+  //   this.save()
+  // }
 
   @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
   @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }

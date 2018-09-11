@@ -24,7 +24,8 @@ export default class AppSetting extends Component {
   }
 
   get currentStateEnableNotification() {
-    return MainStore.appState.enableNotification
+    // return MainStore.appState.enableNotification
+    return true
   }
 
   render() {
@@ -41,10 +42,11 @@ export default class AppSetting extends Component {
         />
         <SettingItem
           mainText="Enable Notification"
-          disable
-          type="switch"
-          enableSwitch={enableNotif}
-          onSwitch={() => { onNotificationSwitch(!enableNotif) }}
+          // disable
+          // type="switch"
+          // enableSwitch={enableNotif}
+          // onSwitch={() => { onNotificationSwitch(!enableNotif) }}
+          onPress={onNotificationSwitch}
         />
       </View>
     )
