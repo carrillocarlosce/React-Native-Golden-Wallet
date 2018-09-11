@@ -84,6 +84,8 @@ export default class ManageWalletStore {
     return this.privKey !== '' && !this.isErrorPrivateKey
   }
 
+  @action setSelectedWallet = (w) => { this.selectedWallet = w }
+
   @action setTitle(title) {
     this.customTitle = title
   }

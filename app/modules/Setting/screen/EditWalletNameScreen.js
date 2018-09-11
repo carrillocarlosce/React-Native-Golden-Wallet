@@ -45,6 +45,7 @@ export default class EditWalletNameScreen extends Component {
   }
 
   componentDidMount() {
+    this.manageWalletStore.setSelectedWallet(this.wallet)
     const title = this.wallet.title ? this.wallet.title : ''
     this.manageWalletStore.setTitle(title)
   }
