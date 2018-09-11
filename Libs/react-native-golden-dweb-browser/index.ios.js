@@ -5,7 +5,6 @@ import {
 } from 'react-native'
 import WKWebView from 'react-native-wkwebview-reborn'
 import PropTypes from 'prop-types'
-import web3 from './web3'
 
 export default class GoldenDWebBrowser extends Component {
   static propTypes = {
@@ -21,7 +20,8 @@ export default class GoldenDWebBrowser extends Component {
     jsContent: PropTypes.string.isRequired,
     onLoadEnd: PropTypes.func,
     onLoadStart: PropTypes.func,
-    onProgress: PropTypes.func
+    onProgress: PropTypes.func,
+    onHistoryStateChange: PropTypes.func
   }
 
   static defaultProps = {
@@ -31,6 +31,7 @@ export default class GoldenDWebBrowser extends Component {
     onSignMessage: (data) => { },
     onSignPersonalMessage: (data) => { },
     onSignTypedMessage: (data) => { },
+    onHistoryStateChange: (data) => { },
     onLoadEnd: () => { },
     onLoadStart: () => { },
     onProgress: () => { }
@@ -41,8 +42,9 @@ export default class GoldenDWebBrowser extends Component {
     const {
       onSignTransaction,
       onSignMessage = () => { },
-      onSignPersonalMessage = () => { },
-      onSignTypedMessage = () => { }
+      onSignPersonalMessage,
+      onSignTypedMessage = () => { },
+      onHistoryStateChange
     } = this.props
     switch (payload.data.name) {
       case 'signTransaction': {
@@ -61,6 +63,10 @@ export default class GoldenDWebBrowser extends Component {
         onSignTypedMessage({ id: payload.data.id, object: payload.data.object })
         break
       }
+      case 'history-state-changed': {
+        onHistoryStateChange({ navState: payload.data.navState })
+        break
+      }
       default: break
     }
   }
@@ -70,7 +76,6 @@ export default class GoldenDWebBrowser extends Component {
     const e = error ? `'${error}'` : 'null'
     this.webview.evaluateJavaScript(`executeCallback(${id}, ${e}, '${v}')`)
   }
-
 
   reload() {
     this.webview.evaluateJavaScript(`location.reload();`)
@@ -82,6 +87,10 @@ export default class GoldenDWebBrowser extends Component {
 
   goForward() {
     this.webview.evaluateJavaScript(`window.history.forward();`)
+  }
+
+  loadSource(url) {
+    this.webview.evaluateJavaScript(`location.href = '${url}';`)
   }
 
   render() {
@@ -120,7 +129,15 @@ export default class GoldenDWebBrowser extends Component {
 const getJavascript = function (addressHex, network, infuraAPIKey, jsContent) {
   return `
     ${jsContent}
-    ${web3}
+
+    var history = window.history;
+    var pushState = history.pushState;
+    history.pushState = function(state) {
+        setTimeout(function () {
+            window.webkit.messageHandlers.reactNative.postMessage({"name": "history-state-changed", "navState": {"url": location.href, "title": document.title}})
+        }, 100);
+        return pushState.apply(history, arguments);
+    };
 
     function getChainID(name) {
       switch(name) {
