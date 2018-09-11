@@ -94,7 +94,7 @@ export default class DAppStore {
   }
 
   onCancel() {
-    this.webview.executeCallback(this.id, 'User cancel this transaction!', null)
+    this.webview.executeCallback(this.id, { message: 'User cancel this transaction!' }, null)
   }
 
   signTransaction() {

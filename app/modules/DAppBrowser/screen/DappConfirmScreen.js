@@ -23,7 +23,6 @@ import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import AppState from '../../../AppStores/AppState'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
-import commonStyles from '../../../commons/commonStyles'
 import AddressElement from '../../../components/elements/AddressElement'
 
 const { height } = Dimensions.get('window')
