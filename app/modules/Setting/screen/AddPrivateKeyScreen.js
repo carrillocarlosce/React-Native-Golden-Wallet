@@ -46,9 +46,6 @@ export default class AddPrivateKeyScreen extends Component {
     this.manageWalletStore = new ManageWalletStore()
     this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
     this.manageWalletStore.selectedWallet = this.wallet
-    this.state = {
-      isPrivateKeyFocus: false
-    }
   }
 
   componentWillMount() {
@@ -151,7 +148,6 @@ export default class AddPrivateKeyScreen extends Component {
 
   render() {
     const { navigation } = this.props
-    const { isPrivateKeyFocus } = this.state
     const {
       privKey, isErrorPrivateKey, isReadyCreate
     } = this.manageWalletStore
@@ -175,19 +171,13 @@ export default class AddPrivateKeyScreen extends Component {
                   navigation.goBack()
                 }}
               />
-              {/* <Text style={styles.description}>
-                Your Private Key will be deleted after signing the transaction
-              </Text>
-              <Text style={[styles.titleText, { marginTop: 20, color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text> */}
               <InputWithAction
                 ref={(ref) => { this.privKeyField = ref }}
-                style={{ width: width - 40, marginTop: 10 }}
+                style={{ width: width - 40, marginTop: 25 }}
                 onChangeText={this.onChangePrivKey}
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={privKey}
-                onFocus={() => this.setState({ isPrivateKeyFocus: true })}
-                onBlur={() => this.setState({ isPrivateKeyFocus: false })}
               />
               {isErrorPrivateKey &&
                 <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
@@ -228,13 +218,6 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     fontSize: 16
   },
-  titleText: {
-    fontSize: 16,
-    fontFamily: 'OpenSans-Semibold',
-    color: 'white',
-    alignSelf: 'flex-start',
-    marginLeft: 20
-  },
   errorText: {
     fontSize: 14,
     fontFamily: 'OpenSans-Semibold',
@@ -242,13 +225,5 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 10,
     marginLeft: 20
-  },
-  description: {
-    marginTop: 15,
-    color: AppStyle.secondaryTextColor,
-    fontSize: 16,
-    fontFamily: 'OpenSans-Semibold',
-    marginHorizontal: 20,
-    textAlign: 'center'
   }
 })
