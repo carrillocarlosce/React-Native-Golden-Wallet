@@ -17,7 +17,7 @@ export default {
   SUB_TITTLE_SEND_SUCCESS: 'The process may take up to some seconds. Please check your history for transaction status.',
   TEXT_VIEW_DETAIL: 'Check on Etherscan',
   RETURN_WALLET: 'Return to wallet',
-  CREATE_NEW_WALLET: 'Create A New Wallet',
+  CREATE_NEW_WALLET: 'Add New Wallet',
   NEW_UPDATE: 'New Version Available ',
   UPDATE: 'Update Now',
   CONFIRM: 'Confirm',

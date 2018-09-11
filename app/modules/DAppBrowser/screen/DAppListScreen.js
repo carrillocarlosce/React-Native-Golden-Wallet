@@ -68,13 +68,13 @@ const dumpData = [
     img: 'https://cdn.cryptostats.net/assets/images/coins/310497-KNC.png'
   },
   // {
-  //   title: 'Idex',
+  //   title: 'IDEX',
   //   subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
   //   url: 'https://idex.market/',
   //   img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
   // },
   {
-    title: 'Opensea',
+    title: 'OpenSea',
     subTitle: 'The largest market for crypto collectibles. Make offers on favorite..',
     url: 'https://opensea.io',
     img: 'https://pbs.twimg.com/profile_images/988983240458305538/KNIW8ufg_400x400.jpg'
@@ -92,7 +92,7 @@ const dumpData = [
   //   img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
   // },
   // {
-  //   title: 'Forkdelta',
+  //   title: 'Fork Delta',
   //   subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
   //   url: 'https://forkdelta.app',
   //   img: 'https://forkdelta.io/images/logo.png'

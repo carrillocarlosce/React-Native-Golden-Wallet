@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react'
 import {
   View,
   StyleSheet,
-  Text,
-  Platform
+  Text
 } from 'react-native'
 import PropTypes from 'prop-types'
+import commonStyle from '../../commons/commonStyles'
 import AppStyle from '../../commons/AppStyle'
 
 export default class AddressElement extends PureComponent {
@@ -29,7 +29,7 @@ export default class AddressElement extends PureComponent {
     return (
       <View style={[styles.container, style]}>
         <Text
-          style={[styles.text, textStyle]}
+          style={[styles.text, commonStyle.fontAddress, textStyle]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    color: 'white',
-    fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNewBold',
-    fontWeight: 'bold'
+    color: 'white'
+    // fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'CourierNewBold',
+    // fontWeight: 'bold'
   }
 })

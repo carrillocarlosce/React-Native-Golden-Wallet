@@ -39,8 +39,8 @@ export default class AddressItem extends PureComponent {
           </Text>
           <AddressElement
             address={address}
-            textStyle={{ fontSize: 12, marginTop: 10 }}
-            style={{ width: 281 }}
+            textStyle={{ fontSize: 12 }}
+            style={{ width: 281, marginTop: 10 }}
           />
         </View>
       </TouchableOpacity>
