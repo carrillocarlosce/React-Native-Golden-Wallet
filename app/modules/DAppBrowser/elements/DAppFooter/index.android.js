@@ -8,8 +8,8 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
-import images from '../../../commons/images'
-import MainStore from '../../../AppStores/MainStore'
+import images from '../../../../commons/images'
+import MainStore from '../../../../AppStores/MainStore'
 
 const { width } = Dimensions.get('window')
 
