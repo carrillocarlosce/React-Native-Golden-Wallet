@@ -53,7 +53,7 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getDataString() != null && intent.getData().getScheme().startsWith("app-settings")) {
+        if (intent.getDataString() != null && intent.getData().getScheme().startsWith("settings")) {
             startActivity(createNotificationSettingsIntent());
         }
         setIntent(intent);

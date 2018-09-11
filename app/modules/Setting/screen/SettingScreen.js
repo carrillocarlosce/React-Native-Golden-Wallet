@@ -50,7 +50,7 @@ export default class SettingScreen extends Component {
   onNetworkPress = () => NavStore.pushToScreen('NetworkScreen')
 
   onNotificationSwitch = () => {
-    Platform.OS === 'ios' ? Permissions.openSettings() : Linking.openURL('app-settings://notification/golden')
+    Platform.OS === 'ios' ? Permissions.openSettings() : Linking.openURL('settings://notification/golden')
   }
 
   // onNotificationSwitch = (isEnable) => {
