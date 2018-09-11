@@ -91,14 +91,14 @@ export default class App extends Component {
       setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
       // MainStore.appState.BgJobs.CheckBalance.doOnce(false, false)
       MainStore.appState.BgJobs.CheckBalance.start()
+      // if (Platform.OS === 'ios') {
+      //   Permissions.check('notification', { type: 'always' }).then(res => this.switchEnableNotification(res === 'authorized'))
+      // } else {
+      //   PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_WAP_PUSH).then(res => console.log(res))
+      // }
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
-      if (Platform.OS === 'ios') {
-        Permissions.check('notification', { type: 'always' }).then(res => this.switchEnableNotification(res === 'authorized'))
-      } else {
-        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_WAP_PUSH).then(res => console.log(res))
-      }
       PushNotificationHelper.resetBadgeNumber()
       NavStore.lockScreen({
         onUnlock: () => {
