@@ -43,6 +43,7 @@ export default class DAppHeader extends Component {
           <Image source={images.closeButton} style={{ marginHorizontal: 20 }} />
         </TouchableOpacity>
         <TextInput
+          selectTextOnFocus
           underlineColorAndroid="transparent"
           keyboardAppearance="dark"
           autoCorrect={false}
