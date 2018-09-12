@@ -75,7 +75,11 @@ export default class DAppStore {
   }
 
   loadSource() {
-    this.webview.loadSource(this.url)
+    let { url } = this
+    if (!url.match(/^[a-zA-Z]+:\/\//)) {
+      url = `http://${url}`
+    }
+    this.webview.loadSource(url)
   }
 
   goToConfirm() {
