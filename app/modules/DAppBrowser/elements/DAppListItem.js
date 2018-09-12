@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   Image,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   Text,
   View
 } from 'react-native'
@@ -41,21 +41,23 @@ export default class DAppListItem extends Component {
       <View style={[{ backgroundColor: AppStyle.backgroundTextInput }, style]}>
         {line && <View style={styles.line} />}
 
-        <TouchableOpacity style={styles.container} onPress={onPress}>
-          <Image
-            source={img.uri ? img : images.iconEther}
-            style={styles.image}
-            resizeMode="contain"
-          />
-          <View style={styles.viewStyle}>
-            <Text style={styles.titleStyle}>{title}</Text>
-            <Text style={styles.subTitleStyle}>{subTitle}</Text>
+        <TouchableWithoutFeedback onPress={onPress}>
+          <View style={styles.container}>
+            <Image
+              source={img.uri ? img : images.iconEther}
+              style={styles.image}
+              resizeMode="contain"
+            />
+            <View style={styles.viewStyle}>
+              <Text style={styles.titleStyle}>{title}</Text>
+              <Text style={styles.subTitleStyle}>{subTitle}</Text>
+            </View>
+            <Image
+              style={{ alignSelf: 'center' }}
+              source={images.icon_indicator}
+            />
           </View>
-          <Image
-            style={{ alignSelf: 'center' }}
-            source={images.icon_indicator}
-          />
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       </View>
     )
   }
