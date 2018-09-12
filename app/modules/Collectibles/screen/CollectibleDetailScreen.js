@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  Text
+  Text,
+  SafeAreaView
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -55,26 +56,28 @@ export default class CollectibleDetailScreen extends Component {
       tokenName, backgroundColor, previewUrl, description, assetContractName
     } = this.collectible
     return (
-      <View style={styles.container}>
-        <NavigationHeader
-          style={{ marginTop: 20 + marginTop }}
-          headerItem={{
-            title: tokenName,
-            icon: null,
-            button: images.backButton
-          }}
-          action={this.onBack}
-        />
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <NavigationHeader
+            style={{ marginTop: 20 + marginTop }}
+            headerItem={{
+              title: tokenName,
+              icon: null,
+              button: images.backButton
+            }}
+            action={this.onBack}
+          />
 
-        <View style={[styles.backgroundImage, { backgroundColor }]}>
-          <Image style={{ height: 250, width: width - 40 }} resizeMode="contain" source={{ uri: previewUrl }} />
+          <View style={[styles.backgroundImage, { backgroundColor }]}>
+            <Image style={{ height: 250, width: width - 40 }} resizeMode="contain" source={{ uri: previewUrl }} />
+          </View>
+          <Text style={styles.description}>{description}</Text>
+          <BottomButton
+            onPress={this.onPress}
+            text={`Open on ${assetContractName}`}
+          />
         </View>
-        <Text style={styles.description}>{description}</Text>
-        <BottomButton
-          onPress={this.onPress}
-          text={`Open on ${assetContractName}`}
-        />
-      </View>
+      </SafeAreaView>
     )
   }
 }
