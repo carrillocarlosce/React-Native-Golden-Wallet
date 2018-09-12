@@ -12,6 +12,7 @@ import DAppBrowser from '../../../Libs/react-native-golden-dweb-browser'
 import NavStore from '../../AppStores/NavStore'
 import MainStore from '../../AppStores/MainStore'
 import DAppHeader from './elements/DAppHeader'
+/* eslint-disable-next-line */
 import DAppFooter from './elements/DAppFooter'
 import AppStyle from '../../commons/AppStyle'
 

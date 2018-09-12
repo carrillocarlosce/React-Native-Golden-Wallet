@@ -22,7 +22,7 @@ class MainStore {
   backupStore = null
   changePincode = null
   dapp = null
-
+  addressBookStore = null
   importMnemonicStore = null
 
   setSecureStorage(pincode) {
