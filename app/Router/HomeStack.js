@@ -22,7 +22,6 @@ import TransactionDetailScreen from '../modules/TransactionDetail/screen/Transac
 import CollectibleScreen from '../modules/Collectibles/screen/CollectibleScreen'
 import CollectibleDetailScreen from '../modules/Collectibles/screen/CollectibleDetailScreen'
 import CollectibleListScreen from '../modules/Collectibles/screen/CollectibleListScreen'
-import DAppConfirmScreen from '../modules/DAppBrowser/screen/DappConfirmScreen'
 import DAppListScreen from '../modules/DAppBrowser/screen/DAppListScreen'
 import AppStyle from '../commons/AppStyle'
 
@@ -168,12 +167,6 @@ const HomeStack = StackNavigator(
     },
     DAppListScreen: {
       screen: DAppListScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DAppConfirmScreen: {
-      screen: DAppConfirmScreen,
       navigationOptions: {
         header: null
       }
