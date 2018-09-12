@@ -17,7 +17,6 @@ import AddressBookScreen from '../modules/AddressBook/screen/AddressBookScreen'
 import ScanQRCodeScreen from '../modules/ScanQRCode'
 import TxHashWebViewScreen from '../modules/TransactionDetail/screen/TxHashWebView'
 import PrivacyTermsScreen from '../modules/Setting/screen/PrivacyTermsScreen'
-import DAppBrowserScreen from '../modules/DAppBrowser/DAppBrowserScreen'
 import AppVersionScreen from '../modules/Setting/screen/AppVersionScreen'
 import TransactionDetailScreen from '../modules/TransactionDetail/screen/TransactionDetailScreen'
 import CollectibleScreen from '../modules/Collectibles/screen/CollectibleScreen'
@@ -149,12 +148,6 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
-    DAppWebScreen: {
-      screen: DAppBrowserScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
     CollectibleScreen: {
       screen: CollectibleScreen,
       navigationOptions: {
@@ -175,12 +168,6 @@ const HomeStack = StackNavigator(
     },
     DAppListScreen: {
       screen: DAppListScreen,
-      navigationOptions: {
-        header: null
-      }
-    },
-    DAppBrowserScreen: {
-      screen: DAppBrowserScreen,
       navigationOptions: {
         header: null
       }
