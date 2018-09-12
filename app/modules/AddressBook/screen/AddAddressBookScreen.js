@@ -154,7 +154,7 @@ export default class AddAddressBookScreen extends Component {
                 }}
                 action={this.goBack}
               />
-              <NameField />
+              <NameField ref={(ref) => { this.nameField = ref }} />
               <AddressField />
               {this._scanQRCodeButton()}
             </Animated.View>

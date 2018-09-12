@@ -24,6 +24,10 @@ export default class NameField extends Component {
     this.addressBookStore.setTitle(text)
   }
 
+  focus() {
+    this.nameField.focus()
+  }
+
   render() {
     const { title, isErrorTitle, isNameFocus } = this.addressBookStore
     const color = { color: isNameFocus ? AppStyle.mainColor : AppStyle.titleDarkModeColor }
