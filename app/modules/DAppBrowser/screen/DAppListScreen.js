@@ -14,9 +14,20 @@ import MainStore from '../../../AppStores/MainStore'
 const marginTop = LayoutUtils.getExtraTop()
 
 export default class DAppListScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.ready = false
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.ready = true
+    }, 650)
+  }
   onBack = () => NavStore.goBack()
 
   _goToBrowser = (url) => {
+    if (!this.ready) return
     MainStore.dapp.setUrl(url)
     NavStore.pushToScreen('DAppBrowserScreen')
   }
@@ -86,7 +97,7 @@ const dumpData = [
     img: 'https://pbs.twimg.com/profile_images/960520740196909056/3RBArulO_400x400.jpg'
   },
   {
-    title: 'DDex',
+    title: 'DDEX',
     subTitle: 'DDEX is the first decentralized exchange built on Hydro Protocol...',
     url: 'https://ddex.io/trade/ZRX-WETH',
     img: 'https://pbs.twimg.com/profile_images/996789325823074304/huBkgZg4.jpg'
