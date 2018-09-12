@@ -29,7 +29,7 @@ export default class DAppListScreen extends Component {
   _goToBrowser = (url) => {
     if (!this.ready) return
     MainStore.dapp.setUrl(url)
-    NavStore.pushToScreen('DAppBrowserScreen')
+    NavStore.pushToScreen('DAppBrowserStack')
   }
 
   render() {
@@ -78,12 +78,12 @@ const dumpData = [
     url: 'https://web3.kyber.network',
     img: 'https://cdn.cryptostats.net/assets/images/coins/310497-KNC.png'
   },
-  // {
-  //   title: 'IDEX',
-  //   subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
-  //   url: 'https://idex.market/',
-  //   img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
-  // },
+  {
+    title: 'IDEX',
+    subTitle: 'IDEX is a decentralized exchange for trading Ethereum tokens.',
+    url: 'https://idex.market/',
+    img: 'https://idex.market/static/images/favicon-logo-wt-trans.png'
+  },
   {
     title: 'OpenSea',
     subTitle: 'The largest market for crypto collectibles. Make offers on favorite..',
