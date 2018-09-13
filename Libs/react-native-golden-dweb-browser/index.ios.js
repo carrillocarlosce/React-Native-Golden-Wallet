@@ -120,6 +120,9 @@ export default class GoldenDWebBrowser extends Component {
           onLoadEnd={onLoadEnd}
           onLoadStart={onLoadStart}
           onProgress={onProgress}
+          onShouldStartLoadWithRequest={(e) => {
+            return e.url.startsWith('http')
+          }}
         />
       </View>
     )
