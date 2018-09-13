@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   View,
-  StyleSheet,
   Dimensions,
   ScrollView
 } from 'react-native'
@@ -40,10 +39,13 @@ export default class PrivacyTermsScreen extends Component {
     })
   }
 
+  goBack = () => {
+    this.props.navigation.goBack()
+  }
+
   render() {
-    const { navigation } = this.props
     return (
-      <View style={styles.container}>
+      <View>
         <NavigationHeader
           style={{ marginTop: marginTop + 20, width }}
           headerItem={{
@@ -51,9 +53,7 @@ export default class PrivacyTermsScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.goBack}
         />
         <ScrollView>
           <SettingItem
@@ -65,39 +65,8 @@ export default class PrivacyTermsScreen extends Component {
             mainText="Terms"
             onPress={this.onTermsPress}
           />
-          {/* <SettingItem
-            style={{ marginTop: 40 }}
-            mainText="Dialy usage"
-            disable
-            type="switch"
-            enableSwitch={true}
-            onSwitch={() => { }}
-          />
-          <Text style={styles.textDes}>Help Golden improve user experience by sharing app daily diagnostic.</Text>
-          <SettingItem
-            style={{ marginTop: 30 }}
-            mainText="Crash reports"
-            disable
-            type="switch"
-            enableSwitch={true}
-            onSwitch={() => { }}
-          />
-          <Text style={styles.textDes} t>Help Golden improve user experience by sharing app daily diagnostic.</Text> */}
         </ScrollView>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-
-  }
-  // textDes: {
-  //   fontSize: 12,
-  //   fontFamily: 'OpenSans-Semibold',
-  //   color: AppStyle.secondaryTextColor,
-  //   marginTop: 20,
-  //   paddingHorizontal: 15
-  // }
-})

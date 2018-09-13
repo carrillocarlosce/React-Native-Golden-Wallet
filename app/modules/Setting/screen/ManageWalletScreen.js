@@ -7,8 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  Dimensions,
-  TouchableWithoutFeedback
+  Dimensions
 } from 'react-native'
 import PropsType from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -19,12 +18,11 @@ import AppStyle from '../../../commons/AppStyle'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import ManageWalletItem from '../elements/ManageWalletItem'
 import MainStore from '../../../AppStores/MainStore'
-import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width, height } = Dimensions.get('window')
+const { height } = Dimensions.get('window')
 
 @observer
 export default class ListWalletScreen extends Component {
@@ -39,24 +37,6 @@ export default class ListWalletScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
-    this.state = {
-      isShowExportPrivateKeyBtn: true,
-      isShowImplementPrivateKey: false
-    }
-  }
-
-  onActionPress = (index) => {
-    this.selectedWallet = this.wallets[index]
-    this.setState({
-      isShowExportPrivateKeyBtn: this.shouldShowExportPrivateKey,
-      isShowImplementPrivateKey: this.selectedWallet.importType === 'Address'
-    }, () => {
-      this.actionSheet.show()
-    })
-  }
-
-  onCancelAction = () => {
-    this.actionSheet.hide()
   }
 
   getPrivateKey(ds) {
@@ -75,16 +55,19 @@ export default class ListWalletScreen extends Component {
     return MainStore.appState.wallets
   }
 
+  goToCreateWallet = () => {
+    const { navigation } = this.props
+    const { wallets } = this
+    navigation.navigate('CreateWalletStack', {
+      returnData: this.returnData,
+      index: wallets.length
+    })
+  }
   _renderItem = ({ item, index }) =>
     (
       <ManageWalletItem
         index={index}
-        action={() => {
-          this.selectedIndex = index
-          this.onActionPress(index)
-        }}
         onPress={() => {
-          // manageWalletStore.selectedWallet = this.wallets[index]
           NavStore.pushToScreen('ManageWalletDetailScreen', {
             wallet: this.wallets[index]
           })
@@ -147,7 +130,6 @@ export default class ListWalletScreen extends Component {
   }
 
   _renderFooter = () => {
-    const { navigation } = this.props
     const { wallets } = this
     let backgroundColor
     if (wallets.length === 10) {
@@ -162,12 +144,7 @@ export default class ListWalletScreen extends Component {
           styles.addContactButtonStyle,
           backgroundColor
         ]}
-        onPress={() => {
-          navigation.navigate('CreateWalletStack', {
-            returnData: this.returnData,
-            index: wallets.length
-          })
-        }}
+        onPress={this.goToCreateWallet}
       >
         <Image
           source={images.icon_addBold}
@@ -187,52 +164,25 @@ export default class ListWalletScreen extends Component {
     )
   }
 
-  render() {
+  goBack = () => {
     const { navigation } = this.props
-    const { isShowExportPrivateKeyBtn, isShowImplementPrivateKey } = this.state
+    navigation.dispatch(NavigationActions.back())
+  }
+
+  render() {
     return (
-      <TouchableWithoutFeedback onPress={() => { this.actionSheet.hide() }}>
-        <SafeAreaView style={styles.container}>
-          <NavigationHeader
-            style={{ marginTop: 20 + marginTop }}
-            headerItem={{
-              title: 'Manage Wallets',
-              icon: null,
-              button: images.backButton
-            }}
-            action={() => {
-              navigation.dispatch(NavigationActions.back())
-            }}
-          />
-          {this._renderContentView()}
-          <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this.onCancelAction}>
-            <TouchableOpacity onPress={this.onEdit}>
-              <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-                <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
-              </View>
-            </TouchableOpacity>
-            {isShowExportPrivateKeyBtn &&
-              <TouchableOpacity onPress={this.onExportPrivateKey}>
-                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
-                </View>
-              </TouchableOpacity>
-            }
-            {isShowImplementPrivateKey &&
-              <TouchableOpacity onPress={this.onAddPrivateKey}>
-                <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-                  <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
-                </View>
-              </TouchableOpacity>
-            }
-            <TouchableOpacity onPress={this.onDelete}>
-              <View style={styles.actionButton}>
-                <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
-              </View>
-            </TouchableOpacity>
-          </ActionSheetCustom>
-        </SafeAreaView >
-      </TouchableWithoutFeedback>
+      <SafeAreaView style={styles.container}>
+        <NavigationHeader
+          style={{ marginTop: 20 + marginTop }}
+          headerItem={{
+            title: 'Manage Wallets',
+            icon: null,
+            button: images.backButton
+          }}
+          action={this.goBack}
+        />
+        {this._renderContentView()}
+      </SafeAreaView >
     )
   }
 }
@@ -253,18 +203,6 @@ const styles = StyleSheet.create({
     color: '#E4BF43',
     fontFamily: AppStyle.mainFontSemiBold,
     fontSize: 18
-  },
-  actionButton: {
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
-    width: width - 40,
-    backgroundColor: AppStyle.backgroundDarkBlue
-  },
-  actionText: {
-    fontSize: 16,
-    fontFamily: 'OpenSans-Semibold'
   },
   contactImageStyle: {
     resizeMode: 'contain',

@@ -64,14 +64,18 @@ export default class RemoveWalletScreen extends Component {
   }
 
   backToManageScreen() {
-    Keyboard.dismiss()
+    this.hideKeyboard()
     NavStore.pushToScreen('ManageWalletScreen')
   }
 
   handleBack = () => {
     const { navigation } = this.props
-    Keyboard.dismiss()
+    this.hideKeyboard()
     navigation.goBack()
+  }
+
+  hideKeyboard = () => {
+    Keyboard.dismiss()
   }
 
   renderErrorField = () => {
@@ -97,7 +101,7 @@ export default class RemoveWalletScreen extends Component {
               }}
               action={this.handleBack}
             />
-            <Text style={styles.description}>Please enter your wallet name to remove</Text>
+            <Text style={styles.description}>{constant.REMOVE_WALLET_DESCRIPTION}</Text>
             <InputWithAction
               autoFocus
               style={{ width: width - 40, marginTop: 25 }}

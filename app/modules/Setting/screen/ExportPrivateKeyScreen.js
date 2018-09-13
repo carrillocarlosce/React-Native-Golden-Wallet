@@ -16,6 +16,7 @@ import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import NavStore from '../../../AppStores/NavStore'
 import AppStyle from '../../../commons/AppStyle'
+import constants from '../../../commons/constant'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -29,6 +30,10 @@ export default class ExportPrivateKeyScreen extends Component {
     navigation: null
   }
 
+  goBack = () => {
+    NavStore.goBack()
+  }
+
   render() {
     const { pk, walletName } = this.props.navigation ? this.props.navigation.state.params : {}
     return (
@@ -40,11 +45,9 @@ export default class ExportPrivateKeyScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            NavStore.goBack()
-          }}
+          action={this.goBack}
         />
-        <Text style={styles.des}>Make sure your enviroment is secure, and no one sees your screen. </Text>
+        <Text style={styles.des}>{constants.EXPORT_PRIVATE_KEY_ALERT}</Text>
         <View style={styles.qrCodeContainer}>
           <QRCode
             value={pk}

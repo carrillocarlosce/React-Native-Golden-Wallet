@@ -64,14 +64,18 @@ export default class EditWalletNameScreen extends Component {
   }
 
   backToManageScreen() {
-    Keyboard.dismiss()
+    this.hideKeyboard()
     NavStore.pushToScreen('ManageWalletScreen')
   }
 
   handleBack = () => {
     const { navigation } = this.props
-    Keyboard.dismiss()
+    this.hideKeyboard()
     navigation.goBack()
+  }
+
+  hideKeyboard = () => {
+    Keyboard.dismiss()
   }
 
   renderErrorField = () => {
