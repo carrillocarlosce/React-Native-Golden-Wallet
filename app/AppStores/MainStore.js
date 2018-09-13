@@ -36,18 +36,6 @@ class MainStore {
     appState.startAllServices()
   }
 
-  goToSendTx() {
-    this.sendTransaction = new SendStore()
-  }
-
-  goToChangePincode() {
-    this.changePincode = new ChangePincodeStore()
-  }
-
-  goToDApp() {
-    this.dapp = new DAppStore()
-  }
-
   async gotoBackup(pincode) {
     this.backupStore = new BackupStore()
     const mnemonic = await new SecureDS(pincode).deriveMnemonic()
