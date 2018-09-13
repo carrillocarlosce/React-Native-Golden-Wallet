@@ -2,13 +2,12 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
-  Image,
   Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import images from '../../../../commons/images'
+import FooterButton from '../FooterButton'
 
 const { width } = Dimensions.get('window')
 
@@ -36,16 +35,10 @@ export default class DAppFooter extends Component {
     return (
       <View style={[styles.container, style]}>
         <View style={styles.arrowButton}>
-          <TouchableOpacity onPress={goBack}>
-            <Image source={images.arrowBack} style={{ tintColor: 'white' }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={goForward} style={{ marginLeft: 70 }}>
-            <Image source={images.arrowForward} style={{ tintColor: 'white' }} />
-          </TouchableOpacity>
+          <FooterButton onPress={goBack} icon={images.arrowBack} styleImage={{ tintColor: 'white' }} />
+          <FooterButton onPress={goForward} icon={images.arrowForward} styleImage={{ tintColor: 'white' }} style={{ marginLeft: 30 }} />
         </View>
-        <TouchableOpacity onPress={onReload}>
-          <Image source={images.iconRefresh} />
-        </TouchableOpacity>
+        <FooterButton onPress={onReload} icon={images.iconRefresh} styleImage={{ tintColor: 'white' }} />
       </View>
     )
   }
@@ -56,9 +49,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    width
+    width,
+    height: 50
   },
   arrowButton: {
     flexDirection: 'row',
