@@ -69,7 +69,6 @@
     "react-native-touch-id": "^4.0.1",
     "react-native-view-shot": "^2.4.0",
     "react-native-webview-bridge-updated": "git+https://github.com/HungNguyenBao/react-native-webview-bridge.git",
-    "react-native-wkwebview-reborn": "^1.21.0",
     "react-navigation": "^2.11.2",
     "readable-stream": "^1.0.33",
     "rn-nodeify": "^10.0.0",
