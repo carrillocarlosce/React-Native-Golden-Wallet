@@ -7,9 +7,9 @@ import AppDS from './DataSource/AppDS'
 import Reactions from './Reactions'
 import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
-import NotificationStore from './stores/Notification'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
+import NavStore from './NavStore'
 
 // const defaultAppData = {
 //   config: new Config('mainnet', Constants.INFURA_API_KEY),
@@ -30,6 +30,7 @@ class AppState {
   @observable defaultWallet = null // for web3 dapp
   @observable selectedWallet = null // for sending transaction
   @observable selectedToken = null // for sending transaction
+  @observable selectedTransaction = null
   @observable addressBooks = []
   @observable rateETHDollar = new BigNumber(0)
   @observable hasPassword = false
@@ -42,7 +43,10 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  @observable enableNotification = true
+  // @observable enableNotification = true
+  @observable currentCardIndex = 0
+  lastestVersionRead = ''
+  shouldShowUpdatePopup = true
 
   static TIME_INTERVAL = 20000
 
@@ -73,11 +77,22 @@ class AppState {
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
   @action setInternetConnection = (ic) => { this.internetConnection = ic }
   @action setselectedToken = (t) => { this.selectedToken = t }
+  @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  @action setEnableNotification = (isEnable) => {
-    this.enableNotification = isEnable
-    this.save()
-  }
+  // @action setEnableNotification = (isEnable) => {
+  //   if (this.wallets.length == 0) {
+  //     NavStore.popupCustom.show('You have no wallet')
+  //     return
+  //   }
+  //   this.wallets.map((wallet) => {
+  //     wallet.setEnableNotification(isEnable)
+  //     return wallet.update()
+  //   })
+  //   this.save()
+  // }
+
+  @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
+  @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }
 
   @action async syncAddressBooks() {
     await AddressBookDS.getAddressBooks().then((_addressBooks) => {
@@ -148,6 +163,10 @@ class AppState {
     }, 0)
   }
 
+  @action setCurrentCardIndex(index) {
+    this.currentCardIndex = index
+  }
+
   @action async loadPendingTxs() {
     const unspendTransactions = await UnspendTransactionDS.getTransactions()
     this.unpendTransactions = unspendTransactions
@@ -158,10 +177,12 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
+    // this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
+    this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
+    this.lastestVersionRead = data.lastestVersionRead
 
     await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
@@ -180,13 +201,12 @@ class AppState {
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
     // this.BgJobs.CheckBalance.doOnce(false)
-
-    if (NotificationStore.notif) NotificationStore.gotoTransactionList()
   }
 
   @computed get isShowSendButton() {
+    const idx = this.wallets.length
     const wallet = this.selectedWallet
-    if (!wallet) {
+    if (this.currentCardIndex === idx || !wallet) {
       return false
     }
     return wallet.canSendTransaction
@@ -200,12 +220,23 @@ class AppState {
     return this.appWalletsStore.wallets
   }
 
+  @computed get enableNotification() {
+    if (this.wallets.length == 0) return true
+    for (let i = 0; i < this.wallets.length; i++) {
+      if (this.wallets[i].enableNotification) return true
+    }
+    return false
+  }
+
   resetAppState() {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
-    this.hasPassword = false
-    this.didBackup = false
-    this.enableNotification = true
+    this.setHasPassword(false)
+    this.setBackup(false)
+    // this.setEnableNotification(true)
     this.currentWalletIndex = 0
+    this.setUnpendTransactions([])
+    this.addressBooks = []
+    this.appWalletsStore.removeAll()
   }
 
   save() {
@@ -228,7 +259,9 @@ class AppState {
       currentWalletIndex: this.currentWalletIndex,
       didBackup: this.didBackup,
       gasPriceEstimate: this.gasPriceEstimate,
-      enableNotification: this.enableNotification
+      enableNotification: this.enableNotification,
+      lastestVersionRead: this.lastestVersionRead,
+      shouldShowUpdatePopup: this.shouldShowUpdatePopup
     }
   }
 }

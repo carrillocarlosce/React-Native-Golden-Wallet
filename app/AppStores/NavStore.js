@@ -18,7 +18,6 @@ function getCurrentRouteName(navigationState) {
 
 class ObservableNavStore {
   @observable.ref sendModal = null
-  @observable.ref transactionDetail = null
   @observable.ref createSuccessModal = null
   @observable.ref navigator = null
   @observable.ref popupCustom = null
@@ -49,7 +48,7 @@ class ObservableNavStore {
 
   @action lockScreen(params, shouldShowCancel = false) {
     // console.log(this.preventOpenUnlockScreen)
-    if (this.currentRouteName === 'UnlockScreen' || this.currentRouteName === '' ||
+    if (this.currentRouteName === '' ||
       (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && this.preventOpenUnlockScreen)) {
       this.preventOpenUnlockScreen = false
       return
@@ -91,7 +90,7 @@ class ObservableNavStore {
   }
 
   @action pushToScreen(routeName, params = null) {
-    this.navigator.dispatch(NavigationActions.navigate({
+    this.navigator && this.navigator.dispatch(NavigationActions.navigate({
       routeName,
       params
     }))
@@ -108,10 +107,6 @@ class ObservableNavStore {
     this.popupCustom && this.popupCustom.hide()
     this.sendingAddress = ''
     this.createSuccessModal && this.createSuccessModal.close()
-  }
-
-  @action closeTransactionDetail() {
-    this.transactionDetail && this.transactionDetail.close()
   }
 }
 

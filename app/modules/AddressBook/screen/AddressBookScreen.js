@@ -21,9 +21,10 @@ import AddressBookItem from '../elements/AddressBookItem'
 import MainStore from '../../../AppStores/MainStore'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 import NavStore from '../../../AppStores/NavStore'
+import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 @observer
 export default class AddressBookScreen extends Component {
@@ -103,9 +104,13 @@ export default class AddressBookScreen extends Component {
     return MainStore.appState.addressBooks
   }
 
+  gotoAddAddressBook = () => {
+    Router.AddressBook.gotoAddAddressBook()
+  }
+
   _renderNoAddressView() {
     return (
-      <View style={{ alignItems: 'center', flex: 1, marginBottom: 30 }}>
+      <View style={{ alignItems: 'center', flex: 1, marginBottom: height * 0.03 }}>
         <Image
           source={images.noContactImage}
           style={styles.contactImageStyle}
@@ -113,7 +118,7 @@ export default class AddressBookScreen extends Component {
         <Text style={{
           fontSize: 26,
           fontFamily: AppStyle.mainFontBold,
-          marginTop: 60,
+          marginTop: height * 0.07,
           color: AppStyle.titleDarkModeColor
         }}
         >No contacts yet
@@ -121,7 +126,7 @@ export default class AddressBookScreen extends Component {
         <Text style={{
           fontSize: 18,
           fontFamily: AppStyle.mainFontSemiBold,
-          marginTop: 20,
+          marginTop: height * 0.02,
           color: '#8A8D97'
         }}
         >
@@ -152,7 +157,6 @@ export default class AddressBookScreen extends Component {
   }
 
   _renderFooter = () => {
-    const { navigation } = this.props
     const { addressBooks } = this
     let backgroundColor = { backgroundColor: AppStyle.backgroundContentDarkMode }
     if (addressBooks.length === 0) {
@@ -163,9 +167,7 @@ export default class AddressBookScreen extends Component {
         style={[
           styles.addContactButtonStyle, backgroundColor
         ]}
-        onPress={() => {
-          navigation.navigate('AddAddressBookScreen')
-        }}
+        onPress={this.gotoAddAddressBook}
       >
         <Image
           source={images.icon_addBold}
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
   contactImageStyle: {
     resizeMode: 'contain',
     width: 168,
-    marginTop: 40
+    marginTop: height * 0.05
   },
   addContactButtonStyle: {
     flexDirection: 'row',

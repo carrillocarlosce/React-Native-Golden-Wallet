@@ -13,16 +13,14 @@ import AppStyle from '../../../commons/AppStyle'
 import TransactionItem from '../elements/TransactionItem'
 import Spinner from '../../../components/elements/Spinner'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import TransactionDetail from '../../TransactionDetail/screen/TransactionDetailScreen'
-import Modal from '../../../../Libs/react-native-modalbox'
 
 import EmptyList from '../elements/EmptyList'
 import AppState from '../../../AppStores/AppState'
-import NotificationStore from '../../../AppStores/stores/Notification'
 import NavStore from '../../../AppStores/NavStore'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 @observer
 export default class TransactionListScreen extends Component {
@@ -40,19 +38,9 @@ export default class TransactionListScreen extends Component {
     }
   }
 
-  componentWillUnmount() {
-    const { navigation } = this.props
-    const { params } = navigation.state
-    const { notif } = NotificationStore
-    if (notif && params) {
-      NotificationStore.resetSelectedAtAppState()
-      NotificationStore.setCurrentNotif(null)
-    }
-  }
-
   onPressTxItem = (item) => {
-    this.selectedToken.setSelectedTransaction(item)
-    NavStore.transactionDetail.open()
+    MainStore.appState.setSelectedTransaction(item)
+    NavStore.pushToScreen('TransactionDetailScreen')
   }
 
   onRefresh = async () => {
@@ -86,7 +74,6 @@ export default class TransactionListScreen extends Component {
     }
     const selectedToken = this.selectedToken ? this.selectedToken : defaultToken
     const transactions = selectedToken.allTransactions
-    const { navigation } = this.props
     const { isRefreshing, isLoading, successTransactions } = selectedToken
 
     return (
@@ -118,41 +105,6 @@ export default class TransactionListScreen extends Component {
             />
           )}
         />
-        <Modal
-          style={{
-            zIndex: 200,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-            overflow: 'hidden',
-            height: height - marginTop - 68,
-            backgroundColor: AppStyle.backgroundColor
-          }}
-          position="bottom"
-          swipeToClose
-          onClosed={() => {
-
-          }}
-          ref={(ref) => { NavStore.transactionDetail = ref }}
-        >
-          <View style={{ height: height - marginTop - 68 }}>
-            <View
-              style={{
-                alignSelf: 'center',
-                height: 3,
-                width: 45,
-                borderRadius: 1.5,
-                backgroundColor: AppStyle.secondaryTextColor,
-                position: 'absolute',
-                zIndex: 30,
-                top: 10
-              }}
-            />
-            <TransactionDetail
-              onClose={() => { NavStore.transactionDetail.close() }}
-              onCheck={(txHash) => { navigation.navigate('TxHashWebViewScreen', { txHash }) }}
-            />
-          </View>
-        </Modal>
         {successTransactions.length === 0 && isLoading && <Spinner />}
       </View>
     )

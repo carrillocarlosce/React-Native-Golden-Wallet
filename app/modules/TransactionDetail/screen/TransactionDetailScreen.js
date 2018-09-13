@@ -8,6 +8,7 @@ import {
   Clipboard
 } from 'react-native'
 import PropTypes from 'prop-types'
+import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import TransactionDetailItem from '../elements/TransactionDetailItem'
@@ -15,23 +16,35 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
+import LayoutUtils from '../../../commons/LayoutUtils'
+import Spinner from '../../../components/elements/Spinner'
+import NotificationStore from '../../../AppStores/stores/Notification'
 
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
+const marginTop = LayoutUtils.getExtraTop()
 
+@observer
 export default class TransactionDetailScreen extends Component {
   static propTypes = {
-    onClose: PropTypes.func,
-    onCheck: PropTypes.func
+    navigation: PropTypes.object
   }
 
   static defaultProps = {
-    onClose: () => { },
-    onCheck: () => { }
+    navigation: {}
+  }
+
+  componentWillUnmount() {
+    const { navigation } = this.props
+    const { params } = navigation.state
+    const { notif } = NotificationStore
+    if (notif && params) {
+      NotificationStore.setCurrentNotif(null)
+    }
   }
 
   get selectedTransaction() {
-    return MainStore.appState.selectedToken.selectedTransaction
+    return MainStore.appState.selectedTransaction
   }
 
   get selectedToken() {
@@ -51,13 +64,26 @@ export default class TransactionDetailScreen extends Component {
 
   get value() {
     const { operator } = this
-    const { symbol } = this.selectedToken
+    let symbol = ''
+
+    if (this.selectedTransaction.tokenSymbol) {
+      symbol = this.selectedTransaction.tokenSymbol
+    } else {
+      symbol = this.selectedToken.symbol
+    }
+
     return `${operator} ${this.selectedTransaction.balance.toString(10)} ${symbol}`
   }
 
   _onPress = (message, title) => {
     Clipboard.setString(message)
     NavStore.showToastTop(`${title} Copied`, {}, { color: AppStyle.mainColor })
+  }
+
+  _onClose = () => NavStore.goBack()
+
+  _onCheck = () => {
+    NavStore.pushToScreen('TxHashWebViewScreen', { txHash: this.selectedTransaction.hash })
   }
 
   renderValue = () => {
@@ -131,31 +157,38 @@ export default class TransactionDetailScreen extends Component {
     )
 
   render() {
-    const { onClose, onCheck } = this.props
+    const { selectedTransaction } = this
     return (
-      <View style={[styles.container, { paddingTop: 26 }]}>
+      <View style={[styles.container, { marginTop: marginTop + 20 }]}>
         <NavigationHeader
           style={{ width }}
           headerItem={{
-            title: this.selectedTransaction.type,
+            title: selectedTransaction ? selectedTransaction.type : 'Transaction Detail',
             icon: null,
-            button: images.closeButton
+            button: images.backButton
           }}
-          action={onClose}
+          action={this._onClose}
         />
-        {this.renderValue()}
-        {this.renderTime()}
-        {this.renderHash()}
-        {this.renderAddress()}
-        {this.renderFee()}
-        <View style={styles.checkButton}>
-          <TouchableOpacity
-            style={styles.imageCheck}
-            onPress={() => { onCheck(this.selectedTransaction.hash) }}
-          >
-            <Text style={styles.check}>{constant.TEXT_VIEW_DETAIL}</Text>
-          </TouchableOpacity>
-        </View>
+        {selectedTransaction &&
+          <View style={{ flex: 1 }}>
+            {this.renderValue()}
+            {this.renderTime()}
+            {this.renderHash()}
+            {this.renderAddress()}
+            {this.renderFee()}
+            <View style={styles.checkButton}>
+              <TouchableOpacity
+                style={styles.imageCheck}
+                onPress={this._onCheck}
+              >
+                <Text style={styles.check}>{constant.TEXT_VIEW_DETAIL}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+        {!selectedTransaction &&
+          <Spinner />
+        }
       </View>
     )
   }

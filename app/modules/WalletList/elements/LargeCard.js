@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import { observer } from 'mobx-react/native'
+import ViewShot from 'react-native-view-shot'
 import debounce from 'lodash.debounce'
 import PropTypes from 'prop-types'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
@@ -20,7 +21,6 @@ import SyncBalance from './SyncBalance'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
-import HapticHandler from '../../../Handler/HapticHandler'
 import Helper from '../../../commons/Helper'
 import commonStyle from '../../../commons/commonStyles'
 import MainStore from '../../../AppStores/MainStore'
@@ -41,7 +41,8 @@ export default class LargeCard extends Component {
     index: PropTypes.number.isRequired,
     onCopy: PropTypes.func,
     onBackup: PropTypes.func,
-    onAlertBackup: PropTypes.func
+    onAlertBackup: PropTypes.func,
+    onShare: PropTypes.func
   }
 
   static defaultProps = {
@@ -50,7 +51,8 @@ export default class LargeCard extends Component {
     onAddPrivateKey: () => { },
     onCopy: () => { },
     onBackup: () => { },
-    onAlertBackup: () => { }
+    onAlertBackup: () => { },
+    onShare: () => { }
   }
 
   constructor(props) {
@@ -65,10 +67,26 @@ export default class LargeCard extends Component {
     // this.wallet && this.wallet.fetchingBalance()
   }
 
+  onShare = () => {
+    const { onShare } = this.props
+    this.viewShot.capture().then((uri) => {
+      const filePath = Platform.OS === 'ios' ? uri : uri.replace('file://', '')
+      onShare(filePath)
+    })
+  }
+
   get wallet() {
     const { index } = this.props
     const { length } = MainStore.appState.wallets
     return index < length ? MainStore.appState.wallets[index] : null
+  }
+
+  reflipCard() {
+    if (this.state.isFlipped) {
+      this.setState({
+        isFlipped: false
+      })
+    }
   }
 
   _handleSecretBalance = debounce((wallet, index) => {
@@ -129,7 +147,7 @@ export default class LargeCard extends Component {
 
   renderFrontCard = (wallet) => {
     const {
-      onPress, style, onAddPrivateKey, onBackup, onAlertBackup
+      onPress, style, onAddPrivateKey, onBackup, onAlertBackup, onCopy
     } = this.props
     const {
       title,
@@ -149,6 +167,7 @@ export default class LargeCard extends Component {
         onPress={() => {
           if (MainStore.appState.didBackup || importType !== undefined) {
             this.setState({ isFlipped: !this.state.isFlipped })
+            onCopy()
           } else {
             onAlertBackup()
           }
@@ -225,13 +244,13 @@ export default class LargeCard extends Component {
   }
 
   renderBackCard = () => {
-    const { style, onCopy } = this.props
+    const { style } = this.props
     const { address, title } = this.wallet
-    const copyText = Platform.OS === 'ios'
+    const shareText = Platform.OS === 'ios'
       ? (
         <View style={styles.backgroundCopy}>
           <Text style={styles.copyButton}>
-            {constant.COPY}
+            {constant.SHARE}
           </Text>
         </View>
       )
@@ -241,7 +260,7 @@ export default class LargeCard extends Component {
             styles.copyButton, styles.backgroundCopy
           ]}
         >
-          {constant.COPY}
+          {constant.SHARE}
         </Text>
       )
     return (
@@ -250,7 +269,7 @@ export default class LargeCard extends Component {
           this.setState({ isFlipped: !this.state.isFlipped })
         }}
       >
-        <View style={[styles.container, { backgroundColor: 'white' }, style]}>
+        <View style={[styles.container, { backgroundColor: 'white', justifyContent: 'center' }, style]}>
           <Image
             style={{
               position: 'absolute',
@@ -261,14 +280,16 @@ export default class LargeCard extends Component {
             }}
             source={images.backgroundGrey}
           />
-          <View style={{ marginTop: cardHeight * 0.12 }}>
+          {/* <View style={{ marginTop: cardHeight * 0.12 }}> */}
+          <ViewShot style={styles.borderQRCode} ref={(ref) => { this.viewShot = ref }}>
             <QRCode
+              style={{ marginTop: 10, marginLeft: 10 }}
               value={address}
-              size={isSmallScreen ? cardHeight * 0.36 : 200}
+              size={isSmallScreen ? 125 : 200}
               bgColor="black"
               fgColor="white"
             />
-          </View>
+          </ViewShot>
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -278,10 +299,10 @@ export default class LargeCard extends Component {
           </Text>
           <Text style={[styles.cardBackAddress, commonStyle.fontAddress]}>{address}</Text>
           <TouchableOpacity
-            onPress={onCopy}
+            onPress={this.onShare}
             style={{ marginTop: cardHeight * 0.06 }}
           >
-            {copyText}
+            {shareText}
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
@@ -301,9 +322,9 @@ export default class LargeCard extends Component {
         flipHorizontal
         flipVertical={false}
         flip={this.state.isFlipped}
-        onFlipStart={() => {
-          HapticHandler.ImpactLight()
-        }}
+      // onFlipStart={() => {
+      //   HapticHandler.ImpactLight()
+      // }}
       >
         {this.renderFrontCard(wallet)}
         {this.renderBackCard()}
@@ -418,10 +439,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: isSmallScreen ? 15 : 26,
     paddingVertical: isSmallScreen ? 4 : 7,
     borderRadius: 16
+  },
+  borderQRCode: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'white'
   }
-  // homePending: {
-  //   alignSelf: 'flex-start',
-  //   marginLeft: 25,
-  //   marginTop: 10
-  // }
 })

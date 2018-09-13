@@ -5,6 +5,7 @@ import * as StoreReview from 'react-native-store-review'
 import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
 import MainStore from '../../../AppStores/MainStore'
+import Router from '../../../AppStores/Router'
 
 const store = Platform.OS === 'ios' ? 'App Store' : 'Google Play'
 const PLAY_STORE_LINK = 'market://details?id=io.goldenwallet'
@@ -41,6 +42,11 @@ export default class SettingStore {
   ]
 
   @observable dataAbout = [
+    // {
+    //   mainText: `Dapp Web - Do not touch`,
+    //   onPress: () => { NavStore.pushToScreen('DAppWebScreen') },
+    //   iconRight: false
+    // },
     {
       mainText: `Rate Golden on ${store}`,
       onPress: () => { this.showPopupRating() },
@@ -80,8 +86,7 @@ export default class SettingStore {
   }
 
   showChangePincode() {
-    MainStore.goToChangePincode()
-    NavStore.pushToScreen('ChangePincodeScreen')
+    Router.ChangePinCode.goToChangePincode()
   }
 
   showPopupRating() {

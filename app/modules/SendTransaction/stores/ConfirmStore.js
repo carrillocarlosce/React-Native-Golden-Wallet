@@ -6,13 +6,9 @@ import Helper from '../../../commons/Helper'
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
   @observable gasLimit = new BigNumber('21000')
-  // @observable gasPrice = new BigNumber('1000000000')
   @observable gasPrice = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
-  // @action setToAddress(address) {
-  //   this.transaction.to = address
-  // }
 
   @action setAdjust(value) {
     this.adjust = value
@@ -32,7 +28,6 @@ export default class ConfirmStore {
   }
 
   @action setGasPrice(gasPrice) {
-    // const gasP = new BigNumber(Starypto.Units.parseUnits(`${gasPrice}`, 9)._bn.toString(10))
     const gasP = new BigNumber(gasPrice).times(new BigNumber(1e+9))
     this.gasPrice = gasP
   }
@@ -62,7 +57,6 @@ export default class ConfirmStore {
   }
 
   @computed get formatedFee() {
-    // const fee = Starypto.Units.formatUnits(`${this.gasLimit.times(this.gasPrice)}`, 18)
     const fee = this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
     const usd = Helper.formatUSD(fee.times(this.rate)) !== '0'
       ? `($${Helper.formatUSD(fee.times(this.rate))})`
@@ -82,7 +76,6 @@ export default class ConfirmStore {
     return `$${Helper.formatUSD(amountDolar, false, 1000000, 2)}`
   }
   _onShowAdvance() {
-    // const formatedGasPrice = Number(Starypto.Units.formatUnits(`${this.gasPrice}`, 9)).toFixed(0)
     const formatedGasPrice = this.gasPrice.div(1e+9).toFixed(0)
 
     MainStore.sendTransaction.advanceStore.setGasLimit(this.gasLimit.toString(10))
@@ -100,8 +93,6 @@ export default class ConfirmStore {
     const gasBN = gasLimitBN.times(gasPriceBN).div(new BigNumber('1000000000'))
     let maxBN = balanceBN.minus(gasBN)
     maxBN = maxBN.div(1e+9)
-    // console.log(maxBN.toNumber(), gasBN.toNumber(), maxBN.div(1e+9).toNumber())
-
     if (this.title !== 'ETH') return maxBN.gte(new BigNumber('0')) // token
 
     if (maxBN.lt(new BigNumber('0'))) {

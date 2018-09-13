@@ -9,9 +9,11 @@ export default class AddressBookStore {
   @observable title = ''
   @observable address = ''
   finished = false
+  @observable fieldFocus = ''
 
   @action setTitle = (t) => { this.title = t }
   @action setAddress = (add) => { this.address = add }
+  @action setFieldFocus = (ff) => { this.fieldFocus = ff }
 
   @action async saveAddressBook() {
     const validate = Checker.checkAddress(this.address)
@@ -32,6 +34,14 @@ export default class AddressBookStore {
 
   get titleIsExisted() {
     return MainStore.appState.addressBooks.find(ab => ab.title === this.title)
+  }
+
+  @computed get isNameFocus() {
+    return this.fieldFocus === 'name'
+  }
+
+  @computed get isAddressFocus() {
+    return this.fieldFocus === 'address'
   }
 
   @computed get isErrorTitle() {

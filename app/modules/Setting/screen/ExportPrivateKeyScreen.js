@@ -9,13 +9,14 @@ import {
   Platform,
   Clipboard
 } from 'react-native'
-import QRCode from 'react-native-qrcode'
 import PropsType from 'prop-types'
+import QRCode from 'react-native-qrcode'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import NavStore from '../../../AppStores/NavStore'
 import AppStyle from '../../../commons/AppStyle'
+import constants from '../../../commons/constant'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -29,8 +30,12 @@ export default class ExportPrivateKeyScreen extends Component {
     navigation: null
   }
 
+  goBack = () => {
+    NavStore.goBack()
+  }
+
   render() {
-    const { pk, walletName, address } = this.props.navigation ? this.props.navigation.state.params : {}
+    const { pk, walletName } = this.props.navigation ? this.props.navigation.state.params : {}
     return (
       <SafeAreaView style={styles.container}>
         <NavigationHeader
@@ -40,11 +45,9 @@ export default class ExportPrivateKeyScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            NavStore.goBack()
-          }}
+          action={this.goBack}
         />
-        <Text style={styles.des}>Make sure your enviroment is secure, and no one sees your screen. </Text>
+        <Text style={styles.des}>{constants.EXPORT_PRIVATE_KEY_ALERT}</Text>
         <View style={styles.qrCodeContainer}>
           <QRCode
             value={pk}

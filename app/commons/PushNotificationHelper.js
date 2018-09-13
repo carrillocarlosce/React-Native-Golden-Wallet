@@ -27,7 +27,6 @@ class PushNotificationHelper {
       if (!notif.tx) {
         return
       }
-
       MainStore.appState.BgJobs.CheckPendingTransaction.doOnce()
       NotificationStore.setCurrentNotif(notif)
       if (notif && notif.opened_from_tray) {
@@ -62,6 +61,11 @@ class PushNotificationHelper {
     }
   }
 
+  async getToken() {
+    const token = await FCM.getFCMToken()
+    return token
+  }
+
   requestPermission() {
     return FCM.requestPermissions({ badge: true, sound: true, alert: false })
   }
@@ -70,7 +74,7 @@ class PushNotificationHelper {
     FCM.removeAllDeliveredNotifications()
   }
 
-  setBadgeNumber(number) {
+  resetBadgeNumber() {
     FCM.setBadgeNumber(0)
   }
 

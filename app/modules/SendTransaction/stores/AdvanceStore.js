@@ -13,11 +13,9 @@ export default class AdvanceStore {
   @observable isDisableDone = false
 
   @action setGasLimit(gasLimit) {
-    // if (!gasLimit) return this.gasLimit = ''
     this.gasLimit = gasLimit.replace(/\D/g, '')
   }
   @action setGasPrice(gasPrice) {
-    // if (!gasPrice) return this.gasPrice = '1'
     this.gasPrice = gasPrice.replace(/\D/g, '')
   }
   @action setGasLimitErr(err) {
@@ -64,7 +62,6 @@ export default class AdvanceStore {
   }
 
   @computed get formatedTmpFee() {
-    // const gasLimit = Number(Starypto.Units.formatUnits(`${this.gasLimit}`, 9))
     const price = this.gasPrice !== '' ? this.gasPrice : 0
     const gas = this.gasLimit !== '' ? this.gasLimit : 0
     const gasLimit = new BigNumber(gas).div(1e+9)

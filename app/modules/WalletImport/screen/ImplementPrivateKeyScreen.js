@@ -6,9 +6,6 @@ import {
   Dimensions,
   Platform,
   TextInput,
-  Keyboard,
-  Animated,
-  TouchableWithoutFeedback,
   Clipboard,
   TouchableOpacity,
   Image,
@@ -25,6 +22,9 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import BottomButton from '../../../components/elements/BottomButton'
 import MainStore from '../../../AppStores/MainStore'
 import ImplementPrivateKeyStore from '../stores/ImplementPrivateKeyStore'
+import KeyboardView from '../../../components/elements/KeyboardView'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -41,23 +41,7 @@ export default class ImplementPrivateKeyScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.extraHeight = new Animated.Value(0)
     this.implementPrivateKeyStore = new ImplementPrivateKeyStore()
-  }
-
-  componentWillMount() {
-    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
-    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
-    this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
-    this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
   }
 
   onChangePrivateKey = (text) => {
@@ -71,31 +55,23 @@ export default class ImplementPrivateKeyScreen extends Component {
     }
   }
 
+  onBack = () => {
+    NavStore.goBack()
+  }
+
   get selectedWallet() {
     const { index } = this.props.navigation.state.params
     return MainStore.appState.wallets[index]
   }
 
-  _runExtraHeight(toValue) {
-    Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
-      {
-        toValue: -toValue, // Animate to final value of 1
-        duration: 250,
-        useNativeDriver: true
-      }
-    ).start()
-  }
-
-  _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
-    }
-  }
-
-  _keyboardDidHide(e) {
-    this._runExtraHeight(0)
+  gotoScanQRCode = () => {
+    setTimeout(() => {
+      NavStore.pushToScreen('ScanQRCodeScreen', {
+        title: 'Scan Private Key',
+        marginTop,
+        returnData: this.returnData.bind(this)
+      })
+    }, 300)
   }
 
   returnData(codeScanned) {
@@ -135,19 +111,12 @@ export default class ImplementPrivateKeyScreen extends Component {
   }
 
   render() {
-    const { navigation } = this.props
     const { privateKey, isReadyCreate, isErrorPrivateKey } = this.implementPrivateKeyStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
-            <Animated.View
-              style={[styles.container, {
-                transform: [
-                  { translateY: this.extraHeight }
-                ]
-              }]}
-            >
+            <KeyboardView style={styles.container}>
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
@@ -155,9 +124,7 @@ export default class ImplementPrivateKeyScreen extends Component {
                   icon: null,
                   button: images.backButton
                 }}
-                action={() => {
-                  navigation.goBack()
-                }}
+                action={this.onBack}
               />
               <View style={{ marginTop: 25 }}>
                 <TextInput
@@ -188,24 +155,16 @@ export default class ImplementPrivateKeyScreen extends Component {
                   }}
                   styleText={{ color: AppStyle.mainTextColor }}
                   styleIcon={{ tintColor: AppStyle.mainTextColor }}
-                  action={() => {
-                    setTimeout(() => {
-                      navigation.navigate('ScanQRCodeScreen', {
-                        title: 'Scan Private Key',
-                        marginTop,
-                        returnData: this.returnData.bind(this)
-                      })
-                    }, 300)
-                  }}
+                  action={this.gotoScanQRCode}
                 />
               </View>
-            </Animated.View>
+            </KeyboardView>
             <BottomButton
               onPress={this._handleConfirm}
               disable={!isReadyCreate}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView>
     )
   }

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -43,6 +44,8 @@
 		665F4F47257147B3B8D1828E /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A30AE93A4A724E86A070C775 /* OpenSans-SemiboldItalic.ttf */; };
 		676B6E85B74942889099638A /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6F075DD8ED4E779762BD25 /* libSplashScreen.a */; };
 		6CB923E2B3B24FC2A62C4B65 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F325EF3BFB9D4A8FB2804FD9 /* libRNDeviceInfo-tvOS.a */; };
+		6F367DF1214A6FA700A10D70 /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F367DF0214A6F8700A10D70 /* libRCTWKWebView.a */; };
+		6F51FCF521344DEC00920555 /* GoldenProvider.js in Resources */ = {isa = PBXBuildFile; fileRef = 6F51FCF421344DEC00920555 /* GoldenProvider.js */; };
 		7380862556E45F59D19AE2D5 /* libPods-golden.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C89515CAE633F18DCB86C338 /* libPods-golden.a */; };
 		78E6CF051BCF45ED85FD1E79 /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8649ADE10D499B92CCE381 /* libRNRandomBytes.a */; };
 		794461AAFD3E4F6B8077F2EE /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D208E23F3C44836AD43F0B3 /* OpenSans-BoldItalic.ttf */; };
@@ -322,6 +325,13 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		6F367DEF214A6F8700A10D70 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6F367DEB214A6F8700A10D70 /* RCTWKWebView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0974579A1D2A440A000D9368;
+			remoteInfo = RCTWKWebView;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -495,6 +505,8 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		6A4D636A5C014AD8B11F4833 /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../App/assets/fonts/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		6EC8E57A6F3240D09183D3BE /* RNReactNativeHapticFeedback.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNReactNativeHapticFeedback.xcodeproj; path = "../node_modules/react-native-haptic-feedback/ios/RNReactNativeHapticFeedback.xcodeproj"; sourceTree = "<group>"; };
+		6F367DEB214A6F8700A10D70 /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../Libs/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
+		6F51FCF421344DEC00920555 /* GoldenProvider.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = GoldenProvider.js; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		88F169A6A1CA4A6F9BFBF2AA /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
@@ -559,6 +571,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				6F367DF1214A6FA700A10D70 /* libRCTWKWebView.a in Frameworks */,
 				E33FB252A9574CAABFD17DEC /* libRNDeviceInfo.a in Frameworks */,
 				F12AF015563247398A050B07 /* libRNFS.a in Frameworks */,
 				38BB6A13BA2440678B4E5C1B /* libRNReactNativeHapticFeedback.a in Frameworks */,
@@ -683,6 +696,7 @@
 		13B07FAE1A68108700A75B9A /* golden */ = {
 			isa = PBXGroup;
 			children = (
+				6F51FCF421344DEC00920555 /* GoldenProvider.js */,
 				B44B1BBD21074CC500EE6656 /* golden.entitlements */,
 				B44B1BBB21074CB300EE6656 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -741,6 +755,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		6F367DEC214A6F8700A10D70 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6F367DF0214A6F8700A10D70 /* libRCTWKWebView.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -762,6 +784,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				6F367DEB214A6F8700A10D70 /* RCTWKWebView.xcodeproj */,
 				B44B1BB421074BBD00EE6656 /* RCTQRCodeLocalImage.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1062,10 +1085,12 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = UDCV6ZY8CU;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = UDCV6ZY8CU;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1147,6 +1172,10 @@
 				{
 					ProductGroup = 139FDEE71B06529A00C62182 /* Products */;
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
+				},
+				{
+					ProductGroup = 6F367DEC214A6F8700A10D70 /* Products */;
+					ProjectRef = 6F367DEB214A6F8700A10D70 /* RCTWKWebView.xcodeproj */;
 				},
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
@@ -1442,6 +1471,13 @@
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		6F367DF0214A6F8700A10D70 /* libRCTWKWebView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTWKWebView.a;
+			remoteRef = 6F367DEF214A6F8700A10D70 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1598,6 +1634,7 @@
 				EB15F94A88BE4DB19AAB5C95 /* OpenSans-LightItalic.ttf in Resources */,
 				15451F35EF014A26B825D3E8 /* OpenSans-Regular.ttf in Resources */,
 				08D01DE4F1F64FAC8B1D5504 /* OpenSans-Semibold.ttf in Resources */,
+				6F51FCF521344DEC00920555 /* GoldenProvider.js in Resources */,
 				665F4F47257147B3B8D1828E /* OpenSans-SemiboldItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1748,6 +1785,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UDCV6ZY8CU;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1802,6 +1841,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/golden.app/golden";
 			};
 			name = Debug;
@@ -1810,8 +1850,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = UDCV6ZY8CU;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
@@ -1861,6 +1903,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/golden.app/golden";
 			};
 			name = Release;
@@ -1871,6 +1914,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1905,6 +1950,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
+				PROVISIONING_PROFILE = "38732fa4-3e61-41e8-a57c-73fddb798f02";
+				PROVISIONING_PROFILE_SPECIFIER = Golden_Dev;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1915,6 +1962,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UDCV6ZY8CU;
@@ -1948,6 +1997,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
+				PROVISIONING_PROFILE = "38732fa4-3e61-41e8-a57c-73fddb798f02";
+				PROVISIONING_PROFILE_SPECIFIER = Golden_Dev;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1961,6 +2012,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UDCV6ZY8CU;
 				ENABLE_TESTABILITY = YES;
@@ -2014,6 +2067,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.golden-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -2029,6 +2083,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UDCV6ZY8CU;
@@ -2082,6 +2138,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.golden-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;

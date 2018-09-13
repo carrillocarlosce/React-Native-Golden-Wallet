@@ -31,7 +31,9 @@ export default class NavigationHeader extends Component {
     },
     rightView: {
       rightViewIcon: null,
-      rightViewAction: () => { }
+      rightViewAction: () => { },
+      rightViewTitle: null,
+      styleTitle: {}
     },
     titleStyle: {},
     action: () => { }
@@ -53,62 +55,54 @@ export default class NavigationHeader extends Component {
     } = headerItem
     const {
       rightViewIcon,
-      rightViewAction = () => { }
+      rightViewAction = () => { },
+      rightViewTitle,
+      styleTitle
     } = rightView
     return (
-      <TouchableOpacity
-        style={containerStyle}
-        onPress={() => { action() }}
-      >
-        <View style={[styles.container, style]}>
-          <Image
-            source={button}
-          />
-          {icon &&
+      <View style={{}}>
+        <TouchableOpacity
+          style={containerStyle}
+          onPress={() => { action() }}
+        >
+          <View style={[styles.container, style]}>
             <Image
-              style={{
-                width: 20,
-                height: 30,
-                marginLeft: 18
-              }}
-              source={icon}
+              source={button}
             />
-          }
-          {title &&
-            <Text
-              style={[styles.titleStyle, { marginLeft: icon ? 10 : 20 }, titleStyle]}
-            >
-              {title}
-            </Text>
-          }
-          {rightViewIcon &&
-            <TouchableWithoutFeedback
-              onPress={rightViewAction}
-            >
-              <View
+            {icon &&
+              <Image
                 style={{
-                  width: 30,
+                  width: 20,
                   height: 30,
-                  position: 'absolute',
-                  right: 10,
-                  bottom: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  alignSelf: 'center'
+                  marginLeft: 18
                 }}
+                source={icon}
+              />
+            }
+            {title &&
+              <Text
+                style={[styles.titleStyle, { marginLeft: icon ? 10 : 20 }, titleStyle]}
               >
-                <Image
-                  style={{
-                    width: 15,
-                    height: 30
-                  }}
-                  source={rightViewIcon}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-          }
-        </View>
-      </TouchableOpacity>
+                {title}
+              </Text>
+            }
+          </View>
+        </TouchableOpacity>
+        {rightViewIcon &&
+          <TouchableWithoutFeedback
+            onPress={rightViewAction}
+          >
+            <View
+              style={styles.rightView}
+            >
+              <Image source={rightViewIcon} />
+              {rightViewTitle &&
+                <Text style={[styles.rightTitle, styleTitle]}>{rightViewTitle}</Text>
+              }
+            </View>
+          </TouchableWithoutFeedback>
+        }
+      </View>
     )
   }
 }
@@ -124,5 +118,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: AppStyle.mainTextColor,
     fontFamily: 'OpenSans-Bold'
+  },
+  rightView: {
+    position: 'absolute',
+    right: 20,
+    bottom: 15,
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  rightTitle: {
+    fontFamily: 'OpenSans-Semibold',
+    fontSize: 18,
+    color: AppStyle.mainColor,
+    marginLeft: 4
   }
 })

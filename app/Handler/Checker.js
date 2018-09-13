@@ -11,7 +11,8 @@ class Checker {
     return address.match(regx)
   }
   static checkPrivateKey(key) {
-    return key.length === 64
+    const regx = /^[0-9A-Fa-f]{64}$/
+    return key.match(regx)
   }
   static checkWalletIsExist(wallets, address) {
     const isExist = wallets.find((w) => {

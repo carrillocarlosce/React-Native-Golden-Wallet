@@ -16,6 +16,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import ShimmerTokenItem from '../elements/ShimmerTokenItem'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
+import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -49,19 +50,18 @@ export default class TokenScreen extends Component {
   onItemPress = (index) => {
     const { navigation } = this.props
     MainStore.appState.setselectedToken(this.wallet.tokens[index])
-    MainStore.goToSendTx()
-    MainStore.sendTransaction.changeIsToken(MainStore.appState.selectedToken.symbol !== 'ETH')
     navigation.navigate('TransactionListScreen')
   }
 
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        this.props.navigation.navigate('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }
+
+  onPressCollectibles = () => NavStore.pushToScreen('CollectibleScreen')
 
   get wallet() {
     return MainStore.appState.selectedWallet
@@ -162,6 +162,11 @@ export default class TokenScreen extends Component {
             button: images.backButton
           }}
           action={this.onBack}
+          rightView={{
+            rightViewIcon: images.iconCollectibles,
+            rightViewAction: this.onPressCollectibles,
+            rightViewTitle: 'Collectibles'
+          }}
         />
         <FlatList
           style={{

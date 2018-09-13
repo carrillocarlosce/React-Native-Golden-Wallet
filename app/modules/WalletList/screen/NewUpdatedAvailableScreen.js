@@ -18,6 +18,7 @@ import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import AppVersion from '../../../AppStores/stores/AppVersion'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { height } = Dimensions.get('window')
@@ -34,9 +35,16 @@ export default class NewUpdatedAvailableScreen extends Component {
     navigation: {}
   }
 
+  get lastestVersion() {
+    return AppVersion.latestVersion.version_number
+  }
+
   goBack = () => {
     const { navigation } = this.props
     navigation.dispatch(NavigationActions.back())
+    MainStore.appState.setShouldShowUpdatePopup(false)
+    MainStore.appState.setLastestVersionRead(this.lastestVersion)
+    MainStore.appState.save()
   }
 
   openStore = () => {

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { Animated, Text, Dimensions, StyleSheet } from 'react-native'
+import { Animated, Text, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
 
-const { width, height } = Dimensions.get('window')
-const isSmallScreen = height < 569
 export default class AnimationInputItem extends Component {
   static propTypes = {
     animated: PropTypes.bool,

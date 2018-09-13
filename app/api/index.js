@@ -1,9 +1,9 @@
 import * as wallet from './wallet'
-import * as infura from './infura'
+import * as etherJSONRPC from './ether-json-rpc'
 import * as NotificationAPI from './NotificationAPI'
 
 export default {
   ...wallet,
-  infura: { ...infura },
+  etherJSONRPC: { ...etherJSONRPC },
   ...NotificationAPI
 }

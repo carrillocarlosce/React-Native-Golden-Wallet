@@ -7,6 +7,7 @@ export default {
   ADD_NEW_WALLET: 'Add new wallet',
   SCAN_QR_CODE: 'Scan QR Code',
   COPY: 'Copy',
+  SHARE: 'Share',
   TRANSACTIONS: 'Transactions',
   TOKEN: 'Token',
   ETHEREUM: 'Ethereum',
@@ -16,7 +17,7 @@ export default {
   SUB_TITTLE_SEND_SUCCESS: 'The process may take up to some seconds. Please check your history for transaction status.',
   TEXT_VIEW_DETAIL: 'Check on Etherscan',
   RETURN_WALLET: 'Return to wallet',
-  CREATE_NEW_WALLET: 'Create A New Wallet',
+  CREATE_NEW_WALLET: 'Add New Wallet',
   NEW_UPDATE: 'New Version Available ',
   UPDATE: 'Update Now',
   CONFIRM: 'Confirm',
@@ -70,5 +71,14 @@ export default {
   EXISTED_NAME_AB: 'Address Book name already exists.',
 
   CREATE_WALLET_SUCCESS: 'Create Wallet Success',
-  IMPORT_WALLET_SUCCESS: 'Import Wallet Success'
+  IMPORT_WALLET_SUCCESS: 'Import Wallet Success',
+
+  SCAN_QR_FRAME: 'Automatically scan the QR code into the frame',
+  EXISTED_WALLET_NAME: 'Wallet name already exists.',
+  NO_WALLET_NAME_FOUND: 'Wallet name does not match.',
+
+  EXPORT_PRIVATE_KEY_ALERT: 'Make sure your enviroment is secure, and no one sees your screen.',
+  CHANGE_NETWORK_INTRO: 'Changing network while transactions are pending may cause problems',
+  REMOVE_WALLET_DESCRIPTION: 'Please enter your wallet name to remove'
+
 }

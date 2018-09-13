@@ -38,7 +38,7 @@ export default {
   secondaryTextColor: '#8A8D97',
   colorDown: '#E50370',
   colorUp: '#7ED321',
-  colorLines: '#14192D',
+  colorLines: '#1D2137',
   backgroundTextInput: '#141A2E',
 
   backgroundDarkMode: '#0A0F24',

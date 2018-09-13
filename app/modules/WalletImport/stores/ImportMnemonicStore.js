@@ -1,4 +1,4 @@
-import { observable, action, computed, toJS } from 'mobx'
+import { observable, action, computed } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
 import Wallet from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'

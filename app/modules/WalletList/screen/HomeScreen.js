@@ -6,10 +6,13 @@ import {
   Dimensions,
   Animated,
   Clipboard,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
+import Share from 'react-native-share'
+import RNFS from 'react-native-fs'
 import Carousel, { getInputRangeFromIndexes } from 'react-native-snap-carousel'
 import { observer } from 'mobx-react/native'
 import DeviceInfo from 'react-native-device-info'
@@ -25,7 +28,7 @@ import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import Config from '../../../AppStores/stores/Config'
-import Ticker from '../elements/Ticker'
+import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
@@ -47,6 +50,7 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props)
     FCM.setBadgeNumber(0)
+    this.lastIndex = 0
     this.state = {
       translateY: new Animated.Value(0)
     }
@@ -63,15 +67,14 @@ export default class HomeScreen extends Component {
           TickerStore.callApi()
           MainStore.appState.startAllBgJobs()
           if (!NotificationStore.isInitFromNotification) {
-            const version = DeviceInfo.getVersion()
-            if (version !== AppVersion.latestVersion.version_number) {
+            if (this.shouldShowUpdatePopup) {
               this._gotoNewUpdatedAvailableScreen()
             } else if (MainStore.appState.wallets.length === 0) {
               this._gotoCreateWallet()
             }
           } else {
             NotificationStore.isInitFromNotification = false
-            NotificationStore.gotoTransactionList()
+            NotificationStore.gotoTransaction()
           }
         }
       })
@@ -79,19 +82,19 @@ export default class HomeScreen extends Component {
   }
 
   onSendPress = () => {
-    const { navigation } = this.props
     const { selectedWallet } = MainStore.appState
-    MainStore.goToSendTx()
+    if (!selectedWallet) {
+      return
+    }
+    Router.SendTransaction.goToSendTx()
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
-    navigation.navigate('SendTransactionStack')
   }
 
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        this.props.navigation.navigate('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }
@@ -119,11 +122,42 @@ export default class HomeScreen extends Component {
   }
 
   onSnapToItem = (index) => {
+    const { wallets } = MainStore.appState
+    MainStore.appState.setCurrentCardIndex(index)
     if (this.cards[index].address === '0') {
-      MainStore.appState.setSelectedWallet(null)
+      // MainStore.appState.setSelectedWallet({})
     } else {
-      MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
+      MainStore.appState.setSelectedWallet(wallets[index])
     }
+    if (this.lastIndex < wallets.length) {
+      wallets[this.lastIndex].walletCard && wallets[this.lastIndex].walletCard.reflipCard()
+    }
+    this.lastIndex = index
+  }
+
+  get lastestVersion() {
+    return AppVersion.latestVersion.version_number
+  }
+
+  get shouldShowUpdatePopup() {
+    if (__DEV__) return false
+    const { lastestVersionRead, shouldShowUpdatePopup } = MainStore.appState
+    const version = DeviceInfo.getVersion()
+    if (version < this.lastestVersion) {
+      return lastestVersionRead < this.lastestVersion || shouldShowUpdatePopup
+    }
+    return false
+  }
+
+  openShare = (filePath) => {
+    RNFS.readFile(filePath, 'base64').then((file) => {
+      const shareOptions = {
+        title: 'Golden',
+        message: `My address: ${MainStore.appState.selectedWallet.address}`,
+        url: `data:image/png;base64,${file}`
+      }
+      Share.open(shareOptions).catch(() => { })
+    })
   }
 
   _renderNetwork = () => {
@@ -159,6 +193,12 @@ export default class HomeScreen extends Component {
   _renderCard = ({ item, index }) =>
     (
       <LargeCard
+        ref={(ref) => {
+          const { wallets } = MainStore.appState
+          if (index < wallets.length) {
+            wallets[index].setWalletCard(ref)
+          }
+        }}
         index={index}
         style={{ margin: 5, marginTop: 20 }}
         navigation={this.props.navigation}
@@ -176,6 +216,7 @@ export default class HomeScreen extends Component {
           Clipboard.setString(MainStore.appState.selectedWallet.address)
           NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
         }}
+        onShare={this.openShare}
       />
     )
 
@@ -231,6 +272,19 @@ export default class HomeScreen extends Component {
     }
   }
 
+  _goToDapp = () => {
+    if (!MainStore.appState.selectedWallet) {
+      NavStore.popupCustom.show('You have no wallet')
+      return
+    }
+    if (!MainStore.appState.selectedWallet.canSendTransaction) {
+      NavStore.popupCustom.show('Your wallet is read only')
+      return
+    }
+    Router.DAppBrowser.goToDApp()
+    NavStore.pushToScreen('DAppListScreen')
+  }
+
   checkPrivateKey(privateKey) {
     return privateKey !== undefined && privateKey !== ''
   }
@@ -259,12 +313,12 @@ export default class HomeScreen extends Component {
         address: '0'
       }]
     }
-    const tickers = TickerStore.tickers.slice()
 
     return (
       <View style={styles.container}>
         <View style={styles.homeHeader}>
           <Hamburger
+            style={{ flex: 0 }}
             onPressHamburger={(isShow) => {
               Animated.timing(
                 translateY,
@@ -275,24 +329,11 @@ export default class HomeScreen extends Component {
               ).start()
             }}
           />
-          <View>
-            <Animated.View
-              style={{
-                overflow: 'hidden',
-                opacity: changeOpacityListCoin,
-                position: 'absolute',
-                top: 2,
-                height: 60,
-                width: width - 77
-              }}
-            >
-              <Ticker
-                data={tickers}
-                style={{
-                  width: width - 77
-                }}
-              />
-            </Animated.View>
+          <View
+            style={{
+              flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+            }}
+          >
             <Animated.Text
               style={{
                 opacity: changeOpacitySetting,
@@ -303,6 +344,37 @@ export default class HomeScreen extends Component {
             >
               {constant.SETTING}
             </Animated.Text>
+            <Animated.View
+              style={{
+                overflow: 'hidden',
+                opacity: changeOpacityListCoin,
+                height: 40,
+                alignItems: 'flex-end',
+                justifyContent: 'center'
+              }}
+            >
+              {/* <Ticker
+                data={tickers}
+                style={{
+                  width: width - 77
+                }}
+              /> */}
+              <TouchableOpacity
+                style={{
+                  height: 40,
+                  backgroundColor: '#121734',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 20,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  borderRadius: 20
+                }}
+                onPress={this._goToDapp}
+              >
+                <Text style={{ color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>Đapp Browser</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </View>
         <View style={{ height: heightCarousel }}>
