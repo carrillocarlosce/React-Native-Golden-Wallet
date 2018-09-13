@@ -112,9 +112,7 @@ export default class AdressInputScreen extends Component {
   }
 
   handleConfirm = () => {
-    const { addressInputStore } = MainStore.sendTransaction
     Keyboard.dismiss()
-    addressInputStore.onConfirm()
     NavStore.pushToScreen('ConfirmScreen')
   }
 
