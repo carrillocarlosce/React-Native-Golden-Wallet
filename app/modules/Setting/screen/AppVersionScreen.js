@@ -5,13 +5,13 @@ import {
   Dimensions,
   FlatList
 } from 'react-native'
-import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import SettingItem from '../elements/SettingItem'
 import AppVersion from '../../../AppStores/stores/AppVersion'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -19,48 +19,40 @@ const { width } = Dimensions.get('window')
 
 @observer
 export default class AppVersionScreen extends Component {
-  static propTypes = {
-    navigation: PropTypes.object
-  }
-
-  static defaultProps = {
-    navigation: {}
-  }
-
   onPress = (vs) => {
     AppVersion.setChangelogsList(vs)
   }
 
-  renderAbount = (listVersion) => {
+  onBack = () => {
+    NavStore.goBack()
+  }
+
+  renderItem = ({ item, index }) =>
+    (
+      <View>
+        <SettingItem
+          style={{ borderTopWidth: index === 0 ? 0 : 1, marginTop: index === 0 ? 15 : 0 }}
+          mainText={item.version_number}
+          type={item.type}
+          onPress={() => this.onPress(item.version_number)}
+          data={item.change_logs}
+          expanse={item.expanse}
+        />
+      </View>
+    )
+
+  renderListVersion = (listVersion) => {
     return (
       <FlatList
-        style={{ flex: 1, marginTop: 30 }}
+        style={{ flex: 1 }}
         data={listVersion}
         keyExtractor={v => v.version_number}
-        renderItem={({ item, index }) =>
-          (
-            <View>
-              <SettingItem
-                style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-                mainText={item.version_number}
-                type={item.type}
-                // subText={item.subText}
-                onPress={() => this.onPress(item.version_number)}
-                // iconRight={item.iconRight}
-                data={item.change_logs}
-                expanse={item.expanse}
-              // disable={item.disable}
-              // showArrow={item.showArrow}
-              />
-            </View>
-          )
-        }
+        renderItem={this.renderItem}
       />
     )
   }
 
   render() {
-    const { navigation } = this.props
     const { listVersion } = AppVersion
     return (
       <View style={styles.container}>
@@ -71,11 +63,9 @@ export default class AppVersionScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.onBack}
         />
-        {this.renderAbount(listVersion)}
+        {this.renderListVersion(listVersion)}
       </View>
     )
   }

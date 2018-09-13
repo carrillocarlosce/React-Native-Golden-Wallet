@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   Dimensions,
   Keyboard,
   Animated,
@@ -25,6 +24,7 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import ImportAddressStore from '../stores/ImportAddressStore'
+import KeyboardView from '../../../components/elements/KeyboardView'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -47,22 +47,6 @@ export default class ImportViaAddressScreen extends Component {
       isNameFocus: false,
       isAddressFocus: false
     }
-  }
-
-  componentWillMount() {
-    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
-    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
-    this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
-    this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
-  }
-
-  componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
   }
 
   onChangeName = (text) => {
@@ -91,29 +75,6 @@ export default class ImportViaAddressScreen extends Component {
   goBack = () => {
     const { navigation } = this.props
     navigation.goBack()
-  }
-
-  _runExtraHeight(toValue) {
-    Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
-      {
-        toValue: -toValue, // Animate to final value of 1
-        duration: 250
-      }
-    ).start()
-  }
-
-  _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop + 15) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
-      // this.setState({ pushScreen: true })
-    }
-  }
-
-  _keyboardDidHide(e) {
-    // this.setState({ pushScreen: false })
-    this._runExtraHeight(0)
   }
 
   validateImport() {
@@ -159,10 +120,7 @@ export default class ImportViaAddressScreen extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
           <View style={styles.container}>
-            <Animated.View style={[styles.container, {
-              marginTop: this.extraHeight
-            }]}
-            >
+            <KeyboardView style={styles.container} >
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
@@ -209,7 +167,7 @@ export default class ImportViaAddressScreen extends Component {
                 styleIcon={{ tintColor: AppStyle.mainTextColor }}
                 action={this.gotoScan}
               />
-            </Animated.View>
+            </KeyboardView>
             <BottomButton
               onPress={this.handleCreate}
               disable={!isReadyCreate}

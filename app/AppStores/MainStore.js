@@ -1,12 +1,8 @@
 import { observable, action } from 'mobx'
-import SendStore from '../modules/SendTransaction/stores/SendStore'
 import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
-import BackupStore from '../modules/WalletBackup/BackupStore'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
-import ChangePincodeStore from '../modules/ChangePincode/stores/ChangePincodeStore'
-import DAppStore from '../modules/DAppBrowser/stores/DAppStore'
 
 // do not allow change state outside action function
 // configure({ enforceActions: true })
@@ -34,25 +30,6 @@ class MainStore {
     await AppDS.readAppData()
     PushNotificationHelper.init()
     appState.startAllServices()
-  }
-
-  goToSendTx() {
-    this.sendTransaction = new SendStore()
-  }
-
-  goToChangePincode() {
-    this.changePincode = new ChangePincodeStore()
-  }
-
-  goToDApp() {
-    this.dapp = new DAppStore()
-  }
-
-  async gotoBackup(pincode) {
-    this.backupStore = new BackupStore()
-    const mnemonic = await new SecureDS(pincode).deriveMnemonic()
-    this.backupStore.setMnemonic(mnemonic)
-    this.backupStore.setup()
   }
 }
 

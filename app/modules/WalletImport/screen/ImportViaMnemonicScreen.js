@@ -26,6 +26,7 @@ import ImportMnemonicStore from '../stores/ImportMnemonicStore'
 import ActionButton from '../../../components/elements/ActionButton'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
+import KeyboardView from '../../../components/elements/KeyboardView'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -47,21 +48,6 @@ export default class ImportViaMnemonicScreen extends Component {
     this.extraHeight = new Animated.Value(0)
   }
 
-  componentWillMount() {
-    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
-    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
-    this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
-    this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
-
   onChangeMnemonic = (text) => {
     this.importMnemonicStore.onChangeMnemonic(text)
   }
@@ -75,28 +61,6 @@ export default class ImportViaMnemonicScreen extends Component {
 
   returnData(codeScanned) {
     this.importMnemonicStore.onChangeMnemonic(codeScanned)
-  }
-
-  _runExtraHeight(toValue) {
-    Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
-      {
-        toValue: -toValue, // Animate to final value of 1
-        duration: 250,
-        useNativeDriver: true
-      }
-    ).start()
-  }
-
-  _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY)
-    }
-  }
-
-  _keyboardDidHide(e) {
-    this._runExtraHeight(0)
   }
 
   _renderPasteButton() {
@@ -158,13 +122,7 @@ export default class ImportViaMnemonicScreen extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
           <View style={styles.container}>
-            <Animated.View
-              style={[styles.container, {
-                transform: [
-                  { translateY: this.extraHeight }
-                ]
-              }]}
-            >
+            <KeyboardView style={styles.container} >
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
@@ -207,7 +165,7 @@ export default class ImportViaMnemonicScreen extends Component {
                   action={this.gotoScan}
                 />
               </View>
-            </Animated.View>
+            </KeyboardView>
             <BottomButton
               disable={!isReadyCreate}
               onPress={this._handleConfirm}

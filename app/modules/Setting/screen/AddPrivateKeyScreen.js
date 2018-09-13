@@ -23,9 +23,9 @@ import images from '../../../commons/images'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
-// import Spinner from '../../../components/elements/Spinner'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -70,6 +70,10 @@ export default class AddPrivateKeyScreen extends Component {
       this.privKeyField.shake()
     }
   }
+
+  onOutSidePress = () => { Keyboard.dismiss() }
+
+  onBack = () => { NavStore.goBack() }
 
   _runExtraHeight(toValue) {
     Animated.timing(
@@ -136,9 +140,8 @@ export default class AddPrivateKeyScreen extends Component {
   }
 
   gotoScan = () => {
-    const { navigation } = this.props
     setTimeout(() => {
-      navigation.navigate('ScanQRCodeScreen', {
+      NavStore.pushToScreen('ScanQRCodeScreen', {
         title: 'Scan Private Key',
         marginTop,
         returnData: this.returnData.bind(this)
@@ -147,18 +150,15 @@ export default class AddPrivateKeyScreen extends Component {
   }
 
   render() {
-    const { navigation } = this.props
     const {
       privKey, isErrorPrivateKey, isReadyCreate
     } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchableWithoutFeedback onPress={this.onOutSidePress}>
           <View style={styles.container}>
             <Animated.View
-              style={[styles.container, {
-                marginTop: this.extraHeight
-              }]}
+              style={[styles.container]}
             >
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
@@ -167,9 +167,7 @@ export default class AddPrivateKeyScreen extends Component {
                   icon: null,
                   button: images.backButton
                 }}
-                action={() => {
-                  navigation.goBack()
-                }}
+                action={this.onBack}
               />
               <InputWithAction
                 ref={(ref) => { this.privKeyField = ref }}
@@ -198,9 +196,6 @@ export default class AddPrivateKeyScreen extends Component {
               disable={!isReadyCreate}
               onPress={this._handleConfirm}
             />
-            {/* {loading &&
-              <Spinner />
-            } */}
           </View>
         </TouchableWithoutFeedback>
       </SafeAreaView >

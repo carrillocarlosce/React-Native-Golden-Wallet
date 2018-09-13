@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Platform,
   Keyboard,
   Animated,
   TouchableWithoutFeedback,
@@ -28,6 +27,7 @@ import Spinner from '../../../components/elements/Spinner'
 import ImportPrivateKeyStore from '../stores/ImportPrivateKeyStore'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
+import KeyboardView from '../../../components/elements/KeyboardView'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -52,21 +52,6 @@ export default class ImportViaPrivateKeyScreen extends Component {
     }
   }
 
-  componentWillMount() {
-    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
-    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
-    this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
-    this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
-
   onChangePrivKey = (text) => {
     this.importPrivateKeyStore.setPrivateKey(text)
     const { isErrorPrivateKey } = this.importPrivateKeyStore
@@ -77,27 +62,6 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   onChangeName = (text) => {
     this.importPrivateKeyStore.setTitle(text)
-  }
-
-  _runExtraHeight(toValue) {
-    Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
-      {
-        toValue: -toValue, // Animate to final value of 1
-        duration: 250
-      }
-    ).start()
-  }
-
-  _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop + 15) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
-    }
-  }
-
-  _keyboardDidHide(e) {
-    this._runExtraHeight(0)
   }
 
   returnData(codeScanned) {
@@ -166,7 +130,6 @@ export default class ImportViaPrivateKeyScreen extends Component {
   render() {
     const { navigation } = this.props
     const { isNameFocus, isPrivateKeyFocus } = this.state
-    console.log(isNameFocus)
     const {
       privateKey, loading, title, isErrorTitle, isErrorPrivateKey, isReadyCreate
     } = this.importPrivateKeyStore
@@ -174,11 +137,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
           <View style={styles.container}>
-            <Animated.View
-              style={[styles.container, {
-                marginTop: this.extraHeight
-              }]}
-            >
+            <KeyboardView style={styles.container}>
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
@@ -227,7 +186,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
                 styleIcon={{ tintColor: AppStyle.mainTextColor }}
                 action={this.gotoScan}
               />
-            </Animated.View>
+            </KeyboardView>
             <BottomButton
               disable={!isReadyCreate}
               onPress={this._handleConfirm}
