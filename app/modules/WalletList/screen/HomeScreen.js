@@ -32,6 +32,7 @@ import Ticker from '../elements/Ticker'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
+import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -82,16 +83,13 @@ export default class HomeScreen extends Component {
   }
 
   onSendPress = () => {
-    const { navigation } = this.props
     const { selectedWallet } = MainStore.appState
     if (!selectedWallet) {
       return
     }
-    MainStore.goToSendTx()
+    Router.SendTransaction.goToSendTx()
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
-    navigation.navigate('SendTransactionStack')
-    // navigation.navigate('DAppStack')
   }
 
   onBackup = () => {
@@ -285,7 +283,7 @@ export default class HomeScreen extends Component {
       NavStore.popupCustom.show('Your wallet is read only')
       return
     }
-    MainStore.goToDApp()
+    Router.DAppBrowser.goToDApp()
     NavStore.pushToScreen('DAppListScreen')
   }
 
