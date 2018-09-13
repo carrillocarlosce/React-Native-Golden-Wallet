@@ -102,12 +102,12 @@ const dumpData = [
     url: 'https://ddex.io',
     img: 'https://pbs.twimg.com/profile_images/996789325823074304/huBkgZg4.jpg'
   },
-  // {
-  //   title: '0x Portal',
-  //   subTitle: 'Learn about 0x and discover 0x Relayers...',
-  //   url: 'https://www.0xproject.com/portal',
-  //   img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
-  // },
+  {
+    title: '0x Portal',
+    subTitle: 'Learn about 0x and discover 0x Relayers...',
+    url: 'https://www.0xproject.com/portal',
+    img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
+  },
   {
     title: 'Fork Delta',
     subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
