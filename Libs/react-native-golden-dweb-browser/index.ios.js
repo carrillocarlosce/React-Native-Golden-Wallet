@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View
 } from 'react-native'
-import WKWebView from 'react-native-wkwebview-reborn'
+import WKWebView from '../react-native-wkwebview-reborn'
 import PropTypes from 'prop-types'
 
 export default class GoldenDWebBrowser extends Component {
