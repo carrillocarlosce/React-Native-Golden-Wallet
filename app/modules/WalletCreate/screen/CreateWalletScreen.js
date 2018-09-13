@@ -4,42 +4,30 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native'
-import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
-import { NavigationActions } from 'react-navigation'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import SmallCard from '../../../components/elements/SmallCard'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
 
 @observer
 export default class CreateWalletScreen extends Component {
-  static propTypes = {
-    navigation: PropTypes.object
-  }
-
-  static defaultProps = {
-    navigation: {}
-  }
-
   goBack = () => {
-    const { navigation } = this.props
-    navigation.dispatch(NavigationActions.back())
+    NavStore.goBack()
   }
 
   gotoEnterName = () => {
-    const { navigation } = this.props
-    navigation.navigate('EnterNameScreen')
+    NavStore.pushToScreen('EnterNameScreen')
   }
 
   gotoImport = () => {
-    const { navigation } = this.props
-    navigation.navigate('ImportWalletScreen')
+    NavStore.pushToScreen('ImportWalletScreen')
   }
 
   render() {
