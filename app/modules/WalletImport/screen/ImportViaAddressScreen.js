@@ -4,12 +4,9 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  Keyboard,
   Animated,
-  TouchableWithoutFeedback,
   SafeAreaView
 } from 'react-native'
-import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
@@ -25,28 +22,17 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import ImportAddressStore from '../stores/ImportAddressStore'
 import KeyboardView from '../../../components/elements/KeyboardView'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
 
 @observer
 export default class ImportViaAddressScreen extends Component {
-  static propTypes = {
-    navigation: PropTypes.object
-  }
-
-  static defaultProps = {
-    navigation: {}
-  }
-
   constructor(props) {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importAddressStore = new ImportAddressStore()
-    this.state = {
-      isNameFocus: false,
-      isAddressFocus: false
-    }
   }
 
   onChangeName = (text) => {
@@ -61,10 +47,13 @@ export default class ImportViaAddressScreen extends Component {
     }
   }
 
+  onFocusName = () => this.importAddressStore.setFocusField('name')
+  onFocusAddress = () => this.importAddressStore.setFocusField('address')
+  onBlurTextField = () => this.importAddressStore.setFocusField('')
+
   gotoScan = () => {
-    const { navigation } = this.props
     setTimeout(() => {
-      navigation.navigate('ScanQRCodeScreen', {
+      NavStore.pushToScreen('ScanQRCodeScreen', {
         title: 'Scan Address',
         marginTop,
         returnData: this.returnData.bind(this)
@@ -73,8 +62,7 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   goBack = () => {
-    const { navigation } = this.props
-    navigation.goBack()
+    NavStore.goBack()
   }
 
   validateImport() {
@@ -112,13 +100,12 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   render() {
-    const { isNameFocus, isAddressFocus } = this.state
     const {
-      address, title, loading, isErrorTitle, errorAddress, isReadyCreate
+      address, title, loading, isErrorTitle, errorAddress, isReadyCreate, isNameFocus, isAddressFocus
     } = this.importAddressStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
             <KeyboardView style={styles.container} >
               <NavigationHeader
@@ -135,8 +122,8 @@ export default class ImportViaAddressScreen extends Component {
                 ref={(ref) => { this.nameField = ref }}
                 style={{ width: width - 40, marginTop: 10 }}
                 value={title}
-                onFocus={() => this.setState({ isNameFocus: true })}
-                onBlur={() => this.setState({ isNameFocus: false })}
+                onFocus={this.onFocusName}
+                onBlur={this.onBlurTextField}
                 onChangeText={this.onChangeName}
               />
               {isErrorTitle &&
@@ -150,8 +137,8 @@ export default class ImportViaAddressScreen extends Component {
                 needPasteButton
                 styleTextInput={commonStyle.fontAddress}
                 value={address}
-                onFocus={() => this.setState({ isAddressFocus: true })}
-                onBlur={() => this.setState({ isAddressFocus: false })}
+                onFocus={this.onFocusAddress}
+                onBlur={this.onBlurTextField}
               />
               {errorAddress !== '' &&
                 <Text style={styles.errorText}>{errorAddress}</Text>
@@ -176,7 +163,7 @@ export default class ImportViaAddressScreen extends Component {
               <Spinner />
             }
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView>
     )
   }

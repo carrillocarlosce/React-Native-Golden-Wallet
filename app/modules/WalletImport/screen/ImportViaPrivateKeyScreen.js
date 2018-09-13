@@ -4,8 +4,6 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Keyboard,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Clipboard,
   Image,
@@ -26,6 +24,7 @@ import ImportPrivateKeyStore from '../stores/ImportPrivateKeyStore'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
 import KeyboardView from '../../../components/elements/KeyboardView'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -125,7 +124,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
     } = this.importPrivateKeyStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchOutSideDismissKeyboard>
           <View style={styles.container}>
             <KeyboardView style={styles.container}>
               <NavigationHeader
@@ -183,7 +182,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
               <Spinner />
             }
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView >
     )
   }

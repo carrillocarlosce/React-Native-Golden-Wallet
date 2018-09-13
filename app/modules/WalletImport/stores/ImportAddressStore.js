@@ -12,6 +12,9 @@ export default class ImportAddressStore {
   @observable addessWallet = ''
   @observable loading = false
   @observable finished = false
+  @observable focusField = ''
+
+  @action setFocusField = (ff) => { this.focusField = ff }
 
   @action setTitle(title) {
     this.customTitle = title
@@ -35,6 +38,14 @@ export default class ImportAddressStore {
     this.loading = false
     NavStore.reset()
     NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+  }
+
+  @computed get isNameFocus() {
+    return this.focusField === 'name'
+  }
+
+  @computed get isAddressFocus() {
+    return this.focusField === 'address'
   }
 
   @computed get title() {
