@@ -24,8 +24,6 @@ import Config from '../../../AppStores/stores/Config'
 import NavStore from '../../../AppStores/NavStore'
 import KeyBoard from '../elements/Keyboard'
 
-// const BN = require('bn.js')
-
 const { height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
 const isIPX = height === 812
@@ -59,36 +57,26 @@ export default class SendTransactionScreen extends Component {
     this.amountStore.send()
   }
 
+  _onOpenModal = () => {
+    this.amountStore.selectedCoinModal && this.amountStore.selectedCoinModal.open()
+  }
+
+  _onCloseModal = () => {
+    this.amountStore.selectedCoinModal && this.amountStore.selectedCoinModal.close()
+  }
+
   renderSelectedCoinModal = () => {
     return (
       <Modal
-        style={{
-          height: isIPX ? height - 150 : height - 80,
-          zIndex: 100,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          overflow: 'hidden',
-          backgroundColor: AppStyle.backgroundColor
-        }}
+        style={styles.modalStyle}
         swipeToClose
-        onClosed={() => {
-          this.amountStore.selectedCoinModal && this.amountStore.selectedCoinModal.close()
-        }}
+        onClosed={this._onCloseModal}
         position="bottom"
         ref={(ref) => { this.amountStore.setSelectedCoinModal(ref) }}
       >
-        <View style={{ flex: 1, zIndex: 120, backgroundColor: AppStyle.backgroundColor }}>
+        <View style={styles.backgroundStyle}>
           <View
-            style={{
-              alignSelf: 'center',
-              height: 3,
-              width: 45,
-              borderRadius: 1.5,
-              backgroundColor: AppStyle.secondaryTextColor,
-              position: 'absolute',
-              zIndex: 130,
-              top: 10
-            }}
+            style={styles.viewSelectedCoinScreenStyle}
           />
           <SelectedCoinScreen />
         </View>
@@ -109,9 +97,7 @@ export default class SendTransactionScreen extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.headerTitle}
-          onPress={() => {
-            this.amountStore.selectedCoinModal && this.amountStore.selectedCoinModal.open()
-          }}
+          onPress={this._onOpenModal}
         >
           <Text style={styles.walletName}>{this.amountStore.walletName}:</Text>
           <Text style={styles.headerBalance}>{this.amountStore.amountHeaderString}</Text>
@@ -227,5 +213,28 @@ const styles = StyleSheet.create({
   sendText: {
     fontSize: 18,
     fontFamily: 'OpenSans-Semibold'
+  },
+  modalStyle: {
+    height: isIPX ? height - 150 : height - 80,
+    zIndex: 100,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: AppStyle.backgroundColor
+  },
+  viewSelectedCoinScreenStyle: {
+    alignSelf: 'center',
+    height: 3,
+    width: 45,
+    borderRadius: 1.5,
+    backgroundColor: AppStyle.secondaryTextColor,
+    position: 'absolute',
+    zIndex: 130,
+    top: 10
+  },
+  backgroundStyle: {
+    flex: 1,
+    zIndex: 120,
+    backgroundColor: AppStyle.backgroundColor
   }
 })
