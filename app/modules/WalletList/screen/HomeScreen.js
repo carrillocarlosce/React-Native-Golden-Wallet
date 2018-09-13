@@ -28,11 +28,10 @@ import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import Config from '../../../AppStores/stores/Config'
-import Ticker from '../elements/Ticker'
+import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
-import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -95,8 +94,7 @@ export default class HomeScreen extends Component {
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        this.props.navigation.navigate('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }
@@ -315,7 +313,6 @@ export default class HomeScreen extends Component {
         address: '0'
       }]
     }
-    const tickers = TickerStore.tickers.slice()
 
     return (
       <View style={styles.container}>

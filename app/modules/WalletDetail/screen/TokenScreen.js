@@ -16,6 +16,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import ShimmerTokenItem from '../elements/ShimmerTokenItem'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
+import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -55,8 +56,7 @@ export default class TokenScreen extends Component {
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        this.props.navigation.navigate('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }

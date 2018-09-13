@@ -4,6 +4,7 @@ import Wallet from '../../AppStores/stores/Wallet'
 import NavStore from '../../AppStores/NavStore'
 import NotificationStore from '../../AppStores/stores/Notification'
 import AppStyle from '../../commons/AppStyle'
+import Router from '../../AppStores/Router'
 
 class CreateWalletStore {
   @observable customTitle = ``
@@ -82,8 +83,7 @@ class CreateWalletStore {
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        NavStore.pushToScreen('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }
