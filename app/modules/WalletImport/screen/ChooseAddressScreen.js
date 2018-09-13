@@ -7,7 +7,6 @@ import {
   FlatList,
   SafeAreaView
 } from 'react-native'
-import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import ChooseAddressItem from '../elements/ChooseAddressItem'
@@ -16,6 +15,7 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -23,17 +23,13 @@ const isIPX = height === 812
 
 @observer
 export default class ChooseAddressScreen extends Component {
-  static propTypes = {
-    navigation: PropTypes.object
-  }
-
-  static defaultProps = {
-    navigation: {}
-  }
-
   constructor(props) {
     super(props)
     this.importMnemonicStore = MainStore.importMnemonicStore
+  }
+
+  onBack = () => {
+    NavStore.goBack()
   }
 
   handleSelect = (w) => {
@@ -44,8 +40,16 @@ export default class ChooseAddressScreen extends Component {
     this.importMnemonicStore.gotoEnterName()
   }
 
+  renderItem = ({ item, index }) =>
+    (
+      <ChooseAddressItem
+        item={item}
+        index={index}
+        onItemSelect={this.handleSelect}
+      />
+    )
+
   render() {
-    const { navigation } = this.props
     const data = this.importMnemonicStore.mnemonicWallets
     const { selectedWallet } = this.importMnemonicStore
 
@@ -61,9 +65,7 @@ export default class ChooseAddressScreen extends Component {
               icon: null,
               button: images.backButton
             }}
-            action={() => {
-              navigation.goBack()
-            }}
+            action={this.onBack}
           />
           <Text style={styles.description}>
             Please select the address you would like to interact with.
@@ -78,15 +80,7 @@ export default class ChooseAddressScreen extends Component {
             data={data}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${index}`}
-            renderItem={({ item, index }) => {
-              return (
-                <ChooseAddressItem
-                  item={item}
-                  index={index}
-                  onItemSelect={this.handleSelect}
-                />
-              )
-            }}
+            renderItem={this.renderItem}
           />
           <BottomButton
             onPress={this.handleUnlock}

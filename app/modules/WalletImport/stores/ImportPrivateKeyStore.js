@@ -11,9 +11,11 @@ export default class ImportPrivateKeyStore {
   @observable privKey = ''
   @observable loading = false
   @observable finished = false
+  @observable focusField = ''
 
   @action setTitle = (title) => { this.customTitle = title }
   @action setPrivateKey = (pk) => { this.privKey = pk }
+  @action setFocusField = (ff) => { this.focusField = ff }
 
   @computed get title() {
     return this.customTitle
@@ -44,6 +46,14 @@ export default class ImportPrivateKeyStore {
       this.loading = false
       NavStore.popupCustom.show('Invalid private key.')
     }
+  }
+
+  @computed get isNameFocus() {
+    return this.focusField === 'name'
+  }
+
+  @computed get isPrivateKeyFocus() {
+    return this.focusField === 'private_key'
   }
 
   @computed get privateKey() {

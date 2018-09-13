@@ -3,12 +3,10 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
   Text
 } from 'react-native'
-import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
@@ -19,20 +17,14 @@ import AppStyle from '../../../commons/AppStyle'
 import Spinner from '../../../components/elements/Spinner'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import NavStore from '../../../AppStores/NavStore'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
 
 @observer
 export default class EnterNameViaMnemonic extends Component {
-  static propTypes = {
-    navigation: PropTypes.object
-  }
-
-  static defaultProps = {
-    navigation: {}
-  }
-
   constructor(props) {
     super(props)
     this.importMnemonicStore = MainStore.importMnemonicStore
@@ -43,9 +35,8 @@ export default class EnterNameViaMnemonic extends Component {
   }
 
   handleBack = () => {
-    const { navigation } = this.props
     Keyboard.dismiss()
-    navigation.goBack()
+    NavStore.goBack()
   }
 
   handleCreate = () => {
@@ -64,7 +55,7 @@ export default class EnterNameViaMnemonic extends Component {
     const { title, loading, isReadyUnlock } = this.importMnemonicStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}
@@ -91,7 +82,7 @@ export default class EnterNameViaMnemonic extends Component {
               <Spinner />
             }
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView>
     )
   }

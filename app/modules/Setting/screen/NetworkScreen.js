@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import {
   FlatList,
-  Text,
   StyleSheet,
-  View,
   SafeAreaView
 } from 'react-native'
 import PropsType from 'prop-types'
@@ -61,19 +59,21 @@ export default class NetworkScreen extends Component {
     )
   }
 
-  _renderIntroduction() {
-    const introStr = 'Changing network while transactions are pending may cause problems'
-    return (
-      <View style={{ paddingHorizontal: 40, marginTop: 15 }}>
-        <Text style={[styles.textSubtitle, { textAlign: 'center' }]}>
-          {introStr}
-        </Text>
-      </View>
-    )
+  // _renderIntroduction() {
+  //   return (
+  //     <View style={{ paddingHorizontal: 40, marginTop: 15 }}>
+  //       <Text style={[styles.textSubtitle, { textAlign: 'center' }]}>
+  //         {constant.CHANGE_NETWORK_INTRO}
+  //       </Text>
+  //     </View>
+  //   )
+  // }
+
+  goBack = () => {
+    this.props.navigation.dispatch(NavigationActions.back())
   }
 
   render() {
-    const { navigation } = this.props
     const loading = false
     return (
       <SafeAreaView style={styles.container}>
@@ -84,11 +84,8 @@ export default class NetworkScreen extends Component {
             icon: null,
             button: Images.backButton
           }}
-          action={() => {
-            navigation.dispatch(NavigationActions.back())
-          }}
+          action={this.goBack}
         />
-        {/* {this._renderIntroduction()} */}
         {this._renderNetworkList()}
         {loading &&
           <Spinner />
@@ -102,10 +99,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: AppStyle.backgroundDarkMode
-  },
-  textSubtitle: {
-    fontSize: 14,
-    fontFamily: AppStyle.mainFontSemiBold,
-    color: AppStyle.secondaryTextColor
   }
+  // textSubtitle: {
+  //   fontSize: 14,
+  //   fontFamily: AppStyle.mainFontSemiBold,
+  //   color: AppStyle.secondaryTextColor
+  // }
 })

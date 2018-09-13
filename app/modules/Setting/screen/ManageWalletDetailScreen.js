@@ -5,8 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity,
-  Dimensions
+  TouchableOpacity
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
@@ -23,7 +22,6 @@ import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-// const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {
@@ -56,16 +54,28 @@ export default class ManageWalletDetailScreen extends Component {
     return this.wallet.importType !== 'Address'
   }
 
+  handleRemovePressed = (pincode) => {
+    NavStore.pushToScreen('RemoveWalletScreen', {
+      wallet: this.wallet
+    })
+  }
+
+  handleAddPrivKeyPressed = () => {
+    NavStore.pushToScreen('AddPrivateKeyScreen', {
+      wallet: this.wallet
+    })
+  }
+
+  goBack = () => {
+    this.props.navigation.dispatch(NavigationActions.back())
+  }
+
   _renderRemoveWallet = () => {
     return (
       <TouchableOpacity
         onPress={() => {
           NavStore.lockScreen({
-            onUnlock: (pincode) => {
-              NavStore.pushToScreen('RemoveWalletScreen', {
-                wallet: this.wallet
-              })
-            }
+            onUnlock: this.handleRemovePressed
           }, true)
         }}
       >
@@ -93,8 +103,43 @@ export default class ManageWalletDetailScreen extends Component {
     )
   }
 
-  _renderOptions = () => {
+  _renderOptionItem = ({ item, index }) => {
     const enableNotif = this.currentStateEnableNotification
+    if (index == this.manageWalletStore.options.length - 1) {
+      return (
+        <SettingItem
+          mainText={item.mainText}
+          disable
+          type="switch"
+          enableSwitch={enableNotif}
+          onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
+        />
+      )
+    }
+    if (index == 1 && !this.shouldShowExportPrivateKey) {
+      return (
+        <SettingItem
+          style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+          mainText="Add Private Key"
+          onPress={this.handleAddPrivKeyPressed}
+          iconRight={item.iconRight}
+        />
+      )
+    }
+    return (
+      <SettingItem
+        style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+        mainText={item.mainText}
+        onPress={() => {
+          this.manageWalletStore.selectedWallet = this.wallet
+          item.onPress()
+        }}
+        iconRight={item.iconRight}
+      />
+    )
+  }
+
+  _renderOptions = () => {
     return (
       <View>
         <FlatList
@@ -102,52 +147,15 @@ export default class ManageWalletDetailScreen extends Component {
           data={this.manageWalletStore.options}
           keyExtractor={v => v.mainText}
           scrollEnabled={false}
-          renderItem={({ item, index }) => {
-            if (index == this.manageWalletStore.options.length - 1) {
-              return (
-                <SettingItem
-                  mainText={item.mainText}
-                  disable
-                  type="switch"
-                  enableSwitch={enableNotif}
-                  onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
-                />
-              )
-            }
-            if (index == 1 && !this.shouldShowExportPrivateKey) {
-              return (
-                <SettingItem
-                  style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-                  mainText="Add Private Key"
-                  onPress={() => {
-                    NavStore.pushToScreen('AddPrivateKeyScreen', {
-                      wallet: this.wallet
-                    })
-                  }}
-                  iconRight={item.iconRight}
-                />
-              )
-            }
-            return (
-              <SettingItem
-                style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-                mainText={item.mainText}
-                onPress={() => {
-                  this.manageWalletStore.selectedWallet = this.wallet
-                  item.onPress()
-                }}
-                iconRight={item.iconRight}
-              />
-            )
-          }}
+          renderItem={this._renderOptionItem}
         />
       </View>
     )
   }
+
   render() {
-    const { navigation } = this.props
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} >
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
@@ -155,9 +163,7 @@ export default class ManageWalletDetailScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.dispatch(NavigationActions.back())
-          }}
+          action={this.goBack}
         />
         {this._renderValueAndAddress()}
         {this._renderOptions()}
