@@ -113,11 +113,11 @@ const dumpData = [
     subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
     url: 'https://forkdelta.app',
     img: 'https://forkdelta.io/images/logo.png'
+  },
+  {
+    title: 'Cryptokitties',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://www.cryptokitties.co',
+    img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
   }
-  // {
-  //   title: 'Cryptokitties',
-  //   subTitle: 'The largest marketplace for crypto collectibles',
-  //   url: 'https://www.cryptokitties.co',
-  //   img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
-  // }
 ]

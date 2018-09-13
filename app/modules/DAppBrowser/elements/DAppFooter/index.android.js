@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
-  Image,
   Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import images from '../../../../commons/images'
 import MainStore from '../../../../AppStores/MainStore'
+import FooterButton from '../FooterButton'
+import AppStyle from '../../../../commons/AppStyle'
 
 const { width } = Dimensions.get('window')
 
@@ -37,16 +37,10 @@ export default class DAppFooter extends Component {
     return (
       <View style={[styles.container, style]}>
         <View style={styles.arrowButton}>
-          <TouchableOpacity onPress={goBack} disabled={!canGoBack}>
-            <Image source={images.arrowBack} style={{ tintColor: canGoBack ? 'white' : '#4A4A4A' }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={goForward} style={{ marginLeft: 70 }} disabled={!canGoForward}>
-            <Image source={images.arrowForward} style={{ tintColor: canGoForward ? 'white' : '#4A4A4A' }} />
-          </TouchableOpacity>
+          <FooterButton onPress={goBack} icon={images.arrowBack} styleImage={{ tintColor: canGoBack ? 'white' : '#4A4A4A' }} disabled={!canGoBack} />
+          <FooterButton onPress={goForward} icon={images.arrowForward} styleImage={{ tintColor: canGoForward ? 'white' : '#4A4A4A' }} style={{ marginLeft: 30 }} disabled={!canGoForward} />
         </View>
-        <TouchableOpacity onPress={onReload}>
-          <Image source={images.iconRefresh} />
-        </TouchableOpacity>
+        <FooterButton onPress={onReload} icon={images.iconRefresh} styleImage={{ tintColor: 'white' }} />
       </View>
     )
   }
@@ -59,7 +53,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    width
+    width,
+    height: 50,
+    backgroundColor: AppStyle.backgroundColor
   },
   arrowButton: {
     flexDirection: 'row',
