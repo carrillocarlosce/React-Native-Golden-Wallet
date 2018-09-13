@@ -221,6 +221,14 @@ export default class ScanQRCodeScreen extends Component {
     }
   }
 
+  goBack = () => {
+    this.props.navigation.goBack()
+  }
+
+  rightViewAction = () => {
+    this.setState({ enableFlash: !this.state.enableFlash })
+  }
+
   render() {
     const triggerRender = NavStore.triggerRenderAndroid
     return (
@@ -236,14 +244,10 @@ export default class ScanQRCodeScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            this.props.navigation.goBack()
-          }}
+          action={this.goBack}
           rightView={{
             rightViewIcon: this.state.enableFlash ? images.iconFlashOff : images.iconFlashOn,
-            rightViewAction: () => {
-              this.setState({ enableFlash: !this.state.enableFlash })
-            }
+            rightViewAction: this.rightViewAction
           }}
         />
         {!this.state.showCamera &&
