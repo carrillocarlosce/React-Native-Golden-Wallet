@@ -10,12 +10,8 @@ import {
   View,
   AppState,
   Keyboard,
-  NetInfo,
-  Platform,
-  PermissionsAndroid
+  NetInfo
 } from 'react-native'
-import NotificationManager from 'react-native-check-notification-enable'
-import Permissions from 'react-native-permissions'
 import crashlytics from 'react-native-fabric-crashlytics'
 import Router from './app/Router'
 import currencyStore from './app/AppStores/CurrencyStore'
@@ -92,11 +88,6 @@ export default class App extends Component {
       setTimeout(() => { NotificationStore.appState = nextAppState }, 2000)
       // MainStore.appState.BgJobs.CheckBalance.doOnce(false, false)
       MainStore.appState.BgJobs.CheckBalance.start()
-      if (Platform.OS === 'ios') {
-        Permissions.check('notification', { type: 'always' }).then(res => this.switchEnableNotification(res === 'authorized'))
-      } else {
-        NotificationManager.areNotificationsEnabled().then(res => this.switchEnableNotification(res))
-      }
       this.blind.hideBlind()
     }
     if (this.appState === 'background' && nextAppState === 'active') {
