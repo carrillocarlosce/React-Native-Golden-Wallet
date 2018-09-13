@@ -113,9 +113,6 @@ export default class EditWalletNameScreen extends Component {
               text="Save"
               onPress={this.handleSave}
             />
-            {/* {loading &&
-              <Spinner />
-            } */}
           </View>
         </TouchableWithoutFeedback>
       </SafeAreaView>

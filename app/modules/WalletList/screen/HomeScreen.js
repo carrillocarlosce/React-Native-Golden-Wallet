@@ -28,7 +28,7 @@ import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import Config from '../../../AppStores/stores/Config'
-import Ticker from '../elements/Ticker'
+import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
@@ -82,23 +82,19 @@ export default class HomeScreen extends Component {
   }
 
   onSendPress = () => {
-    const { navigation } = this.props
     const { selectedWallet } = MainStore.appState
     if (!selectedWallet) {
       return
     }
-    MainStore.goToSendTx()
+    Router.SendTransaction.goToSendTx()
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
-    navigation.navigate('SendTransactionStack')
-    // navigation.navigate('DAppStack')
   }
 
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
-        await MainStore.gotoBackup(pincode)
-        this.props.navigation.navigate('BackupStack')
+        await Router.Backup.gotoBackup(pincode)
       }
     }, true)
   }
@@ -285,7 +281,7 @@ export default class HomeScreen extends Component {
       NavStore.popupCustom.show('Your wallet is read only')
       return
     }
-    MainStore.goToDApp()
+    Router.DAppBrowser.goToDApp()
     NavStore.pushToScreen('DAppListScreen')
   }
 
@@ -317,7 +313,6 @@ export default class HomeScreen extends Component {
         address: '0'
       }]
     }
-    const tickers = TickerStore.tickers.slice()
 
     return (
       <View style={styles.container}>
