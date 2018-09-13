@@ -31,6 +31,10 @@ export default class AppVersionScreen extends Component {
     AppVersion.setChangelogsList(vs)
   }
 
+  goBack = () => {
+    this.props.navigation.goBack()
+  }
+
   renderAbount = (listVersion) => {
     return (
       <FlatList
@@ -44,13 +48,9 @@ export default class AppVersionScreen extends Component {
                 style={{ borderTopWidth: index === 0 ? 0 : 1 }}
                 mainText={item.version_number}
                 type={item.type}
-                // subText={item.subText}
                 onPress={() => this.onPress(item.version_number)}
-                // iconRight={item.iconRight}
                 data={item.change_logs}
                 expanse={item.expanse}
-              // disable={item.disable}
-              // showArrow={item.showArrow}
               />
             </View>
           )
@@ -60,7 +60,6 @@ export default class AppVersionScreen extends Component {
   }
 
   render() {
-    const { navigation } = this.props
     const { listVersion } = AppVersion
     return (
       <View style={styles.container}>
@@ -71,9 +70,7 @@ export default class AppVersionScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.goBack}
         />
         {this.renderAbount(listVersion)}
       </View>

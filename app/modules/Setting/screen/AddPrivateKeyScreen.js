@@ -73,10 +73,9 @@ export default class AddPrivateKeyScreen extends Component {
 
   _runExtraHeight(toValue) {
     Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
+      this.extraHeight,
       {
-        toValue: -toValue, // Animate to final value of 1
+        toValue: -toValue,
         duration: 250
       }
     ).start()
@@ -146,14 +145,21 @@ export default class AddPrivateKeyScreen extends Component {
     }, 300)
   }
 
+  hideKeyboard = () => {
+    Keyboard.dismiss()
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack()
+  }
+
   render() {
-    const { navigation } = this.props
     const {
       privKey, isErrorPrivateKey, isReadyCreate
     } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchableWithoutFeedback onPress={this.hideKeyboard}>
           <View style={styles.container}>
             <Animated.View
               style={[styles.container, {
@@ -167,9 +173,7 @@ export default class AddPrivateKeyScreen extends Component {
                   icon: null,
                   button: images.backButton
                 }}
-                action={() => {
-                  navigation.goBack()
-                }}
+                action={this.goBack}
               />
               <InputWithAction
                 ref={(ref) => { this.privKeyField = ref }}

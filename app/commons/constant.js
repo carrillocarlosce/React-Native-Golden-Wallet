@@ -75,6 +75,10 @@ export default {
 
   SCAN_QR_FRAME: 'Automatically scan the QR code into the frame',
   EXISTED_WALLET_NAME: 'Wallet name already exists.',
-  NO_WALLET_NAME_FOUND: 'Wallet name does not match.'
+  NO_WALLET_NAME_FOUND: 'Wallet name does not match.',
+
+  EXPORT_PRIVATE_KEY_ALERT: 'Make sure your enviroment is secure, and no one sees your screen.',
+  CHANGE_NETWORK_INTRO: 'Changing network while transactions are pending may cause problems',
+  REMOVE_WALLET_DESCRIPTION: 'Please enter your wallet name to remove'
 
 }

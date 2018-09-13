@@ -31,6 +31,14 @@ export default class PrivacyTermsWebView extends Component {
     isShow: false
   }
 
+  onLoadEnd = () => {
+    this.setState({ isShow: true })
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack()
+  }
+
   render() {
     const { navigation } = this.props
     const { url, title } = navigation.state.params
@@ -44,14 +52,12 @@ export default class PrivacyTermsWebView extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.goBack}
         />
         <WebView
           style={style}
           source={{ uri: url }}
-          onLoadEnd={() => this.setState({ isShow: true })}
+          onLoadEnd={this.onLoadEnd}
         />
       </View>
     )

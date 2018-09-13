@@ -74,6 +74,10 @@ export default class EditWalletNameScreen extends Component {
     navigation.goBack()
   }
 
+  hideKeyboard = () => {
+    Keyboard.dismiss()
+  }
+
   renderErrorField = () => {
     const { isShowError } = this.manageWalletStore
     if (isShowError && this.state.allowShowErr) {
@@ -86,7 +90,7 @@ export default class EditWalletNameScreen extends Component {
     const { customTitle, isAllowedToSave } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchableWithoutFeedback onPress={this.hideKeyboard}>
           <View style={styles.container}>
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}

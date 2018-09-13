@@ -5,8 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity,
-  Dimensions
+  TouchableOpacity
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
@@ -23,7 +22,6 @@ import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-// const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {
@@ -56,16 +54,28 @@ export default class ManageWalletDetailScreen extends Component {
     return this.wallet.importType !== 'Address'
   }
 
+  handleRemovePressed = (pincode) => {
+    NavStore.pushToScreen('RemoveWalletScreen', {
+      wallet: this.wallet
+    })
+  }
+
+  handleAddPrivKeyPressed = () => {
+    NavStore.pushToScreen('AddPrivateKeyScreen', {
+      wallet: this.wallet
+    })
+  }
+
+  goBack = () => {
+    this.props.navigation.dispatch(NavigationActions.back())
+  }
+
   _renderRemoveWallet = () => {
     return (
       <TouchableOpacity
         onPress={() => {
           NavStore.lockScreen({
-            onUnlock: (pincode) => {
-              NavStore.pushToScreen('RemoveWalletScreen', {
-                wallet: this.wallet
-              })
-            }
+            onUnlock: this.handleRemovePressed
           }, true)
         }}
       >
@@ -119,11 +129,7 @@ export default class ManageWalletDetailScreen extends Component {
                 <SettingItem
                   style={{ borderTopWidth: index === 0 ? 0 : 1 }}
                   mainText="Add Private Key"
-                  onPress={() => {
-                    NavStore.pushToScreen('AddPrivateKeyScreen', {
-                      wallet: this.wallet
-                    })
-                  }}
+                  onPress={this.handleAddPrivKeyPressed}
                   iconRight={item.iconRight}
                 />
               )
@@ -144,10 +150,10 @@ export default class ManageWalletDetailScreen extends Component {
       </View>
     )
   }
+
   render() {
-    const { navigation } = this.props
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} >
         <NavigationHeader
           style={{ marginTop: 20 + marginTop }}
           headerItem={{
@@ -155,9 +161,7 @@ export default class ManageWalletDetailScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.dispatch(NavigationActions.back())
-          }}
+          action={this.goBack}
         />
         {this._renderValueAndAddress()}
         {this._renderOptions()}
