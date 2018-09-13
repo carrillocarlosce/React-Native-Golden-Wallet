@@ -17,6 +17,7 @@ import NavStore from '../../../AppStores/NavStore'
 import { opensansRegular } from '../../../commons/commonStyles'
 import AppStyle from '../../../commons/AppStyle'
 import BottomButton from '../../../components/elements/BottomButton'
+import Router from '../../../AppStores/Router'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -35,7 +36,7 @@ export default class CollectibleDetailScreen extends Component {
 
   onPress = () => {
     const { assetContractName } = this.collectible
-    MainStore.goToDApp()
+    Router.DAppBrowser.goToDApp()
     let url = ''
     if (assetContractName === 'Etheremon') {
       url = `https://www.etheremon.com/mons-info/${this.collectible.id}`
