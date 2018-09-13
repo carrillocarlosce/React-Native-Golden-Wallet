@@ -6,20 +6,8 @@ import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
 import { observer } from '../../../../node_modules/mobx-react'
 import MainStore from '../../../AppStores/MainStore'
-// import Helper from '../../../commons/Helper'
 
 const dataRef = {}
-// const BN = require('bn.js')
-
-// const Test = props => props.data.map((item, index) => (
-//   <AnimationInputItem
-//     key={`${index}`}
-//     sizeSmall={false}
-//     ref={ref => (dataRef[index] = ref)}
-//     text={item.text}
-//     animated={item.animated}
-//   />
-// ))
 
 @observer
 export default class AnimationInput extends Component {
@@ -45,16 +33,6 @@ export default class AnimationInput extends Component {
       subData,
       isUSD
     } = this.props.data
-
-    // const feeValue = isUSD
-    //   ? this.amountStore.amountUSD.minus(this.amountStore.amountTextBigNum)
-    //   : this.amountStore.amountCrypto.minus(this.amountStore.amountTextBigNum)
-
-    // const fee = isUSD
-    //   ? Helper.formatUSD(feeValue.toString(10), true, 1000000)
-    //   : Helper.formatETH(feeValue.toString(10), true)
-
-    // const string = feeValue.toString(10) !== '0' ? `${feeValue.toString(10)} For Network Fee` : ''
     const string = 'Included network fee'
     const style = {
       fontFamily: 'OpenSans-Semibold',

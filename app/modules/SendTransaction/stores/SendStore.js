@@ -12,8 +12,6 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import AppStyle from '../../../commons/AppStyle'
 import { sendTransaction } from '../../../api/ether-json-rpc'
 import Interface from '../../../Utils/Ethererum/Contract/interface'
-// import NavigationStore from '../../../navigation/NavigationStore'
-// import ScreenID from '../../../navigation/ScreenID'
 
 const BN = require('bn.js')
 
@@ -107,7 +105,6 @@ class SendStore {
       const err = { message: 'Not enough gas to send this transaction' }
       return Promise.reject(err)
     }
-    // transaction.value.times(new BigNumber(1e+18)).minus(new BigNumber(10000))
     const valueFormat = transaction.value
       ? transaction.value.times(new BigNumber(1e+18)).toString(16)
       : transaction.value
@@ -116,8 +113,6 @@ class SendStore {
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
-          // const wallet = this.getWalletSendTransaction(privateKey)
-          // wallet.sendTransaction(transactionSend)
           sendTransaction(this.rpcURL, transactionSend, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
@@ -148,7 +143,6 @@ class SendStore {
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
-          // const wallet = this.getWalletSendTransaction(privateKey)
           const numberOfDecimals = token.decimals
           const numberOfTokens = `0x${value.times(new BigNumber(`1e+${numberOfDecimals}`)).toString(16)}`
           const inf = new Interface(abi)
@@ -160,7 +154,6 @@ class SendStore {
             gasPrice: transaction.gasPrice
           }
 
-          // return wallet.sendTransaction(unspentTransaction)
           return sendTransaction(this.rpcURL, unspentTransaction, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)

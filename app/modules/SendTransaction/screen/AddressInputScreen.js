@@ -19,7 +19,6 @@ import PropTypes from 'prop-types'
 import Modal from 'react-native-modalbox'
 import AppStyle from '../../../commons/AppStyle'
 import images from '../../../commons/images'
-import ScanQRCodeScreen from './ScanQRCodeScreen'
 import ChooseAddressScreen from './ChooseAddressScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
@@ -57,6 +56,14 @@ export default class AdressInputScreen extends Component {
     this.keyboardDidHideListener.remove()
   }
 
+  onBack = () => {
+    this.props.navigation.goBack()
+  }
+
+  onTouchDismissKeyboard = () => {
+    Keyboard.dismiss()
+  }
+
   _runExtraHeight(toValue) {
     Animated.timing(
       // Animate value over time
@@ -85,13 +92,7 @@ export default class AdressInputScreen extends Component {
     return (
       <View style={{ position: 'absolute', right: 20, top: 0 }}>
         <TouchableOpacity
-          onPress={async () => {
-            const content = await Clipboard.getString()
-            if (content) {
-              addressInputStore.setAddress(content)
-              addressInputStore.validateAddress()
-            }
-          }}
+          onPress={this.actionPaste}
         >
           <View style={{ padding: 15 }}>
             <Text style={styles.pasteText}>Paste</Text>
@@ -101,10 +102,17 @@ export default class AdressInputScreen extends Component {
     )
   }
 
-  handleConfirm = () => {
+  actionPaste = async () => {
     const { addressInputStore } = MainStore.sendTransaction
+    const content = await Clipboard.getString()
+    if (content) {
+      addressInputStore.setAddress(content)
+      addressInputStore.validateAddress()
+    }
+  }
+
+  handleConfirm = () => {
     Keyboard.dismiss()
-    addressInputStore.onConfirm()
     NavStore.pushToScreen('ConfirmScreen')
   }
 
@@ -135,16 +143,24 @@ export default class AdressInputScreen extends Component {
     )
   }
 
+  openScanQRCode = () => {
+    Keyboard.dismiss()
+    this.gotoScan()
+  }
+
+  openAddressModal = () => {
+    Keyboard.dismiss()
+    const { addressModal } = MainStore.sendTransaction.addressInputStore
+    addressModal && addressModal.open()
+  }
+
   _renderButton = () => {
     return (
       <View
         style={[styles.buttonContainer]}
       >
         <TouchableOpacity
-          onPress={() => {
-            Keyboard.dismiss()
-            this.gotoScan()
-          }}
+          onPress={this.openScanQRCode}
         >
           <View
             style={styles.button}
@@ -158,11 +174,7 @@ export default class AdressInputScreen extends Component {
         </TouchableOpacity>
         <View style={styles.line} />
         <TouchableOpacity
-          onPress={() => {
-            Keyboard.dismiss()
-            const { addressModal } = MainStore.sendTransaction.addressInputStore
-            addressModal && addressModal.open()
-          }}
+          onPress={this.openAddressModal}
         >
           <View
             style={styles.button}
@@ -181,33 +193,14 @@ export default class AdressInputScreen extends Component {
   _renderAddressModal = (addressInputStore) => {
     return (
       <Modal
-        style={{
-          height: isIPX ? height - 150 : height - 80,
-          zIndex: 20,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          overflow: 'hidden',
-          backgroundColor: AppStyle.backgroundColor
-        }}
+        style={styles.modalStyle}
         swipeToClose
-        onClosed={() => {
-
-        }}
         position="bottom"
         ref={(ref) => { MainStore.sendTransaction.addressInputStore.addressModal = ref }}
       >
         <View style={{ flex: 1 }}>
           <View
-            style={{
-              alignSelf: 'center',
-              height: 3,
-              width: 45,
-              borderRadius: 1.5,
-              backgroundColor: AppStyle.secondaryTextColor,
-              position: 'absolute',
-              zIndex: 30,
-              top: 10
-            }}
+            style={styles.chooseAddressScreenStyle}
           />
           <ChooseAddressScreen
             onSelectedAddress={(address) => {
@@ -215,53 +208,6 @@ export default class AdressInputScreen extends Component {
               addressInputStore.validateAddress()
             }}
           />
-        </View>
-      </Modal>
-    )
-  }
-
-  _renderQRCodeModal = () => {
-    return (
-      <Modal
-        style={{
-          height: isIPX ? height - 150 : height - 80,
-          zIndex: 20,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          overflow: 'hidden',
-          backgroundColor: AppStyle.backgroundColor
-        }}
-        swipeToClose
-        onClosed={() => {
-
-        }}
-        position="bottom"
-        ref={(ref) => { MainStore.sendTransaction.addressInputStore.qrCodeModal = ref }}
-      >
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              alignSelf: 'center',
-              height: 3,
-              width: 45,
-              borderRadius: 1.5,
-              backgroundColor: AppStyle.secondaryTextColor,
-              position: 'absolute',
-              zIndex: 30,
-              top: 10
-            }}
-          />
-          <View
-            style={{
-              backgroundColor: AppStyle.backgroundColor,
-              flex: 1,
-              justifyContent: 'center'
-            }}
-          >
-            <ScanQRCodeScreen
-              onCompleted={this._onCompleted}
-            />
-          </View>
         </View>
       </Modal>
     )
@@ -286,7 +232,7 @@ export default class AdressInputScreen extends Component {
       >
         <TouchableOpacity
           style={styles.exit}
-          onPress={() => this.props.navigation.goBack()}
+          onPress={this.onBack}
         >
           <Image style={styles.exitBtn} source={images.backButton} resizeMode="contain" />
         </TouchableOpacity>
@@ -310,7 +256,7 @@ export default class AdressInputScreen extends Component {
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback
-          onPress={() => { Keyboard.dismiss() }}
+          onPress={this.onTouchDismissKeyboard}
         >
           <View
             style={styles.viewContainer}
@@ -473,5 +419,23 @@ const styles = StyleSheet.create({
     color: '#d0021b',
     fontFamily: 'OpenSans-Semibold',
     fontSize: 14
+  },
+  modalStyle: {
+    height: isIPX ? height - 150 : height - 80,
+    zIndex: 20,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: AppStyle.backgroundColor
+  },
+  chooseAddressScreenStyle: {
+    alignSelf: 'center',
+    height: 3,
+    width: 45,
+    borderRadius: 1.5,
+    backgroundColor: AppStyle.secondaryTextColor,
+    position: 'absolute',
+    zIndex: 30,
+    top: 10
   }
 })

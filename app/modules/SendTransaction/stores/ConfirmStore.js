@@ -6,13 +6,9 @@ import Helper from '../../../commons/Helper'
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
   @observable gasLimit = new BigNumber('21000')
-  // @observable gasPrice = new BigNumber('1000000000')
   @observable gasPrice = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
-  // @action setToAddress(address) {
-  //   this.transaction.to = address
-  // }
 
   @action setAdjust(value) {
     this.adjust = value
@@ -97,8 +93,6 @@ export default class ConfirmStore {
     const gasBN = gasLimitBN.times(gasPriceBN).div(new BigNumber('1000000000'))
     let maxBN = balanceBN.minus(gasBN)
     maxBN = maxBN.div(1e+9)
-    // console.log(maxBN.toNumber(), gasBN.toNumber(), maxBN.div(1e+9).toNumber())
-
     if (this.title !== 'ETH') return maxBN.gte(new BigNumber('0')) // token
 
     if (maxBN.lt(new BigNumber('0'))) {

@@ -51,7 +51,12 @@ export default class ConfirmScreen extends Component {
     MainStore.sendTransaction.confirmStore.validateAmount()
   }
 
+  onShowActionSheet = () => {
+    this.actionSheet.show()
+  }
+
   onDefaultPress() {
+    Keyboard.dismiss()
     const { advanceStore } = MainStore.sendTransaction
     const { gasPriceEstimate } = AppState
     advanceStore.reset()
@@ -163,14 +168,14 @@ export default class ConfirmScreen extends Component {
       >
         <TouchableOpacity
           style={styles.closeBtn}
-          onPress={() => this._onCancel()}
+          onPress={this._onCancel}
         >
           <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
           <Text style={styles.title}>Confirmation</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.advanceBtn}
-          onPress={() => this.showAdvance()}
+          onPress={this.showAdvance}
         >
           <Image source={images.advanceIcn} style={styles.closeIcon} />
         </TouchableOpacity>
@@ -232,7 +237,7 @@ export default class ConfirmScreen extends Component {
               </Text>
               <TouchableOpacity
                 style={styles.standard}
-                onPress={() => this.actionSheet.show()}
+                onPress={this.onShowActionSheet}
               >
                 <Text style={styles.standardText}>{confirmStore.adjust}</Text>
               </TouchableOpacity>
@@ -247,10 +252,7 @@ export default class ConfirmScreen extends Component {
     return (
       <TouchableOpacity
         style={styles.sendBtn}
-        onPress={() => {
-          this._onSend()
-          // sendStore.estimateGas()
-        }}
+        onPress={this._onSend}
       >
         <Text style={styles.sendText}>{constant.SEND}</Text>
       </TouchableOpacity>
@@ -264,7 +266,7 @@ export default class ConfirmScreen extends Component {
       >
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => this.hideAdvance()}
+          onPress={this.hideAdvance}
         >
           <Image source={images.backButton} style={styles.backIcon} resizeMode="contain" />
           <Text style={[styles.title]}>Advance</Text>
@@ -279,10 +281,7 @@ export default class ConfirmScreen extends Component {
               marginLeft: 0
             }
           ]}
-          onPress={() => {
-            Keyboard.dismiss()
-            this.onDefaultPress()
-          }}
+          onPress={this.onDefaultPress}
         >
           <Text style={styles.standardText}>Default</Text>
         </TouchableOpacity>
@@ -334,7 +333,6 @@ export default class ConfirmScreen extends Component {
           <View>
             <InputWithAction
               ref={ref => (this.gasLimit = ref)}
-              style={styles.textInput}
               value={gasLimit}
               onFocus={() => this.setState({ isFocusGasLimit: true })}
               onBlur={() => this.setState({ isFocusGasLimit: false })}
@@ -374,7 +372,6 @@ export default class ConfirmScreen extends Component {
               value={gasGwei}
               onFocus={() => this.setState({ isFocusGasPrice: true })}
               onBlur={() => this.setState({ isFocusGasPrice: false })}
-              style={styles.textInput}
               onChangeText={(t) => {
                 advanceStore.setGasPrice(t)
                 this.validateGasPrice(advanceStore, t)
@@ -422,7 +419,7 @@ export default class ConfirmScreen extends Component {
     advanceStore.setDisableDone(false)
   }
 
-  _onSend(advanceStore) {
+  _onSend() {
     MainStore.sendTransaction.sendTx()
   }
 
@@ -434,28 +431,41 @@ export default class ConfirmScreen extends Component {
   _renderActionSheet() {
     const { gasPriceEstimate } = MainStore.appState
     return (
-      <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
+      <ActionSheetCustom
+        ref={(ref) => { this.actionSheet = ref }}
+        onCancel={this._onCancelAction}
+      >
         <View style={[styles.actionSheetItem, { borderTopLeftRadius: 5, borderTopRightRadius: 5, height: 60 }]}>
-          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>Your transaction will process faster with a higher</Text>
-          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>gas price.</Text>
+          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>
+            Your transaction will process faster with a higher
+          </Text>
+          <Text style={[styles.actionSheetText, { fontSize: 12, color: '#8A8D97' }]}>
+            gas price.
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.actionSheetItem}
           onPress={() => this._onPressAction(gasPriceEstimate.slow, 'Slow')}
         >
-          <Text style={styles.actionSheetText}>{`Slow (<30 minutes) ${gasPriceEstimate.slow} Gwei`}</Text>
+          <Text style={styles.actionSheetText}>
+            {`Slow (<30 minutes) ${gasPriceEstimate.slow} Gwei`}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionSheetItem}
           onPress={() => this._onPressAction(gasPriceEstimate.standard, 'Standard')}
         >
-          <Text style={styles.actionSheetText}>{`Standard (<5 minutes) ${gasPriceEstimate.standard} Gwei`}</Text>
+          <Text style={styles.actionSheetText}>
+            {`Standard (<5 minutes) ${gasPriceEstimate.standard} Gwei`}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionSheetItem, { borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderBottomWidth: 0 }]}
           onPress={() => this._onPressAction(gasPriceEstimate.fast, 'Fast')}
         >
-          <Text style={styles.actionSheetText}>{`Fast (<2 minutes) ${gasPriceEstimate.fast} Gwei`}</Text>
+          <Text style={styles.actionSheetText}>
+            {`Fast (<2 minutes) ${gasPriceEstimate.fast} Gwei`}
+          </Text>
         </TouchableOpacity>
       </ActionSheetCustom>
     )
@@ -491,7 +501,6 @@ export default class ConfirmScreen extends Component {
       if (isIPX) {
         // value += 10
       }
-      // this.setState({ bottom: value + 20, borderRadius: 0 })
       this.setState({ bottom: value + 20 })
       const extra = extraBottom === 0 ? -10 : -extraBottom
       if (isIPX) {
@@ -505,7 +514,6 @@ export default class ConfirmScreen extends Component {
   _keyboardDidHide(e) {
     this._runKeyboardAnim(0)
     this._runExtraHeight(0)
-    // this.setState({ bottom: 0, borderRadius: 5 })
     this.setState({ bottom: 0 })
   }
 
@@ -587,7 +595,6 @@ export default class ConfirmScreen extends Component {
                     <View style={{ flex: 1 }}>
                       {this._renderAdvanceHeader()}
                       {this._renderAdvanceContent(isFocusGasLimit, isFocusGasPrice, gasLimit, gasPrice, formatedTmpFee, gasLimitErr, gasGweiErr, advanceStore)}
-                      {/* {this._renderDoneBtn()} */}
                     </View>
                   </TouchableWithoutFeedback>
                 </ScrollView>
@@ -605,7 +612,6 @@ export default class ConfirmScreen extends Component {
                   }
                 ]}
               >
-                {/* {this._renderDoneBtn(advanceStore)} */}
               </Animated.View>
             </View>
           }
@@ -630,7 +636,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: marginTop,
     bottom: 0
-    // backgroundColor: AppStyle.backgroundColor
   },
   confirmHeader: {
     height: 30,
@@ -707,12 +712,6 @@ const styles = StyleSheet.create({
     color: AppStyle.mainColor,
     fontFamily: 'OpenSans-Semibold',
     fontSize: 18
-  },
-  textInput: {
-    borderRadius: 5,
-    backgroundColor: '#14192d',
-    alignSelf: 'stretch',
-    marginTop: 10
   },
   line: {
     height: 1,

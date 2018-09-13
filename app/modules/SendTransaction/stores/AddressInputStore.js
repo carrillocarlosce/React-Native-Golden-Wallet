@@ -11,9 +11,6 @@ export default class AddressInputStore {
   @observable.ref qrCodeModal = null
   @observable.ref confirmModal = null
 
-  // constructor({ setToAddress }) {
-  //   this.setToAddress = setToAddress
-  // }
   @observable disableSend = true
 
   @computed get selectedToken() {
@@ -45,9 +42,5 @@ export default class AddressInputStore {
       return `${this.amount} ETH`
     }
     return `$${this.amountUSD}`
-  }
-
-  onConfirm() {
-    // this.setToAddress(this.address)
   }
 }
