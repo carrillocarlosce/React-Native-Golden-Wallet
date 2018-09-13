@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
   Text
@@ -20,6 +19,7 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NavStore from '../../../AppStores/NavStore'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -64,13 +64,13 @@ export default class EditWalletNameScreen extends Component {
   }
 
   backToManageScreen() {
-    Keyboard.dismiss()
+    this.hideKeyboard()
     NavStore.pushToScreen('ManageWalletScreen')
   }
 
   handleBack = () => {
     const { navigation } = this.props
-    Keyboard.dismiss()
+    this.hideKeyboard()
     navigation.goBack()
   }
 
@@ -90,7 +90,7 @@ export default class EditWalletNameScreen extends Component {
     const { customTitle, isAllowedToSave } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={this.hideKeyboard}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}
@@ -114,7 +114,7 @@ export default class EditWalletNameScreen extends Component {
               onPress={this.handleSave}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView>
     )
   }

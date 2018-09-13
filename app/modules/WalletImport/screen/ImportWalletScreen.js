@@ -13,6 +13,9 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 
 const marginTop = LayoutUtils.getExtraTop()
+const contentPrivateKey = 'Scan or enter your Private Key to restore your wallet. Make sure to keep your Private Key safe after you are done.'
+const contentMnemonicPhrase = 'Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done.'
+const contentAddressOnly = 'Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key.'
 
 export default class ImportWalletScreen extends Component {
   static propTypes = {
@@ -66,7 +69,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
               title="Private Key"
-              subtitle="Scan or enter your Private Key to restore your wallet. Make sure to keep your Private Key safe after you are done."
+              subtitle={contentPrivateKey}
               imageCard={images.iconPrivateKey}
               onPress={this.gotoImportPrivateKey}
               imageBackground="backgroundCard"
@@ -80,7 +83,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ height: 174, marginTop: 20 }}
               title="Mnemonic Phrase"
-              subtitle="Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done."
+              subtitle={contentMnemonicPhrase}
               imageCard={images.iconMnemonic}
               onPress={this.gotoImportMnemonic}
               titleTextStyle={{ color: AppStyle.mainTextColor }}
@@ -92,7 +95,7 @@ export default class ImportWalletScreen extends Component {
             <SmallCard
               style={{ marginTop: 20, marginBottom: 20, height: 174 }}
               title="Address Only"
-              subtitle="Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key."
+              subtitle={contentAddressOnly}
               imageCard={images.iconAddress}
               onPress={this.gotoImportAddress}
               titleTextStyle={{ color: AppStyle.mainTextColor }}
