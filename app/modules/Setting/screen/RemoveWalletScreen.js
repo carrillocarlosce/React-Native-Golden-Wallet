@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
   Text
@@ -20,6 +19,7 @@ import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import NavStore from '../../../AppStores/NavStore'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -86,7 +86,7 @@ export default class RemoveWalletScreen extends Component {
     const { customTitle, isAllowedToRemove } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
             <NavigationHeader
               style={{ marginTop: marginTop + 20, width }}
@@ -110,11 +110,8 @@ export default class RemoveWalletScreen extends Component {
               text="Remove"
               onPress={this.handleRemove}
             />
-            {/* {loading &&
-              <Spinner />
-            } */}
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView>
     )
   }

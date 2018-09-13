@@ -4,10 +4,7 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Platform,
-  Keyboard,
   Animated,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Clipboard,
   Image,
@@ -26,6 +23,7 @@ import AppStyle from '../../../commons/AppStyle'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
 import NavStore from '../../../AppStores/NavStore'
+import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -42,25 +40,9 @@ export default class AddPrivateKeyScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.extraHeight = new Animated.Value(0)
     this.manageWalletStore = new ManageWalletStore()
     this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
     this.manageWalletStore.selectedWallet = this.wallet
-  }
-
-  componentWillMount() {
-    const show = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
-    const hide = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
-    this.keyboardDidShowListener = Keyboard.addListener(show, e => this._keyboardDidShow(e))
-    this.keyboardDidHideListener = Keyboard.addListener(hide, e => this._keyboardDidHide(e))
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
   }
 
   onChangePrivKey = (text) => {
@@ -71,30 +53,7 @@ export default class AddPrivateKeyScreen extends Component {
     }
   }
 
-  onOutSidePress = () => { Keyboard.dismiss() }
-
   onBack = () => { NavStore.goBack() }
-
-  _runExtraHeight(toValue) {
-    Animated.timing(
-      // Animate value over time
-      this.extraHeight, // The value to drive
-      {
-        toValue: -toValue, // Animate to final value of 1
-        duration: 250
-      }
-    ).start()
-  }
-
-  _keyboardDidShow(e) {
-    if (e.endCoordinates.screenY < 437 + marginTop + 15) {
-      this._runExtraHeight(437 + marginTop - e.endCoordinates.screenY + 15)
-    }
-  }
-
-  _keyboardDidHide(e) {
-    this._runExtraHeight(0)
-  }
 
   returnData(codeScanned) {
     this.manageWalletStore.setPrivateKey(codeScanned)
@@ -155,7 +114,7 @@ export default class AddPrivateKeyScreen extends Component {
     } = this.manageWalletStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={this.onOutSidePress}>
+        <TouchOutSideDismissKeyboard >
           <View style={styles.container}>
             <Animated.View
               style={[styles.container]}
@@ -197,7 +156,7 @@ export default class AddPrivateKeyScreen extends Component {
               onPress={this._handleConfirm}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchOutSideDismissKeyboard>
       </SafeAreaView >
     )
   }
