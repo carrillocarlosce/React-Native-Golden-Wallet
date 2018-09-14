@@ -7,6 +7,7 @@ import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import AppState from '../../../AppStores/AppState'
 import URL from '../../../api/url'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -26,8 +27,13 @@ export default class TxHashWebViewScreen extends Component {
   static defaultProps = {
     navigation: {}
   }
+
   state = {
     isShow: false
+  }
+
+  onBack = () => {
+    NavStore.goBack()
   }
 
   render() {
@@ -52,9 +58,7 @@ export default class TxHashWebViewScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.onBack}
         />
         <WebView
           style={style}

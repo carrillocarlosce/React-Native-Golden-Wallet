@@ -68,6 +68,14 @@ export default class TransactionListScreen extends Component {
     return <View />
   }
 
+  _renderItem = ({ item, index }) => (
+    <TransactionItem
+      index={index}
+      transactionItem={item}
+      action={() => { this.onPressTxItem(item) }}
+    />
+  )
+
   render() {
     const defaultToken = {
       allTransactions: [], isRefreshing: false, isLoading: true, successTransactions: []
@@ -97,13 +105,7 @@ export default class TransactionListScreen extends Component {
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={30}
-          renderItem={({ item, index }) => (
-            <TransactionItem
-              index={index}
-              transactionItem={item}
-              action={() => { this.onPressTxItem(item) }}
-            />
-          )}
+          renderItem={this._renderItem}
         />
         {successTransactions.length === 0 && isLoading && <Spinner />}
       </View>
