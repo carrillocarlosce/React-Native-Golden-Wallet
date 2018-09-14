@@ -130,6 +130,7 @@ export default class AdressInputScreen extends Component {
   clearText = () => {
     const { addressInputStore } = MainStore.sendTransaction
     addressInputStore.setAddress('')
+    addressInputStore.setCount(0)
     addressInputStore.setDisableSend(true)
   }
 
@@ -221,8 +222,43 @@ export default class AdressInputScreen extends Component {
       addressInputStore.validateAddress()
     } else {
       addressInputStore.setAddress(resChecker[0])
+      addressInputStore.checkSentTime()
       addressInputStore.setDisableSend(!resChecker)
     }
+  }
+
+  renderAlert = () => {
+    const { addressInputStore } = MainStore.sendTransaction
+    const {
+      address,
+      disableSend,
+      countSentTime
+    } = addressInputStore
+    let transactionText = 'transactions'
+    if (countSentTime == 1) {
+      transactionText = 'transaction'
+    }
+
+    if (disableSend && address !== '') {
+      return (
+        <View
+          style={styles.invalidContainer}
+        >
+          <Text style={styles.invalidText}>Invalid Address</Text>
+        </View>
+      )
+    } else if (countSentTime && countSentTime > 0) {
+      return (
+        <View
+          style={styles.invalidContainer}
+        >
+          <Text style={[styles.invalidText, { color: AppStyle.colorUp }]}>
+            {`You have ${countSentTime} successful ${transactionText} with this address`}
+          </Text>
+        </View>
+      )
+    }
+    return null
   }
 
   renderHeader = (value) => {
@@ -295,13 +331,7 @@ export default class AdressInputScreen extends Component {
                 {address === '' && this._renderPasteButton(addressInputStore)}
                 {address !== '' && this._renderClearButton()}
               </View>
-              {disableSend && address !== '' &&
-                <View
-                  style={styles.invalidContainer}
-                >
-                  <Text style={styles.invalidText}>Invalid Address</Text>
-                </View>
-              }
+              {this.renderAlert()}
               {this._renderButton()}
             </Animated.View>
             <BottomButton

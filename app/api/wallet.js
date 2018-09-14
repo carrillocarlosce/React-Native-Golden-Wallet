@@ -80,6 +80,15 @@ export const fetchToken = (address) => {
   return caller.get(url, {}, true)
 }
 
+export const getSentTime = (from, to) => {
+  const data = {
+    from,
+    to
+  }
+  const url = `${URL.Skylab.apiURL()}/transactions/count`
+  return caller.get(url, data, true)
+}
+
 export const fetchRateETHDollar = () => {
   const data = {
     fsyms: 'ETH',
