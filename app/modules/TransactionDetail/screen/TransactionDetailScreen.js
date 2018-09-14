@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Clipboard
 } from 'react-native'
+import Share from 'react-native-share'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
@@ -19,6 +20,8 @@ import NavStore from '../../../AppStores/NavStore'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import Spinner from '../../../components/elements/Spinner'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import URL from '../../../api/url'
+import AppState from '../../../AppStores/AppState'
 
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
@@ -41,6 +44,18 @@ export default class TransactionDetailScreen extends Component {
     if (notif && params) {
       NotificationStore.setCurrentNotif(null)
     }
+  }
+
+  onShareLink = () => {
+    NavStore.preventOpenUnlockScreen = true
+    const { hash } = this.selectedTransaction
+    const { networkName } = AppState
+    const shareOptions = {
+      title: 'Golden',
+      message: 'My Etherscan link',
+      url: `${URL.EtherScan.webURL(networkName)}/tx/${hash}`
+    }
+    Share.open(shareOptions).catch(() => { })
   }
 
   get selectedTransaction() {
@@ -121,7 +136,8 @@ export default class TransactionDetailScreen extends Component {
         style={{ marginTop: 15 }}
         data={{
           title: 'Transaction Hash',
-          subtitle: this.selectedTransaction.hash
+          subtitle: this.selectedTransaction.hash,
+          type: 'address'
         }}
         action={() => this._onPress(this.selectedTransaction.hash, 'Transaction Hash')}
       />
@@ -136,7 +152,8 @@ export default class TransactionDetailScreen extends Component {
         style={{ marginTop: 15 }}
         data={{
           title,
-          subtitle
+          subtitle,
+          type: 'address'
         }}
         action={() => this._onPress(subtitle, 'Address')}
       />
@@ -148,7 +165,7 @@ export default class TransactionDetailScreen extends Component {
       <TransactionDetailItem
         style={{ marginTop: 15 }}
         data={{
-          title: 'Fee',
+          title: 'Estimate Fee',
           subtitle: this.selectedTransaction.feeFormat
         }}
         action={() => { this._onPress(this.selectedTransaction.fee.toString(10), 'Fee') }}
@@ -166,6 +183,17 @@ export default class TransactionDetailScreen extends Component {
             title: selectedTransaction ? selectedTransaction.type : 'Transaction Detail',
             icon: null,
             button: images.backButton
+          }}
+          rightView={{
+            rightViewIcon: images.iconShare,
+            rightViewAction: this.onShareLink,
+            styleContainer: {
+              bottom: 10,
+              width: 40,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }
           }}
           action={this._onClose}
         />

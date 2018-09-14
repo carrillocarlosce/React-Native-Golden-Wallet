@@ -57,7 +57,8 @@ export default class NavigationHeader extends Component {
       rightViewIcon,
       rightViewAction = () => { },
       rightViewTitle,
-      styleTitle
+      styleTitle,
+      styleContainer
     } = rightView
     return (
       <View style={{}}>
@@ -93,7 +94,7 @@ export default class NavigationHeader extends Component {
             onPress={rightViewAction}
           >
             <View
-              style={styles.rightView}
+              style={[styles.rightView, styleContainer]}
             >
               <Image source={rightViewIcon} />
               {rightViewTitle &&

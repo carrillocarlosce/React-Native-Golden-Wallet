@@ -83,5 +83,7 @@ export default {
   imgEmptyBox: require('../assets/images/empty_box.png'),
   arrowBack: require('../assets/images/arrow_back.png'),
   arrowForward: require('../assets/images/arrow_forward.png'),
-  iconRefresh: require('../assets/images/icon_refresh.png')
+  iconRefresh: require('../assets/images/icon_refresh.png'),
+  iconShare: require('../assets/images/ic_share.png')
+
 }

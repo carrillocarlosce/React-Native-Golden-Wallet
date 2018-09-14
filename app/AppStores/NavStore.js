@@ -47,9 +47,10 @@ class ObservableNavStore {
   }
 
   @action lockScreen(params, shouldShowCancel = false) {
+    const additionalCondition = this.currentRouteName === 'ScanQRCodeScreen' || this.currentRouteName === 'HomeScreen' || this.currentRouteName === 'TransactionDetailScreen'
     // console.log(this.preventOpenUnlockScreen)
     if (this.currentRouteName === '' ||
-      (Platform.OS === 'android' && this.currentRouteName === 'ScanQRCodeScreen' && this.preventOpenUnlockScreen)) {
+      (Platform.OS === 'android' && additionalCondition && this.preventOpenUnlockScreen)) {
       this.preventOpenUnlockScreen = false
       return
     }
