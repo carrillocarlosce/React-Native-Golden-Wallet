@@ -9,6 +9,7 @@ import AddressBookStack from './AddressBookStack'
 import EnterNameScreen from '../modules/WalletCreate/screen/EnterNameScreen'
 import NewUpdatedAvailableScreen from '../modules/WalletList/screen/NewUpdatedAvailableScreen'
 import EnraseNotifScreen from '../modules/Unlock/screen/EnraseNotifScreen'
+import SignMessageScreen from './../modules/DAppBrowser/screen/SignMessageScreen'
 import DAppBrowserStack from './DAppBrowserStack'
 import AppStyle from '../commons/AppStyle'
 
@@ -78,6 +79,12 @@ const Router = StackNavigator(
     },
     DAppBrowserStack: {
       screen: DAppBrowserStack,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SignMessageScreen: {
+      screen: SignMessageScreen,
       navigationOptions: {
         header: null
       }

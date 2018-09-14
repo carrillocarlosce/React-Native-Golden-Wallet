@@ -55,12 +55,11 @@ export default class DAppBrowserScreen extends Component {
   }
 
   onSignPersonalMessage = ({ id, object }) => {
-    MainStore.dapp.sign(id, object.data)
+    NavStore.pushToScreen('SignMessageScreen', { id, object })
   }
 
   onHistoryStateChange = ({ navState }) => {
     MainStore.dapp.setUrl(navState.url)
-    console.warn(navState.url.toString())
   }
 
   onLoadEnd = (event) => {
