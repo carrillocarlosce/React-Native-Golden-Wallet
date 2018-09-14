@@ -157,6 +157,7 @@ export default class HomeScreen extends Component {
   }
 
   openShare = (filePath) => {
+    NavStore.preventOpenUnlockScreen = true
     RNFS.readFile(filePath, 'base64').then((file) => {
       const shareOptions = {
         title: 'Golden',

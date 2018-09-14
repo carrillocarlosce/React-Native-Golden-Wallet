@@ -47,6 +47,7 @@ export default class TransactionDetailScreen extends Component {
   }
 
   onShareLink = () => {
+    NavStore.preventOpenUnlockScreen = true
     const { hash } = this.selectedTransaction
     const { networkName } = AppState
     const shareOptions = {
