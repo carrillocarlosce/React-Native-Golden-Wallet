@@ -127,17 +127,15 @@ export default class DAppStore {
   }
 
   sign(id, tx) {
-    console.warn(JSON.stringify(tx))
     NavStore.lockScreen({
       onUnlock: (pincode) => {
         NavStore.showLoading()
         const ds = new SecureDS(pincode)
         this.getPrivateKey(ds).then((privateKey) => {
           const signedTx = signMessage(hexToString(tx), privateKey)
-          console.warn(signedTx)
           this.webview.executeCallback(id, null, signedTx)
           NavStore.hideLoading()
-          // NavStore.goBack()
+          NavStore.goBack()
         })
       }
     }, true)
