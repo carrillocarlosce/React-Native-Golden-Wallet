@@ -89,7 +89,7 @@ export default class TransactionDetailItem extends Component {
               style={{
                 height: 1,
                 backgroundColor: AppStyle.colorLines,
-                marginTop: 20
+                marginTop: 15
               }}
             />
           }

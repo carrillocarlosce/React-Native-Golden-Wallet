@@ -247,7 +247,14 @@ export default class ScanQRCodeScreen extends Component {
           action={this.goBack}
           rightView={{
             rightViewIcon: this.state.enableFlash ? images.iconFlashOff : images.iconFlashOn,
-            rightViewAction: this.rightViewAction
+            rightViewAction: this.rightViewAction,
+            styleContainer: {
+              bottom: 10,
+              width: 40,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }
           }}
         />
         {!this.state.showCamera &&
