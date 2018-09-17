@@ -103,43 +103,8 @@ export default class ManageWalletDetailScreen extends Component {
     )
   }
 
-  _renderOptionItem = ({ item, index }) => {
-    const enableNotif = this.currentStateEnableNotification
-    if (index == this.manageWalletStore.options.length - 1) {
-      return (
-        <SettingItem
-          mainText={item.mainText}
-          disable
-          type="switch"
-          enableSwitch={enableNotif}
-          onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
-        />
-      )
-    }
-    if (index == 1 && !this.shouldShowExportPrivateKey) {
-      return (
-        <SettingItem
-          style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-          mainText="Add Private Key"
-          onPress={this.handleAddPrivKeyPressed}
-          iconRight={item.iconRight}
-        />
-      )
-    }
-    return (
-      <SettingItem
-        style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-        mainText={item.mainText}
-        onPress={() => {
-          this.manageWalletStore.selectedWallet = this.wallet
-          item.onPress()
-        }}
-        iconRight={item.iconRight}
-      />
-    )
-  }
-
   _renderOptions = () => {
+    const enableNotif = this.currentStateEnableNotification
     return (
       <View>
         <FlatList
@@ -147,7 +112,40 @@ export default class ManageWalletDetailScreen extends Component {
           data={this.manageWalletStore.options}
           keyExtractor={v => v.mainText}
           scrollEnabled={false}
-          renderItem={this._renderOptionItem}
+          renderItem={({ item, index }) => {
+            if (index == this.manageWalletStore.options.length - 1) {
+              return (
+                <SettingItem
+                  mainText={item.mainText}
+                  disable
+                  type="switch"
+                  enableSwitch={enableNotif}
+                  onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
+                />
+              )
+            }
+            if (index == 1 && !this.shouldShowExportPrivateKey) {
+              return (
+                <SettingItem
+                  style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+                  mainText="Add Private Key"
+                  onPress={this.handleAddPrivKeyPressed}
+                  iconRight={item.iconRight}
+                />
+              )
+            }
+            return (
+              <SettingItem
+                style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+                mainText={item.mainText}
+                onPress={() => {
+                  this.manageWalletStore.selectedWallet = this.wallet
+                  item.onPress()
+                }}
+                iconRight={item.iconRight}
+              />
+            )
+          }}
         />
       </View>
     )
