@@ -83,7 +83,7 @@ export default class FrontCard extends Component {
     const actionButton = (
       <TouchableOpacity
         onPress={() => {
-          if (MainStore.appState.didBackup || importType !== undefined) {
+          if (MainStore.appState.didBackup || importType) {
             onCopy()
           } else {
             onAlertBackup()
