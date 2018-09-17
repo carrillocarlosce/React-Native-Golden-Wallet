@@ -17,8 +17,6 @@ function getCurrentRouteName(navigationState) {
 }
 
 class ObservableNavStore {
-  @observable.ref sendModal = null
-  @observable.ref createSuccessModal = null
   @observable.ref navigator = null
   @observable.ref popupCustom = null
   @observable.ref toastTop = null
@@ -36,19 +34,12 @@ class ObservableNavStore {
     this.loading && this.loading._hide()
   }
 
-  @action openModal() {
-    setTimeout(() => {
-      this.sendModal && this.sendModal.open()
-    }, 100)
-  }
-
   @action showToastTop(content, style, styleText) {
     this.toastTop && this.toastTop.showToast(content, style, styleText)
   }
 
   @action lockScreen(params, shouldShowCancel = false) {
     const additionalCondition = this.currentRouteName === 'ScanQRCodeScreen' || this.currentRouteName === 'HomeScreen' || this.currentRouteName === 'TransactionDetailScreen'
-    // console.log(this.preventOpenUnlockScreen)
     if (this.currentRouteName === '' ||
       (Platform.OS === 'android' && additionalCondition && this.preventOpenUnlockScreen)) {
       this.preventOpenUnlockScreen = false
@@ -65,12 +56,6 @@ class ObservableNavStore {
     }
     this.popupCustom.hide()
     this.pushToScreen('UnlockScreen', { ...params, shouldShowCancel })
-  }
-
-  @action UnlockScreen() {
-    if (this.currentRouteName === 'UnlockScreen') {
-      this.reset()
-    }
   }
 
   @action reset() {
@@ -100,14 +85,6 @@ class ObservableNavStore {
   @action onNavigationStateChange(prevState, currentState) {
     const currentScreen = getCurrentRouteName(currentState)
     this.currentRouteName = currentScreen
-  }
-
-  @action closeAllModal() {
-    this.sendModal && this.sendModal.close()
-    this.transactionInfoModal && this.sendModal.close()
-    this.popupCustom && this.popupCustom.hide()
-    this.sendingAddress = ''
-    this.createSuccessModal && this.createSuccessModal.close()
   }
 }
 

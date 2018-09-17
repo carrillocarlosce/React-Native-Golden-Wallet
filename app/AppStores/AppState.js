@@ -9,20 +9,6 @@ import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
-import NavStore from './NavStore'
-
-// const defaultAppData = {
-//   config: new Config('mainnet', Constants.INFURA_API_KEY),
-//   defaultWallet: null, // for web3 dapp
-//   selectedWallet: null, // for sending transaction
-//   selectedToken: null, // for sending transaction
-//   wallets: [],
-//   addressBooks: [],
-//   rateETHDollar: 412.0,
-//   hasPassword: false
-// }
-
-// Current app state
 
 class AppState {
   dataVersion = '1'
@@ -43,7 +29,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  // @observable enableNotification = true
+
   @observable currentCardIndex = 0
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
@@ -79,18 +65,6 @@ class AppState {
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  // @action setEnableNotification = (isEnable) => {
-  //   if (this.wallets.length == 0) {
-  //     NavStore.popupCustom.show('You have no wallet')
-  //     return
-  //   }
-  //   this.wallets.map((wallet) => {
-  //     wallet.setEnableNotification(isEnable)
-  //     return wallet.update()
-  //   })
-  //   this.save()
-  // }
-
   @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
   @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }
 
@@ -177,7 +151,6 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    // this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
     this.currentWalletIndex = data.currentWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
@@ -190,17 +163,9 @@ class AppState {
     if (this.wallets.length > 0) {
       this.setSelectedWallet(this.wallets[0])
     }
-    // if (data.defaultWallet) {
-    //   this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
-    // }
-
-    // if (data.selectedWallet) {
-    //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
-    // }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
-    // this.BgJobs.CheckBalance.doOnce(false)
   }
 
   @computed get isShowSendButton() {
@@ -232,7 +197,6 @@ class AppState {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
     this.setHasPassword(false)
     this.setBackup(false)
-    // this.setEnableNotification(true)
     this.currentWalletIndex = 0
     this.setUnpendTransactions([])
     this.addressBooks = []
@@ -245,15 +209,12 @@ class AppState {
 
   // for local storage: be careful with MobX observable
   toJSON() {
-    // const addressBooksJS = this.addressBooks.map(adr => adr.toJSON())
-
     return {
       dataVersion: this.dataVersion,
       config: this.config.toJSON(),
       defaultWallet: this.defaultWallet ? this.defaultWallet.address : null,
       selectedWallet: this.selectedWallet ? this.selectedWallet.address : null,
       selectedToken: this.selectedToken ? this.selectedToken.address : null,
-      // addressBooks: addressBooksJS,
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
