@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import NavStore from '../../../AppStores/NavStore'
@@ -45,7 +46,7 @@ export default class DAppListScreen extends Component {
           action={this.onBack}
         />
         <FlatList
-          data={dumpData}
+          data={data}
           keyExtractor={(v, i) => `${v.title}-${i}`}
           renderItem={({ item, index }) =>
             (
@@ -72,12 +73,6 @@ const styles = StyleSheet.create({
 })
 
 const dumpData = [
-  {
-    title: 'Cryptokitties',
-    subTitle: 'The largest marketplace for crypto collectibles',
-    url: 'https://www.cryptokitties.co',
-    img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
-  },
   {
     title: 'Kyber Network',
     subTitle: 'An instant decentralized cryptocurrency exchange service.',
@@ -121,3 +116,12 @@ const dumpData = [
     img: 'https://forkdelta.io/images/logo.png'
   }
 ]
+
+const data = Platform.OS === 'ios'
+  ? [{
+    title: 'Cryptokitties',
+    subTitle: 'The largest marketplace for crypto collectibles',
+    url: 'https://www.cryptokitties.co',
+    img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
+  }, ...dumpData]
+  : dumpData
