@@ -3,15 +3,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Platform
+  StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
+import AddressElement from '../../../components/elements/AddressElement'
 
 export default class TransactionDetailItem extends Component {
   static propTypes = {
+    textStyle: PropTypes.array,
+    typeAddressElement: PropTypes.bool,
     style: PropTypes.object,
     data: PropTypes.object,
     action: PropTypes.func,
@@ -19,6 +21,8 @@ export default class TransactionDetailItem extends Component {
   }
 
   static defaultProps = {
+    textStyle: [],
+    typeAddressElement: false,
     style: {},
     data: {
       title: 'Value',
@@ -37,7 +41,7 @@ export default class TransactionDetailItem extends Component {
     } = data
     let styleSubtitle = {
       fontSize: 14,
-      fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
+      fontFamily: 'OpenSans-Semibold',
       color: AppStyle.secondaryTextColor
     }
     if ((type === constant.SENT && title === 'Value') || isSelf || type === constant.PENDING) {
@@ -61,7 +65,9 @@ export default class TransactionDetailItem extends Component {
       style,
       data,
       action,
-      bottomLine
+      bottomLine,
+      typeAddressElement,
+      textStyle
     } = this.props
 
     const {
@@ -76,13 +82,18 @@ export default class TransactionDetailItem extends Component {
         <View style={[styles.container, style]}>
           <View style={{}}>
             <Text style={styles.title}>{title}</Text>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              style={[styleSubtitle]}
-            >
-              {subtitle}
-            </Text>
+            {!typeAddressElement &&
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="middle"
+                style={[styleSubtitle, textStyle]}
+              >
+                {subtitle}
+              </Text>}
+            {typeAddressElement && <AddressElement
+              title={subtitle}
+              style={{ width: 328, marginTop: 10 }}
+            />}
           </View>
           {bottomLine &&
             <View
