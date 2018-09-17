@@ -56,6 +56,9 @@ export default class BackCard extends Component {
   render() {
     const { style, onPress } = this.props
     const { address, title } = this.wallet
+    const top = address.slice(0, 4)
+    const mid = address.slice(5, address.length - 5)
+    const bot = address.slice(address.length - 4, address.length)
     const shareText = Platform.OS === 'ios'
       ? (
         <View style={styles.backgroundCopy}>
@@ -99,7 +102,11 @@ export default class BackCard extends Component {
           >
             {title}
           </Text>
-          <Text style={[styles.cardBackAddress, commonStyle.fontAddress]}>{address}</Text>
+          <Text style={[styles.cardBackAddress, commonStyle.fontAddress]}>
+            {top}
+            <Text style={{ color: AppStyle.secondaryTextColor }}>{mid}</Text>
+            {bot}
+          </Text>
           <TouchableOpacity
             onPress={this.onShare}
             style={{ marginTop: cardHeight * 0.06 }}
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
   },
   cardBackAddress: {
     fontSize: 14,
-    color: AppStyle.secondaryTextColor,
+    color: AppStyle.greyTextInput,
     marginTop: cardHeight * 0.02,
     paddingHorizontal: 18,
     textAlign: 'center'

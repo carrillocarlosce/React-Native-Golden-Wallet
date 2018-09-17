@@ -22,7 +22,7 @@ import Spinner from '../../../components/elements/Spinner'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import URL from '../../../api/url'
 import AppState from '../../../AppStores/AppState'
-
+import commonStyle from '../../../commons/commonStyles'
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
 const marginTop = LayoutUtils.getExtraTop()
@@ -139,6 +139,7 @@ export default class TransactionDetailScreen extends Component {
           subtitle: this.selectedTransaction.hash,
           type: 'address'
         }}
+        textStyle={[commonStyle.fontAddress, { marginTop: 10 }]}
         action={() => this._onPress(this.selectedTransaction.hash, 'Transaction Hash')}
       />
     )
@@ -150,6 +151,7 @@ export default class TransactionDetailScreen extends Component {
     return (
       <TransactionDetailItem
         style={{ marginTop: 15 }}
+        typeAddressElement={true}
         data={{
           title,
           subtitle,

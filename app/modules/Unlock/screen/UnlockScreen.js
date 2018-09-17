@@ -2,52 +2,24 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  Image,
   Dimensions,
   StatusBar,
   Text,
   Animated,
-  TouchableOpacity,
   BackHandler,
   Platform
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
-import images from '../../../commons/images'
 /* eslint-disable-next-line */
 import GoldenLoading from '../../../components/elements/GoldenLoading'
 import UnlockStore from '../UnlockStore'
-import NavStore from '../../../AppStores/NavStore'
 import DisableView from '../elements/DisableView'
 import AppStyle from '../../../commons/AppStyle'
+import Keyboard from '../elements/Keyboard'
 
 const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
-const dataNumber1 = [
-  { number: '1' },
-  { number: '2' },
-  { number: '3' }
-]
-const dataNumber2 = [
-  { number: '4' },
-  { number: '5' },
-  { number: '6' }
-]
-const dataNumber3 = [
-  { number: '7' },
-  { number: '8' },
-  { number: '9' }
-]
-const dataNumber4 = [
-  {
-    actions: 'cancel'
-  },
-  { number: '0' },
-  {
-    icon: images.imgDeletePin,
-    actions: 'delete'
-  }
-]
 
 @observer
 export default class UnlockScreen extends Component {
@@ -109,59 +81,6 @@ export default class UnlockScreen extends Component {
     return dots
   }
 
-  renderNumber(arrayNumber) {
-    const { onUnlock = () => { }, shouldShowCancel } = this.props.navigation.state.params
-    const nums = arrayNumber.map((num, i) => {
-      if (num.number) {
-        return (
-          <TouchableOpacity
-            onPress={() => {
-              UnlockStore.handlePress(num.number).then((res) => {
-                if (!res) return
-                onUnlock(res)
-              })
-            }}
-            key={num.number}
-          >
-            <View style={styles.numberField}>
-              <Text style={styles.numberText}>{num.number}</Text>
-            </View>
-          </TouchableOpacity>
-        )
-      }
-
-      return (
-        <TouchableOpacity
-          key={num.actions}
-          onPress={() => {
-            if (num.actions === 'delete') {
-              UnlockStore.handleDeletePin()
-            } else if (num.actions === 'cancel' && shouldShowCancel) {
-              NavStore.goBack()
-            }
-          }}
-        >
-          <View style={styles.numberField}>
-            {num.actions !== 'cancel' &&
-              <Image
-                source={num.icon}
-              />
-            }
-            {num.actions === 'cancel' &&
-              <Text style={styles.cancelText}>Cancel</Text>
-            }
-          </View>
-        </TouchableOpacity>
-      )
-    })
-
-    return (
-      <View style={styles.arrayNumber}>
-        {nums}
-      </View>
-    )
-  }
-
   renderContent = (unlockDescription, warningPincodeFail) => {
     if (this.shouldShowDisableView) {
       return <DisableView />
@@ -189,12 +108,9 @@ export default class UnlockScreen extends Component {
         >
           {this.renderDots(6)}
         </Animated.View>
-        <View style={{ marginTop: isSmallScreen ? 10 : height * 0.03 }}>
-          {this.renderNumber(dataNumber1)}
-          {this.renderNumber(dataNumber2)}
-          {this.renderNumber(dataNumber3)}
-          {this.renderNumber(dataNumber4)}
-        </View>
+        <Keyboard
+          params={this.props.navigation.state.params}
+        />
       </View>
     )
   }
@@ -235,30 +151,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: isSmallScreen ? 13 : height * 0.025
-  },
-  arrayNumber: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: height * 0.02
-  },
-  numberField: {
-    width: isSmallScreen ? 60 : 75,
-    height: isSmallScreen ? 60 : 75,
-    borderRadius: 37.5,
-    // backgroundColor: AppStyle.colorPinCode,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 13
-  },
-  numberText: {
-    fontFamily: 'OpenSans-Semibold',
-    fontSize: 36,
-    color: 'white'
-  },
-  cancelText: {
-    fontFamily: 'OpenSans-Semibold',
-    fontSize: isSmallScreen ? 18 : 20,
-    color: 'white'
   },
   warningField: {
     color: AppStyle.errorColor,

@@ -43,7 +43,7 @@ export default class DAppListScreen extends Component {
           <NavigationHeader
             style={{ marginTop: 20 + marginTop }}
             headerItem={{
-              title: 'Send Message',
+              title: 'Sign Message',
               icon: null,
               button: images.closeButton
             }}
