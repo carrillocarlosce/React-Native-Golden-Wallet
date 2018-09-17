@@ -105,6 +105,19 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>branch_app_domain</key>
+	<string>goldenwallet.app.link</string>
+	<key>branch_key</key>
+	<string>key_live_cbC45LMzrcrwzqWMlYW5NdefAzcb5NhN</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>goldenwallet</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

@@ -49,6 +49,8 @@ target 'golden' do
 
   pod 'RNViewShot', :path => '../node_modules/react-native-view-shot'
 
+  pod 'react-native-branch', :path => '../node_modules/react-native-branch'
+
 end
 
 post_install do |installer|
