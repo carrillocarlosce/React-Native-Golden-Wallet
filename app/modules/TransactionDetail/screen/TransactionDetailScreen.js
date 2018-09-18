@@ -23,6 +23,7 @@ import NotificationStore from '../../../AppStores/stores/Notification'
 import URL from '../../../api/url'
 import AppState from '../../../AppStores/AppState'
 import commonStyle from '../../../commons/commonStyles'
+
 const { width, height } = Dimensions.get('window')
 const isIPX = height === 812
 const marginTop = LayoutUtils.getExtraTop()

@@ -91,7 +91,7 @@ export default class TransactionDetailItem extends Component {
                 {subtitle}
               </Text>}
             {typeAddressElement && <AddressElement
-              title={subtitle}
+              address={subtitle}
               style={{ width: 328, marginTop: 10 }}
             />}
           </View>
