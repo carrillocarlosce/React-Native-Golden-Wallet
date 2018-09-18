@@ -31,6 +31,7 @@ import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
+import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -198,6 +199,41 @@ export default class HomeScreen extends Component {
     NavStore.pushToScreen('NewUpdatedAvailableScreen')
   }
 
+  _onLongPress = () => {
+    this.actionSheet.show()
+  }
+
+  _renderActionSheet = selectedWallet => (
+    <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
+      <TouchableOpacity onPress={() => { }}>
+        <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+          <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
+        </View>
+      </TouchableOpacity>
+      {selectedWallet && selectedWallet.didBackup && selectedWallet.importType && selectedWallet.importType !== 'Address' &&
+        <TouchableOpacity onPress={() => { }}>
+          <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+            <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
+          </View>
+        </TouchableOpacity>}
+      {selectedWallet && selectedWallet.importType && selectedWallet.importType === 'Address' &&
+        <TouchableOpacity onPress={() => { }}>
+          <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
+            <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
+          </View>
+        </TouchableOpacity>}
+      <TouchableOpacity onPress={() => { }}>
+        <View style={styles.actionButton}>
+          <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
+        </View>
+      </TouchableOpacity>
+    </ActionSheetCustom>
+  )
+
+  _onCancelAction = () => {
+    this.actionSheet.hide()
+  }
+
   _renderCard = ({ item, index }) =>
     (
       <LargeCard
@@ -214,6 +250,7 @@ export default class HomeScreen extends Component {
             ? NavStore.pushToScreen('TokenScreen', { index })
             : this._gotoCreateWallet()
         }}
+        onLongPress={this._onLongPress}
         onAddPrivateKey={() => {
           NavStore.pushToScreen('ImplementPrivateKeyScreen', { index })
         }}
@@ -255,6 +292,7 @@ export default class HomeScreen extends Component {
     })
     this.wallets = MainStore.appState.wallets.slice()
     this.cards = this.wallets
+    const { selectedWallet } = MainStore.appState
     if (this.cards.length < 10) {
       this.cards = [...this.cards, {
         balance: '0 ETH',
@@ -332,6 +370,7 @@ export default class HomeScreen extends Component {
             }}
           />
         </Animated.View>
+        {this._renderActionSheet(selectedWallet)}
       </View>
     )
   }
@@ -398,5 +437,17 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 81 + marginTop : 71,
     width,
     height: height - 71 + marginTop
+  },
+  actionButton: {
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    width: width - 40,
+    backgroundColor: AppStyle.backgroundDarkBlue
+  },
+  actionText: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Semibold'
   }
 })

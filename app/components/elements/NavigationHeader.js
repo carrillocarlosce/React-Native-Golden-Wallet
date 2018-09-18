@@ -73,8 +73,8 @@ export default class NavigationHeader extends Component {
             {icon &&
               <Image
                 style={{
-                  width: 20,
-                  height: 30,
+                  width: 40,
+                  height: 40,
                   marginLeft: 18
                 }}
                 source={icon}

@@ -47,13 +47,14 @@ export default class ImportWalletScreen extends Component {
   }
 
   render() {
+    const { type } = this.props.navigation.state.params
     return (
       <View style={styles.container}>
         <NavigationHeader
           style={{ marginTop: marginTop + 20 }}
           headerItem={{
-            title: constant.ETHEREUM,
-            icon: images.iconETH,
+            title: type === 'ethereum' ? constant.ETHEREUM : 'Bitcoin',
+            icon: type === 'ethereum' ? images.logoETH : images.logoETH,
             button: images.backButton
           }}
           action={this.goBack}

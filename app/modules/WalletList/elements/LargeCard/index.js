@@ -18,7 +18,8 @@ export default class LargeCard extends Component {
     onCopy: PropTypes.func,
     onBackup: PropTypes.func,
     onAlertBackup: PropTypes.func,
-    onShare: PropTypes.func
+    onShare: PropTypes.func,
+    onLongPress: PropTypes.func
   }
 
   static defaultProps = {
@@ -28,7 +29,8 @@ export default class LargeCard extends Component {
     onCopy: () => { },
     onBackup: () => { },
     onAlertBackup: () => { },
-    onShare: () => { }
+    onShare: () => { },
+    onLongPress: () => { }
   }
 
   constructor(props) {
