@@ -87,7 +87,7 @@ const dumpData = [
   },
   {
     title: 'OpenSea',
-    subTitle: 'The largest market for crypto collectibles. Make offers on favorite..',
+    subTitle: 'A peer-to-peer marketplace for rare digital items and crypto collectibles. Buy, sell, auction, and discover CryptoKitties, blockchain game items, and much more.',
     url: 'https://opensea.io',
     img: 'https://pbs.twimg.com/profile_images/988983240458305538/KNIW8ufg_400x400.jpg'
   },
@@ -105,13 +105,13 @@ const dumpData = [
   },
   {
     title: '0x Portal',
-    subTitle: 'Learn about 0x and discover 0x Relayers...',
+    subTitle: 'An Open Protocol For Decentralized Exchange On The Ethereum Blockchain.',
     url: 'https://www.0xproject.com/portal',
     img: 'https://www.bebit.fr/wp-content/uploads/2018/04/0x-.png'
   },
   {
     title: 'Fork Delta',
-    subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20...',
+    subTitle: 'A decentralized Ethereum Token Exchange with the most ERC20 listings of any exchange',
     url: 'https://forkdelta.app',
     img: 'https://forkdelta.io/images/logo.png'
   }
@@ -120,7 +120,7 @@ const dumpData = [
 const data = Platform.OS === 'ios'
   ? [{
     title: 'Cryptokitties',
-    subTitle: 'The largest marketplace for crypto collectibles',
+    subTitle: "The world's first blockchain games. Breed your rarest cats to create the purrfect furry friend. The future is meow!",
     url: 'https://www.cryptokitties.co',
     img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
   }, ...dumpData]
