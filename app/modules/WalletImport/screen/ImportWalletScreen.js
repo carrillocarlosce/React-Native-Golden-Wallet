@@ -14,7 +14,7 @@ import AppStyle from '../../../commons/AppStyle'
 
 const marginTop = LayoutUtils.getExtraTop()
 const contentPrivateKey = 'Scan or enter your Private Key to restore your wallet. Make sure to keep your Private Key safe after you are done.'
-const contentMnemonicPhrase = 'Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done.'
+const contentMnemonicPhrase = 'Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phrase safe after you are done.'
 const contentAddressOnly = 'Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key.'
 
 export default class ImportWalletScreen extends Component {
