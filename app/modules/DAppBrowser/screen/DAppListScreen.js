@@ -98,12 +98,6 @@ const dumpData = [
     img: 'https://pbs.twimg.com/profile_images/960520740196909056/3RBArulO_400x400.jpg'
   },
   {
-    title: 'DDEX',
-    subTitle: 'DDEX is the first decentralized exchange built on Hydro Protocol...',
-    url: 'https://ddex.io',
-    img: 'https://pbs.twimg.com/profile_images/996789325823074304/huBkgZg4.jpg'
-  },
-  {
     title: '0x Portal',
     subTitle: 'An Open Protocol For Decentralized Exchange On The Ethereum Blockchain.',
     url: 'https://www.0xproject.com/portal',
@@ -123,5 +117,10 @@ const data = Platform.OS === 'ios'
     subTitle: "The world's first blockchain games. Breed your rarest cats to create the purrfect furry friend. The future is meow!",
     url: 'https://www.cryptokitties.co',
     img: 'https://vignette.wikia.nocookie.net/cryptokitties/images/7/7f/Kitty-eth.png/revision/latest?cb=20171202061949'
+  }, {
+    title: 'DDEX',
+    subTitle: 'DDEX is the first decentralized exchange built on Hydro Protocol...',
+    url: 'https://ddex.io',
+    img: 'https://pbs.twimg.com/profile_images/996789325823074304/huBkgZg4.jpg'
   }, ...dumpData]
   : dumpData
