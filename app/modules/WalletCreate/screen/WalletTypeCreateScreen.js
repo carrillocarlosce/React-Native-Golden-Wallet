@@ -8,7 +8,6 @@ import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import SmallCard from '../../../components/elements/SmallCard'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import NavStore from '../../../AppStores/NavStore'
@@ -17,19 +16,17 @@ const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
 
 @observer
-export default class CreateWalletScreen extends Component {
+export default class WalletTypeCreateScreen extends Component {
   goBack = () => {
     NavStore.goBack()
   }
 
   gotoEnterName = () => {
-    // NavStore.pushToScreen('EnterNameScreen')
-    NavStore.pushToScreen('WalletTypeCreateScreen')
+    NavStore.pushToScreen('EnterNameScreen')
   }
 
   gotoImport = () => {
-    // NavStore.pushToScreen('ImportWalletScreen')
-    NavStore.pushToScreen('WalletTypeImportScreen')
+    NavStore.pushToScreen('EnterNameScreen')
   }
 
   render() {
@@ -38,17 +35,17 @@ export default class CreateWalletScreen extends Component {
         <NavigationHeader
           style={{ marginTop: marginTop + 20 }}
           headerItem={{
-            title: constant.CREATE_NEW_WALLET,
+            title: 'Create a New Wallet',
             icon: null,
-            button: images.closeButton
+            button: images.backButton
           }}
           action={this.goBack}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <SmallCard
-            title="Create"
-            subtitle="a new wallet"
-            imageCard={images.imgCardCreate}
+            title="Bitcoin"
+            subtitle=""
+            imageCard={images.imgCardETH}
             onPress={this.gotoEnterName}
             imageBackground="backgroundCard"
             titleTextStyle={{ color: AppStyle.mainColor }}
@@ -57,9 +54,9 @@ export default class CreateWalletScreen extends Component {
 
           <SmallCard
             style={{ marginTop: 40 }}
-            title="Import"
-            subtitle="existing wallet"
-            imageCard={images.imgCardImport}
+            title="Ethereum"
+            subtitle=""
+            imageCard={images.imgCardETH}
             onPress={this.gotoImport}
             imgBackground="backgroundCard"
             imgBackgroundStyle={{ height: 214, borderRadius: 14, width: width - 40 }}
