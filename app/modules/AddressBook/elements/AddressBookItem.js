@@ -48,8 +48,7 @@ export default class AddressBookItem extends Component {
               <Text style={styles.name}>{title}</Text>
               <AddressElement
                 address={address}
-                style={{ width: 281, marginTop: 10 }}
-                textStyle={{ fontSize: 12 }}
+                style={{ width: 244, marginTop: 10 }}
               />
             </View>
           </View>
