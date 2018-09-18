@@ -30,13 +30,15 @@ export default class BackCard extends Component {
     index: PropTypes.number.isRequired,
     style: PropTypes.object,
     onPress: PropTypes.func,
-    onShare: PropTypes.func
+    onShare: PropTypes.func,
+    onLongPress: PropTypes.func
   }
 
   static defaultProps = {
     style: {},
     onPress: () => { },
-    onShare: () => { }
+    onShare: () => { },
+    onLongPress: () => { }
   }
 
   onShare = () => {
@@ -54,7 +56,7 @@ export default class BackCard extends Component {
   }
 
   render() {
-    const { style, onPress } = this.props
+    const { style, onPress, onLongPress } = this.props
     const { address, title } = this.wallet
     const top = address.slice(0, 4)
     const mid = address.slice(5, address.length - 5)
@@ -79,6 +81,7 @@ export default class BackCard extends Component {
     return (
       <TouchableWithoutFeedback
         onPress={onPress}
+        onLongPress={onLongPress}
       >
         <View style={[styles.container, { backgroundColor: 'white', justifyContent: 'center' }, style]}>
           <Image
