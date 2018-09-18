@@ -116,7 +116,7 @@ export default class ImportViaMnemonicScreen extends Component {
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
-                  title: 'Add Mnemonic Phrases',
+                  title: 'Add Mnemonic Phrase',
                   icon: null,
                   button: images.backButton
                 }}
