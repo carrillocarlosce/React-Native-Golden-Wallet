@@ -17,7 +17,6 @@ export default class ManageWalletItem extends Component {
   static propTypes = {
     style: PropTypes.object,
     index: PropTypes.number.isRequired,
-    action: PropTypes.func,
     onPress: PropTypes.func
     // onDeletePress: PropTypes.func,
     // onEditPress: PropTypes.func
@@ -25,7 +24,6 @@ export default class ManageWalletItem extends Component {
 
   static defaultProps = {
     style: {},
-    action: () => { },
     onPress: () => { }
     // onEditPress: () => { },
     // onDeletePress: () => { }
@@ -38,7 +36,7 @@ export default class ManageWalletItem extends Component {
 
   render() {
     const {
-      style, action, index, onPress = () => { }
+      style, index, onPress = () => { }
     } = this.props
 
     const { title, address, totalBalanceETH } = this.wallet

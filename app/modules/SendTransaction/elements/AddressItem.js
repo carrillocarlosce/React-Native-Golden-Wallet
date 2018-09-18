@@ -3,8 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Platform
+  StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../../commons/AppStyle'
