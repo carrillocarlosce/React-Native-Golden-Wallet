@@ -50,7 +50,13 @@ export default class DAppListItem extends Component {
             />
             <View style={styles.viewStyle}>
               <Text style={styles.titleStyle}>{title}</Text>
-              <Text style={styles.subTitleStyle}>{subTitle}</Text>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                style={styles.subTitleStyle}
+              >
+                {subTitle}
+              </Text>
             </View>
             <Image
               style={{ alignSelf: 'center' }}
