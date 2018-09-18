@@ -84,6 +84,7 @@ export default {
   arrowBack: require('../assets/images/arrow_back.png'),
   arrowForward: require('../assets/images/arrow_forward.png'),
   iconRefresh: require('../assets/images/icon_refresh.png'),
-  iconShare: require('../assets/images/ic_share.png')
-
+  iconShare: require('../assets/images/ic_share.png'),
+  logoBTC: require('../assets/images/logo_bitcoin.png'),
+  logoETH: require('../assets/images/logo_eth.png')
 }
