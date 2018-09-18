@@ -12,7 +12,7 @@ import AppStyle from '../../../commons/AppStyle'
 import MainStore from '../../../AppStores/MainStore'
 import AddressElement from '../../../components/elements/AddressElement'
 import Helper from '../../../commons/Helper'
-import images from '../../../commons/images';
+import images from '../../../commons/images'
 
 @observer
 export default class ManageWalletItem extends Component {
