@@ -34,7 +34,8 @@ export default class FrontCard extends Component {
     onAddPrivateKey: PropTypes.func,
     onBackup: PropTypes.func,
     onAlertBackup: PropTypes.func,
-    onCopy: PropTypes.func
+    onCopy: PropTypes.func,
+    onLongPress: PropTypes.func
   }
 
   static defaultProps = {
@@ -43,7 +44,8 @@ export default class FrontCard extends Component {
     onAddPrivateKey: () => { },
     onBackup: () => { },
     onAlertBackup: () => { },
-    onCopy: () => { }
+    onCopy: () => { },
+    onLongPress: () => { }
   }
 
   get wallet() {
@@ -72,7 +74,7 @@ export default class FrontCard extends Component {
 
   render() {
     const {
-      onPress, style, onAddPrivateKey, onBackup, onAlertBackup, onCopy
+      onPress, onLongPress, style, onAddPrivateKey, onBackup, onAlertBackup, onCopy
     } = this.props
     const {
       title, importType, totalBalanceETH, totalBalanceDollar, isFetchingBalance, isHideValue
@@ -104,6 +106,7 @@ export default class FrontCard extends Component {
       <TouchableWithoutFeedback
         style={[styles.container, { backgroundColor: backgroundCard }, style]}
         onPress={onPress}
+        onLongPress={onLongPress}
       >
         <View style={[styles.container, { backgroundColor: backgroundCard }, style]}>
           <View style={styles.cardHeader}>
