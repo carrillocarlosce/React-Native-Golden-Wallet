@@ -143,14 +143,13 @@ export default class FrontCard extends Component {
             }
           </View>
           <Image
-            style={[
-              styles.imgCard,
+            style={
               {
                 marginTop: cardHeight * 0.07,
                 width: type === 'ethereum' ? cardHeight * 0.31 * 0.63 : cardHeight * 0.42 * 0.63,
                 height: type === 'ethereum' ? cardHeight * 0.31 : cardHeight * 0.35
               }
-            ]}
+            }
             source={type === 'ethereum' ? images.imgCardETH : images.imgCardBTC}
           />
           <Text style={[styles.balance]}>{balanceSecret}</Text>
@@ -203,9 +202,6 @@ const styles = StyleSheet.create({
     fontSize: isSmallScreen ? 10 : 14,
     fontFamily: 'OpenSans-Semibold',
     color: 'white'
-  },
-  imgCard: {
-    height: cardHeight * 0.31
   },
   balance: {
     fontSize: isSmallScreen ? 20 : 30,
