@@ -49,7 +49,9 @@ export default class EnterNameScreen extends Component {
   }
 
   handleCreate = () => {
-    this.createWalletStore.handleCreateWallet()
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    this.createWalletStore.handleCreateWallet(coin)
   }
 
   renderErrorField = () => {

@@ -22,6 +22,7 @@ class AppState {
   @observable hasPassword = false
   @observable didBackup = false
   currentWalletIndex = 0
+  currentBTCWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
   @observable unpendTransactions = []
   @observable gasPriceEstimate = {
@@ -99,6 +100,10 @@ class AppState {
 
   @action setCurrentWalletIndex(index) {
     this.currentWalletIndex = index
+  }
+
+  @action setCurrentBTCWalletIndex(index) {
+    this.currentBTCWalletIndex = index
   }
 
   @action async getRateETHDollar() {
@@ -218,6 +223,7 @@ class AppState {
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
+      currentBTCWalletIndex: this.currentBTCWalletIndex,
       didBackup: this.didBackup,
       gasPriceEstimate: this.gasPriceEstimate,
       enableNotification: this.enableNotification,
