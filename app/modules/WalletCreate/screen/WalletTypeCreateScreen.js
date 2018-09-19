@@ -45,7 +45,7 @@ export default class WalletTypeCreateScreen extends Component {
           <SmallCard
             title="Bitcoin"
             subtitle=""
-            imageCard={images.imgCardETH}
+            imageCard={images.imgCardBTC}
             onPress={this.gotoEnterName}
             imageBackground="backgroundCard"
             titleTextStyle={{ color: AppStyle.mainColor }}

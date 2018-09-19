@@ -15,6 +15,7 @@ export default {
   backgroundBlack: require('./../assets/images/background_black.png'),
   backgroundWhite: require('./../assets/images/background_white.png'),
   imgCardETH: require('./../assets/images/img_card_eth.png'),
+  imgCardBTC: require('./../assets/images/img_card_btc.png'),
   iconQrCode: require('./../assets/images/icon_qr_code.png'),
   iconSend: require('./../assets/images/icon_send.png'),
   iconAdd: require('./../assets/images/icon_add.png'),

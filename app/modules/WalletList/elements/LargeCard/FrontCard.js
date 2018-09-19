@@ -77,7 +77,7 @@ export default class FrontCard extends Component {
       onPress, onLongPress, style, onAddPrivateKey, onBackup, onAlertBackup, onCopy
     } = this.props
     const {
-      title, importType, totalBalanceETH, totalBalanceDollar, isFetchingBalance, isHideValue
+      title, importType, totalBalanceETH, totalBalanceDollar, isFetchingBalance, isHideValue, type
     } = this.wallet
 
     const isHide = isHideValue
@@ -143,11 +143,14 @@ export default class FrontCard extends Component {
             }
           </View>
           <Image
-            style={[
-              styles.imgCard,
-              { marginTop: cardHeight * 0.07 }
-            ]}
-            source={images.imgCardETH}
+            style={
+              {
+                marginTop: cardHeight * 0.07,
+                width: type === 'ethereum' ? cardHeight * 0.31 * 0.63 : cardHeight * 0.42 * 0.63,
+                height: type === 'ethereum' ? cardHeight * 0.31 : cardHeight * 0.35
+              }
+            }
+            source={type === 'ethereum' ? images.imgCardETH : images.imgCardBTC}
           />
           <Text style={[styles.balance]}>{balanceSecret}</Text>
           <Text style={[styles.balanceUSD, { marginBottom: 6 }]}>{balanceUSDSecret}</Text>
@@ -199,10 +202,6 @@ const styles = StyleSheet.create({
     fontSize: isSmallScreen ? 10 : 14,
     fontFamily: 'OpenSans-Semibold',
     color: 'white'
-  },
-  imgCard: {
-    height: cardHeight * 0.31,
-    width: cardHeight * 0.31 * 0.63
   },
   balance: {
     fontSize: isSmallScreen ? 20 : 30,
