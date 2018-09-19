@@ -1,5 +1,5 @@
 import { AsyncStorage } from 'react-native'
-import Wallet from '../stores/Wallet'
+import { ETHWallet, BTCWallet } from '../stores/Wallet'
 import MainStore from '../MainStore'
 
 const dataKey = 'WALLETS_STORAGE'
@@ -11,7 +11,7 @@ class WalletDataSource {
     const walletsStr = await AsyncStorage.getItem(dataKey)
     if (!walletsStr) return []
 
-    this.wallets = JSON.parse(walletsStr).map(js => new Wallet(js))
+    this.wallets = JSON.parse(walletsStr).map(js => new ETHWallet(js))
     return this.wallets
   }
 

@@ -1,10 +1,12 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../AppStores/MainStore'
-import Wallet from '../../AppStores/stores/Wallet'
+import { generateNew } from '../../AppStores/stores/Wallet'
 import NavStore from '../../AppStores/NavStore'
 import NotificationStore from '../../AppStores/stores/Notification'
 import AppStyle from '../../commons/AppStyle'
 import Router from '../../AppStores/Router'
+import Keystore from '../../../Libs/react-native-golden-keystore'
+import { chainNames } from '../../Utils/WalletAddresses'
 
 class CreateWalletStore {
   @observable customTitle = ``
@@ -15,20 +17,30 @@ class CreateWalletStore {
     this.customTitle = title
   }
 
-  @action handleCreateWallet() {
+  @action handleCreateWallet(coin = chainNames.ETH) {
     this.loading = true
     const ds = MainStore.secureStorage
-    const index = MainStore.appState.currentWalletIndex
+    let index = 0
+    let path = ''
+    if (coin === chainNames.ETH) {
+      path = Keystore.CoinType.ETH.path
+      index = MainStore.appState.currentWalletIndex
+    } else if (coin === chainNames.BTC) {
+      path = Keystore.CoinType.BTC.path
+      index = MainStore.appState.currentBTCWalletIndex
+    }
     const { title } = this
-
-    Wallet.generateNew(ds, title, index).then(async (w) => {
+    generateNew(ds, title, index, path, coin).then(async (w) => {
       this.finished = true
       NotificationStore.addWallet(title, w.address)
       NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
-
       MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()
-      MainStore.appState.setCurrentWalletIndex(index + 1)
+      if (coin === chainNames.ETH) {
+        MainStore.appState.setCurrentWalletIndex(index + 1)
+      } else if (coin === chainNames.BTC) {
+        MainStore.appState.setCurrentBTCWalletIndex(index + 1)
+      }
       MainStore.appState.save()
       MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false

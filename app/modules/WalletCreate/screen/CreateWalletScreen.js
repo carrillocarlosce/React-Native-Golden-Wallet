@@ -23,12 +23,10 @@ export default class CreateWalletScreen extends Component {
   }
 
   gotoEnterName = () => {
-    // NavStore.pushToScreen('EnterNameScreen')
     NavStore.pushToScreen('WalletTypeCreateScreen')
   }
 
   gotoImport = () => {
-    // NavStore.pushToScreen('ImportWalletScreen')
     NavStore.pushToScreen('WalletTypeImportScreen')
   }
 

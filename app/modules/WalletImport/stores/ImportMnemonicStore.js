@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
-import Wallet from '../../../AppStores/stores/Wallet'
+import { getWalletsFromMnemonic, unlockFromMnemonic } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
 import constant from '../../../commons/constant'
@@ -36,7 +36,7 @@ export default class ImportMnemonicStore {
 
   @action async generateWallets() {
     this.loading = true
-    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic, undefined, 0, 9)
+    this.mnemonicWallets = await getWalletsFromMnemonic(this.mnemonic, undefined, 0, 9)
     this.loading = false
     return this.mnemonicWallets
   }
@@ -69,7 +69,7 @@ export default class ImportMnemonicStore {
     const title = this.customTitle
 
     const ds = MainStore.secureStorage
-    const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
+    const wallet = await unlockFromMnemonic(this.mnemonic, title, index, ds)
     NotificationStore.addWallet(title, wallet.address)
     NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 

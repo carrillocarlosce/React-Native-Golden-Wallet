@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
-import Wallet from '../../../AppStores/stores/Wallet'
+import { importPrivateKey } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
 import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
@@ -26,7 +26,7 @@ export default class ImportPrivateKeyStore {
     const ds = MainStore.secureStorage
 
     try {
-      const w = Wallet.importPrivateKey(this.privateKey, this.title, ds)
+      const w = importPrivateKey(this.privateKey, this.title, ds)
       if (this.addressMap[w.address]) {
         NavStore.popupCustom.show('Existed Wallet')
         this.loading = false
