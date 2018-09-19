@@ -43,6 +43,7 @@ export default class WalletTypeImportScreen extends Component {
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <SmallCard
+            style={{ height: 214 }}
             title="Bitcoin"
             subtitle=""
             imageCard={images.imgCardBTC}

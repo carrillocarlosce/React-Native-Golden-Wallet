@@ -11,6 +11,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import NavStore from '../../../AppStores/NavStore'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -21,12 +22,16 @@ export default class WalletTypeCreateScreen extends Component {
     NavStore.goBack()
   }
 
-  gotoEnterName = () => {
-    NavStore.pushToScreen('EnterNameScreen')
+  gotoEnterNameETH = () => {
+    NavStore.pushToScreen('EnterNameScreen', {
+      coin: chainNames.ETH
+    })
   }
 
-  gotoImport = () => {
-    NavStore.pushToScreen('EnterNameScreen')
+  gotoEnterNameBTC = () => {
+    NavStore.pushToScreen('EnterNameScreen', {
+      coin: chainNames.BTC
+    })
   }
 
   render() {
@@ -42,11 +47,13 @@ export default class WalletTypeCreateScreen extends Component {
           action={this.goBack}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
           <SmallCard
+            style={{ height: 214 }}
             title="Bitcoin"
             subtitle=""
             imageCard={images.imgCardBTC}
-            onPress={this.gotoEnterName}
+            onPress={this.gotoEnterNameBTC}
             imageBackground="backgroundCard"
             titleTextStyle={{ color: AppStyle.mainColor }}
             subtitleTextStyle={{ color: AppStyle.secondaryTextColor, marginTop: 4, fontSize: 16 }}
@@ -57,7 +64,7 @@ export default class WalletTypeCreateScreen extends Component {
             title="Ethereum"
             subtitle=""
             imageCard={images.imgCardETH}
-            onPress={this.gotoImport}
+            onPress={this.gotoEnterNameETH}
             imgBackground="backgroundCard"
             imgBackgroundStyle={{ height: 214, borderRadius: 14, width: width - 40 }}
             titleTextStyle={{ color: AppStyle.mainTextColor }}
