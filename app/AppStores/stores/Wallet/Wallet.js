@@ -1,14 +1,13 @@
 import { observable, action, computed } from 'mobx'
 import chunk from 'lodash.chunk'
 import BigNumber from 'bignumber.js'
-import WalletToken from './WalletToken'
-import Keystore from '../../../Libs/react-native-golden-keystore'
-import WalletDS from '../DataSource/WalletDS'
-import api from '../../api'
-import MainStore from '../MainStore'
-import Collectible from './Collectible'
-import GetAddress, { chainNames } from '../../Utils/WalletAddresses'
-
+import WalletToken from '../WalletToken'
+import Keystore from '../../../../Libs/react-native-golden-keystore'
+import WalletDS from '../../DataSource/WalletDS'
+import GetAddress, { chainNames } from '../../../Utils/WalletAddresses'
+import api from '../../../api'
+import MainStore from '../../MainStore'
+import Collectible from '../Collectible'
 // Object Wallet:
 // title: 'I am cold wallet',
 // address: '0xabc1232432bbfe',
@@ -41,7 +40,7 @@ export default class Wallet {
   @observable title = ''
   @observable address = ''
   @observable balance = new BigNumber('0')
-  @observable type = 'ethereum'
+  type = 'ethereum'
   path = Keystore.CoinType.ETH.path
   @observable external = false
   @observable didBackup = false
@@ -62,56 +61,6 @@ export default class Wallet {
   @observable collectibles = []
 
   walletCard = null
-
-  static async generateNew(secureDS, title, index = 0, path = Keystore.CoinType.ETH.path) {
-    if (!secureDS) throw new Error('Secure data source is required')
-    const mnemonic = await secureDS.deriveMnemonic()
-    const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', path, index)
-    const { address } = GetAddress(private_key, chainNames.ETH)
-    secureDS.savePrivateKey(address, private_key)
-    return new Wallet({
-      address, balance: '0', index, title, isFetchingBalance: true
-    }, secureDS)
-  }
-
-  static importPrivateKey(privateKey, title, secureDS) {
-    const { address } = GetAddress(privateKey, chainNames.ETH)
-    secureDS.savePrivateKey(address, privateKey)
-    return new Wallet({
-      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Private Key', isFetchingBalance: true, title
-    }, secureDS)
-  }
-
-  static importAddress(address, title, secureDS) {
-    return new Wallet({
-      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Address', isFetchingBalance: true, title, canSendTransaction: false
-    }, secureDS)
-  }
-
-  static async unlockFromMnemonic(mnemonic, title, index, secureDS) {
-    const { private_key } = await Keystore.createHDKeyPair(mnemonic, '', Keystore.CoinType.ETH.path, index)
-    const { address } = GetAddress(private_key, chainNames.ETH)
-    secureDS.savePrivateKey(address, private_key)
-    return new Wallet({
-      address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title
-    }, secureDS)
-  }
-
-  static async getWalletAtAddress(address) {
-    return await WalletDS.getWalletAtAddress(address)
-  }
-
-  static async getWalletsFromMnemonic(mnemonic, path = Keystore.CoinType.ETH.path, from = 0, to = 20) {
-    const keys = await Keystore.createHDKeyPairs(mnemonic, '', path, from, to)
-    const wallets = keys.map((k) => {
-      const { address } = GetAddress(k.private_key, chainNames.ETH)
-      return new Wallet({
-        address, balance: '0', index: -1, external: true, didBackup: true, importType: 'Mnemonic', isFetchingBalance: true, title: ''
-      })
-    })
-
-    return wallets
-  }
 
   constructor(obj, secureDS) {
     this.secureDS = secureDS
