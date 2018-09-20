@@ -32,7 +32,10 @@ export default class AddressInputStore {
   }
 
   @action validateAddress() {
-    this.disableSend = !Checker.checkAddress(this.address)
+    const { selectedWallet } = MainStore.appState
+    this.disableSend = selectedWallet.type === 'ethereum'
+      ? !Checker.checkAddress(this.address)
+      : !Checker.checkAddressBTC(this.address)
     if (!this.disableSend) {
       this.checkSentTime()
     }

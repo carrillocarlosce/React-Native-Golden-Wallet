@@ -6,8 +6,19 @@ class Checker {
     const regx = /^0x[0-9A-Fa-f]{40}$/
     return address.match(regx)
   }
+  static checkAddressBTC(address) {
+    if (address.length !== 34) {
+      return false
+    }
+    const regx = /^[0-9A-Za-z]{34}$/
+    return address.match(regx)
+  }
   static checkAddressQR(address) {
     const regx = /0x[0-9A-Fa-f]{40}/
+    return address.match(regx)
+  }
+  static checkAddressQRBTC(address) {
+    const regx = /[0-9A-Za-z]{34}/
     return address.match(regx)
   }
   static checkPrivateKey(key) {
