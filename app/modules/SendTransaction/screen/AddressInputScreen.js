@@ -23,7 +23,6 @@ import ChooseAddressScreen from './ChooseAddressScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
-import NavStore from '../../../AppStores/NavStore'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
@@ -112,8 +111,7 @@ export default class AdressInputScreen extends Component {
   }
 
   handleConfirm = () => {
-    Keyboard.dismiss()
-    NavStore.pushToScreen('ConfirmScreen')
+    MainStore.sendTransaction.goToConfirm()
   }
 
   gotoScan = () => {
@@ -216,7 +214,10 @@ export default class AdressInputScreen extends Component {
 
   returnData = (address) => {
     const { addressInputStore } = MainStore.sendTransaction
-    const resChecker = Checker.checkAddressQR(address)
+    const { selectedWallet } = MainStore.appState
+    const resChecker = selectedWallet.type === 'ethereum'
+      ? Checker.checkAddressQR(address)
+      : Checker.checkAddressQRBTC(address)
     if (!resChecker || resChecker.length === 0) {
       addressInputStore.setAddress(address)
       addressInputStore.validateAddress()

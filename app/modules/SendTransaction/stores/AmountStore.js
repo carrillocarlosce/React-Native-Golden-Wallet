@@ -17,6 +17,7 @@ class AmountStore {
 
   @computed get amountCrypto() {
     const { selectedWallet, selectedToken } = MainStore.appState
+    if (selectedWallet.type === 'bitcoin') return new BigNumber(2)
     return MainStore.sendTransaction.isToken
       ? (selectedToken.balance.dividedBy(new BigNumber(`1.0e+${selectedToken.decimals}`)))
       : (selectedWallet.balance.dividedBy(new BigNumber('1.0e+18'))) // Big Num
@@ -24,12 +25,19 @@ class AmountStore {
 
   @computed get rate() {
     const { selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar // Big Num
+    const { selectedWallet } = MainStore.appState
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar
+      : new BigNumber('7000') // Big Num
   }
 
   @computed get postfix() {
     const { selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.symbol : 'ETH' // String
+    const { selectedWallet } = MainStore.appState
+
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.symbol
+        : 'ETH' : 'BTC' // String
   }
 
   @computed get walletName() {
@@ -39,7 +47,9 @@ class AmountStore {
 
   @computed get amountUSD() {
     const { selectedWallet, selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar // Big num
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar
+      : new BigNumber(14000) // Big num
   }
 
   @computed get amountTextBigNum() {
@@ -59,6 +69,7 @@ class AmountStore {
   }
 
   @computed get fee() {
+    const { selectedWallet } = MainStore.appState
     const gasLimt = MainStore.sendTransaction.isToken ? new BigNumber(150000) : new BigNumber(21000)
     const gasPriceStandard = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
     const fee = gasLimt.times(gasPriceStandard).div(new BigNumber(1e+18))
@@ -66,7 +77,9 @@ class AmountStore {
     if (MainStore.sendTransaction.isToken) {
       return 0
     }
-    return isUSD ? fee.times(this.rate) : fee
+    return selectedWallet.type === 'ehtereum'
+      ? isUSD ? fee.times(this.rate) : fee
+      : new BigNumber('400e-8')
   }
 
   @computed get amountTextString() {

@@ -1,3 +1,4 @@
+import { Keyboard } from 'react-native'
 import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
 import { NavigationActions } from 'react-navigation'
@@ -12,6 +13,7 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import AppStyle from '../../../commons/AppStyle'
 import { sendTransaction } from '../../../api/ether-json-rpc'
 import Interface from '../../../Utils/Ethererum/Contract/interface'
+import api from '../../../api'
 
 const BN = require('bn.js')
 
@@ -20,6 +22,7 @@ class SendStore {
   amountStore = null
   addressInputStore = null
   confirmStore = null
+  txIDData = []
 
   @observable transaction = {
     gasLimit: new BN('21000'),
@@ -56,6 +59,30 @@ class SendStore {
 
   @action changeIsToken(bool) {
     this.isToken = bool
+  }
+
+  @action setTxIDData(data) {
+    this.txIDData = data
+  }
+
+  @action goToConfirm() {
+    const { selectedWallet } = MainStore.appState
+    Keyboard.dismiss()
+    if (selectedWallet.type === 'ethereum') {
+      NavStore.pushToScreen('ConfirmScreen')
+    } else {
+      NavStore.showLoading()
+      api.getTxID('3Jd4CY5mi33VM9vDB1qJEJ7QJ8NGhpUuf3').then((res) => {
+        if (res && res.data && res.data.length > 0) {
+          console.log(res.data)
+          MainStore.sendTransaction.setTxIDData(res.data)
+          NavStore.hideLoading()
+          NavStore.pushToScreen('ConfirmScreen')
+        } else {
+          NavStore.hideLoading()
+        }
+      })
+    }
   }
 
   sendTx() {
