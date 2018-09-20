@@ -72,9 +72,8 @@ class SendStore {
       NavStore.pushToScreen('ConfirmScreen')
     } else {
       NavStore.showLoading()
-      api.getTxID('3Jd4CY5mi33VM9vDB1qJEJ7QJ8NGhpUuf3').then((res) => {
+      api.getTxID(selectedWallet.address).then((res) => {
         if (res && res.data && res.data.length > 0) {
-          console.log(res.data)
           MainStore.sendTransaction.setTxIDData(res.data)
           NavStore.hideLoading()
           NavStore.pushToScreen('ConfirmScreen')
