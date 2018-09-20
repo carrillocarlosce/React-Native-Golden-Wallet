@@ -59,3 +59,7 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
       return true
     })
 }
+
+export const getTxID = (address) => {
+  return caller.get(`${URL.BlockExplorer.apiURL()}/api/addr/${address}/utxo`)
+}
