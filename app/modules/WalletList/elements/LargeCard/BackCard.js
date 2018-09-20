@@ -59,7 +59,7 @@ export default class BackCard extends Component {
     const { style, onPress, onLongPress } = this.props
     const { address, title } = this.wallet
     const top = address.slice(0, 4)
-    const mid = address.slice(5, address.length - 5)
+    const mid = address.slice(4, address.length - 5)
     const bot = address.slice(address.length - 4, address.length)
     const shareText = Platform.OS === 'ios'
       ? (

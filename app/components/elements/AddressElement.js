@@ -24,7 +24,7 @@ export default class AddressElement extends PureComponent {
   render() {
     const { address, style, textStyle } = this.props
     const top = address.slice(0, 4)
-    const mid = address.slice(5, address.length - 5)
+    const mid = address.slice(4, address.length - 5)
     const bot = address.slice(address.length - 4, address.length)
     return (
       <View style={[styles.container, style]}>
