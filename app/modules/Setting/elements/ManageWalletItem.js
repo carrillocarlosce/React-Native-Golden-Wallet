@@ -68,7 +68,7 @@ export default class ManageWalletItem extends Component {
             </View>
           </View>
           <Text style={styles.balance}>
-            {`${Helper.formatETH(totalBalanceETH)} ETH`}
+            {`${Helper.formatETH(totalBalanceETH)}`}
           </Text>
         </View>
       </TouchableWithoutFeedback >
