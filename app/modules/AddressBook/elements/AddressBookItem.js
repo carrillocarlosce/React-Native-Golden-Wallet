@@ -32,13 +32,13 @@ export default class AddressBookItem extends Component {
 
   render() {
     const {
-      style, action
+      style, action, index
     } = this.props
     const { title, address, type } = this.addressBook
 
     return (
       <TouchableWithoutFeedback>
-        <View style={[styles.container, style]}>
+        <View style={[styles.container, { marginTop: index === 0 ? 15 : 0 }, style]}>
           <View style={{ flexDirection: 'row' }}>
             <Image
               style={{ marginRight: 10 }}
@@ -62,7 +62,7 @@ export default class AddressBookItem extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: AppStyle.backgroundTextInput,
-    paddingHorizontal: 20,
+    paddingHorizontal: 14,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: AppStyle.borderLinesSetting,
