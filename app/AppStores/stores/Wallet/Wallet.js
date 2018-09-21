@@ -115,8 +115,7 @@ export default class Wallet {
     this.canSendTransaction = true
     this.importType = 'Private Key'
     const { address } = GetAddress(privateKey, coin)
-    if ((coin === chainNames.BTC && address !== this.address) ||
-      (coin === chainNames.ETH && address.toLowerCase() !== this.address.toLowerCase())) {
+    if (coin === chainNames.ETH && address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
     secureDS.savePrivateKey(this.address, privateKey)

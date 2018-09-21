@@ -6,6 +6,7 @@ import api from '../../../api'
 import MainStore from '../../MainStore'
 import WalletTokenBTC from '../WalletToken.btc'
 import TransactionBTC from '../Transaction.btc'
+import GetAddress, { chainNames } from '../../../Utils/WalletAddresses'
 
 const defaultObjWallet = {
   title: '',
@@ -66,12 +67,22 @@ export default class WalletBTC extends Wallet {
         this.totalBalance = this.balance
       }
       this.tokens = [this.getTokenBTC()]
-      // this.transactions = res.data.txs.map(tx => new )
+      this.tokens[0].transactions = res.data.txs.map(tx => new TransactionBTC(tx, this.tokens[0], 1))
       this.update()
       this.offLoading()
     } catch (e) {
       this.offLoading()
     }
+  }
+
+  @action async implementPrivateKey(secureDS, privateKey, coin = chainNames.BTC) {
+    this.canSendTransaction = true
+    this.importType = 'Private Key'
+    const { address } = GetAddress(privateKey, coin)
+    if (coin === chainNames.BTC && address !== this.address) {
+      throw new Error('Invalid Private Key')
+    }
+    secureDS.savePrivateKey(this.address, privateKey)
   }
 
   @computed get totalBalanceDollar() {

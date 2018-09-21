@@ -203,6 +203,16 @@ export default class HomeScreen extends Component {
     this.actionSheet.show()
   }
 
+  _onItemPress = (index) => {
+    const { selectedWallet } = MainStore.appState
+    if (selectedWallet.type === 'ethereum') {
+      NavStore.pushToScreen('TokenScreen', { index })
+    } else {
+      MainStore.appState.setselectedToken(selectedWallet.tokens[0])
+      NavStore.pushToScreen('TransactionListScreen')
+    }
+  }
+
   _renderActionSheet = selectedWallet => (
     <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
       <TouchableOpacity onPress={() => { }}>
@@ -247,7 +257,7 @@ export default class HomeScreen extends Component {
         style={{ margin: 5, marginTop: 20 }}
         onPress={() => {
           index !== this.wallets.length
-            ? NavStore.pushToScreen('TokenScreen', { index })
+            ? this._onItemPress(index)
             : this._gotoCreateWallet()
         }}
         onLongPress={this._onLongPress}
@@ -264,6 +274,10 @@ export default class HomeScreen extends Component {
   _goToDapp = () => {
     if (!MainStore.appState.selectedWallet) {
       NavStore.popupCustom.show('You have no wallet')
+      return
+    }
+    if (MainStore.appState.selectedWallet.type !== 'ethereum') {
+      NavStore.popupCustom.show('This is not ETH Wallet')
       return
     }
     if (!MainStore.appState.selectedWallet.canSendTransaction) {
