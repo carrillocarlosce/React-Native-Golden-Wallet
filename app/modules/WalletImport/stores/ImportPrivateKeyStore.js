@@ -5,6 +5,7 @@ import NavStore from '../../../AppStores/NavStore'
 import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 export default class ImportPrivateKeyStore {
   @observable customTitle = ``
@@ -21,12 +22,12 @@ export default class ImportPrivateKeyStore {
     return this.customTitle
   }
 
-  @action async create() {
+  @action async create(coin = chainNames.ETH) {
     this.loading = true
     const ds = MainStore.secureStorage
 
     try {
-      const w = importPrivateKey(this.privateKey, this.title, ds)
+      const w = importPrivateKey(this.privateKey, this.title, ds, coin)
       if (this.addressMap[w.address]) {
         NavStore.popupCustom.show('Existed Wallet')
         this.loading = false

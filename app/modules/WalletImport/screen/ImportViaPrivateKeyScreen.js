@@ -105,7 +105,9 @@ export default class ImportViaPrivateKeyScreen extends Component {
       NavStore.popupCustom.show('Invalid private key')
       return
     }
-    this.importPrivateKeyStore.create()
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    this.importPrivateKeyStore.create(coin)
   }
 
   gotoScan = () => {

@@ -92,7 +92,7 @@ export default class ScanQRCodeScreen extends Component {
       QRCode.decode(url, (error, result) => {
         if (error === null) {
           HapticHandler.NotificationSuccess()
-          this.props.navigation.state.params.returnData(result.toLowerCase())
+          this.props.navigation.state.params.returnData(result)
           this.setState({ showCamera: false })
           this.props.navigation.goBack()
         } else {
@@ -216,7 +216,7 @@ export default class ScanQRCodeScreen extends Component {
     if (this.state.showCamera) {
       HapticHandler.NotificationSuccess()
       this.props.navigation.goBack()
-      this.props.navigation.state.params.returnData(e.data.toLowerCase())
+      this.props.navigation.state.params.returnData(e.data)
       this.setState({ showCamera: false })
     }
   }

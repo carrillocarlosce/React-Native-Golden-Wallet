@@ -27,5 +27,8 @@ export default {
   },
   BlockExplorer: {
     apiURL: () => `https://blockexplorer.com`
+  },
+  BlockChainInfo: {
+    apiURL: () => `https://blockchain.info`
   }
 }

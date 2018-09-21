@@ -11,6 +11,7 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import NavStore from '../../../AppStores/NavStore'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -21,12 +22,16 @@ export default class WalletTypeImportScreen extends Component {
     NavStore.goBack()
   }
 
-  gotoEnterName = () => {
-    NavStore.pushToScreen('ImportWalletScreen', { type: 'bitcoin' })
+  gotoEnterNameETH = () => {
+    NavStore.pushToScreen('ImportWalletScreen', {
+      coin: chainNames.ETH
+    })
   }
 
-  gotoImport = () => {
-    NavStore.pushToScreen('ImportWalletScreen', { type: 'ethereum' })
+  gotoEnterNameBTC = () => {
+    NavStore.pushToScreen('ImportWalletScreen', {
+      coin: chainNames.BTC
+    })
   }
 
   render() {
@@ -47,7 +52,7 @@ export default class WalletTypeImportScreen extends Component {
             title="Bitcoin"
             subtitle=""
             imageCard={images.imgCardBTC}
-            onPress={this.gotoEnterName}
+            onPress={this.gotoEnterNameBTC}
             imageBackground="backgroundCard"
             titleTextStyle={{ color: AppStyle.mainColor }}
             subtitleTextStyle={{ color: AppStyle.secondaryTextColor, marginTop: 4, fontSize: 16 }}
@@ -58,7 +63,7 @@ export default class WalletTypeImportScreen extends Component {
             title="Ethereum"
             subtitle=""
             imageCard={images.imgCardETH}
-            onPress={this.gotoImport}
+            onPress={this.gotoEnterNameETH}
             imgBackground="backgroundCard"
             imgBackgroundStyle={{ height: 214, borderRadius: 14, width: width - 40 }}
             titleTextStyle={{ color: AppStyle.mainTextColor }}
