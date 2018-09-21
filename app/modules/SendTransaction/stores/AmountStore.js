@@ -77,7 +77,7 @@ class AmountStore {
     if (MainStore.sendTransaction.isToken) {
       return 0
     }
-    return selectedWallet.type === 'ehtereum'
+    return selectedWallet.type === 'ethereum'
       ? isUSD ? fee.times(this.rate) : fee
       : new BigNumber('400e-8')
   }
