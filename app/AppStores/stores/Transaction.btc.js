@@ -28,13 +28,12 @@ export default class TransactionBTC extends Transaction {
   }
 
   get feeFormat() {
-    const feeStr = this.fee.toFixed(4)
     const usd = this.fee.times(MainStore.appState.rateBTCDollar).toFixed(2)
     let usdStr = `= $${usd}`
     if (usd === '0') {
       usdStr = ''
     }
-    return `${feeStr} BTC ${usdStr}`
+    return `${this.gasUsed} Satoshi ${usdStr}`
   }
 
   get balance() {
