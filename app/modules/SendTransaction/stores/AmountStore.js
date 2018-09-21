@@ -17,7 +17,7 @@ class AmountStore {
 
   @computed get amountCrypto() {
     const { selectedWallet, selectedToken } = MainStore.appState
-    if (selectedWallet.type === 'bitcoin') return new BigNumber(2)
+    if (selectedWallet.type === 'bitcoin') return (selectedWallet.balance.dividedBy(new BigNumber('1.0e+8')))
     return MainStore.sendTransaction.isToken
       ? (selectedToken.balance.dividedBy(new BigNumber(`1.0e+${selectedToken.decimals}`)))
       : (selectedWallet.balance.dividedBy(new BigNumber('1.0e+18'))) // Big Num
@@ -49,7 +49,7 @@ class AmountStore {
     const { selectedWallet, selectedToken } = MainStore.appState
     return selectedWallet.type === 'ethereum'
       ? MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar
-      : new BigNumber(14000) // Big num
+      : selectedWallet.totalBalanceDollar // Big num
   }
 
   @computed get amountTextBigNum() {
