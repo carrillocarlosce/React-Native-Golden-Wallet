@@ -61,5 +61,12 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
 }
 
 export const getTxID = (address) => {
-  return caller.get(`${URL.BlockExplorer.apiURL()}/api/addr/${address}/utxo`)
+  return caller.get(`${URL.BlockChainInfo.apiURL()}/unspent?active=${address}`)
+}
+
+export const sendTxBTC = (rawTx) => {
+  const data = {
+    tx: rawTx
+  }
+  return caller.post(`${URL.BlockChainInfo.apiURL()}/pushtx`, data, true)
 }
