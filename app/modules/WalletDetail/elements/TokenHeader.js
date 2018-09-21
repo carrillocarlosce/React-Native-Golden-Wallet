@@ -15,6 +15,14 @@ export default class TokenHeader extends Component {
     return MainStore.appState.selectedWallet
   }
 
+  get symbol() {
+    const { type } = this.wallet
+    if (type === 'ethereum') {
+      return 'ETH'
+    }
+    return 'BTC'
+  }
+
   render() {
     const { totalBalanceETH, totalBalanceDollar } = this.wallet
     return (
@@ -23,7 +31,7 @@ export default class TokenHeader extends Component {
           data={{
             cardItem: this.wallet,
             titleText: 'Estimated Value',
-            mainSubTitleText: `${Helper.formatETH(totalBalanceETH.toString(10))} ETH`,
+            mainSubTitleText: `${Helper.formatETH(totalBalanceETH.toString(10))} ${this.symbol}`,
             viceSubTitleText: `$${Helper.formatUSD(totalBalanceDollar.toString(10))}`
           }}
           style={{

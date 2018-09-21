@@ -11,8 +11,8 @@ export default class AddressBook {
   @observable title = ''
   @observable address = ''
 
-  static createNew(title, address) {
-    return new AddressBook({ title, address })
+  static createNew(title, address, type = 'ethereum') {
+    return new AddressBook({ title, address, type })
   }
 
   constructor(obj) {

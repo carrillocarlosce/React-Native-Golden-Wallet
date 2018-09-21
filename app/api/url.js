@@ -29,6 +29,7 @@ export default {
     apiURL: () => `https://blockexplorer.com`
   },
   BlockChainInfo: {
-    apiURL: () => `https://blockchain.info`
+    apiURL: () => `https://blockchain.info`,
+    webURL: () => `https://www.blockchain.com`
   }
 }

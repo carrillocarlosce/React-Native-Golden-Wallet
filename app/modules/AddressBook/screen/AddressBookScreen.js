@@ -145,7 +145,7 @@ export default class AddressBookScreen extends Component {
     const { addressBooks } = this
     return (
       <FlatList
-        style={{ flex: 1, marginTop: 30 }}
+        style={{ flex: 1 }}
         data={addressBooks}
         ListEmptyComponent={this._renderNoAddressView()}
         showsHorizontalScrollIndicator={false}

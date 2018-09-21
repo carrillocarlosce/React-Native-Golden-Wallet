@@ -49,12 +49,10 @@ export default class TransactionDetailScreen extends Component {
 
   onShareLink = () => {
     NavStore.preventOpenUnlockScreen = true
-    const { hash } = this.selectedTransaction
-    const { networkName } = AppState
     const shareOptions = {
       title: 'Golden',
       message: 'My Etherscan link',
-      url: `${URL.EtherScan.webURL(networkName)}/tx/${hash}`
+      url: this.checkURL
     }
     Share.open(shareOptions).catch(() => { })
   }
@@ -78,17 +76,45 @@ export default class TransactionDetailScreen extends Component {
     return '+'
   }
 
+  get symbol() {
+    if (this.selectedTransaction.tokenSymbol) {
+      return this.selectedTransaction.tokenSymbol
+    }
+    return this.selectedToken.symbol
+  }
+
   get value() {
     const { operator } = this
-    let symbol = ''
+    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${this.symbol}`
+  }
 
-    if (this.selectedTransaction.tokenSymbol) {
-      symbol = this.selectedTransaction.tokenSymbol
-    } else {
-      symbol = this.selectedToken.symbol
+  get checkURL() {
+    const { hash } = this.selectedTransaction
+    const { networkName } = AppState
+    if (this.symbol === 'BTC') {
+      return `${URL.BlockChainInfo.webURL()}/en/btc/tx/${hash}`
     }
+    return `${URL.EtherScan.webURL(networkName)}/tx/${hash}`
+  }
 
-    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${symbol}`
+  get textViewDetail() {
+    if (this.symbol === 'BTC') {
+      return constant.TEXT_VIEW_DETAIL_BTC
+    }
+    return constant.TEXT_VIEW_DETAIL_ETH
+  }
+
+  get jsCode() {
+    if (this.symbol === 'BTC') {
+      return `
+        document.getElementsByTagName('NAV')[0].style.display = 'none';
+        document.querySelector('.container').style.paddingTop = '0px';
+      `
+    }
+    return `
+      document.querySelector('.header').style.display = 'none';
+      document.querySelector('.tibrr-cookie-consent-container').style.display = 'none';
+    `
   }
 
   _onPress = (message, title) => {
@@ -99,7 +125,7 @@ export default class TransactionDetailScreen extends Component {
   _onClose = () => NavStore.goBack()
 
   _onCheck = () => {
-    NavStore.pushToScreen('TxHashWebViewScreen', { txHash: this.selectedTransaction.hash })
+    NavStore.pushToScreen('TxHashWebViewScreen', { url: this.checkURL, jsCode: this.jsCode })
   }
 
   renderValue = () => {
@@ -212,7 +238,7 @@ export default class TransactionDetailScreen extends Component {
                 style={styles.imageCheck}
                 onPress={this._onCheck}
               >
-                <Text style={styles.check}>{constant.TEXT_VIEW_DETAIL}</Text>
+                <Text style={styles.check}>{this.textViewDetail}</Text>
               </TouchableOpacity>
             </View>
           </View>
