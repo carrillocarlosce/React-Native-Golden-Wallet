@@ -5,10 +5,11 @@ import Helper from '../../../commons/Helper'
 
 export default class ConfirmStore {
   @observable value = new BigNumber('0')
-  @observable gasLimit = new BigNumber('21000')
-  @observable gasPrice = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
+  @observable gasLimit = new BigNumber('0')
+  @observable gasPrice = new BigNumber('0')
   @observable adjust = 'Standard'
   @observable.ref inputValue = null
+  @observable _fee = 0;
 
   @action setAdjust(value) {
     this.adjust = value
@@ -32,15 +33,11 @@ export default class ConfirmStore {
     this.gasPrice = gasP
   }
 
+  @action setFee(fee) {
+    this._fee = fee
+  }
+
   @action estimateGas() {
-    const { type } = MainStore.appState.selectedWallet
-    if (type === 'ethereum') {
-      if (MainStore.sendTransaction.isToken) {
-        this.gasLimit = new BigNumber(150000)
-      } else {
-        this.gasLimit = new BigNumber(21000)
-      }
-    }
   }
 
   @computed get rate() {
@@ -52,7 +49,7 @@ export default class ConfirmStore {
   }
 
   @computed get title() {
-    return MainStore.sendTransaction.isToken ? MainStore.appState.selectedToken.symbol : 'ETH'
+    return 'BTC'
   }
 
   @computed get fee() {
@@ -60,15 +57,7 @@ export default class ConfirmStore {
   }
 
   @computed get formatedFee() {
-    const { type } = MainStore.appState.selectedWallet
-    if (type === 'ethereum') {
-      const fee = this.gasLimit.times(this.gasPrice).div(new BigNumber(1e+18))
-      const usd = Helper.formatUSD(fee.times(this.rate)) !== '0'
-        ? `($${Helper.formatUSD(fee.times(this.rate))})`
-        : ''
-      return `${Helper.formatETH(fee, false, 6)} ETH ${usd}`
-    }
-    return 'fee BTC'
+    return `${this._fee} Satoshis`
   }
 
   @computed get formatedAmount() {
@@ -89,37 +78,5 @@ export default class ConfirmStore {
     MainStore.sendTransaction.advanceStore.setGasPrice(formatedGasPrice)
   }
   @action validateAmount() {
-    const { type } = MainStore.appState.selectedWallet
-
-    type === 'ethereum' ? this.validateAmountETH() : this.validateAmountBTC()
-  }
-
-  @action validateAmountETH() {
-    const { selectedWallet } = MainStore.appState
-    const { balance } = selectedWallet
-    const { gasLimit, gasPrice } = this
-
-    const balanceBN = balance.div(new BigNumber(1e+9))
-    const gasPriceBN = gasPrice
-    const gasLimitBN = gasLimit
-
-    const gasBN = gasLimitBN.times(gasPriceBN).div(new BigNumber('1000000000'))
-    let maxBN = balanceBN.minus(gasBN)
-    maxBN = maxBN.div(1e+9)
-    if (this.title !== 'ETH') return maxBN.gte(new BigNumber('0')) // token
-
-    if (maxBN.lt(new BigNumber('0'))) {
-      this.updateValue(new BigNumber('0'))
-      return false
-    }
-    if (this.inputValue.gt(maxBN)) {
-      this.updateValue(maxBN)
-    } else {
-      this.updateValue(this.inputValue)
-    }
-    return true
-  }
-
-  @action validateAmountBTC() {
   }
 }

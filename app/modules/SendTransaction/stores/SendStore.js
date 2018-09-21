@@ -81,6 +81,7 @@ class SendStore {
         if (res && res.data && res.data.unspent_outputs && res.data.unspent_outputs.length > 0) {
           console.log(res.data)
           MainStore.sendTransaction.setTxIDData(res.data.unspent_outputs)
+          MainStore.sendTransaction.confirmStore.setFee(this.estimateFeeBTC(res.data.unspent_outputs.length, 2))
           NavStore.hideLoading()
           NavStore.pushToScreen('ConfirmScreen')
         } else {
@@ -142,7 +143,7 @@ class SendStore {
   }
 
   sendBTC(ds) {
-    let amount = MainStore.sendTransaction.confirmStore.value
+    let amount = MainStore.sendTransaction.confirmStore.value.times(new BigNumber(1e+8)).toNumber()
     const toAddress = MainStore.sendTransaction.addressInputStore.address
     let balance = 0
     for (let s = 0; s < this.txIDData.length; s++) {
