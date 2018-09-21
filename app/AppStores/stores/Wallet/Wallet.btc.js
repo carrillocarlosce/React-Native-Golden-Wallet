@@ -4,14 +4,15 @@ import Wallet from './Wallet'
 import Keystore from '../../../../Libs/react-native-golden-keystore'
 import api from '../../../api'
 import MainStore from '../../MainStore'
-import WalletToken from '../WalletToken'
+import WalletTokenBTC from '../WalletToken.btc'
+import TransactionBTC from '../Transaction.btc'
 
 const defaultObjWallet = {
   title: '',
   address: '',
   balance: '0',
-  type: 'ethereum',
-  path: Keystore.CoinType.ETH.path,
+  type: 'bitcoin',
+  path: Keystore.CoinType.BTC.path,
   external: false,
   didBackup: true,
   index: 0,
@@ -65,6 +66,7 @@ export default class WalletBTC extends Wallet {
         this.totalBalance = this.balance
       }
       this.tokens = [this.getTokenBTC()]
+      // this.transactions = res.data.txs.map(tx => new )
       this.update()
       this.offLoading()
     } catch (e) {
@@ -91,6 +93,6 @@ export default class WalletBTC extends Wallet {
       balance: this.balance.toString(10)
     }
 
-    return new WalletToken(tokenETH, this.address)
+    return new WalletTokenBTC(tokenETH, this.address)
   }
 }
