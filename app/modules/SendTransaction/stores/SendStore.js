@@ -79,13 +79,11 @@ class SendStore {
       NavStore.showLoading()
       api.getTxID(MainStore.sendTransaction.addressInputStore.address).then((res) => {
         if (res && res.data && res.data.unspent_outputs && res.data.unspent_outputs.length > 0) {
-          console.log(res.data)
           MainStore.sendTransaction.setTxIDData(res.data.unspent_outputs)
           MainStore.sendTransaction.confirmStore.setFee(this.estimateFeeBTC(res.data.unspent_outputs.length, 2))
           NavStore.hideLoading()
           NavStore.pushToScreen('ConfirmScreen')
         } else {
-          console.log(res.data)
           NavStore.hideLoading()
         }
       })

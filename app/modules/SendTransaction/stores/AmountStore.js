@@ -28,7 +28,7 @@ class AmountStore {
     const { selectedWallet } = MainStore.appState
     return selectedWallet.type === 'ethereum'
       ? MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar
-      : new BigNumber('7000') // Big Num
+      : MainStore.appState.rateBTCDollar // Big Num
   }
 
   @computed get postfix() {

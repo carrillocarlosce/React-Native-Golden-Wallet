@@ -57,7 +57,7 @@ export default class ConfirmStore {
   }
 
   @computed get formatedFee() {
-    return `${this._fee} Satoshis`
+    return `${this._fee} Satoshi`
   }
 
   @computed get formatedAmount() {
