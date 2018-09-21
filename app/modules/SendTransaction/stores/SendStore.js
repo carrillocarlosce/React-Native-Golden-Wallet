@@ -1,10 +1,14 @@
 import { Keyboard } from 'react-native'
 import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
+import bitcoin from 'react-native-bitcoinjs-lib'
+import bigi from 'bigi'
 import { NavigationActions } from 'react-navigation'
+import KeyStore from '../../../../Libs/react-native-golden-keystore'
 import AmountStore from './AmountStore'
 import AddressInputStore from './AddressInputStore'
 import ConfirmStore from './ConfirmStore'
+import ConfirmStoreBTC from './ConfirmStore.btc'
 import AdvanceStore from './AdvanceStore'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
@@ -30,9 +34,10 @@ class SendStore {
   }
 
   constructor() {
+    const { type } = MainStore.appState.selectedWallet
     this.amountStore = new AmountStore()
     this.addressInputStore = new AddressInputStore()
-    this.confirmStore = new ConfirmStore()
+    this.confirmStore = type === 'ethereum' ? new ConfirmStore() : new ConfirmStoreBTC()
     this.advanceStore = new AdvanceStore()
   }
 
@@ -72,13 +77,15 @@ class SendStore {
       NavStore.pushToScreen('ConfirmScreen')
     } else {
       NavStore.showLoading()
-      api.getTxID('3Jd4CY5mi33VM9vDB1qJEJ7QJ8NGhpUuf3').then((res) => {
-        if (res && res.data && res.data.length > 0) {
+      api.getTxID(MainStore.sendTransaction.addressInputStore.address).then((res) => {
+        if (res && res.data && res.data.unspent_outputs && res.data.unspent_outputs.length > 0) {
           console.log(res.data)
-          MainStore.sendTransaction.setTxIDData(res.data)
+          MainStore.sendTransaction.setTxIDData(res.data.unspent_outputs)
+          MainStore.sendTransaction.confirmStore.setFee(this.estimateFeeBTC(res.data.unspent_outputs.length, 2))
           NavStore.hideLoading()
           NavStore.pushToScreen('ConfirmScreen')
         } else {
+          console.log(res.data)
           NavStore.hideLoading()
         }
       })
@@ -86,13 +93,6 @@ class SendStore {
   }
 
   sendTx() {
-    const transaction = {
-      value: this.confirmStore.value,
-      to: this.address,
-      gasLimit: `0x${this.confirmStore.gasLimit.toString(16)}`,
-      gasPrice: `0x${this.confirmStore.gasPrice.toString(16)}`
-    }
-
     if (MainStore.appState.internetConnection === 'offline') {
       NavStore.popupCustom.show('No internet connection')
       return
@@ -101,6 +101,17 @@ class SendStore {
       onUnlock: (pincode) => {
         NavStore.showLoading()
         const ds = new SecureDS(pincode)
+        if (MainStore.appState.selectedWallet.type === 'bitcoin') {
+          return this.sendBTC(ds)
+            .then(res => this._onSendSuccess(res))
+            .catch(err => this._onSendFail(err))
+        }
+        const transaction = {
+          value: this.confirmStore.value,
+          to: this.address,
+          gasLimit: `0x${this.confirmStore.gasLimit.toString(16)}`,
+          gasPrice: `0x${this.confirmStore.gasPrice.toString(16)}`
+        }
         if (!this.isToken) {
           return this.sendETH(transaction, ds)
             .then(res => this._onSendSuccess(res))
@@ -125,6 +136,61 @@ class SendStore {
   _onSendFail = (err) => {
     NavStore.hideLoading()
     NavStore.popupCustom.show(err.message)
+  }
+
+  estimateFeeBTC(m, n) {
+    return 93 * m + 102 * n + 200
+  }
+
+  sendBTC(ds) {
+    let amount = MainStore.sendTransaction.confirmStore.value.times(new BigNumber(1e+8)).toNumber()
+    const toAddress = MainStore.sendTransaction.addressInputStore.address
+    let balance = 0
+    for (let s = 0; s < this.txIDData.length; s++) {
+      balance += this.txIDData[s].value
+    }
+
+    const fee = this.estimateFeeBTC(this.txIDData.length, 2)
+
+    return new Promise((resolve, reject) => {
+      try {
+        this.getPrivateKey(ds).then((privateKey) => {
+          const { myAddress } = MainStore.appState.selectedWallet
+
+          const mainnet = bitcoin.networks.bitcoin
+          const keyPair = new bitcoin.ECPair(bigi.fromHex(privateKey), undefined, { network: mainnet })
+
+          const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network: mainnet })
+          const p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network: mainnet })
+          const txb = new bitcoin.TransactionBuilder(mainnet)
+
+          for (let ip = 0; ip < this.txIDData.length; ip++) {
+            txb.addInput(this.txIDData[ip].tx_hash_big_endian, this.txIDData[ip].tx_output_n)
+          }
+
+          const needBack = amount > balance - fee
+          if (needBack) {
+            amount = balance - fee
+          }
+          txb.addOutput(toAddress, amount)
+          needBack && txb.addOutput(myAddress, balance - amount - fee)
+
+          for (let ip = 0; ip < this.txIDData.length; ip++) {
+            txb.sign(ip, keyPair, p2sh.redeem.output, null, this.txIDData[ip].value)
+          }
+
+          const tx = txb.build()
+          api.pushTxBTC(tx.toHex()).then((res) => {
+            console.log(res)
+            resolve(tx.getId())
+          })
+        }).catch((err) => {
+          return reject(err)
+        })
+      } catch (e) {
+        return reject(e)
+      }
+    })
   }
 
   sendETH(transaction, ds) {
