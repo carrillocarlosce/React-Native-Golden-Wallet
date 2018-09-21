@@ -77,7 +77,7 @@ class SendStore {
       NavStore.pushToScreen('ConfirmScreen')
     } else {
       NavStore.showLoading()
-      api.getTxID(MainStore.sendTransaction.addressInputStore.address).then((res) => {
+      api.getTxID(MainStore.appState.selectedWallet.address).then((res) => {
         if (res && res.data && res.data.unspent_outputs && res.data.unspent_outputs.length > 0) {
           MainStore.sendTransaction.setTxIDData(res.data.unspent_outputs)
           MainStore.sendTransaction.confirmStore.setFee(this.estimateFeeBTC(res.data.unspent_outputs.length, 2))
@@ -166,26 +166,30 @@ class SendStore {
             txb.addInput(this.txIDData[ip].tx_hash_big_endian, this.txIDData[ip].tx_output_n)
           }
 
-          const needBack = amount > balance - fee
-          if (needBack) {
+          const noNeedBack = amount > balance - fee
+          if (noNeedBack) {
             amount = balance - fee
           }
           txb.addOutput(toAddress, amount)
-          needBack && txb.addOutput(myAddress, balance - amount - fee)
+          !noNeedBack && txb.addOutput(myAddress, balance - amount - fee)
 
           for (let ip = 0; ip < this.txIDData.length; ip++) {
             txb.sign(ip, keyPair, p2sh.redeem.output, null, this.txIDData[ip].value)
           }
 
           const tx = txb.build()
-          api.pushTxBTC(tx.toHex()).then((res) => {
-            console.log(res)
-            resolve(tx.getId())
-          })
+          console.log(tx.toHex())
+          resolve(tx.getId())
+          // api.pushTxBTC(tx.toHex()).then((res) => {
+          //   console.log(res)
+          //   resolve(tx.getId())
+          // })
         }).catch((err) => {
+          console.error(err)
           return reject(err)
         })
       } catch (e) {
+        console.error(e)
         return reject(e)
       }
     })

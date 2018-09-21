@@ -234,7 +234,7 @@ class AmountStore {
     if (data.length == (isUSD ? 9 : 6) && item.text !== '.' && !isHadPoint) return
     else if (data.length == 0 && item.text == '.') {
       const newData = [{ text: '0' }, item]
-      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]
+      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]
       this.setAmountText({ data: newData, subData: newSubData, isHadPoint: true })
       return
     } else if (data.length == 1 && item.text !== '.' && data[0].text == '0') {
@@ -249,7 +249,7 @@ class AmountStore {
       this.setAmountText({ subData, data })
       return
     } else if (subData.length == 0 && isHadPoint) return
-    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]) : []
+    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]) : []
     if (data.length == 3 && item.text !== '.') data.splice(1, 0, { text: ',' })
     else if (data.length == 5 && item.text !== '.') {
       data.splice(1, 1)
@@ -276,7 +276,7 @@ class AmountStore {
       isUSD,
       isHadPoint
     } = this.amountText
-    if (subData.length == (isUSD ? 2 : 4)) {
+    if (subData.length == (isUSD ? 2 : 5)) {
       data.pop()
       this.setAmountText({ data, subData: [], isHadPoint: false })
       return
