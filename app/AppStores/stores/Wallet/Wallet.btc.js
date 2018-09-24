@@ -43,6 +43,7 @@ export default class WalletBTC extends Wallet {
 
       this[k] = initObj[k]
     })
+    this.tokens = [this.getTokenBTC()]
   }
 
   @action offLoading() {

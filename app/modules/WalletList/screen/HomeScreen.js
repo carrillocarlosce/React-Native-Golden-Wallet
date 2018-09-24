@@ -209,7 +209,7 @@ export default class HomeScreen extends Component {
       NavStore.pushToScreen('TokenScreen', { index })
     } else {
       MainStore.appState.setselectedToken(selectedWallet.tokens[0])
-      NavStore.pushToScreen('TransactionListScreen')
+      NavStore.pushToScreen('TransactionBTCListScreen')
     }
   }
 
