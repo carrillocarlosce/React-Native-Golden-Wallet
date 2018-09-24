@@ -12,6 +12,7 @@ import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
 import NavStore from '../../../AppStores/NavStore'
 import { chainNames } from '../../../Utils/WalletAddresses'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -29,6 +30,10 @@ export default class WalletTypeCreateScreen extends Component {
   }
 
   gotoEnterNameBTC = () => {
+    if (MainStore.appState.config.network !== 'mainnet') {
+      NavStore.popupCustom.show('You need change network to main net to create BTC Wallet')
+      return
+    }
     NavStore.pushToScreen('EnterNameScreen', {
       coin: chainNames.BTC
     })
