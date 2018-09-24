@@ -25,7 +25,12 @@ export default class AddressBookStore {
   }
 
   get addressBookIsExisted() {
-    return MainStore.appState.addressBooks.find(ab => ab.address === this.address.toLowerCase())
+    return MainStore.appState.addressBooks.find((ab) => {
+      if (ab.type === 'ethereum') {
+        return ab.address === this.address.toLowerCase()
+      }
+      return ab.address === this.address
+    })
   }
 
   get titleIsExisted() {
