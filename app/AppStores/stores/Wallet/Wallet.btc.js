@@ -59,7 +59,10 @@ export default class WalletBTC extends Wallet {
     this.isFetchingBalance = !isRefresh && !isBackground
     try {
       const res = await api.fetchWalletBTCInfo(this.address)
-      if (res.data) {
+      if (res.status !== 200) {
+        this.balance = new BigNumber(`0`)
+        this.totalBalance = this.balance
+      } else if (res.data) {
         this.balance = new BigNumber(`${res.data.final_balance}`)
         this.totalBalance = this.balance.times(new BigNumber('1e-8'))
       } else {

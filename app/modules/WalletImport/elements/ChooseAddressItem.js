@@ -38,6 +38,14 @@ export default class ChooseAddressItem extends Component {
     return this.importMnemonicStore.mnemonicWallets[index]
   }
 
+  get symbol() {
+    const { type } = this.wallet
+    if (type === 'ethereum') {
+      return 'ETH'
+    }
+    return 'BTC'
+  }
+
   _onToogle = () => {
     const {
       onItemSelect
@@ -79,7 +87,7 @@ export default class ChooseAddressItem extends Component {
             ellipsizeMode="tail"
             style={[styles.balance, colorText]}
           >
-            {`${Helper.formatETH(totalBalanceETH.toString(10), 4)} ETH`}
+            {`${Helper.formatETH(totalBalanceETH.toString(10), 4)} ${this.symbol}`}
           </Text>
         </View>
       </TouchableOpacity>
