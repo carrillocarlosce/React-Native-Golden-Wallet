@@ -171,6 +171,7 @@ class AppState {
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
     this.currentWalletIndex = data.currentWalletIndex
+    this.currentBTCWalletIndex = data.currentBTCWalletIndex
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
