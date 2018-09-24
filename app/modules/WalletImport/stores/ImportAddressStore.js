@@ -39,7 +39,9 @@ export default class ImportAddressStore {
     MainStore.appState.selectedWallet.fetchingBalance()
     this.loading = false
     NavStore.reset()
-    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+    if (w.type === 'ethereum') {
+      NavStore.pushToScreen('TokenScreen')
+    }
   }
 
   @computed get isNameFocus() {

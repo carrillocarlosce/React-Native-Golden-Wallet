@@ -42,7 +42,9 @@ export default class ImportPrivateKeyStore {
       MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
-      NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+      if (w.type === 'ethereum') {
+        NavStore.pushToScreen('TokenScreen')
+      }
     } catch (_) {
       this.loading = false
       NavStore.popupCustom.show('Invalid private key.')

@@ -93,7 +93,9 @@ export default class ImportMnemonicStore {
     MainStore.appState.autoSetSelectedWallet()
     MainStore.appState.selectedWallet.fetchingBalance()
     NavStore.reset()
-    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+    if (wallet.type === 'ethereum') {
+      NavStore.pushToScreen('TokenScreen')
+    }
   }
 
   @computed get isLoading() {
