@@ -17,7 +17,8 @@ export default class TransactionDetailItem extends Component {
     style: PropTypes.object,
     data: PropTypes.object,
     action: PropTypes.func,
-    bottomLine: PropTypes.bool
+    bottomLine: PropTypes.bool,
+    children: PropTypes.object
   }
 
   static defaultProps = {
@@ -30,7 +31,8 @@ export default class TransactionDetailItem extends Component {
       subtitle: '-0.0028 ETH'
     },
     action: () => { },
-    bottomLine: true
+    bottomLine: true,
+    children: null
   }
 
   get styleSubtitle() {
@@ -67,7 +69,8 @@ export default class TransactionDetailItem extends Component {
       action,
       bottomLine,
       typeAddressElement,
-      textStyle
+      textStyle,
+      children
     } = this.props
 
     const {
@@ -95,6 +98,7 @@ export default class TransactionDetailItem extends Component {
               style={{ width: 328, marginTop: 10 }}
             />}
           </View>
+          {children && children}
           {bottomLine &&
             <View
               style={{

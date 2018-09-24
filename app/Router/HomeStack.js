@@ -25,6 +25,7 @@ import CollectibleDetailScreen from '../modules/Collectibles/screen/CollectibleD
 import CollectibleListScreen from '../modules/Collectibles/screen/CollectibleListScreen'
 import DAppListScreen from '../modules/DAppBrowser/screen/DAppListScreen'
 import AppStyle from '../commons/AppStyle'
+import TransactionMoreDetailScreen from '../modules/TransactionDetail/screen/TransactionMoreDetailScreen'
 
 const HomeStack = StackNavigator(
   {
@@ -150,6 +151,12 @@ const HomeStack = StackNavigator(
     },
     TransactionBTCDetailScreen: {
       screen: TransactionBTCDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    TransactionMoreDetailScreen: {
+      screen: TransactionMoreDetailScreen,
       navigationOptions: {
         header: null
       }

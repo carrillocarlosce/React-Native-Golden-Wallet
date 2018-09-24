@@ -128,6 +128,10 @@ export default class TransactionBTCDetailScreen extends Component {
     NavStore.pushToScreen('TxHashWebViewScreen', { url: this.checkURL, jsCode: this.jsCode })
   }
 
+  _onMorePress = () => {
+    NavStore.pushToScreen('TransactionMoreDetailScreen')
+  }
+
   renderValue = () => {
     const { type, isSelf } = this.selectedTransaction
     const { value } = this
@@ -185,7 +189,11 @@ export default class TransactionBTCDetailScreen extends Component {
           type: 'address'
         }}
         action={() => this._onPress(subtitle, 'Address')}
-      />
+      >
+        <TouchableOpacity style={styles.moreField} onPress={this._onMorePress}>
+          <Text style={styles.moreText}>More</Text>
+        </TouchableOpacity>
+      </TransactionDetailItem>
     )
   }
 
@@ -276,5 +284,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5
+  },
+  moreText: {
+    color: '#4A90E2',
+    fontSize: 14,
+    fontFamily: 'OpenSans-Semibold'
+  },
+  moreField: {
+    paddingVertical: 5,
+    width: 80,
+    alignItems: 'center',
+    backgroundColor: '#0E1428',
+    borderRadius: 20,
+    marginTop: 10
   }
 })
