@@ -19,17 +19,30 @@ const { width } = Dimensions.get('window')
 
 @observer
 export default class WalletTypeCreateScreen extends Component {
+  componentDidMount() {
+    this.isReady = false
+    setTimeout(() => {
+      this.isReady = true
+    }, 600)
+  }
+
   goBack = () => {
     NavStore.goBack()
   }
 
   gotoEnterNameETH = () => {
+    if (!this.isReady) {
+      return
+    }
     NavStore.pushToScreen('EnterNameScreen', {
       coin: chainNames.ETH
     })
   }
 
   gotoEnterNameBTC = () => {
+    if (!this.isReady) {
+      return
+    }
     if (MainStore.appState.config.network !== 'mainnet') {
       NavStore.popupCustom.show('You need change network to main net to create BTC Wallet')
       return
@@ -56,7 +69,6 @@ export default class WalletTypeCreateScreen extends Component {
           <SmallCard
             style={{ height: 214 }}
             title="Bitcoin"
-            subtitle=""
             imageCard={images.imgCardBTC}
             onPress={this.gotoEnterNameBTC}
             imageBackground="backgroundCard"
@@ -67,7 +79,6 @@ export default class WalletTypeCreateScreen extends Component {
           <SmallCard
             style={{ marginTop: 40 }}
             title="Ethereum"
-            subtitle=""
             imageCard={images.imgCardETH}
             onPress={this.gotoEnterNameETH}
             imgBackground="backgroundCard"

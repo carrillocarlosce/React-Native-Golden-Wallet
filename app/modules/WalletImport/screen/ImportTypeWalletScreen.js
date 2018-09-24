@@ -55,7 +55,6 @@ export default class WalletTypeImportScreen extends Component {
           <SmallCard
             style={{ height: 214 }}
             title="Bitcoin"
-            subtitle=""
             imageCard={images.imgCardBTC}
             onPress={this.gotoEnterNameBTC}
             imageBackground="backgroundCard"
@@ -66,7 +65,6 @@ export default class WalletTypeImportScreen extends Component {
           <SmallCard
             style={{ marginTop: 40 }}
             title="Ethereum"
-            subtitle=""
             imageCard={images.imgCardETH}
             onPress={this.gotoEnterNameETH}
             imgBackground="backgroundCard"
