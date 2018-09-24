@@ -13,6 +13,7 @@ export default (appState) => {
       })
       appState.getGasPriceEstimate()
       appState.loadPendingTxs()
+      appState.homeCarousel && appState.homeCarousel.snapToItem(0)
     }
   )
 }

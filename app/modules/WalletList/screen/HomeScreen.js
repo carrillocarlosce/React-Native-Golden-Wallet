@@ -347,7 +347,7 @@ export default class HomeScreen extends Component {
         <View style={{ height: heightCarousel }}>
           <Carousel
             removeClippedSubviews={false}
-            ref={(c) => { this._carousel = c }}
+            ref={(c) => { MainStore.appState.homeCarousel = c }}
             data={this.cards}
             layout="default"
             renderItem={this._renderCard}
@@ -380,7 +380,7 @@ export default class HomeScreen extends Component {
         >
           <SettingScreen
             onCreated={(index) => {
-              this._carousel.snapToItem(index)
+              MainStore.appState.homeCarousel.snapToItem(index)
             }}
           />
         </Animated.View>

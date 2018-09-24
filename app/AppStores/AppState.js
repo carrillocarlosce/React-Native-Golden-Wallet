@@ -35,6 +35,7 @@ class AppState {
   @observable currentCardIndex = 0
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
+  homeCarousel = null
 
   static TIME_INTERVAL = 20000
 
@@ -201,6 +202,10 @@ class AppState {
   }
 
   @computed get wallets() {
+    if (this.networkName !== Config.networks.mainnet) {
+      const ethWallets = this.appWalletsStore.wallets.filter(w => w.type === 'ethereum')
+      return ethWallets
+    }
     return this.appWalletsStore.wallets
   }
 
