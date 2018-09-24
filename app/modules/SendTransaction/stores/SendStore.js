@@ -151,9 +151,10 @@ class SendStore {
     const fee = this.estimateFeeBTC(this.txIDData.length, 2)
 
     return new Promise((resolve, reject) => {
-      try {
-        this.getPrivateKey(ds).then((privateKey) => {
-          const { myAddress } = MainStore.appState.selectedWallet
+
+      this.getPrivateKey(ds)
+        .then((privateKey) => {
+          const { address: myAddress } = MainStore.appState.selectedWallet
 
           const mainnet = bitcoin.networks.bitcoin
           const keyPair = new bitcoin.ECPair(bigi.fromHex(privateKey), undefined, { network: mainnet })
@@ -170,6 +171,7 @@ class SendStore {
           if (noNeedBack) {
             amount = balance - fee
           }
+
           txb.addOutput(toAddress, amount)
           !noNeedBack && txb.addOutput(myAddress, balance - amount - fee)
 
@@ -178,20 +180,17 @@ class SendStore {
           }
 
           const tx = txb.build()
-          console.log(tx.toHex())
-          resolve(tx.getId())
-          // api.pushTxBTC(tx.toHex()).then((res) => {
-          //   console.log(res)
-          //   resolve(tx.getId())
-          // })
+
+          return api.pushTxBTC(tx.toHex()).then((res) => {
+            if (res.status === 200) {
+              resolve(tx.getId())
+            } else {
+              reject(res.data)
+            }
+          })
         }).catch((err) => {
-          console.error(err)
-          return reject(err)
+          reject(err)
         })
-      } catch (e) {
-        console.error(e)
-        return reject(e)
-      }
     })
   }
 
