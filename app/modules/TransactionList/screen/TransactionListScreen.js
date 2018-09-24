@@ -101,14 +101,14 @@ export default class TransactionListScreen extends Component {
         />
         <FlatList
           data={transactions}
-          contentContainerStyle={[{}, transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
+          contentContainerStyle={[transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
           ListEmptyComponent={this._renderEmptyList(selectedToken)}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${item.hash}-${item.from}-${index}`}
           refreshing={isRefreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={30}
+          onEndReachedThreshold={0.5}
           renderItem={this._renderItem}
         />
         {successTransactions.length === 0 && isLoading && <Spinner />}

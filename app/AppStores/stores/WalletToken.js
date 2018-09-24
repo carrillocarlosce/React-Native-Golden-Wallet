@@ -93,11 +93,12 @@ export default class WalletToken {
   }
 
   @action fetchTransactions = async (isRefresh = false) => {
-    if (this.isLoading || this.isRefreshing || !this.txFetcherInfo.hasMoreData) return
+    if (this.isLoading || this.isRefreshing || (!isRefresh && !this.txFetcherInfo.hasMoreData)) return
     if (isRefresh) {
       this.txFetcherInfo = {
         ...this.txFetcherInfo,
         isRefreshing: true,
+        hasMoreData: true,
         page: 1
       }
     } else {
@@ -145,7 +146,6 @@ export default class WalletToken {
       } else {
         this.transactions = [...this.transactions.slice(), ...txArr]
       }
-
       this.offLoading(true, this.txFetcherInfo.page + 1)
     }).catch((_) => {
       this.offLoading(false, this.txFetcherInfo.page)
