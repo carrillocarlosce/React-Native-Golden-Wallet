@@ -268,6 +268,7 @@ class UnlockStore {
       }
     ).start()
     setTimeout(() => {
+      if (!this || !this.setData) return
       this.isShake = !isShake
       this.setData({
         pinTyped: 0,
