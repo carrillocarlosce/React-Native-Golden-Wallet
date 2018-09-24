@@ -32,7 +32,7 @@ class CreateWalletStore {
     const { title } = this
     generateNew(ds, title, index, coinPath, coin).then(async (w) => {
       this.finished = true
-      NotificationStore.addWallet(title, w.address)
+      NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
       NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
       MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()

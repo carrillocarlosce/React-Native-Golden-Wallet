@@ -34,7 +34,7 @@ export default class ImportPrivateKeyStore {
         return
       }
       this.finished = true
-      NotificationStore.addWallet(this.title, w.address)
+      NotificationStore.addWallet(this.title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
       NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
       await MainStore.appState.appWalletsStore.addOne(w)

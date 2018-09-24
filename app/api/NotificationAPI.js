@@ -2,10 +2,10 @@ import DeviceInfo from 'react-native-device-info'
 import ApiCaller from './api-caller'
 import URL from './url'
 
-export const addWallet = (name, address, deviceToken) => {
+export const addWallet = (name, address, deviceToken, type) => {
   const device_udid = DeviceInfo.getUniqueID() !== '' ? DeviceInfo.getUniqueID() : deviceToken.substring(0, 10)
   const data = {
-    name, address, device_token: deviceToken, device_udid
+    name, address, device_token: deviceToken, device_udid, type
   }
 
   return ApiCaller.post(`${URL.Skylab.apiURL()}/wallets`, data, true)

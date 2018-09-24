@@ -32,7 +32,7 @@ export default class ImportAddressStore {
     const ds = MainStore.secureStorage
     const { address } = this
     const w = importAddress(address, title, ds, coin)
-    NotificationStore.addWallet(title, w.address)
+    NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
     NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
     await MainStore.appState.appWalletsStore.addOne(w)
     MainStore.appState.autoSetSelectedWallet()

@@ -153,7 +153,7 @@ export default class ManageWalletStore {
     }
   }
   switchEnableNotification(isEnable, wallet) {
-    const { title, address } = wallet
+    const { title, address, type } = wallet
     if (MainStore.appState.internetConnection === 'offline') {
       NavStore.popupCustom.show('Network Error.')
       return
@@ -164,7 +164,8 @@ export default class ManageWalletStore {
     wallet.setEnableNotification(isEnable)
     wallet.update()
     if (isEnable) {
-      NotificationStore.addWallet(title, address).then(res => console.log(res))
+      const walletType = type === 'ethereum' ? 'ETH' : 'BTC'
+      NotificationStore.addWallet(title, address, walletType).then(res => console.log(res))
     } else {
       NotificationStore.removeWallet(address).then(res => console.log(res))
     }

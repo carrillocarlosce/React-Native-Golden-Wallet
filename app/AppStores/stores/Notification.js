@@ -25,12 +25,12 @@ class Notification {
     return await NotificationDS.getNotifID(address)
   }
 
-  addWallet(name, address) {
+  addWallet(name, address, type) {
     if (!this.deviceToken) {
       return null
     }
 
-    return API.addWallet(name, address, this.deviceToken).then((res) => {
+    return API.addWallet(name, address, this.deviceToken, type).then((res) => {
       const { data, success } = res.data
       if (success) {
         this.saveNotifID(address, data.id)
@@ -46,7 +46,8 @@ class Notification {
     const wallets = MainStore.appState.wallets.map((w) => {
       return {
         name: w.title,
-        address: w.address
+        address: w.address,
+        type: w.type === 'ethereum' ? 'ETH' : 'BTC'
       }
     })
     return API.addWallets(wallets, this.deviceToken).then((res) => {

@@ -86,7 +86,7 @@ export default class ImportMnemonicStore {
 
     const ds = MainStore.secureStorage
     const wallet = await unlockFromMnemonic(this.mnemonic, title, index, ds, coinPath, coin)
-    NotificationStore.addWallet(title, wallet.address)
+    NotificationStore.addWallet(title, wallet.address, wallet.type === 'ethereum' ? 'ETH' : 'BTC')
     NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
     await MainStore.appState.appWalletsStore.addOne(wallet)
