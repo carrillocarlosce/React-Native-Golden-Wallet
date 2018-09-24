@@ -1,7 +1,6 @@
 import caller from './api-caller'
 import appState from '../AppStores/AppState'
 import URL from './url'
-import qs from 'querystring'
 /**
  *
  * @param {String} addressStr
@@ -68,13 +67,5 @@ export const pushTxBTC = (rawTx) => {
   const data = {
     tx: rawTx
   }
-  // return fetch(`${URL.BlockChainInfo.apiURL()}/pushtx`, {
-  //   method: 'POST',
-  //   headers: {
-  //     Accept: 'application/json',
-  //     'Content-Type': 'application/x-www-form-urlencoded'
-  //   },
-  //   body: qs.stringify(data)
-  // })
   return caller.post(`${URL.BlockChainInfo.apiURL()}/pushtx`, data, false)
 }

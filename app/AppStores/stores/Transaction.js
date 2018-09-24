@@ -30,6 +30,7 @@ const defaultData = {
 
 export default class Transaction {
   rate = new BigNumber(0)
+  walletType = 'ethereum'
 
   static generateUnspendTransaction(obj, token) {
     const transaction = { ...obj, status: 0 }
@@ -71,10 +72,8 @@ export default class Transaction {
 
   get isSent() {
     const { selectedWallet } = MainStore.appState
-    if (this.address) {
-      return this.from.toLocaleLowerCase() === this.address.toLocaleLowerCase()
-    }
-    return this.from.toLocaleLowerCase() === selectedWallet.address.toLocaleLowerCase()
+    const address = this.address ? this.address : selectedWallet.address
+    return this.from.toLocaleLowerCase() === address.toLocaleLowerCase()
   }
 
   get type() {

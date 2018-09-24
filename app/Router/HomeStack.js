@@ -19,6 +19,7 @@ import TxHashWebViewScreen from '../modules/TransactionDetail/screen/TxHashWebVi
 import PrivacyTermsScreen from '../modules/Setting/screen/PrivacyTermsScreen'
 import AppVersionScreen from '../modules/Setting/screen/AppVersionScreen'
 import TransactionDetailScreen from '../modules/TransactionDetail/screen/TransactionDetailScreen'
+import TransactionBTCDetailScreen from '../modules/TransactionDetail/screen/TransactionDetailScreen.btc'
 import CollectibleScreen from '../modules/Collectibles/screen/CollectibleScreen'
 import CollectibleDetailScreen from '../modules/Collectibles/screen/CollectibleDetailScreen'
 import CollectibleListScreen from '../modules/Collectibles/screen/CollectibleListScreen'
@@ -143,6 +144,12 @@ const HomeStack = StackNavigator(
     },
     TransactionDetailScreen: {
       screen: TransactionDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    TransactionBTCDetailScreen: {
+      screen: TransactionBTCDetailScreen,
       navigationOptions: {
         header: null
       }
