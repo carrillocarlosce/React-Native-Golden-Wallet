@@ -1,4 +1,6 @@
 import { observable, action, computed } from 'mobx'
+import wif from 'wif'
+import bigi from 'bigi'
 import MainStore from '../../../AppStores/MainStore'
 import { importPrivateKey } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
@@ -27,7 +29,12 @@ export default class ImportPrivateKeyStore {
     const ds = MainStore.secureStorage
 
     try {
-      const w = importPrivateKey(this.privateKey, this.title, ds, coin)
+      let { privateKey } = this
+      if (coin === chainNames.BTC && Checker.checkWIFBTC(this.privateKey)) {
+        const decode = wif.decode(this.privateKey)
+        privateKey = bigi.fromBuffer(decode.privateKey).toString(16)
+      }
+      const w = importPrivateKey(privateKey, this.title, ds, coin)
       if (this.addressMap[w.address]) {
         NavStore.popupCustom.show('Existed Wallet')
         this.loading = false
