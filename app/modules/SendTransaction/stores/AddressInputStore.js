@@ -2,6 +2,7 @@ import { observable, computed, action } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
 import Checker from '../../../Handler/Checker'
 import API from '../../../api'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 export default class AddressInputStore {
   @observable.ref amount = 0
@@ -33,9 +34,8 @@ export default class AddressInputStore {
 
   @action validateAddress() {
     const { selectedWallet } = MainStore.appState
-    this.disableSend = selectedWallet.type === 'ethereum'
-      ? !Checker.checkAddress(this.address)
-      : !Checker.checkAddressBTC(this.address)
+    const coin = selectedWallet.type === 'ethereum' ? chainNames.ETH : chainNames.BTC
+    this.disableSend = !Checker.checkAddress(this.address, coin)
     if (!this.disableSend) {
       this.checkSentTime()
     }
