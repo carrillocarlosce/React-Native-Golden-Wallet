@@ -18,7 +18,6 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import ManageWalletStore from '../stores/ManageWalletStore'
-import NavStore from '../../../AppStores/NavStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const { width } = Dimensions.get('window')
@@ -60,12 +59,8 @@ export default class EditWalletNameScreen extends Component {
     this.setState({ allowShowErr: false })
     await this.manageWalletStore.editWallet(this.wallet)
     NotificationStore.addWallets()
-    this.backToManageScreen()
-  }
-
-  backToManageScreen() {
     this.hideKeyboard()
-    NavStore.pushToScreen('ManageWalletScreen')
+    this.props.navigation.state.params.onEdited()
   }
 
   handleBack = () => {

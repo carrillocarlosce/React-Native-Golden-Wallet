@@ -13,7 +13,7 @@ export default class ImplementPrivateKeyStore {
   @action async implementPrivateKey(selectedWallet) {
     const coin = selectedWallet.type === 'ethereum' ? chainNames.ETH : chainNames.BTC
     const { address } = GetAddress(this.privateKey, coin)
-    if (selectedWallet.address !== address) {
+    if (selectedWallet.address.toLowerCase() !== address.toLowerCase()) {
       NavStore.popupCustom.show('This private key does not belong to your wallet')
       return
     }

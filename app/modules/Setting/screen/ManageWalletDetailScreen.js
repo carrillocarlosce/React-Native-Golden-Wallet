@@ -57,13 +57,15 @@ export default class ManageWalletDetailScreen extends Component {
 
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onRemoved: () => NavStore.pushToScreen('ManageWalletScreen')
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onAdded: () => NavStore.pushToScreen('ManageWalletScreen')
     })
   }
 

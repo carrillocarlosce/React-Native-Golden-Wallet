@@ -95,7 +95,7 @@ export default class AddPrivateKeyScreen extends Component {
   }
 
   _handleConfirm = async () => {
-    this.manageWalletStore.implementPrivateKey(this.wallet)
+    this.manageWalletStore.implementPrivateKey(this.wallet, this.props.navigation.state.params.onAdded)
   }
 
   gotoScan = () => {

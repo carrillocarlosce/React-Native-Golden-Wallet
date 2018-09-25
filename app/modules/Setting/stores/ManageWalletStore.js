@@ -12,7 +12,8 @@ export default class ManageWalletStore {
       mainText: 'Edit Wallet Name',
       onPress: () => {
         NavStore.pushToScreen('EditWalletNameScreen', {
-          wallet: this.selectedWallet
+          wallet: this.selectedWallet,
+          onEdited: () => NavStore.pushToScreen('ManageWalletScreen')
         })
       }
     },
@@ -135,9 +136,10 @@ export default class ManageWalletStore {
     MainStore.appState.appWalletsStore.removeOne(wallet)
   }
 
-  @action async implementPrivateKey(selectedWallet) {
-    const { address } = GetAddress(this.privKey, chainNames.ETH)
-    if (selectedWallet.address !== address) {
+  @action async implementPrivateKey(selectedWallet, onAdded) {
+    const coin = selectedWallet.type === 'ethereum' ? chainNames.ETH : chainNames.BTC
+    const { address } = GetAddress(this.privKey, coin)
+    if (selectedWallet.address.toLowerCase() !== address.toLowerCase()) {
       NavStore.popupCustom.show('This private key does not belong to your wallet')
       return
     }
@@ -147,7 +149,7 @@ export default class ManageWalletStore {
       await selectedWallet.implementPrivateKey(ds, this.privKey)
       await MainStore.appState.appWalletsStore.save()
       this.finished = true
-      NavStore.pushToScreen('ManageWalletScreen')
+      onAdded()
     } catch (e) {
       NavStore.popupCustom.show(e.message)
     }
