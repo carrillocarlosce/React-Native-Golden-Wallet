@@ -24,6 +24,14 @@ class Checker {
     return address.match(regx)
   }
 
+  static checkWIFBTC(wif) {
+    if (wif.length !== 52) {
+      return false
+    }
+    const regx = /^[0-9A-Za-z]{52}$/
+    return wif.match(regx)
+  }
+
   static checkAddressQR(address, coin = chainNames.ETH) {
     let regx = ''
     if (coin === chainNames.ETH) {
