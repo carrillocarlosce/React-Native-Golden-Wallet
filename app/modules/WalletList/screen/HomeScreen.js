@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native'
+import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
 import Share from 'react-native-share'
 import RNFS from 'react-native-fs'
@@ -31,8 +32,6 @@ import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
-import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
-import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -41,6 +40,13 @@ const contentAlertBackup = 'The Recovery Phrase protects your wallet and can be 
 
 @observer
 export default class HomeScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+  static defaultProps = {
+    navigation: {}
+  }
+
   constructor(props) {
     super(props)
     FCM.setBadgeNumber(0)
@@ -200,42 +206,9 @@ export default class HomeScreen extends Component {
     NavStore.pushToScreen('NewUpdatedAvailableScreen')
   }
 
-  _onExportPrivatekey = () => NavStore.popupCustom.show(
-    'WARNING!',
-    [
-      {
-        text: 'Cancel',
-        onClick: () => {
-          NavStore.popupCustom.hide()
-        }
-      },
-      {
-        text: 'Continue',
-        onClick: async (text) => {
-          const { selectedWallet } = MainStore.appState
-          NavStore.popupCustom.hide()
-          NavStore.lockScreen({
-            onUnlock: (pincode) => {
-              NavStore.showLoading()
-              const ds = new SecureDS(pincode)
-              selectedWallet.setSecureDS(ds)
-              selectedWallet.derivePrivateKey().then((pk) => {
-                NavStore.hideLoading()
-                NavStore.pushToScreen('ExportPrivateKeyScreen', {
-                  pk,
-                  walletName: selectedWallet.title
-                })
-              }).catch(e => NavStore.hideLoading())
-            }
-          }, true)
-        }
-      }
-    ],
-    'It is essential to understand that the Private Key is the most important and sensitive part of your account information.\n\nWhoever has knowledge of a Private Key has full control over the associated funds and assets.\n\nIt is important for restoring your account so you should never lose it, but also keep it top secret.'
-  )
-
   _onLongPress = () => {
-    this.actionSheet.show()
+    const { navigation } = this.props
+    navigation.navigate('ManageWalletScreen')
   }
 
   _onItemPress = (index) => {
@@ -246,72 +219,6 @@ export default class HomeScreen extends Component {
       MainStore.appState.setselectedToken(selectedWallet.tokens[0])
       NavStore.pushToScreen('TransactionBTCListScreen')
     }
-  }
-
-  _onEditPress = () => {
-    this._onCancelAction()
-    NavStore.pushToScreen('EditWalletNameScreen', {
-      wallet: MainStore.appState.selectedWallet,
-      onEdited: () => NavStore.goBack()
-    })
-  }
-
-  _onExportPress = () => {
-    this._onCancelAction()
-    setTimeout(this._onExportPrivatekey, 250)
-  }
-
-  _onAddPress = () => {
-    this._onCancelAction()
-    NavStore.pushToScreen('AddPrivateKeyScreen', {
-      wallet: MainStore.appState.selectedWallet,
-      onAdded: () => NavStore.goBack()
-    })
-  }
-
-  _onRemovePress = () => {
-    this._onCancelAction()
-    NavStore.lockScreen({
-      onUnlock: this.handleRemovePressed
-    }, true)
-  }
-
-  handleRemovePressed = (pincode) => {
-    NavStore.pushToScreen('RemoveWalletScreen', {
-      wallet: MainStore.appState.selectedWallet,
-      onRemoved: () => NavStore.goBack()
-    })
-  }
-
-  _renderActionSheet = selectedWallet => (
-    <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
-      <TouchableOpacity onPress={this._onEditPress}>
-        <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-          <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
-        </View>
-      </TouchableOpacity>
-      {selectedWallet && selectedWallet.didBackup && selectedWallet.importType && selectedWallet.importType !== 'Address' &&
-        <TouchableOpacity onPress={this._onExportPress}>
-          <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-            <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
-          </View>
-        </TouchableOpacity>}
-      {selectedWallet && selectedWallet.importType && selectedWallet.importType === 'Address' &&
-        <TouchableOpacity onPress={this._onAddPress}>
-          <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
-            <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
-          </View>
-        </TouchableOpacity>}
-      <TouchableOpacity onPress={this._onRemovePress}>
-        <View style={styles.actionButton}>
-          <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
-        </View>
-      </TouchableOpacity>
-    </ActionSheetCustom>
-  )
-
-  _onCancelAction = () => {
-    this.actionSheet.hide()
   }
 
   _renderCard = ({ item, index }) =>
@@ -376,7 +283,6 @@ export default class HomeScreen extends Component {
     })
     this.wallets = MainStore.appState.wallets.slice()
     this.cards = this.wallets
-    const { selectedWallet } = MainStore.appState
     if (this.cards.length < 10) {
       this.cards = [...this.cards, {
         balance: '0 ETH',
@@ -454,7 +360,6 @@ export default class HomeScreen extends Component {
             }}
           />
         </Animated.View>
-        {this._renderActionSheet(selectedWallet)}
       </View>
     )
   }
@@ -521,17 +426,5 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 81 + marginTop : 71,
     width,
     height: height - 71 + marginTop
-  },
-  actionButton: {
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
-    width: width - 40,
-    backgroundColor: AppStyle.backgroundDarkBlue
-  },
-  actionText: {
-    fontSize: 16,
-    fontFamily: 'OpenSans-Semibold'
   }
 })
