@@ -5,7 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
@@ -22,6 +23,7 @@ import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
+const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {
@@ -114,7 +116,7 @@ export default class ManageWalletDetailScreen extends Component {
       >
         <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ${this.symbol}`}</Text>
         <AddressElement
-          style={{ marginTop: 15, width: 328 }}
+          style={{ marginTop: 15, width: width * 0.8 }}
           textStyle={{ fontSize: 16 }}
           address={this.wallet.address}
         />
