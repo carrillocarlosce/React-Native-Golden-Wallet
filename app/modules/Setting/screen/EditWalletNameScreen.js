@@ -36,7 +36,8 @@ export default class EditWalletNameScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
-    this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
+    const { navigation } = this.props
+    this.wallet = navigation ? navigation.state.params.wallet : {}
   }
 
   state = {

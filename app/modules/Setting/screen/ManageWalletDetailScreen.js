@@ -36,11 +36,27 @@ export default class ManageWalletDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
-    this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
+    const { navigation } = this.props
+    this.wallet = navigation ? navigation.state.params.wallet : {}
+    this.isFromHomeScreen = navigation && navigation.state.params.fromHomeScreen
+      ? navigation.state.params.fromHomeScreen
+      : false
+  }
+
+  componentDidMount() {
+    this.manageWalletStore.setIsFromHome(this.isFromHomeScreen)
   }
 
   onNotificationSwitch(isEnable, wallet) {
     this.manageWalletStore.switchEnableNotification(isEnable, wallet)
+  }
+
+  onRemoved = () => {
+    let screen = 'ManageWalletScreen'
+    if (this.isFromHomeScreen) {
+      screen = 'HomeScreen'
+    }
+    NavStore.pushToScreen(screen)
   }
 
   get currentStateEnableNotification() {
@@ -58,7 +74,7 @@ export default class ManageWalletDetailScreen extends Component {
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
       wallet: this.wallet,
-      onRemoved: () => NavStore.pushToScreen('ManageWalletScreen')
+      onRemoved: this.onRemoved
     })
   }
 
