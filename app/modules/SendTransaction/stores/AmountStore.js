@@ -204,22 +204,23 @@ class AmountStore {
     } else if (decimal.split('').length == 1) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = isUSD ? [{ text: '0' }] : [{ text: '0' }, { text: '' }, { text: '' }]
+      const subData = isUSD ? [{ text: '0' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 2) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = isUSD ? [] : [{ text: '0' }, { text: '' }]
+      const subData = isUSD ? [] : [{ text: '0' }, { text: '' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 3) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = [{ text: '0' }]
+      const subData = [{ text: '0' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 4) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      this.setAmountText({ data, subData: [], isHadPoint: true })
+      const subData = [{ text: '0' }]
+      this.setAmountText({ data, subData, isHadPoint: true })
     }
     HapticHandler.ImpactLight()
   }
