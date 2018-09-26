@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: 20
   },
   dot: {
     width: 9,
     height: 9,
     borderRadius: 4.5,
-    backgroundColor: AppStyle.secondaryTextColor
+    backgroundColor: AppStyle.secondaryTextColor,
+    marginTop: 6.5
   },
   des: {
     fontSize: 15,
