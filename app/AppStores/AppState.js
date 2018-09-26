@@ -170,8 +170,8 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    this.currentWalletIndex = data.currentWalletIndex
-    this.currentBTCWalletIndex = data.currentBTCWalletIndex
+    this.currentWalletIndex = data.currentWalletIndex || 0
+    this.currentBTCWalletIndex = data.currentBTCWalletIndex || 0
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
