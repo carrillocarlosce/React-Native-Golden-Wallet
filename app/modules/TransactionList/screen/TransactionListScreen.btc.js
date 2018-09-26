@@ -23,7 +23,7 @@ const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
 
 @observer
-export default class TransactionListScreen extends Component {
+export default class TransactionBTCListScreen extends Component {
   static propTypes = {
     navigation: PropTypes.object
   }
@@ -48,15 +48,11 @@ export default class TransactionListScreen extends Component {
   }
 
   onRefresh = async () => {
-    this.selectedToken.fetchTransactions(true)
-  }
-
-  onEndReached = async () => {
-    this.selectedToken.fetchTransactions(false)
+    AppState.selectedWallet.fetchingBalance(true, false)
   }
 
   get selectedToken() {
-    return AppState.selectedToken
+    return AppState.selectedWallet.tokens[0]
   }
 
   goBack = async () => {
@@ -64,8 +60,8 @@ export default class TransactionListScreen extends Component {
     navigation.goBack()
   }
 
-  _renderEmptyList = (selectedToken) => {
-    if (!selectedToken.isLoading) {
+  _renderEmptyList = () => {
+    if (!AppState.selectedWallet.loading) {
       return <EmptyList />
     }
 
@@ -85,8 +81,8 @@ export default class TransactionListScreen extends Component {
       allTransactions: [], isRefreshing: false, isLoading: true, successTransactions: []
     }
     const selectedToken = this.selectedToken ? this.selectedToken : defaultToken
-    const transactions = selectedToken.allTransactions
-    const { isRefreshing, isLoading, successTransactions } = selectedToken
+    const transactions = selectedToken.allTransactions.slice()
+    const { loading, isRefresh } = AppState.selectedWallet
 
     return (
       <View style={styles.container}>
@@ -102,16 +98,14 @@ export default class TransactionListScreen extends Component {
         <FlatList
           data={transactions}
           contentContainerStyle={[transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
-          ListEmptyComponent={this._renderEmptyList(selectedToken)}
+          ListEmptyComponent={this._renderEmptyList()}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${item.hash}-${item.from}-${index}`}
-          refreshing={isRefreshing}
+          refreshing={isRefresh}
           onRefresh={this.onRefresh}
-          onEndReached={this.onEndReached}
-          onEndReachedThreshold={0.5}
           renderItem={this._renderItem}
         />
-        {successTransactions.length === 0 && isLoading && <Spinner />}
+        {transactions.length === 0 && loading && <Spinner />}
       </View>
     )
   }

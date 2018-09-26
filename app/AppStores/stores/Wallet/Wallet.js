@@ -70,7 +70,7 @@ export default class Wallet {
     Object.keys(initObj).forEach((k) => {
       if (k === 'balance') initObj[k] = new BigNumber(initObj.balance)
       if (k === 'totalBalance') initObj[k] = new BigNumber(initObj.totalBalance)
-      if (k === 'address') initObj[k] = initObj.address.toLowerCase()
+      if (k === 'address') initObj[k] = initObj.address
 
       this[k] = initObj[k]
     })
@@ -111,11 +111,11 @@ export default class Wallet {
     return this.tokens.find(t => t.address === address)
   }
 
-  @action async implementPrivateKey(secureDS, privateKey) {
+  @action async implementPrivateKey(secureDS, privateKey, coin = chainNames.ETH) {
     this.canSendTransaction = true
     this.importType = 'Private Key'
-    const { address } = GetAddress(privateKey, chainNames.ETH)
-    if (address.toLowerCase() !== this.address.toLowerCase()) {
+    const { address } = GetAddress(privateKey, coin)
+    if (coin === chainNames.ETH && address.toLowerCase() !== this.address.toLowerCase()) {
       throw new Error('Invalid Private Key')
     }
     secureDS.savePrivateKey(this.address, privateKey)

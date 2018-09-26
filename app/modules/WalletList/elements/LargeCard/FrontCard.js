@@ -54,6 +54,14 @@ export default class FrontCard extends Component {
     return index < length ? MainStore.appState.wallets[index] : null
   }
 
+  get symbol() {
+    const { type } = this.wallet
+    if (type === 'ethereum') {
+      return 'ETH'
+    }
+    return 'BTC'
+  }
+
   _getStyleOfView(type) {
     switch (type) {
       case 'Address':
@@ -98,7 +106,7 @@ export default class FrontCard extends Component {
       </TouchableOpacity>
     )
 
-    const balanceSecret = !isHide ? `${Helper.formatETH(totalBalanceETH.toString(10))} ETH` : constant.SECRET_WORK
+    const balanceSecret = !isHide ? `${Helper.formatETH(totalBalanceETH.toString(10))} ${this.symbol}` : constant.SECRET_WORK
     const balanceUSDSecret = !isHide
       ? `$${Helper.formatUSD(totalBalanceDollar.toString(10))}`
       : constant.SECRET_WORK

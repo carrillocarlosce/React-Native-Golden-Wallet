@@ -7,6 +7,7 @@ import {
   Animated,
   SafeAreaView
 } from 'react-native'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
@@ -29,10 +30,20 @@ const marginTop = LayoutUtils.getExtraTop()
 
 @observer
 export default class ImportViaAddressScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+
+  static defaultProps = {
+    navigation: {}
+  }
+
   constructor(props) {
     super(props)
     this.extraHeight = new Animated.Value(0)
     this.importAddressStore = new ImportAddressStore()
+    const { coin } = props.navigation.state.params
+    this.importAddressStore.setCoin(coin)
   }
 
   onChangeName = (text) => {
@@ -65,25 +76,14 @@ export default class ImportViaAddressScreen extends Component {
     NavStore.goBack()
   }
 
-  validateImport() {
-    const { address } = this.importAddressStore
-    if (address === '') {
-      NavStore.popupCustom.show('Address cannot be empty')
-      return false
-    }
-    if (!Checker.checkAddress(address) || Checker.checkAddress(address).length === 0) {
-      NavStore.popupCustom.show('Invalid Address')
-      return false
-    }
-    return true
-  }
-
   returnData(codeScanned) {
     let address = codeScanned
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
     if (this.importAddressStore.title === '') {
       setTimeout(() => this.nameField.focus(), 250)
     }
-    const resChecker = Checker.checkAddressQR(codeScanned)
+    const resChecker = Checker.checkAddressQR(codeScanned, coin)
     if (resChecker && resChecker.length > 0) {
       [address] = resChecker
     }
@@ -91,12 +91,10 @@ export default class ImportViaAddressScreen extends Component {
   }
 
   handleCreate = () => {
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
     const { title } = this.importAddressStore
-    const validate = this.validateImport()
-    if (!validate) {
-      return
-    }
-    this.importAddressStore.create(title)
+    this.importAddressStore.create(title, coin)
   }
 
   render() {

@@ -1917,7 +1917,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1954,7 +1954,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
 				PROVISIONING_PROFILE = "38732fa4-3e61-41e8-a57c-73fddb798f02";
-				PROVISIONING_PROFILE_SPECIFIER = Golden_Dev;
+				PROVISIONING_PROFILE_SPECIFIER = "Golden AdHoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1965,7 +1965,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = golden/golden.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2001,7 +2001,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.goldenwallet;
 				PRODUCT_NAME = golden;
 				PROVISIONING_PROFILE = "38732fa4-3e61-41e8-a57c-73fddb798f02";
-				PROVISIONING_PROFILE_SPECIFIER = Golden_Dev;
+				PROVISIONING_PROFILE_SPECIFIER = "Golden AdHoc";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

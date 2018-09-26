@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   Text,
   Image,
   Dimensions,
@@ -18,7 +18,7 @@ const isSmallScreen = height < 569
 export default class SmallCard extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
+    subtitle: PropTypes.string,
     imageCard: PropTypes.number.isRequired,
     imageBackground: PropTypes.string,
     titleTextStyle: PropTypes.object,
@@ -34,7 +34,8 @@ export default class SmallCard extends Component {
     imageBackground: null,
     onPress: () => { },
     style: {},
-    imageBackgroundStyle: {}
+    imageBackgroundStyle: {},
+    subtitle: ''
   }
 
   render() {
@@ -52,7 +53,7 @@ export default class SmallCard extends Component {
     const styleImage = isSmallScreen ? { height: height * 0.2 } : {}
     const heightImageBackground = isSmallScreen ? height * 0.2 + 60 : 214
     return (
-      <TouchableOpacity
+      <TouchableWithoutFeedback
         onPress={onPress}
       >
         <View
@@ -76,7 +77,9 @@ export default class SmallCard extends Component {
             }}
           >
             <Text style={[styles.title, titleTextStyle]}>{title}</Text>
-            <Text style={[styles.subtitle, subtitleTextStyle]}>{subtitle}</Text>
+            {subtitle !== '' &&
+              <Text style={[styles.subtitle, subtitleTextStyle]}>{subtitle}</Text>
+            }
           </View>
           <Image
             resizeMode="contain"
@@ -84,7 +87,7 @@ export default class SmallCard extends Component {
             source={imageCard}
           />
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     )
   }
 }

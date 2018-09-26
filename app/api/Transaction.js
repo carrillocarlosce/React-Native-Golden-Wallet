@@ -1,7 +1,6 @@
 import caller from './api-caller'
 import appState from '../AppStores/AppState'
 import URL from './url'
-
 /**
  *
  * @param {String} addressStr
@@ -61,5 +60,12 @@ export const checkTxHasBeenDroppedOrFailed = (txHash) => {
 }
 
 export const getTxID = (address) => {
-  return caller.get(`${URL.BlockExplorer.apiURL()}/api/addr/${address}/utxo`)
+  return caller.get(`${URL.BlockChainInfo.apiURL()}/unspent?active=${address}`)
+}
+
+export const pushTxBTC = (rawTx) => {
+  const data = {
+    tx: rawTx
+  }
+  return caller.post(`${URL.BlockChainInfo.apiURL()}/pushtx`, data, false)
 }

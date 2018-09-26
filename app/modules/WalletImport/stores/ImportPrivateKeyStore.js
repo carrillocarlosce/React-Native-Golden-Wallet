@@ -1,10 +1,13 @@
 import { observable, action, computed } from 'mobx'
+import wif from 'wif'
+import bigi from 'bigi'
 import MainStore from '../../../AppStores/MainStore'
 import { importPrivateKey } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
 import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 export default class ImportPrivateKeyStore {
   @observable customTitle = ``
@@ -21,19 +24,24 @@ export default class ImportPrivateKeyStore {
     return this.customTitle
   }
 
-  @action async create() {
+  @action async create(coin = chainNames.ETH) {
     this.loading = true
     const ds = MainStore.secureStorage
 
     try {
-      const w = importPrivateKey(this.privateKey, this.title, ds)
+      let { privateKey } = this
+      if (coin === chainNames.BTC && Checker.checkWIFBTC(this.privateKey)) {
+        const decode = wif.decode(this.privateKey)
+        privateKey = bigi.fromBuffer(decode.privateKey).toString(16)
+      }
+      const w = importPrivateKey(privateKey, this.title, ds, coin)
       if (this.addressMap[w.address]) {
         NavStore.popupCustom.show('Existed Wallet')
         this.loading = false
         return
       }
       this.finished = true
-      NotificationStore.addWallet(this.title, w.address)
+      NotificationStore.addWallet(this.title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
       NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
       await MainStore.appState.appWalletsStore.addOne(w)
@@ -41,7 +49,9 @@ export default class ImportPrivateKeyStore {
       MainStore.appState.selectedWallet.fetchingBalance()
       this.loading = false
       NavStore.reset()
-      NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+      if (w.type === 'ethereum') {
+        NavStore.pushToScreen('TokenScreen')
+      }
     } catch (_) {
       this.loading = false
       NavStore.popupCustom.show('Invalid private key.')

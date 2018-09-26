@@ -11,7 +11,10 @@ class WalletDataSource {
     const walletsStr = await AsyncStorage.getItem(dataKey)
     if (!walletsStr) return []
 
-    this.wallets = JSON.parse(walletsStr).map(js => new ETHWallet(js))
+    this.wallets = JSON.parse(walletsStr).map((js) => {
+      if (js.type === 'ethereum') return new ETHWallet(js)
+      return new BTCWallet(js)
+    })
     return this.wallets
   }
 

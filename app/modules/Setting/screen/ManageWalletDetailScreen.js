@@ -47,22 +47,25 @@ export default class ManageWalletDetailScreen extends Component {
     return this.wallet.enableNotification
   }
 
-  get shouldShowExportPrivateKey() {
-    if (!this.wallet.importType) {
-      return MainStore.appState.didBackup
+  get symbol() {
+    const { type } = this.wallet
+    if (type === 'ethereum') {
+      return 'ETH'
     }
-    return this.wallet.importType !== 'Address'
+    return 'BTC'
   }
 
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onRemoved: () => NavStore.pushToScreen('ManageWalletScreen')
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onAdded: () => NavStore.pushToScreen('ManageWalletScreen')
     })
   }
 
@@ -93,7 +96,7 @@ export default class ManageWalletDetailScreen extends Component {
         marginHorizontal: 20
       }}
       >
-        <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ETH`}</Text>
+        <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ${this.symbol}`}</Text>
         <AddressElement
           style={{ marginTop: 15, width: 328 }}
           textStyle={{ fontSize: 16 }}
@@ -124,15 +127,19 @@ export default class ManageWalletDetailScreen extends Component {
                 />
               )
             }
-            if (index == 1 && !this.shouldShowExportPrivateKey) {
-              return (
-                <SettingItem
-                  style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-                  mainText="Add Private Key"
-                  onPress={this.handleAddPrivKeyPressed}
-                  iconRight={item.iconRight}
-                />
-              )
+            if (index == 1) {
+              if (!this.wallet.importType && !MainStore.appState.didBackup) {
+                return <View />
+              } else if (this.wallet.importType === 'Address') {
+                return (
+                  <SettingItem
+                    style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+                    mainText="Add Private Key"
+                    onPress={this.handleAddPrivKeyPressed}
+                    iconRight={item.iconRight}
+                  />
+                )
+              }
             }
             return (
               <SettingItem

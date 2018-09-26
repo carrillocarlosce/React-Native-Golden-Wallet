@@ -19,6 +19,7 @@ class AppState {
   @observable selectedTransaction = null
   @observable addressBooks = []
   @observable rateETHDollar = new BigNumber(0)
+  @observable rateBTCDollar = new BigNumber(0)
   @observable hasPassword = false
   @observable didBackup = false
   currentWalletIndex = 0
@@ -34,6 +35,7 @@ class AppState {
   @observable currentCardIndex = 0
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
+  homeCarousel = null
 
   static TIME_INTERVAL = 20000
 
@@ -49,6 +51,7 @@ class AppState {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
+    this.getRateBTCDollar()
     this.getGasPriceEstimate()
   }
 
@@ -119,6 +122,17 @@ class AppState {
     }, 100)
   }
 
+  @action async getRateBTCDollar() {
+    setTimeout(async () => {
+      const rs = await api.fetchRateBTCDollar()
+      const rate = rs.data && rs.data.RAW && rs.data.RAW.BTC && rs.data.RAW.BTC.USD
+
+      if (rate.PRICE != this.rateBTCDollar) {
+        this.rateBTCDollar = new BigNumber(rate.PRICE)
+      }
+    }, 100)
+  }
+
   @action async getGasPriceEstimate() {
     setTimeout(async () => {
       if (this.config.network === Config.networks.mainnet && this.internetConnection === 'online') {
@@ -156,7 +170,8 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    this.currentWalletIndex = data.currentWalletIndex
+    this.currentWalletIndex = data.currentWalletIndex || 0
+    this.currentBTCWalletIndex = data.currentBTCWalletIndex || 0
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
@@ -170,6 +185,7 @@ class AppState {
     }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
+    this.rateBTCDollar = new BigNumber(data.rateBTCDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
   }
 
@@ -187,6 +203,10 @@ class AppState {
   }
 
   @computed get wallets() {
+    if (this.networkName !== Config.networks.mainnet) {
+      const ethWallets = this.appWalletsStore.wallets.filter(w => w.type === 'ethereum')
+      return ethWallets
+    }
     return this.appWalletsStore.wallets
   }
 
@@ -222,6 +242,7 @@ class AppState {
       selectedToken: this.selectedToken ? this.selectedToken.address : null,
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
+      rateBTCDollar: this.rateBTCDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
       currentBTCWalletIndex: this.currentBTCWalletIndex,
       didBackup: this.didBackup,

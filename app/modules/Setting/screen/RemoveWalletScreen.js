@@ -18,7 +18,6 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
-import NavStore from '../../../AppStores/NavStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
 const { width } = Dimensions.get('window')
@@ -60,12 +59,8 @@ export default class RemoveWalletScreen extends Component {
     if (MainStore.appState.wallets.length === 0) {
       MainStore.appState.setSelectedWallet(null)
     }
-    this.backToManageScreen()
-  }
-
-  backToManageScreen() {
     this.hideKeyboard()
-    NavStore.pushToScreen('ManageWalletScreen')
+    this.props.navigation.state.params.onRemoved()
   }
 
   handleBack = () => {

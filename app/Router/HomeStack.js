@@ -11,6 +11,7 @@ import AddPrivateKeyScreen from '../modules/Setting/screen/AddPrivateKeyScreen'
 import ExportPrivateKeyScreen from '../modules/Setting/screen/ExportPrivateKeyScreen'
 import TokenScreen from '../modules/WalletDetail/screen/TokenScreen'
 import TransactionListScreen from '../modules/TransactionList/screen/TransactionListScreen'
+import TransactionBTCListScreen from '../modules/TransactionList/screen/TransactionListScreen.btc'
 import PrivacyTermsWebView from '../modules/Setting/screen/PrivacyTermsWebView'
 import ImplementPrivateKeyScreen from '../modules/WalletImport/screen/ImplementPrivateKeyScreen'
 import AddressBookScreen from '../modules/AddressBook/screen/AddressBookScreen'
@@ -19,11 +20,13 @@ import TxHashWebViewScreen from '../modules/TransactionDetail/screen/TxHashWebVi
 import PrivacyTermsScreen from '../modules/Setting/screen/PrivacyTermsScreen'
 import AppVersionScreen from '../modules/Setting/screen/AppVersionScreen'
 import TransactionDetailScreen from '../modules/TransactionDetail/screen/TransactionDetailScreen'
+import TransactionBTCDetailScreen from '../modules/TransactionDetail/screen/TransactionDetailScreen.btc'
 import CollectibleScreen from '../modules/Collectibles/screen/CollectibleScreen'
 import CollectibleDetailScreen from '../modules/Collectibles/screen/CollectibleDetailScreen'
 import CollectibleListScreen from '../modules/Collectibles/screen/CollectibleListScreen'
 import DAppListScreen from '../modules/DAppBrowser/screen/DAppListScreen'
 import AppStyle from '../commons/AppStyle'
+import TransactionMoreDetailScreen from '../modules/TransactionDetail/screen/TransactionMoreDetailScreen'
 
 const HomeStack = StackNavigator(
   {
@@ -99,6 +102,12 @@ const HomeStack = StackNavigator(
         header: null
       }
     },
+    TransactionBTCListScreen: {
+      screen: TransactionBTCListScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
     PrivacyTermsWebView: {
       screen: PrivacyTermsWebView,
       navigationOptions: {
@@ -143,6 +152,18 @@ const HomeStack = StackNavigator(
     },
     TransactionDetailScreen: {
       screen: TransactionDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    TransactionBTCDetailScreen: {
+      screen: TransactionBTCDetailScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    TransactionMoreDetailScreen: {
+      screen: TransactionMoreDetailScreen,
       navigationOptions: {
         header: null
       }

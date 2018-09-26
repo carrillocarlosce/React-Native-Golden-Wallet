@@ -161,7 +161,7 @@ export default class ConfirmScreen extends Component {
     ], 'If you want your transaction to be executed at a faster speed, then you have to be willing to pay a higher gas price.')
   }
 
-  _renderConfirmHeader() {
+  _renderConfirmHeader(type) {
     return (
       <View
         style={styles.confirmHeader}
@@ -173,17 +173,18 @@ export default class ConfirmScreen extends Component {
           <Image source={images.backButton} style={styles.closeIcon} resizeMode="contain" />
           <Text style={styles.title}>Confirmation</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.advanceBtn}
-          onPress={this.showAdvance}
-        >
-          <Image source={images.advanceIcn} style={styles.closeIcon} />
-        </TouchableOpacity>
+        {type === 'ethereum' &&
+          <TouchableOpacity
+            style={styles.advanceBtn}
+            onPress={this.showAdvance}
+          >
+            <Image source={images.advanceIcn} style={styles.closeIcon} />
+          </TouchableOpacity>}
       </View>
     )
   }
 
-  _renderConfirmContent(ethAmount, usdAmount, from, to, fee) {
+  _renderConfirmContent(ethAmount, usdAmount, from, to, fee, type) {
     const { confirmStore } = MainStore.sendTransaction
     return (
       <View>
@@ -235,12 +236,13 @@ export default class ConfirmScreen extends Component {
               <Text style={[styles.value, { fontFamily: 'OpenSans-Semibold', fontSize: 16 }]}>
                 {fee}
               </Text>
-              <TouchableOpacity
-                style={styles.standard}
-                onPress={this.onShowActionSheet}
-              >
-                <Text style={styles.standardText}>{confirmStore.adjust}</Text>
-              </TouchableOpacity>
+              {type === 'ethereum' &&
+                <TouchableOpacity
+                  style={styles.standard}
+                  onPress={this.onShowActionSheet}
+                >
+                  <Text style={styles.standardText}>{confirmStore.adjust}</Text>
+                </TouchableOpacity>}
             </View>
           </View>
         </View>
@@ -518,14 +520,14 @@ export default class ConfirmScreen extends Component {
   }
 
   _onCancelAction = () => {
-    this.actionSheet.hide()
+    this.actionSheet && this.actionSheet.hide()
   }
 
   _onPressAction = (gasPrice, adj) => {
     MainStore.sendTransaction.confirmStore.setGasPrice(gasPrice)
     MainStore.sendTransaction.confirmStore.validateAmount()
     MainStore.sendTransaction.confirmStore.setAdjust(adj)
-    this.actionSheet.hide()
+    this.actionSheet && this.actionSheet.hide()
   }
 
   render() {
@@ -553,7 +555,7 @@ export default class ConfirmScreen extends Component {
       formatedDolar
     } = confirmStore
     const to = MainStore.sendTransaction.address
-    const { address } = MainStore.appState.selectedWallet
+    const { address, type } = MainStore.appState.selectedWallet
     return (
       <TouchableWithoutFeedback onPress={this._onCancelAction}>
         <View
@@ -566,8 +568,8 @@ export default class ConfirmScreen extends Component {
               }
             ]}
           >
-            {this._renderConfirmHeader()}
-            {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, formatedFee)}
+            {this._renderConfirmHeader(type)}
+            {this._renderConfirmContent(formatedAmount, formatedDolar, address, to, formatedFee, type)}
             {this._renderSendBtn()}
           </Animated.View>
           {isShowAdvance &&
@@ -615,7 +617,7 @@ export default class ConfirmScreen extends Component {
               </Animated.View>
             </View>
           }
-          {this._renderActionSheet()}
+          {type === 'ethereum' && this._renderActionSheet()}
         </View>
       </TouchableWithoutFeedback>
     )

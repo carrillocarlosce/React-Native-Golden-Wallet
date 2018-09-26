@@ -32,6 +32,7 @@ import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
 import ActionSheetCustom from '../../../components/elements/ActionSheetCustom'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -199,30 +200,109 @@ export default class HomeScreen extends Component {
     NavStore.pushToScreen('NewUpdatedAvailableScreen')
   }
 
+  _onExportPrivatekey = () => NavStore.popupCustom.show(
+    'WARNING!',
+    [
+      {
+        text: 'Cancel',
+        onClick: () => {
+          NavStore.popupCustom.hide()
+        }
+      },
+      {
+        text: 'Continue',
+        onClick: async (text) => {
+          const { selectedWallet } = MainStore.appState
+          NavStore.popupCustom.hide()
+          NavStore.lockScreen({
+            onUnlock: (pincode) => {
+              NavStore.showLoading()
+              const ds = new SecureDS(pincode)
+              selectedWallet.setSecureDS(ds)
+              selectedWallet.derivePrivateKey().then((pk) => {
+                NavStore.hideLoading()
+                NavStore.pushToScreen('ExportPrivateKeyScreen', {
+                  pk,
+                  walletName: selectedWallet.title
+                })
+              }).catch(e => NavStore.hideLoading())
+            }
+          }, true)
+        }
+      }
+    ],
+    'It is essential to understand that the Private Key is the most important and sensitive part of your account information.\n\nWhoever has knowledge of a Private Key has full control over the associated funds and assets.\n\nIt is important for restoring your account so you should never lose it, but also keep it top secret.'
+  )
+
   _onLongPress = () => {
     this.actionSheet.show()
   }
 
+  _onItemPress = (index) => {
+    const { selectedWallet } = MainStore.appState
+    if (selectedWallet.type === 'ethereum') {
+      NavStore.pushToScreen('TokenScreen', { index })
+    } else {
+      MainStore.appState.setselectedToken(selectedWallet.tokens[0])
+      NavStore.pushToScreen('TransactionBTCListScreen')
+    }
+  }
+
+  _onEditPress = () => {
+    this._onCancelAction()
+    NavStore.pushToScreen('EditWalletNameScreen', {
+      wallet: MainStore.appState.selectedWallet,
+      onEdited: () => NavStore.goBack()
+    })
+  }
+
+  _onExportPress = () => {
+    this._onCancelAction()
+    setTimeout(this._onExportPrivatekey, 250)
+  }
+
+  _onAddPress = () => {
+    this._onCancelAction()
+    NavStore.pushToScreen('AddPrivateKeyScreen', {
+      wallet: MainStore.appState.selectedWallet,
+      onAdded: () => NavStore.goBack()
+    })
+  }
+
+  _onRemovePress = () => {
+    this._onCancelAction()
+    NavStore.lockScreen({
+      onUnlock: this.handleRemovePressed
+    }, true)
+  }
+
+  handleRemovePressed = (pincode) => {
+    NavStore.pushToScreen('RemoveWalletScreen', {
+      wallet: MainStore.appState.selectedWallet,
+      onRemoved: () => NavStore.goBack()
+    })
+  }
+
   _renderActionSheet = selectedWallet => (
     <ActionSheetCustom ref={(ref) => { this.actionSheet = ref }} onCancel={this._onCancelAction}>
-      <TouchableOpacity onPress={() => { }}>
+      <TouchableOpacity onPress={this._onEditPress}>
         <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
           <Text style={[styles.actionText, { color: '#4A90E2' }]}>Edit Wallet Name</Text>
         </View>
       </TouchableOpacity>
       {selectedWallet && selectedWallet.didBackup && selectedWallet.importType && selectedWallet.importType !== 'Address' &&
-        <TouchableOpacity onPress={() => { }}>
+        <TouchableOpacity onPress={this._onExportPress}>
           <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
             <Text style={[styles.actionText, { color: '#4A90E2' }]}>Export Private Key</Text>
           </View>
         </TouchableOpacity>}
       {selectedWallet && selectedWallet.importType && selectedWallet.importType === 'Address' &&
-        <TouchableOpacity onPress={() => { }}>
+        <TouchableOpacity onPress={this._onAddPress}>
           <View style={[styles.actionButton, { borderBottomWidth: 1, borderColor: AppStyle.borderLinesSetting }]}>
             <Text style={[styles.actionText, { color: '#4A90E2' }]}>Add Private Key</Text>
           </View>
         </TouchableOpacity>}
-      <TouchableOpacity onPress={() => { }}>
+      <TouchableOpacity onPress={this._onRemovePress}>
         <View style={styles.actionButton}>
           <Text style={[styles.actionText, { color: AppStyle.errorColor }]}>Remove Wallet</Text>
         </View>
@@ -247,7 +327,7 @@ export default class HomeScreen extends Component {
         style={{ margin: 5, marginTop: 20 }}
         onPress={() => {
           index !== this.wallets.length
-            ? NavStore.pushToScreen('TokenScreen', { index })
+            ? this._onItemPress(index)
             : this._gotoCreateWallet()
         }}
         onLongPress={this._onLongPress}
@@ -264,6 +344,10 @@ export default class HomeScreen extends Component {
   _goToDapp = () => {
     if (!MainStore.appState.selectedWallet) {
       NavStore.popupCustom.show('You have no wallet')
+      return
+    }
+    if (MainStore.appState.selectedWallet.type !== 'ethereum') {
+      NavStore.popupCustom.show('This is not ETH Wallet')
       return
     }
     if (!MainStore.appState.selectedWallet.canSendTransaction) {
@@ -333,7 +417,7 @@ export default class HomeScreen extends Component {
         <View style={{ height: heightCarousel }}>
           <Carousel
             removeClippedSubviews={false}
-            ref={(c) => { this._carousel = c }}
+            ref={(c) => { MainStore.appState.homeCarousel = c }}
             data={this.cards}
             layout="default"
             renderItem={this._renderCard}
@@ -366,7 +450,7 @@ export default class HomeScreen extends Component {
         >
           <SettingScreen
             onCreated={(index) => {
-              this._carousel.snapToItem(index)
+              MainStore.appState.homeCarousel.snapToItem(index)
             }}
           />
         </Animated.View>

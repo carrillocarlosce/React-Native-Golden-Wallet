@@ -17,7 +17,7 @@ class AmountStore {
 
   @computed get amountCrypto() {
     const { selectedWallet, selectedToken } = MainStore.appState
-    if (selectedWallet.type === 'bitcoin') return new BigNumber(2)
+    if (selectedWallet.type === 'bitcoin') return (selectedWallet.balance.dividedBy(new BigNumber('1.0e+8')))
     return MainStore.sendTransaction.isToken
       ? (selectedToken.balance.dividedBy(new BigNumber(`1.0e+${selectedToken.decimals}`)))
       : (selectedWallet.balance.dividedBy(new BigNumber('1.0e+18'))) // Big Num
@@ -28,7 +28,7 @@ class AmountStore {
     const { selectedWallet } = MainStore.appState
     return selectedWallet.type === 'ethereum'
       ? MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar
-      : new BigNumber('7000') // Big Num
+      : MainStore.appState.rateBTCDollar // Big Num
   }
 
   @computed get postfix() {
@@ -49,7 +49,7 @@ class AmountStore {
     const { selectedWallet, selectedToken } = MainStore.appState
     return selectedWallet.type === 'ethereum'
       ? MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar
-      : new BigNumber(14000) // Big num
+      : selectedWallet.totalBalanceDollar // Big num
   }
 
   @computed get amountTextBigNum() {
@@ -77,7 +77,7 @@ class AmountStore {
     if (MainStore.sendTransaction.isToken) {
       return 0
     }
-    return selectedWallet.type === 'ehtereum'
+    return selectedWallet.type === 'ethereum'
       ? isUSD ? fee.times(this.rate) : fee
       : new BigNumber('400e-8')
   }
@@ -234,7 +234,7 @@ class AmountStore {
     if (data.length == (isUSD ? 9 : 6) && item.text !== '.' && !isHadPoint) return
     else if (data.length == 0 && item.text == '.') {
       const newData = [{ text: '0' }, item]
-      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]
+      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]
       this.setAmountText({ data: newData, subData: newSubData, isHadPoint: true })
       return
     } else if (data.length == 1 && item.text !== '.' && data[0].text == '0') {
@@ -249,7 +249,7 @@ class AmountStore {
       this.setAmountText({ subData, data })
       return
     } else if (subData.length == 0 && isHadPoint) return
-    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]) : []
+    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]) : []
     if (data.length == 3 && item.text !== '.') data.splice(1, 0, { text: ',' })
     else if (data.length == 5 && item.text !== '.') {
       data.splice(1, 1)
@@ -276,7 +276,7 @@ class AmountStore {
       isUSD,
       isHadPoint
     } = this.amountText
-    if (subData.length == (isUSD ? 2 : 4)) {
+    if (subData.length == (isUSD ? 2 : 5)) {
       data.pop()
       this.setAmountText({ data, subData: [], isHadPoint: false })
       return

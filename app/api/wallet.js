@@ -40,9 +40,22 @@ export const fetchWalletInfo = (address) => {
   return caller.get(url, {}, true)
 }
 
+export const fetchWalletBTCInfo = (address) => {
+  const url = `${URL.BlockChainInfo.apiURL()}/rawaddr/${address}`
+  return caller.get(url, {}, true)
+}
+
 export const fetchRateETHDollar = () => {
   const data = {
     fsyms: 'ETH',
+    tsyms: 'BTC,USD,EUR,GBP,AUD,CAD,CNY,JPY,RUB'
+  }
+  return caller.get(`${URL.CryptoCompare.apiURL()}/data/pricemultifull`, data, true)
+}
+
+export const fetchRateBTCDollar = () => {
+  const data = {
+    fsyms: 'BTC',
     tsyms: 'BTC,USD,EUR,GBP,AUD,CAD,CNY,JPY,RUB'
   }
   return caller.get(`${URL.CryptoCompare.apiURL()}/data/pricemultifull`, data, true)

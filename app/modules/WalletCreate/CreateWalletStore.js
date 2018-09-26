@@ -21,18 +21,18 @@ class CreateWalletStore {
     this.loading = true
     const ds = MainStore.secureStorage
     let index = 0
-    let path = ''
+    let coinPath = ''
     if (coin === chainNames.ETH) {
-      path = Keystore.CoinType.ETH.path
+      coinPath = Keystore.CoinType.ETH.path
       index = MainStore.appState.currentWalletIndex
     } else if (coin === chainNames.BTC) {
-      path = Keystore.CoinType.BTC.path
+      coinPath = Keystore.CoinType.BTC.path
       index = MainStore.appState.currentBTCWalletIndex
     }
     const { title } = this
-    generateNew(ds, title, index, path, coin).then(async (w) => {
+    generateNew(ds, title, index, coinPath, coin).then(async (w) => {
       this.finished = true
-      NotificationStore.addWallet(title, w.address)
+      NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
       NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
       MainStore.appState.appWalletsStore.addOne(w)
       MainStore.appState.autoSetSelectedWallet()

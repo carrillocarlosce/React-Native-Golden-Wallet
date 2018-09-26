@@ -1,11 +1,26 @@
 import axios from 'axios'
+import qs from 'querystring'
 
 const METHOD_GET = 'get'
 const METHOD_POST = 'post'
 const METHOD_PUT = 'put'
 const METHOD_DELETE = 'delete'
 
-function requestAPI(method, url, headers = {}, dataBody, isJSON = false) {
+function requestAPI(method, url, _headers = {}, _dataBody, isJSON = false) {
+  const headers = _headers
+  let dataBody = _dataBody
+
+  if (isJSON) {
+    headers['Content-Type'] = 'application/json'
+  }
+
+  if (isJSON && (method === METHOD_POST || method === METHOD_PUT)) {
+    headers['Content-Type'] = 'application/json'
+  } else if (method === METHOD_POST || method === METHOD_PUT) {
+    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    dataBody = qs.stringify(dataBody)
+  }
+
   const config = {
     url,
     headers,
