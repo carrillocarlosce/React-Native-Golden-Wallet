@@ -207,8 +207,12 @@ export default class HomeScreen extends Component {
   }
 
   _onLongPress = () => {
+    const { selectedWallet } = MainStore.appState
     const { navigation } = this.props
-    navigation.navigate('ManageWalletScreen')
+    navigation.navigate('ManageWalletDetailScreen', {
+      wallet: selectedWallet,
+      fromHomeScreen: true
+    })
   }
 
   _onItemPress = (index) => {

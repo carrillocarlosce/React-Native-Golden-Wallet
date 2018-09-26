@@ -15,7 +15,7 @@ export default class ManageWalletStore {
       onPress: () => {
         NavStore.pushToScreen('EditWalletNameScreen', {
           wallet: this.selectedWallet,
-          onEdited: () => NavStore.pushToScreen('ManageWalletScreen')
+          onEdited: this.onEdited
         })
       }
     },
@@ -72,7 +72,18 @@ export default class ManageWalletStore {
   @observable customTitle = ''
   @observable finished = false
   @observable.ref selectedWallet = {}
+  @observable.ref isFromHome = false
   @observable privKey = ''
+
+  onEdited = () => {
+    let screen = 'ManageWalletScreen'
+    if (this.isFromHome) {
+      screen = 'HomeScreen'
+    }
+    NavStore.pushToScreen(screen)
+  }
+
+  @action setIsFromHome = (w) => { this.isFromHome = w }
 
   @action setPrivateKey = (pk) => { this.privKey = pk }
 
