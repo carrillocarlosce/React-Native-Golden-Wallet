@@ -275,6 +275,7 @@ export default class HomeScreen extends Component {
 
   render() {
     const { translateY } = this
+    const { selectedWallet } = MainStore.appState
     const changeOpacityListCoin = translateY.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
@@ -312,16 +313,18 @@ export default class HomeScreen extends Component {
             >
               {constant.SETTING}
             </Animated.Text>
-            <Animated.View
-              style={[styles.animHomeHeader, { opacity: changeOpacityListCoin }]}
-            >
-              <TouchableOpacity
-                style={styles.browserButton}
-                onPress={this._goToDapp}
+            {selectedWallet && selectedWallet.type === 'ethereum' &&
+              <Animated.View
+                style={[styles.animHomeHeader, { opacity: changeOpacityListCoin }]}
               >
-                <Text style={{ color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>DApps Browser</Text>
-              </TouchableOpacity>
-            </Animated.View>
+                <TouchableOpacity
+                  style={styles.browserButton}
+                  onPress={this._goToDapp}
+                >
+                  <Text style={{ color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>DApps Browser</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            }
           </View>
         </View>
         <View style={{ height: heightCarousel }}>
