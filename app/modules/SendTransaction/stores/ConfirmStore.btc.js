@@ -41,7 +41,7 @@ export default class ConfirmStore {
   }
 
   @computed get rate() {
-    return MainStore.appState.rateETHDollar
+    return MainStore.appState.rateBTCDollar
   }
 
   @computed get rateToken() {
