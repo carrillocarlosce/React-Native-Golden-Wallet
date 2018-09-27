@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Clipboard,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  Platform,
+  TextInput
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
@@ -20,8 +22,6 @@ import images from '../../../commons/images'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import constant from '../../../commons/constant'
 import AppStyle from '../../../commons/AppStyle'
-import InputWithAction from '../../../components/elements/InputWithActionItem'
-import commonStyle from '../../../commons/commonStyles'
 import NavStore from '../../../AppStores/NavStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 
@@ -47,10 +47,6 @@ export default class AddPrivateKeyScreen extends Component {
 
   onChangePrivKey = (text) => {
     this.manageWalletStore.setPrivateKey(text)
-    const { isErrorPrivateKey } = this.manageWalletStore
-    if (isErrorPrivateKey) {
-      this.privKeyField.shake()
-    }
   }
 
   onBack = () => { NavStore.goBack() }
@@ -128,17 +124,25 @@ export default class AddPrivateKeyScreen extends Component {
                 }}
                 action={this.onBack}
               />
-              <InputWithAction
-                ref={(ref) => { this.privKeyField = ref }}
-                style={{ width: width - 40, marginTop: 25 }}
-                onChangeText={this.onChangePrivKey}
-                needPasteButton
-                styleTextInput={commonStyle.fontAddress}
-                value={privKey}
-              />
-              {isErrorPrivateKey &&
-                <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
-              }
+              <View style={{ marginTop: 25 }}>
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  keyboardAppearance="dark"
+                  autoCorrect={false}
+                  multiline
+                  numberOfLines={4}
+                  style={[
+                    styles.textInput
+                  ]}
+                  onChangeText={this.onChangePrivKey}
+                  value={privKey}
+                />
+                {privKey === '' && this._renderPasteButton()}
+                {privKey !== '' && this._renderClearButton()}
+                {isErrorPrivateKey &&
+                  <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
+                }
+              </View>
               <ActionButton
                 style={{ height: 40, marginTop: 25 }}
                 buttonItem={{
@@ -177,7 +181,19 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Semibold',
     color: AppStyle.errorColor,
     alignSelf: 'flex-start',
-    marginTop: 10,
-    marginLeft: 20
+    marginTop: 10
+  },
+  textInput: {
+    height: 182,
+    width: width - 40,
+    backgroundColor: '#14192D',
+    borderRadius: 14,
+    color: AppStyle.secondaryTextColor,
+    fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
+    fontSize: 18,
+    paddingHorizontal: 27,
+    paddingTop: 50,
+    paddingBottom: 50,
+    textAlign: 'center'
   }
 })

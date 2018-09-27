@@ -5,7 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
@@ -22,6 +23,7 @@ import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
 
 const marginTop = LayoutUtils.getExtraTop()
+const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {
@@ -36,11 +38,27 @@ export default class ManageWalletDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
-    this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
+    const { navigation } = this.props
+    this.wallet = navigation ? navigation.state.params.wallet : {}
+    this.isFromHomeScreen = navigation && navigation.state.params.fromHomeScreen
+      ? navigation.state.params.fromHomeScreen
+      : false
+  }
+
+  componentDidMount() {
+    this.manageWalletStore.setIsFromHome(this.isFromHomeScreen)
   }
 
   onNotificationSwitch(isEnable, wallet) {
     this.manageWalletStore.switchEnableNotification(isEnable, wallet)
+  }
+
+  onDoneAction = () => {
+    let screen = 'ManageWalletScreen'
+    if (this.isFromHomeScreen) {
+      screen = 'HomeScreen'
+    }
+    NavStore.pushToScreen(screen)
   }
 
   get currentStateEnableNotification() {
@@ -58,14 +76,14 @@ export default class ManageWalletDetailScreen extends Component {
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
       wallet: this.wallet,
-      onRemoved: () => NavStore.pushToScreen('ManageWalletScreen')
+      onRemoved: this.onDoneAction
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
       wallet: this.wallet,
-      onAdded: () => NavStore.pushToScreen('ManageWalletScreen')
+      onAdded: this.onDoneAction
     })
   }
 
@@ -98,7 +116,7 @@ export default class ManageWalletDetailScreen extends Component {
       >
         <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ${this.symbol}`}</Text>
         <AddressElement
-          style={{ marginTop: 15, width: 328 }}
+          style={{ marginTop: 15, width: width * 0.8 }}
           textStyle={{ fontSize: 16 }}
           address={this.wallet.address}
         />
