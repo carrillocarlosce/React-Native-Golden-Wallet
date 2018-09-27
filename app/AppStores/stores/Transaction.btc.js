@@ -6,9 +6,9 @@ import constant from '../../commons/constant'
 export default class TransactionBTC extends Transaction {
   walletType = 'bitcoin'
 
-  constructor(obj, token, status = 1) {
+  constructor(obj, token = {}, status = 1) {
     super(obj, token, status)
-    if (token) this.rate = token.rate
+    this.rate = MainStore.appState.rateBTCDollar
     this.timeStamp = obj.time
     this.hash = obj.hash
     this.from = obj.inputs.map(i => i.prev_out.addr)

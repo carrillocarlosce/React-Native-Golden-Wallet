@@ -71,7 +71,7 @@ export default class WalletBTC extends Wallet {
         this.totalBalance = this.balance
       }
       this.tokens = [this.getTokenBTC()]
-      this.tokens[0].transactions = res.data.txs.map(tx => new TransactionBTC(tx, this.tokens[0], 1))
+      this.tokens[0].transactions = res.data.txs.map(tx => new TransactionBTC(tx, 1))
       this.update()
       this.offLoading()
     } catch (e) {
@@ -95,7 +95,7 @@ export default class WalletBTC extends Wallet {
   }
 
   getTokenBTC() {
-    const tokenETH = {
+    const tokenBTC = {
       tokenInfo: {
         address: this.address,
         name: 'Bitcoin',
@@ -108,6 +108,6 @@ export default class WalletBTC extends Wallet {
       balance: this.balance.toString(10)
     }
 
-    return new WalletTokenBTC(tokenETH, this.address)
+    return new WalletTokenBTC(tokenBTC, this.address)
   }
 }

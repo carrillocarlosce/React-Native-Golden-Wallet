@@ -6,6 +6,7 @@ import NavStore from '../../AppStores/NavStore'
 import NotificationDS from '../DataSource/NotificationDS'
 import API from '../../api'
 import Transaction from '../../AppStores/stores/Transaction'
+import TransactionBTC from '../../AppStores/stores/Transaction.btc'
 
 class Notification {
   @observable currentNotif = null
@@ -102,17 +103,22 @@ class Notification {
       return
     }
 
-    const { address, contract } = this.notif
     MainStore.appState.setSelectedTransaction(null)
-    WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
-      const wallet = MainStore.appState.wallets
-        .find(w => w.address.toLowerCase() === address.toLowerCase())
-      if (!wallet) {
-        return
-      }
-      const transaction = new Transaction(this.notif, token, this.notif.status)
+    if (this.notif.from) {
+      const { address, contract } = this.notif
+      WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
+        const wallet = MainStore.appState.wallets
+          .find(w => w.address.toLowerCase() === address.toLowerCase())
+        if (!wallet) {
+          return
+        }
+        const transaction = new Transaction(this.notif, token, this.notif.status)
+        MainStore.appState.setSelectedTransaction(transaction)
+      })
+    } else if (this.notif.inputs) {
+      const transaction = new TransactionBTC(this.notif)
       MainStore.appState.setSelectedTransaction(transaction)
-    })
+    }
   }
 
   @action gotoTransaction() {
@@ -122,7 +128,11 @@ class Notification {
       NavStore.popupCustom.show('Wallet not Found')
       return
     }
-    NavStore.pushToScreen('TransactionDetailScreen', { fromNotif: true })
+    if (this.notif.from) {
+      NavStore.pushToScreen('TransactionDetailScreen', { fromNotif: true })
+    } else if (this.notif.inputs) {
+      NavStore.pushToScreen('TransactionBTCDetailScreen', { fromNotif: true })
+    }
   }
 
   @computed get notif() {
