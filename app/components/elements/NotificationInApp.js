@@ -69,7 +69,7 @@ export default class NotificationInApp extends Component {
       return false
     }
     if (appState === 'active') {
-      return true
+      return notif.from || notif.inputs
     }
     return false
   }
