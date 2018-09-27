@@ -59,7 +59,7 @@ export default class RemoveWalletScreen extends Component {
     if (MainStore.appState.wallets.length === 0) {
       MainStore.appState.setSelectedWallet(null)
     }
-    MainStore.appState.setSelectedWallet(wallets[index])
+    MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
     this.hideKeyboard()
     this.props.navigation.state.params.onRemoved()
   }

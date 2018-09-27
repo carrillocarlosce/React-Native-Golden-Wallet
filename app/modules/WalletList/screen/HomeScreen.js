@@ -6,8 +6,7 @@ import {
   Dimensions,
   Animated,
   Clipboard,
-  Text,
-  TouchableOpacity
+  Text
 } from 'react-native'
 import PropTypes from 'prop-types'
 import FCM from 'react-native-fcm'
@@ -32,6 +31,7 @@ import Router from '../../../AppStores/Router'
 import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
+import HomeDAppButton from '../elements/HomeDAppButton'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -313,18 +313,11 @@ export default class HomeScreen extends Component {
             >
               {constant.SETTING}
             </Animated.Text>
-            {selectedWallet && selectedWallet.type === 'ethereum' &&
-              <Animated.View
-                style={[styles.animHomeHeader, { opacity: changeOpacityListCoin }]}
-              >
-                <TouchableOpacity
-                  style={styles.browserButton}
-                  onPress={this._goToDapp}
-                >
-                  <Text style={{ color: AppStyle.mainColor, fontFamily: 'OpenSans-Semibold' }}>DApps Browser</Text>
-                </TouchableOpacity>
-              </Animated.View>
-            }
+            <Animated.View
+              style={[styles.animHomeHeader, { opacity: changeOpacityListCoin }]}
+            >
+              <HomeDAppButton onPress={this._goToDapp} />
+            </Animated.View>
           </View>
         </View>
         <View style={{ height: heightCarousel }}>
@@ -417,16 +410,6 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'flex-end',
     justifyContent: 'center'
-  },
-  browserButton: {
-    height: 40,
-    backgroundColor: '#121734',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 20,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 20
   },
   containerSetting: {
     position: 'absolute',
