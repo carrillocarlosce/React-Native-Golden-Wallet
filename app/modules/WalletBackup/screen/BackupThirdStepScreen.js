@@ -72,7 +72,6 @@ export default class BackupThirdStepScreen extends Component {
     const { listKeyWordChoose } = obj
     return (
       <TagList
-        isCenter
         isShowOrder
         arrayMnemonic={listKeyWordChoose.slice()}
         onItemPress={this.onRemoveWord}
