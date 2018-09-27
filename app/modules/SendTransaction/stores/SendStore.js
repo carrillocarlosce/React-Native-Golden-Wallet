@@ -141,7 +141,7 @@ class SendStore {
   }
 
   sendBTC(ds) {
-    let amount = MainStore.sendTransaction.confirmStore.value.times(new BigNumber(1e+8)).toNumber()
+    let amount = parseInt(MainStore.sendTransaction.confirmStore.value.times(new BigNumber(1e+8)).toFixed(0))
     const toAddress = MainStore.sendTransaction.addressInputStore.address
     let balance = 0
     for (let s = 0; s < this.txIDData.length; s++) {
