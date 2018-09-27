@@ -53,7 +53,7 @@ export default class ManageWalletDetailScreen extends Component {
     this.manageWalletStore.switchEnableNotification(isEnable, wallet)
   }
 
-  onRemoved = () => {
+  onDoneAction = () => {
     let screen = 'ManageWalletScreen'
     if (this.isFromHomeScreen) {
       screen = 'HomeScreen'
@@ -76,14 +76,14 @@ export default class ManageWalletDetailScreen extends Component {
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
       wallet: this.wallet,
-      onRemoved: this.onRemoved
+      onRemoved: this.onDoneAction
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
       wallet: this.wallet,
-      onAdded: () => NavStore.pushToScreen('ManageWalletScreen')
+      onAdded: this.onDoneAction
     })
   }
 
