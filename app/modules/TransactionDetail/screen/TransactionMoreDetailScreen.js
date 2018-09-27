@@ -30,7 +30,7 @@ export default class TransactionMoreDetailScreen extends PureComponent {
     const valueFormat = Helper.formatETH(value / 100000000, false, 5)
     return (
       <View style={[styles.containerItem, { marginTop: index === 0 ? 12 : 9 }]}>
-        <AddressElement style={{ flex: 1 }} address={addr} />
+        <AddressElement style={{ width: width * 0.6 }} address={addr} />
         <Text style={styles.balance}>{valueFormat}</Text>
       </View>
     )
@@ -41,7 +41,7 @@ export default class TransactionMoreDetailScreen extends PureComponent {
     const valueFormat = Helper.formatETH(value / 100000000, false, 5)
     return (
       <View style={[styles.containerItem, { marginTop: index === 0 ? 12 : 9 }]}>
-        <AddressElement style={{ flex: 1 }} address={addr} />
+        <AddressElement style={{ width: width * 0.6 }} address={addr} />
         <Text style={styles.balance}>{valueFormat}</Text>
       </View>
     )
@@ -54,7 +54,7 @@ export default class TransactionMoreDetailScreen extends PureComponent {
         <NavigationHeader
           style={{ width }}
           headerItem={{
-            title: 'Transaction Detail',
+            title: 'Transaction Details',
             icon: null,
             button: images.backButton
           }}
@@ -98,10 +98,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   balance: {
+    position: 'absolute',
     fontSize: 14,
+    right: 20,
     fontFamily: 'OpenSans-Semibold',
-    color: AppStyle.mainColor,
-    marginLeft: 40
+    color: AppStyle.mainColor
+    // paddingLeft: 40
   },
   titleText: {
     marginLeft: 20,
