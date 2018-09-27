@@ -206,11 +206,11 @@ export default class HomeScreen extends Component {
     NavStore.pushToScreen('NewUpdatedAvailableScreen')
   }
 
-  _onLongPress = () => {
-    const { selectedWallet } = MainStore.appState
+  _onLongPress = (index) => {
+    const { wallets } = MainStore.appState
     const { navigation } = this.props
     navigation.navigate('ManageWalletDetailScreen', {
-      wallet: selectedWallet,
+      wallet: wallets[index],
       fromHomeScreen: true
     })
   }
@@ -241,7 +241,7 @@ export default class HomeScreen extends Component {
             ? this._onItemPress(index)
             : this._gotoCreateWallet()
         }}
-        onLongPress={this._onLongPress}
+        onLongPress={() => this._onLongPress(index)}
         onAddPrivateKey={() => {
           NavStore.pushToScreen('ImplementPrivateKeyScreen', { index })
         }}
