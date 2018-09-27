@@ -21,6 +21,14 @@ if (typeof localStorage !== 'undefined') {
   localStorage.debug = isDev ? '*' : ''
 }
 
+if (typeof Buffer.prototype.reverse === 'undefined') {
+  var bufferReverse = require('buffer-reverse');
+
+  Buffer.prototype.reverse = function () {
+    return bufferReverse(this);
+  };
+}
+
 // If using the crypto shim, uncomment the following line to ensure
 // crypto is loaded first, so it can populate global.crypto
 // require('crypto')
