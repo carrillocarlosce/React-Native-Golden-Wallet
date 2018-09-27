@@ -26,7 +26,8 @@ export default class ChooseAdressScreen extends PureComponent {
   }
   render() {
     const { onSelectedAddress } = this.props
-    const dataAddressBook = MainStore.appState.addressBooks.slice()
+    const { type } = MainStore.appState.selectedWallet
+    const dataAddressBook = MainStore.appState.addressBooks.slice().filter(item => item.type === type)
     return (
       <View
         style={styles.container}
