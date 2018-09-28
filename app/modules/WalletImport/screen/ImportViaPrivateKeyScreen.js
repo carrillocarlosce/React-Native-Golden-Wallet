@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Clipboard,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  Platform,
+  TextInput
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
@@ -25,6 +27,7 @@ import InputWithAction from '../../../components/elements/InputWithActionItem'
 import commonStyle from '../../../commons/commonStyles'
 import KeyboardView from '../../../components/elements/KeyboardView'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -33,7 +36,8 @@ const { width } = Dimensions.get('window')
 export default class ImportViaPrivateKeyScreen extends Component {
   constructor(props) {
     super(props)
-    this.importPrivateKeyStore = new ImportPrivateKeyStore()
+    MainStore.importPrivateKeyStore = new ImportPrivateKeyStore()
+    this.importPrivateKeyStore = MainStore.importPrivateKeyStore
   }
 
   onBack = () => {
@@ -43,9 +47,9 @@ export default class ImportViaPrivateKeyScreen extends Component {
   onChangePrivKey = (text) => {
     this.importPrivateKeyStore.setPrivateKey(text)
     const { isErrorPrivateKey } = this.importPrivateKeyStore
-    if (isErrorPrivateKey) {
-      this.privKeyField.shake()
-    }
+    // if (isErrorPrivateKey) {
+    //   // this.privKeyField.shake()
+    // }
   }
 
   onChangeName = (text) => {
@@ -95,19 +99,13 @@ export default class ImportViaPrivateKeyScreen extends Component {
     )
   }
 
-  _handleConfirm = async () => {
-    const { privateKey } = this.importPrivateKeyStore
-    if (privateKey === '') {
-      NavStore.popupCustom.show('Private key can not be empty')
-      return
-    }
-    if (!Checker.checkPrivateKey(privateKey)) {
-      NavStore.popupCustom.show('Invalid private key')
-      return
-    }
+
+
+  goToEnterName = () => {
     const { navigation } = this.props
     const { coin } = navigation.state.params
-    this.importPrivateKeyStore.create(coin)
+
+    NavStore.pushToScreen('EnterNameViaPrivateKey', { coin })
   }
 
   gotoScan = () => {
@@ -122,7 +120,7 @@ export default class ImportViaPrivateKeyScreen extends Component {
 
   render() {
     const {
-      privateKey, loading, title, isErrorTitle, isErrorPrivateKey, isReadyCreate, isNameFocus, isPrivateKeyFocus
+      privateKey, loading, isErrorPrivateKey, isValidPrivateKey
     } = this.importPrivateKeyStore
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -138,29 +136,21 @@ export default class ImportViaPrivateKeyScreen extends Component {
                 }}
                 action={this.onBack}
               />
-              <Text style={[styles.titleText, { marginTop: 15, color: isNameFocus ? AppStyle.mainColor : 'white' }]}>Name</Text>
-              <InputWithAction
-                ref={(ref) => { this.nameField = ref }}
-                style={{ width: width - 40, marginTop: 10 }}
-                value={title}
-                onFocus={this.onFocusName}
-                onBlur={this.onBlurTextField}
-                onChangeText={this.onChangeName}
-              />
-              {isErrorTitle &&
-                <Text style={styles.errorText}>{constant.EXISTED_NAME}</Text>
-              }
-              <Text style={[styles.titleText, { marginTop: 20, color: isPrivateKeyFocus ? AppStyle.mainColor : 'white' }]}>Private Key</Text>
-              <InputWithAction
-                ref={(ref) => { this.privKeyField = ref }}
-                style={{ width: width - 40, marginTop: 10 }}
-                onChangeText={this.onChangePrivKey}
-                needPasteButton
-                styleTextInput={commonStyle.fontAddress}
-                value={privateKey}
-                onFocus={this.onFocusPrivateKey}
-                onBlur={this.onBlurTextField}
-              />
+              <View style={{ marginTop: 25 }}>
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  keyboardAppearance="dark"
+                  autoCorrect={false}
+                  multiline
+                  style={[
+                    styles.textInput
+                  ]}
+                  onChangeText={this.onChangePrivKey}
+                  value={privateKey}
+                />
+                {privateKey === '' && this._renderPasteButton()}
+                {privateKey !== '' && this._renderClearButton()}
+              </View>
               {isErrorPrivateKey &&
                 <Text style={styles.errorText}>{constant.INVALID_PRIVATE_KEY}</Text>
               }
@@ -177,8 +167,8 @@ export default class ImportViaPrivateKeyScreen extends Component {
               />
             </KeyboardView>
             <BottomButton
-              disable={!isReadyCreate}
-              onPress={this._handleConfirm}
+              disable={!isValidPrivateKey}
+              onPress={this.goToEnterName}
             />
             {loading &&
               <Spinner />
@@ -194,6 +184,19 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1
+  },
+  textInput: {
+    height: 182,
+    width: width - 40,
+    backgroundColor: '#14192D',
+    borderRadius: 14,
+    color: '#7F8286',
+    fontFamily: Platform.OS === 'ios' ? 'OpenSans' : 'OpenSans-Regular',
+    fontSize: 18,
+    paddingHorizontal: 27,
+    paddingTop: 50,
+    paddingBottom: 50,
+    textAlignVertical: 'center'
   },
   pasteText: {
     color: AppStyle.mainColor,

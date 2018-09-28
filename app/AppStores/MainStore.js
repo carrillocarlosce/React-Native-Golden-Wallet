@@ -19,6 +19,8 @@ class MainStore {
   dapp = null
   addressBookStore = null
   importMnemonicStore = null
+  importPrivateKeyStore = null
+  importAddressStore = null
 
   // Start
   @action async startApp() {

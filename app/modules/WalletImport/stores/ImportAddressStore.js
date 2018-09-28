@@ -113,4 +113,8 @@ export default class ImportAddressStore {
       this.errorAddress === '' && !this.isErrorTitle &&
       !this.titleIsEmpty
   }
+
+  @computed get isValidAddress() {
+    return this.address !== '' && this.errorAddress === ''
+  }
 }
