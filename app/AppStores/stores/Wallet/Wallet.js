@@ -160,7 +160,9 @@ export default class Wallet {
     api.fetchCollectibles(this.address).then((res) => {
       this.isFetchingCollectibles = false
       if (!res.data.assets) return
-      this.collectibles = res.data.assets.map(collectible => new Collectible(collectible, this.address))
+      this.collectibles = res.data.assets
+        .filter(collectible => collectible.external_link !== null)
+        .map(collectible => new Collectible(collectible, this.address))
     }).catch((e) => {
       this.isFetchingCollectibles = false
     })
