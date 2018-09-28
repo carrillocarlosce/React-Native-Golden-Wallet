@@ -22,18 +22,28 @@ export default class TransactionBTC extends Transaction {
     this.status = 1
     this.value = new BigNumber(`0`)
     this.out = obj.out
+    this.inputs = obj.inputs
   }
 
   get value() {
     const { selectedWallet } = MainStore.appState
-    let v = new BigNumber(`0`)
+    const address = this.address ? this.address : selectedWallet.address
+    if (this.isSent) {
+      let s = new BigNumber(`0`)
+      for (let i = 0; i < this.inputs.length; i++) {
+        if (address === this.inputs[i].prev_out.addr) {
+          s = s.plus(new BigNumber(`${this.inputs[i].prev_out.value}`))
+        }
+      }
+      return s
+    }
+    let r = new BigNumber(`0`)
     for (let i = 0; i < this.out.length; i++) {
-      const address = this.address ? this.address : selectedWallet.address
       if (address === this.out[i].addr) {
-        v = v.plus(new BigNumber(`${this.out[i].value}`))
+        r = r.plus(new BigNumber(`${this.out[i].value}`))
       }
     }
-    return v
+    return r
   }
 
   get isSelf() {
