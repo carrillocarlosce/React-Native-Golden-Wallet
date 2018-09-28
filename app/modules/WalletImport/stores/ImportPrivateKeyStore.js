@@ -108,4 +108,8 @@ export default class ImportPrivateKeyStore {
   @computed get isReadyCreate() {
     return this.privateKey !== '' && this.title !== '' && !this.isErrorTitle && !this.isErrorPrivateKey
   }
+
+  @computed get isValidPrivateKey() {
+    return this.privateKey !== '' && !this.isErrorPrivateKey
+  }
 }
