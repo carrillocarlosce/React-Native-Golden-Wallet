@@ -19,8 +19,8 @@ import BottomButton from '../../../components/elements/BottomButton'
 import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class ChooseAddressScreen extends Component {

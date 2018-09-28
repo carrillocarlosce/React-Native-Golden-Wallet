@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   Keyboard,
   Platform
 } from 'react-native'
@@ -13,8 +12,7 @@ import LayoutUtils from '../../commons/LayoutUtils'
 import AppStyle from '../../commons/AppStyle'
 import constant from '../../commons/constant'
 
-const { height } = Dimensions.get('window')
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 const extraBottom = LayoutUtils.getExtraBottom()
 
 export default class BottomButton extends Component {

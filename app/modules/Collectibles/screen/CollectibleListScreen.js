@@ -12,9 +12,9 @@ import LayoutUtils from '../../../commons/LayoutUtils'
 import images from '../../../commons/images'
 import CollectibleItem from '../elements/CollectiblesItem'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 const extraBottom = isIPX ? 54 : 20
 
 export default class CollectibleListScreen extends PureComponent {

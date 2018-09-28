@@ -23,10 +23,11 @@ import ChooseAddressScreen from './ChooseAddressScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
+import LayoutUtils from '../../../commons/LayoutUtils'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class AdressInputScreen extends Component {

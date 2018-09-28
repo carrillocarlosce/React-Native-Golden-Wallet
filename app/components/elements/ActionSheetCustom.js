@@ -11,9 +11,10 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import AppStyle from '../../commons/AppStyle'
+import LayoutUtils from '../../commons/LayoutUtils'
 
 const { height, width } = Dimensions.get('window')
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 export default class ActionSheetCustom extends PureComponent {
   static propTypes = {

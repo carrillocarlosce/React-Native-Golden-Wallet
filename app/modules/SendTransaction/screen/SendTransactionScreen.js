@@ -23,10 +23,11 @@ import MainStore from '../../../AppStores/MainStore'
 import Config from '../../../AppStores/stores/Config'
 import NavStore from '../../../AppStores/NavStore'
 import KeyBoard from '../elements/Keyboard'
+import LayoutUtils from '../../../commons/LayoutUtils'
 
 const { height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class SendTransactionScreen extends Component {

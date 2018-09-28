@@ -24,8 +24,8 @@ import URL from '../../../api/url'
 import AppState from '../../../AppStores/AppState'
 import commonStyle from '../../../commons/commonStyles'
 
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 const marginTop = LayoutUtils.getExtraTop()
 
 @observer

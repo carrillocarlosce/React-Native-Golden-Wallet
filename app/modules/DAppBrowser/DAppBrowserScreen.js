@@ -15,9 +15,10 @@ import DAppHeader from './elements/DAppHeader'
 /* eslint-disable-next-line */
 import DAppFooter from './elements/DAppFooter'
 import AppStyle from '../../commons/AppStyle'
+import LayoutUtils from '../../commons/LayoutUtils'
 
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 
 let jsContent = ''
 export default class DAppBrowserScreen extends Component {

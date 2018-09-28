@@ -16,8 +16,8 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
 import LayoutUtils from '../../../commons/LayoutUtils'
 
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 const marginTop = LayoutUtils.getExtraTop()
 
 const subtext = 'Make sure to keep your Recovery Phrase safely. Be your own bank and take security seriously.'
