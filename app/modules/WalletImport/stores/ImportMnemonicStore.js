@@ -7,6 +7,7 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
 import { chainNames } from '../../../Utils/WalletAddresses'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 export default class ImportMnemonicStore {
   @observable customTitle = ``
@@ -69,33 +70,37 @@ export default class ImportMnemonicStore {
   }
 
   @action async unlockWallet(coin = chainNames.ETH) {
-    this.stopCheckTitle = true
-    let coinPath = ''
-    if (coin === chainNames.ETH) {
-      coinPath = KeyStore.CoinType.ETH.path
-    } else if (coin === chainNames.BTC) {
-      coinPath = KeyStore.CoinType.BTC.path
-    }
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        this.stopCheckTitle = true
+        let coinPath = ''
+        if (coin === chainNames.ETH) {
+          coinPath = KeyStore.CoinType.ETH.path
+        } else if (coin === chainNames.BTC) {
+          coinPath = KeyStore.CoinType.BTC.path
+        }
 
-    const index = this.mnemonicWallets
-      .findIndex((w) => {
-        if (w.type === 'ethereum') return w.address.toLowerCase() === this.selectedWallet.address.toLowerCase()
-        return w.address === this.selectedWallet.address
-      })
-    const title = this.customTitle
+        const index = this.mnemonicWallets
+          .findIndex((w) => {
+            if (w.type === 'ethereum') return w.address.toLowerCase() === this.selectedWallet.address.toLowerCase()
+            return w.address === this.selectedWallet.address
+          })
+        const title = this.customTitle
 
-    const ds = MainStore.secureStorage
-    const wallet = await unlockFromMnemonic(this.mnemonic, title, index, ds, coinPath, coin)
-    NotificationStore.addWallet(title, wallet.address, wallet.type === 'ethereum' ? 'ETH' : 'BTC')
-    NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+        const ds = new SecureDS(pincode)
+        const wallet = await unlockFromMnemonic(this.mnemonic, title, index, ds, coinPath, coin)
+        NotificationStore.addWallet(title, wallet.address, wallet.type === 'ethereum' ? 'ETH' : 'BTC')
+        NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
-    await MainStore.appState.appWalletsStore.addOne(wallet)
-    MainStore.appState.autoSetSelectedWallet()
-    MainStore.appState.selectedWallet.fetchingBalance()
-    NavStore.reset()
-    if (wallet.type === 'ethereum') {
-      NavStore.pushToScreen('TokenScreen')
-    }
+        await MainStore.appState.appWalletsStore.addOne(wallet)
+        MainStore.appState.autoSetSelectedWallet()
+        MainStore.appState.selectedWallet.fetchingBalance()
+        NavStore.reset()
+        if (wallet.type === 'ethereum') {
+          NavStore.pushToScreen('TokenScreen')
+        }
+      }
+    }, true)
   }
 
   @computed get isLoading() {

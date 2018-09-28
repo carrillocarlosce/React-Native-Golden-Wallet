@@ -5,6 +5,7 @@ import NavStore from '../../AppStores/NavStore'
 import NotificationStore from '../../AppStores/stores/Notification'
 import AppStyle from '../../commons/AppStyle'
 import Router from '../../AppStores/Router'
+import SecureDS from '../../AppStores/DataSource/SecureDS'
 import Keystore from '../../../Libs/react-native-golden-keystore'
 import { chainNames } from '../../Utils/WalletAddresses'
 
@@ -18,34 +19,38 @@ class CreateWalletStore {
   }
 
   @action handleCreateWallet(coin = chainNames.ETH) {
-    this.loading = true
-    const ds = MainStore.secureStorage
-    let index = 0
-    let coinPath = ''
-    if (coin === chainNames.ETH) {
-      coinPath = Keystore.CoinType.ETH.path
-      index = MainStore.appState.currentWalletIndex
-    } else if (coin === chainNames.BTC) {
-      coinPath = Keystore.CoinType.BTC.path
-      index = MainStore.appState.currentBTCWalletIndex
-    }
-    const { title } = this
-    generateNew(ds, title, index, coinPath, coin).then(async (w) => {
-      this.finished = true
-      NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
-      NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
-      MainStore.appState.appWalletsStore.addOne(w)
-      MainStore.appState.autoSetSelectedWallet()
-      if (coin === chainNames.ETH) {
-        MainStore.appState.setCurrentWalletIndex(index + 1)
-      } else if (coin === chainNames.BTC) {
-        MainStore.appState.setCurrentBTCWalletIndex(index + 1)
+    NavStore.lockScreen({
+      onUnlock: (pincode) => {
+        this.loading = true
+        const ds = new SecureDS(pincode)
+        let index = 0
+        let coinPath = ''
+        if (coin === chainNames.ETH) {
+          coinPath = Keystore.CoinType.ETH.path
+          index = MainStore.appState.currentWalletIndex
+        } else if (coin === chainNames.BTC) {
+          coinPath = Keystore.CoinType.BTC.path
+          index = MainStore.appState.currentBTCWalletIndex
+        }
+        const { title } = this
+        generateNew(ds, title, index, coinPath, coin).then(async (w) => {
+          this.finished = true
+          NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
+          NavStore.showToastTop(`${title} was successfully created!`, {}, { color: AppStyle.colorUp })
+          MainStore.appState.appWalletsStore.addOne(w)
+          MainStore.appState.autoSetSelectedWallet()
+          if (coin === chainNames.ETH) {
+            MainStore.appState.setCurrentWalletIndex(index + 1)
+          } else if (coin === chainNames.BTC) {
+            MainStore.appState.setCurrentBTCWalletIndex(index + 1)
+          }
+          MainStore.appState.save()
+          MainStore.appState.selectedWallet.fetchingBalance()
+          this.loading = false
+          NavStore.reset()
+        }, ds)
       }
-      MainStore.appState.save()
-      MainStore.appState.selectedWallet.fetchingBalance()
-      this.loading = false
-      NavStore.reset()
-    }, ds)
+    }, true)
   }
 
   @computed get title() {

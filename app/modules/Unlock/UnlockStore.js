@@ -186,7 +186,6 @@ class UnlockStore {
         await SecureDS.forceSavePassword(password, iv, pincode)
         await SecureDS.forceSaveIV(iv)
         HapticHandler.NotificationSuccess()
-        MainStore.setSecureStorage(pincode)
         await MigrateData.migrateOldData(pincode, iv, decriptData, password)
         NavStore.goBack()
         NavStore.hideLoading()
@@ -204,7 +203,6 @@ class UnlockStore {
         this._handleErrorPin()
       } else {
         HapticHandler.NotificationSuccess()
-        MainStore.setSecureStorage(pincode)
         NavStore.goBack()
         this.resetDisable()
         resolve(pincode)
@@ -239,7 +237,6 @@ class UnlockStore {
       await Keychain.resetGenericPassword()
       ds.derivePass()
       HapticHandler.NotificationSuccess()
-      MainStore.setSecureStorage(pincode)
       NavStore.goBack()
       this.resetDisable()
       resolve(pincode)

@@ -1,5 +1,4 @@
 import { observable, action } from 'mobx'
-import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
@@ -21,10 +20,6 @@ class MainStore {
   addressBookStore = null
   importMnemonicStore = null
 
-  setSecureStorage(pincode) {
-    this.secureStorage = new SecureDS(pincode)
-  }
-
   // Start
   @action async startApp() {
     await AppDS.readAppData()
@@ -33,4 +28,4 @@ class MainStore {
   }
 }
 
-export default new MainStore()
+export default new MainStore

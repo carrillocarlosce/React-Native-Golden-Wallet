@@ -4,6 +4,7 @@ import * as Keychain from 'react-native-keychain'
 import MainStore from './app/AppStores/MainStore'
 import { ETHWallet, getWalletsFromMnemonic, importAddress, importPrivateKey } from './app/AppStores/stores/Wallet'
 import { encryptString, decryptString } from './app/Utils/DataCrypto'
+import SecureDS from './app/AppStores/DataSource/SecureDS'
 
 const KeyLocal = {
   PIN_CODE: 'PIN_CODE',
@@ -83,7 +84,7 @@ class MigrateData {
     try {
       const decriptDataObj = JSON.parse(decriptData)
 
-      const secureDS = MainStore.secureStorage
+      const secureDS = new SecureDS(pincode)
       const tmpWallets = decriptDataObj.ethWallets ? decriptDataObj.ethWallets : []
       if (decriptDataObj.mnemonic && tmpWallets.length > 0) {
         const mnemonicCipher = encryptString(decriptDataObj.mnemonic, password, iv, 'aes-256-cbc')

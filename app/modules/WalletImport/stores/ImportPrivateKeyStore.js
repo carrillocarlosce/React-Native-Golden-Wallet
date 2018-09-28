@@ -8,6 +8,7 @@ import Checker from '../../../Handler/Checker'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
 import { chainNames } from '../../../Utils/WalletAddresses'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 export default class ImportPrivateKeyStore {
   @observable customTitle = ``
@@ -25,37 +26,41 @@ export default class ImportPrivateKeyStore {
   }
 
   @action async create(coin = chainNames.ETH) {
-    this.loading = true
-    const ds = MainStore.secureStorage
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        this.loading = true
+        const ds = new SecureDS(pincode)
 
-    try {
-      let { privateKey } = this
-      if (coin === chainNames.BTC && Checker.checkWIFBTC(this.privateKey)) {
-        const decode = wif.decode(this.privateKey)
-        privateKey = bigi.fromBuffer(decode.privateKey).toString(16)
-      }
-      const w = importPrivateKey(privateKey, this.title, ds, coin)
-      if (this.addressMap[w.address]) {
-        NavStore.popupCustom.show('Existed Wallet')
-        this.loading = false
-        return
-      }
-      this.finished = true
-      NotificationStore.addWallet(this.title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
-      NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+        try {
+          let { privateKey } = this
+          if (coin === chainNames.BTC && Checker.checkWIFBTC(this.privateKey)) {
+            const decode = wif.decode(this.privateKey)
+            privateKey = bigi.fromBuffer(decode.privateKey).toString(16)
+          }
+          const w = importPrivateKey(privateKey, this.title, ds, coin)
+          if (this.addressMap[w.address]) {
+            NavStore.popupCustom.show('Existed Wallet')
+            this.loading = false
+            return
+          }
+          this.finished = true
+          NotificationStore.addWallet(this.title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
+          NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
-      await MainStore.appState.appWalletsStore.addOne(w)
-      MainStore.appState.autoSetSelectedWallet()
-      MainStore.appState.selectedWallet.fetchingBalance()
-      this.loading = false
-      NavStore.reset()
-      if (w.type === 'ethereum') {
-        NavStore.pushToScreen('TokenScreen')
+          await MainStore.appState.appWalletsStore.addOne(w)
+          MainStore.appState.autoSetSelectedWallet()
+          MainStore.appState.selectedWallet.fetchingBalance()
+          this.loading = false
+          NavStore.reset()
+          if (w.type === 'ethereum') {
+            NavStore.pushToScreen('TokenScreen')
+          }
+        } catch (_) {
+          this.loading = false
+          NavStore.popupCustom.show('Invalid private key.')
+        }
       }
-    } catch (_) {
-      this.loading = false
-      NavStore.popupCustom.show('Invalid private key.')
-    }
+    }, true)
   }
 
   @computed get isNameFocus() {

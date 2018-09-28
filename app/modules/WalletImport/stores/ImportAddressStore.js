@@ -7,6 +7,7 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
 import { chainNames } from '../../../Utils/WalletAddresses'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 export default class ImportAddressStore {
   @observable customTitle = ``
@@ -27,21 +28,25 @@ export default class ImportAddressStore {
   }
 
   @action async create(title, coin = chainNames.ETH) {
-    this.loading = true
-    this.finished = true
-    const ds = MainStore.secureStorage
-    const { address } = this
-    const w = importAddress(address, title, ds, coin)
-    NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
-    NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await MainStore.appState.appWalletsStore.addOne(w)
-    MainStore.appState.autoSetSelectedWallet()
-    MainStore.appState.selectedWallet.fetchingBalance()
-    this.loading = false
-    NavStore.reset()
-    if (w.type === 'ethereum') {
-      NavStore.pushToScreen('TokenScreen')
-    }
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        this.loading = true
+        this.finished = true
+        const ds = new SecureDS(pincode)
+        const { address } = this
+        const w = importAddress(address, title, ds, coin)
+        NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
+        NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+        await MainStore.appState.appWalletsStore.addOne(w)
+        MainStore.appState.autoSetSelectedWallet()
+        MainStore.appState.selectedWallet.fetchingBalance()
+        this.loading = false
+        NavStore.reset()
+        if (w.type === 'ethereum') {
+          NavStore.pushToScreen('TokenScreen')
+        }
+      }
+    }, true)
   }
 
   @computed get isNameFocus() {

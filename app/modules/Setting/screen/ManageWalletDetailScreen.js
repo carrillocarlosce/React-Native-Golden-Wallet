@@ -94,11 +94,7 @@ export default class ManageWalletDetailScreen extends Component {
   _renderRemoveWallet = () => {
     return (
       <TouchableOpacity
-        onPress={() => {
-          NavStore.lockScreen({
-            onUnlock: this.handleRemovePressed
-          }, true)
-        }}
+        onPress={this.handleRemovePressed}
       >
         <View style={styles.removeField}>
           <Text style={styles.text}>Remove Wallet</Text>

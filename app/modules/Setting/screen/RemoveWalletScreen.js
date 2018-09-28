@@ -19,6 +19,8 @@ import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import NavStore from '../../../AppStores/NavStore'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -49,19 +51,26 @@ export default class RemoveWalletScreen extends Component {
   }
 
   handleRemove = async () => {
-    const { wallets, selectedWallet } = MainStore.appState
-    const index = wallets.indexOf(selectedWallet)
-    if (index === wallets.length - 1) {
-      MainStore.appState.setSelectedWallet(null)
-    }
-    this.setState({ allowShowErr: false })
-    await this.manageWalletStore.removeWallet(this.wallet)
-    if (MainStore.appState.wallets.length === 0) {
-      MainStore.appState.setSelectedWallet(null)
-    }
-    MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
-    this.hideKeyboard()
-    this.props.navigation.state.params.onRemoved()
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        const { wallets, selectedWallet } = MainStore.appState
+        const index = wallets.indexOf(selectedWallet)
+        if (index === wallets.length - 1) {
+          MainStore.appState.setSelectedWallet(null)
+        }
+        this.setState({ allowShowErr: false })
+        await this.manageWalletStore.removeWallet(this.wallet)
+        if (MainStore.appState.wallets.length === 0) {
+          MainStore.appState.setSelectedWallet(null)
+        }
+        if (index < MainStore.appState.wallets.length) {
+          MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
+        }
+        new SecureDS(pincode).removePrivateKey(selectedWallet.address)
+        this.hideKeyboard()
+        this.props.navigation.state.params.onRemoved()
+      }
+    }, true)
   }
 
   handleBack = () => {
