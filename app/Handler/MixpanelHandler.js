@@ -40,14 +40,18 @@ export default class MixpanelHandler {
   }
 
   constructor() {
-    Mixpanel.sharedInstanceWithToken('227467372e7fe53dac6fea17eba63718')
+    if (!__DEV__) {
+      Mixpanel.sharedInstanceWithToken('227467372e7fe53dac6fea17eba63718')
+    }
   }
 
   track(eventName) {
+    if (__DEV__) return
     Mixpanel.track(eventName)
   }
 
   trackWithProperties(eventName, props) {
+    if (__DEV__) return
     Mixpanel.trackWithProperties(eventName, props)
   }
 }
