@@ -15,6 +15,7 @@ import constant from '../../../commons/constant'
 import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
 import LayoutUtils from '../../../commons/LayoutUtils'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width } = Dimensions.get('window')
 const isIPX = LayoutUtils.getIsIPX()
@@ -29,6 +30,7 @@ export default class CreateWalletScreen extends Component {
   }
 
   gotoHome = () => {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.BACKUP_SUCCESS)
     MainStore.backupStore.gotoHome()
   }
 

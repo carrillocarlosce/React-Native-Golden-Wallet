@@ -21,6 +21,7 @@ import NavStore from '../../../AppStores/NavStore'
 import AddressElement from '../../../components/elements/AddressElement'
 import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -76,14 +77,20 @@ export default class ManageWalletDetailScreen extends Component {
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
       wallet: this.wallet,
-      onRemoved: this.onDoneAction
+      onRemoved: () => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_REMOVE)
+        this.onDoneAction()
+      }
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
       wallet: this.wallet,
-      onAdded: this.onDoneAction
+      onAdded: () => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_ADD_PRIVATE_KEY)
+        this.onDoneAction()
+      }
     })
   }
 

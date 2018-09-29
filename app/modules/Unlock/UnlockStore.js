@@ -11,6 +11,7 @@ import AppDS from '../../AppStores/DataSource/AppDS'
 import api from '../../api'
 import NotificationStore from '../../AppStores/stores/Notification'
 import PushNotificationHelper from '../../commons/PushNotificationHelper'
+import MixpanelHandler from '../../Handler/MixpanelHandler'
 
 const minute = 60000
 class UnlockStore {
@@ -246,6 +247,7 @@ class UnlockStore {
   _handleErrorPin(e) {
     const { animatedValue, isShake } = this
     HapticHandler.NotificationError()
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.UNLOCK_PIN_FAIL)
     this.upWrongPincodeCount()
     this.setTimeRemaining()
     this.saveDisableData()

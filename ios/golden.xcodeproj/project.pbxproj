@@ -51,6 +51,7 @@
 		794461AAFD3E4F6B8077F2EE /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D208E23F3C44836AD43F0B3 /* OpenSans-BoldItalic.ttf */; };
 		7FB47512411240959574FCAD /* CourierNewItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 565CE9C8BFCA4229A9C9F896 /* CourierNewItalic.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		92C273F2215E97BD00B43331 /* libRNMixpanel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 92C273F1215E97AF00B43331 /* libRNMixpanel.a */; };
 		96C8BA3319FB43F3870A21F1 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F7A61159FE49EE9E7AC2C2 /* libRNImagePicker.a */; };
 		A9E3B2EB523245C88417AC62 /* CourierNewBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED7DAC2FBAAC441E838C4884 /* CourierNewBold.ttf */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -346,6 +347,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		92C273F0215E97AF00B43331 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 92C273EC215E97AF00B43331 /* RNMixpanel.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FDC64AF01BF1690D0044C1B4;
+			remoteInfo = RNMixpanel;
+		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -512,6 +520,12 @@
 		88F169A6A1CA4A6F9BFBF2AA /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		8E415F1E67F64BDBA5B7BD25 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		90BEE45DF2F640B2BE167CC0 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Light.ttf"; path = "../App/assets/fonts/OpenSans-Light.ttf"; sourceTree = "<group>"; };
+		92C272D8215E8E8500B43331 /* libMixpanel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMixpanel.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C2730F215E8E8C00B43331 /* libreact-native-mixpanel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-mixpanel.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C27311215E90C600B43331 /* libreact-native-mixpanel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-mixpanel.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C273CF215E957E00B43331 /* libMixpanel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMixpanel.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C273D1215E95A800B43331 /* libMixpanel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMixpanel.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C273EC215E97AF00B43331 /* RNMixpanel.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMixpanel.xcodeproj; path = "../node_modules/react-native-mixpanel/RNMixpanel.xcodeproj"; sourceTree = "<group>"; };
 		9FC9C43CDFA04329BD39361B /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Italic.ttf"; path = "../App/assets/fonts/OpenSans-Italic.ttf"; sourceTree = "<group>"; };
 		A30AE93A4A724E86A070C775 /* OpenSans-SemiboldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiboldItalic.ttf"; path = "../App/assets/fonts/OpenSans-SemiboldItalic.ttf"; sourceTree = "<group>"; };
 		A4E768AD4421420F9A5416DF /* OpenSans-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Semibold.ttf"; path = "../App/assets/fonts/OpenSans-Semibold.ttf"; sourceTree = "<group>"; };
@@ -556,6 +570,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92C273F2215E97BD00B43331 /* libRNMixpanel.a in Frameworks */,
 				E31766A6210F543400BA3231 /* libglog.a in Frameworks */,
 				B44B1BBA21074BCF00EE6656 /* libRCTQRCodeLocalImage.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -736,6 +751,11 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				92C273D1215E95A800B43331 /* libMixpanel.a */,
+				92C273CF215E957E00B43331 /* libMixpanel.a */,
+				92C27311215E90C600B43331 /* libreact-native-mixpanel.a */,
+				92C2730F215E8E8C00B43331 /* libreact-native-mixpanel.a */,
+				92C272D8215E8E8500B43331 /* libMixpanel.a */,
 				E31766A5210F543400BA3231 /* libglog.a */,
 				B24F193F210AC02300B2DB00 /* libreact-native-shimmer.a */,
 				B24F1936210ABF3000B2DB00 /* libreact-native-shimmer.a */,
@@ -784,6 +804,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				92C273EC215E97AF00B43331 /* RNMixpanel.xcodeproj */,
 				6F367DEB214A6F8700A10D70 /* RCTWKWebView.xcodeproj */,
 				B44B1BB421074BBD00EE6656 /* RCTQRCodeLocalImage.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
@@ -845,6 +866,14 @@
 				00E356EE1AD99517003FC87E /* goldenTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* golden-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* golden-tvOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		92C273ED215E97AF00B43331 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				92C273F1215E97AF00B43331 /* libRNMixpanel.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1027,6 +1056,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				B44B1BBE21074CF200EE6656 /* ShellScript */,
+				F9730758DCD4150D9BFBDA64 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1203,6 +1233,10 @@
 				{
 					ProductGroup = B44B1BAC21074B9800EE6656 /* Products */;
 					ProjectRef = 5E5C52BF29B0446298999B14 /* RNKeychain.xcodeproj */;
+				},
+				{
+					ProductGroup = 92C273ED215E97AF00B43331 /* Products */;
+					ProjectRef = 92C273EC215E97AF00B43331 /* RNMixpanel.xcodeproj */;
 				},
 				{
 					ProductGroup = B44B1B5221074B9800EE6656 /* Products */;
@@ -1495,6 +1529,13 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		92C273F1215E97AF00B43331 /* libRNMixpanel.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNMixpanel.a;
+			remoteRef = 92C273F0215E97AF00B43331 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1718,6 +1759,60 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 72d9efc543e2f406ef5d769f0623a4eff0be92e5 01d237280cd2a74bf1b30b8df6b22725b01a91cc92f93f4cdc24ee1222ed9239";
+		};
+		F9730758DCD4150D9BFBDA64 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-golden/Pods-golden-resources.sh",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPCheckmark.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPCheckmark@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPCloseButton.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPCloseButton@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPCloseButton@3x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPDismissKeyboard.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPDismissKeyboard@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPLogo.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPLogo@2x.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/placeholder-image.png",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/MPTakeoverNotificationViewController~ipad.xib",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/MPTakeoverNotificationViewController~iphonelandscape.xib",
+				"${PODS_ROOT}/Mixpanel/Mixpanel/MPTakeoverNotificationViewController~iphoneportrait.xib",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPArrowLeft.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPArrowLeft@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPArrowRight.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPArrowRight@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPCheckmark.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPCheckmark@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPCloseButton.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPCloseButton@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPCloseButton@3x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPDismissKeyboard.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPDismissKeyboard@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPLogo.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPLogo@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/placeholder-image.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPTakeoverNotificationViewController~ipad.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPTakeoverNotificationViewController~iphonelandscape.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MPTakeoverNotificationViewController~iphoneportrait.nib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-golden/Pods-golden-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

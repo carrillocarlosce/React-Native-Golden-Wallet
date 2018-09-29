@@ -11,6 +11,7 @@ import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import DAppListItem from '../elements/DAppListItem'
 import MainStore from '../../../AppStores/MainStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -27,9 +28,10 @@ export default class DAppListScreen extends Component {
   }
   onBack = () => NavStore.goBack()
 
-  _goToBrowser = (url) => {
+  _goToBrowser = (item) => {
     if (!this.ready) return
-    MainStore.dapp.setUrl(url)
+    MainStore.dapp.setUrl(item.url)
+    MainStore.appState.mixpanleHandler.track(`${MixpanelHandler.eventName.EXPLORE_DAPPS} ${item.title}`)
     NavStore.pushToScreen('DAppBrowserStack')
   }
 
@@ -56,7 +58,7 @@ export default class DAppListScreen extends Component {
                 subTitle={item.subTitle}
                 line={index != 0}
                 img={{ uri: item.img }}
-                onPress={() => this._goToBrowser(item.url)}
+                onPress={() => this._goToBrowser(item)}
               />
             )
           }

@@ -6,6 +6,7 @@ import { signTransaction, signMessage, hexToString } from '../../../api/ether-js
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 export default class DAppStore {
   confirmStore = null
@@ -119,6 +120,7 @@ export default class DAppStore {
         this.getPrivateKey(ds).then((privateKey) => {
           const signedTx = signTransaction(this.unconfirmTransaction, this.chainId, privateKey)
           this.webview.executeCallback(this.id, null, signedTx)
+          MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.DAPP_TRANSACTION)
           NavStore.hideLoading()
           NavStore.goBack()
         })

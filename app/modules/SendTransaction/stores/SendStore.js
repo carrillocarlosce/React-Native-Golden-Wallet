@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import bitcoin from 'react-native-bitcoinjs-lib'
 import bigi from 'bigi'
 import { NavigationActions } from 'react-navigation'
-import KeyStore from '../../../../Libs/react-native-golden-keystore'
 import AmountStore from './AmountStore'
 import AddressInputStore from './AddressInputStore'
 import ConfirmStore from './ConfirmStore'
@@ -18,6 +17,7 @@ import AppStyle from '../../../commons/AppStyle'
 import { sendTransaction } from '../../../api/ether-json-rpc'
 import Interface from '../../../Utils/Ethererum/Contract/interface'
 import api from '../../../api'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const BN = require('bn.js')
 
@@ -149,6 +149,7 @@ class SendStore {
     }
 
     const fee = this.estimateFeeBTC(this.txIDData.length, 2)
+    this.event(MixpanelHandler.eventName.ACTION_SEND, amount, fee, 'BTC')
 
     return new Promise((resolve, reject) => {
 
@@ -184,11 +185,14 @@ class SendStore {
           return api.pushTxBTC(tx.toHex()).then((res) => {
             if (res.status === 200) {
               resolve(tx.getId())
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, amount, fee, 'BTC')
             } else {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, amount, fee, 'BTC')
               reject(res.data)
             }
           })
         }).catch((err) => {
+          this.event(MixpanelHandler.eventName.SEND_FAIL, amount, fee, 'BTC')
           reject(err)
         })
     })
@@ -204,24 +208,33 @@ class SendStore {
       : transaction.value
 
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
+    this.event(MixpanelHandler.eventName.ACTION_SEND, transaction.value, this.confirmStore.fee.toString(), 'ETH')
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
           sendTransaction(this.rpcURL, transactionSend, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, transaction.value, this.confirmStore.fee.toString(), 'ETH')
               return resolve(tx)
             })
             .catch((err) => {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
               return reject(err)
             })
         }).catch((err) => {
+          this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
           return reject(err)
         })
       } catch (e) {
+        this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
         return reject(e)
       }
     })
+  }
+
+  event(eventName, amount, fee, token) {
+    MainStore.appState.mixpanleHandler.track(eventName)
   }
 
   sendToken(transaction, ds) {
@@ -234,6 +247,7 @@ class SendStore {
       to,
       value
     } = transaction
+    this.event(MixpanelHandler.eventName.ACTION_SEND, transaction.value, this.confirmStore.fee.toString(), token.symbol)
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
@@ -251,10 +265,15 @@ class SendStore {
           return sendTransaction(this.rpcURL, unspentTransaction, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, transaction.value, this.confirmStore.fee.toString(), token.symbol)
               return resolve(tx)
-            }).catch(e => reject(e))
+            }).catch((e) => {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), token.symbol)
+              reject(e)
+            })
         })
       } catch (e) {
+        this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), token.symbol)
         return reject(e)
       }
     })

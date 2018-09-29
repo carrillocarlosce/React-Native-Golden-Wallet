@@ -19,6 +19,7 @@ import Config from '../../../AppStores/stores/Config'
 import constant from '../../../commons/constant'
 import NavStore from '../../../AppStores/NavStore'
 import SwitchButton from '../elements/SwtichButton'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 const networks = [
@@ -39,6 +40,7 @@ export default class NetworkScreen extends Component {
 
   onItemPress = (nw) => {
     MainStore.appState.setConfig(new Config(nw, constant.INFURA_API_KEY))
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_CHANGE_NETWORK)
     MainStore.appState.save()
   }
 
@@ -50,6 +52,7 @@ export default class NetworkScreen extends Component {
       MainStore.appState.setConfig(new Config(Config.networks.mainnet, constant.INFURA_API_KEY))
       MainStore.appState.save()
     }
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_CHANGE_NETWORK)
   }
 
   get enableSwitch() {

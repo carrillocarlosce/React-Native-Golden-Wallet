@@ -21,6 +21,7 @@ import ManageWalletStore from '../stores/ManageWalletStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
 import NavStore from '../../../AppStores/NavStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -60,6 +61,7 @@ export default class RemoveWalletScreen extends Component {
         }
         this.setState({ allowShowErr: false })
         await this.manageWalletStore.removeWallet(this.wallet)
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_EXPORT_PRIVATE_KEY)
         if (MainStore.appState.wallets.length === 0) {
           MainStore.appState.setSelectedWallet(null)
         }

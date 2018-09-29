@@ -13,6 +13,7 @@ import ShimmerTokenItem from '../elements/ShimmerTokenItem'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
 import TokenHeader from '../elements/TokenHeader'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 
@@ -31,7 +32,10 @@ export default class TokenScreen extends Component {
     NavStore.pushToScreen('TransactionListScreen')
   }
 
-  onPressCollectibles = () => NavStore.pushToScreen('CollectibleScreen')
+  onPressCollectibles = () => {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.VIEW_COLLETIBLES)
+    NavStore.pushToScreen('CollectibleScreen')
+  }
 
   get wallet() {
     return MainStore.appState.selectedWallet

@@ -42,6 +42,7 @@ target 'golden' do
   pod 'Crashlytics'
   pod 'Firebase/Messaging'
   pod 'Firebase/Core'
+  pod 'Mixpanel'
 
   pod 'react-native-shimmer', :path => "#{node_modules_path}/react-native-shimmer"
 

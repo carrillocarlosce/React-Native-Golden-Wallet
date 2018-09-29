@@ -32,6 +32,7 @@ import TickerStore from '../stores/TickerStore'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppVersion from '../../../AppStores/stores/AppVersion'
 import HomeDAppButton from '../elements/HomeDAppButton'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width, height } = Dimensions.get('window')
@@ -87,6 +88,7 @@ export default class HomeScreen extends Component {
       return
     }
     Router.SendTransaction.goToSendTx()
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.START_SEND)
     MainStore.appState.setselectedToken(selectedWallet.tokens[0])
     MainStore.sendTransaction.changeIsToken(false)
   }
@@ -94,6 +96,7 @@ export default class HomeScreen extends Component {
   onBackup = () => {
     NavStore.lockScreen({
       onUnlock: async (pincode) => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_BACKUP)
         await Router.Backup.gotoBackup(pincode)
       }
     }, true)
@@ -136,6 +139,7 @@ export default class HomeScreen extends Component {
   }
 
   onCopy = () => {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ADDRESS_COPIED)
     Clipboard.setString(MainStore.appState.selectedWallet.address)
     NavStore.showToastTop('Address Copied!', {}, { color: AppStyle.mainColor })
   }
@@ -165,6 +169,7 @@ export default class HomeScreen extends Component {
   }
 
   openShare = (filePath) => {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_SHARE)
     NavStore.preventOpenUnlockScreen = true
     RNFS.readFile(filePath, 'base64').then((file) => {
       const shareOptions = {

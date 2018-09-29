@@ -9,6 +9,7 @@ import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
+import MixpanelHandler from '../Handler/MixpanelHandler'
 
 class AppState {
   dataVersion = '1'
@@ -36,6 +37,7 @@ class AppState {
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
   homeCarousel = null
+  mixpanleHandler = null
 
   static TIME_INTERVAL = 20000
 
@@ -60,6 +62,10 @@ class AppState {
     this.BgJobs.CheckPendingTransaction.doOnce()
     this.BgJobs.CheckBalance.start()
     this.BgJobs.CheckPendingTransaction.start()
+  }
+
+  initMixpanel() {
+    this.mixpanleHandler = new MixpanelHandler()
   }
 
   @action setConfig = (cf) => { this.config = cf }

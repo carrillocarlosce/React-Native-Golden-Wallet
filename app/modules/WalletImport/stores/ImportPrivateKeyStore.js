@@ -9,6 +9,7 @@ import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
 import { chainNames } from '../../../Utils/WalletAddresses'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 export default class ImportPrivateKeyStore {
   @observable customTitle = ``
@@ -48,6 +49,7 @@ export default class ImportPrivateKeyStore {
           NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
           await MainStore.appState.appWalletsStore.addOne(w)
+          MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.IMPORT_WALLET)
           MainStore.appState.autoSetSelectedWallet()
           MainStore.appState.selectedWallet.fetchingBalance()
           this.loading = false

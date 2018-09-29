@@ -8,6 +8,7 @@ import Router from '../../AppStores/Router'
 import SecureDS from '../../AppStores/DataSource/SecureDS'
 import Keystore from '../../../Libs/react-native-golden-keystore'
 import { chainNames } from '../../Utils/WalletAddresses'
+import MixpanelHandler from '../../Handler/MixpanelHandler'
 
 class CreateWalletStore {
   @observable customTitle = ``
@@ -21,6 +22,7 @@ class CreateWalletStore {
   @action handleCreateWallet(coin = chainNames.ETH) {
     NavStore.lockScreen({
       onUnlock: (pincode) => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.CREATE_WALLET)
         this.loading = true
         const ds = new SecureDS(pincode)
         let index = 0

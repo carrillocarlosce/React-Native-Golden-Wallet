@@ -19,6 +19,8 @@ import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import ManageWalletStore from '../stores/ManageWalletStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
+import MainStore from '../../../AppStores/MainStore'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -59,6 +61,7 @@ export default class EditWalletNameScreen extends Component {
     this.wallet.title = customTitle
     this.setState({ allowShowErr: false })
     await this.manageWalletStore.editWallet(this.wallet)
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_EDIT)
     NotificationStore.addWallets()
     this.hideKeyboard()
     this.props.navigation.state.params.onEdited()

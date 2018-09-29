@@ -5,6 +5,8 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import NavStore from '../../../AppStores/NavStore'
 import { decryptString } from '../../../Utils/DataCrypto'
+import MainStore from '../../../AppStores/MainStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const IVKey = `IVKey`
 
@@ -98,6 +100,7 @@ export default class ChangePincodeStore {
       this.newPincode = this.pinCode
       NavStore.showLoading()
       this._encriptDataWithNewPincode()
+      MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_CHANGE_PINCODE)
     } else {
       this._handleErrorPin()
     }

@@ -8,6 +8,7 @@ import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
 import { chainNames } from '../../../Utils/WalletAddresses'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 export default class ImportAddressStore {
   @observable customTitle = ``
@@ -40,6 +41,7 @@ export default class ImportAddressStore {
         await MainStore.appState.appWalletsStore.addOne(w)
         MainStore.appState.autoSetSelectedWallet()
         MainStore.appState.selectedWallet.fetchingBalance()
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.IMPORT_WALLET)
         this.loading = false
         NavStore.reset()
         if (w.type === 'ethereum') {
