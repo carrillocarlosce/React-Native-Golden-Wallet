@@ -5,6 +5,8 @@ export default class MixpanelHandler {
     ACTION_SEND: 'Action Send', // amount, token, inputType, fee
     SEND_SUCCESS: 'Send Success', // amount, token, inputType, fee
     SEND_FAIL: 'Send Fail', // amount, token, inputType, fee
+    COMPLETE_SEND_AMOUNT: 'Complete Amount',
+    COMPLETE_SEND_TO: 'Complete Send To',
     START_SEND: 'Start Send',
 
     CREATE_WALLET: 'Create Wallet',

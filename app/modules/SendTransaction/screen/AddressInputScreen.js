@@ -24,6 +24,7 @@ import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
@@ -113,6 +114,10 @@ export default class AdressInputScreen extends Component {
 
   handleConfirm = () => {
     MainStore.sendTransaction.goToConfirm()
+    if (MainStore.sendTransaction.completeStep === 1) {
+      MainStore.sendTransaction.setCompleteStep(2)
+      MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.COMPLETE_SEND_TO)
+    }
   }
 
   gotoScan = () => {

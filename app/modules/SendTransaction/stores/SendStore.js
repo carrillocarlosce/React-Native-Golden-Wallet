@@ -27,6 +27,7 @@ class SendStore {
   addressInputStore = null
   confirmStore = null
   txIDData = []
+  completeStep = 0
 
   @observable transaction = {
     gasLimit: new BN('21000'),
@@ -40,6 +41,8 @@ class SendStore {
     this.confirmStore = type === 'ethereum' ? new ConfirmStore() : new ConfirmStoreBTC()
     this.advanceStore = new AdvanceStore()
   }
+
+  @action setCompleteStep = (cs) => { this.completeStep = cs }
 
   @computed get address() {
     return this.addressInputStore.address
