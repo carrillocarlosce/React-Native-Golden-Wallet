@@ -263,7 +263,7 @@ export default class HomeScreen extends Component {
       return
     }
     if (MainStore.appState.selectedWallet.type !== 'ethereum') {
-      NavStore.popupCustom.show('This is not ETH Wallet')
+      NavStore.popupCustom.show(`Please choose an Ethereum Wallet to continue. Bitcoin doesn't support for Dapps`)
       return
     }
     if (!MainStore.appState.selectedWallet.canSendTransaction) {
