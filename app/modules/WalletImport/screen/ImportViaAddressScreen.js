@@ -15,10 +15,8 @@ import {
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
-import InputWithAction from '../../../components/elements/InputWithActionItem'
 import ActionButton from '../../../components/elements/ActionButton'
 import Spinner from '../../../components/elements/Spinner'
-import commonStyle from '../../../commons/commonStyles'
 import BottomButton from '../../../components/elements/BottomButton'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import NavStore from '../../../AppStores/NavStore'
@@ -118,9 +116,9 @@ export default class ImportViaAddressScreen extends Component {
     let address = codeScanned
     const { navigation } = this.props
     const { coin } = navigation.state.params
-    if (this.importAddressStore.title === '') {
-      setTimeout(() => this.nameField.focus(), 250)
-    }
+    // if (this.importAddressStore.title === '') {
+    //   setTimeout(() => this.nameField.focus(), 250)
+    // }
     const resChecker = Checker.checkAddressQR(codeScanned, coin)
     if (resChecker && resChecker.length > 0) {
       [address] = resChecker
