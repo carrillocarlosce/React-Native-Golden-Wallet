@@ -10,6 +10,7 @@ import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
 import MixpanelHandler from '../Handler/MixpanelHandler'
+import NotificationStore from './stores/Notification'
 
 class AppState {
   dataVersion = '1'
@@ -66,6 +67,10 @@ class AppState {
 
   initMixpanel() {
     this.mixpanleHandler = new MixpanelHandler()
+  }
+
+  syncWalletAddresses() {
+    NotificationStore.addWallets()
   }
 
   @action setConfig = (cf) => { this.config = cf }

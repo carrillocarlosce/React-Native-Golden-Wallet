@@ -44,7 +44,7 @@ class Notification {
     if (!this.deviceToken) {
       return null
     }
-    const wallets = MainStore.appState.wallets.map((w) => {
+    const wallets = MainStore.appState.wallets.filter(w => w.enableNotification).map((w) => {
       return {
         name: w.title,
         address: w.address,

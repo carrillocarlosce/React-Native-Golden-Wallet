@@ -5,10 +5,9 @@ import NotificationStore from '../AppStores/stores/Notification'
 import MainStore from '../AppStores/MainStore'
 
 class PushNotificationHelper {
-  init() {
-    FCM.getFCMToken().then((token) => {
-      NotificationStore.setDeviceToken(token)
-    })
+  async init() {
+    const token = await FCM.getFCMToken()
+    NotificationStore.setDeviceToken(token)
 
     FCM.setBadgeNumber(0)
 

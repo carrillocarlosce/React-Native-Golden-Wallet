@@ -25,7 +25,8 @@ class MainStore {
   // Start
   @action async startApp() {
     await AppDS.readAppData()
-    PushNotificationHelper.init()
+    await PushNotificationHelper.init()
+    appState.syncWalletAddresses()
     appState.initMixpanel()
     appState.startAllServices()
   }
