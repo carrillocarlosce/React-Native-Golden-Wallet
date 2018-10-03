@@ -238,6 +238,11 @@ class SendStore {
 
   event(eventName, amount, fee, token) {
     MainStore.appState.mixpanleHandler.track(eventName)
+    // MainStore.appState.mixpanleHandler.trackWithProperties(eventName, {
+    //   amount: `${amount}`,
+    //   fee,
+    //   token
+    // })
   }
 
   sendToken(transaction, ds) {

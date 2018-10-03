@@ -12,6 +12,7 @@ import EnraseNotifScreen from '../modules/Unlock/screen/EnraseNotifScreen'
 import SignMessageScreen from './../modules/DAppBrowser/screen/SignMessageScreen'
 import DAppBrowserStack from './DAppBrowserStack'
 import AppStyle from '../commons/AppStyle'
+import AppAnalyticScreen from '../modules/Setting/screen/AppAnalyticScreen'
 
 const Router = StackNavigator(
   {
@@ -85,6 +86,12 @@ const Router = StackNavigator(
     },
     SignMessageScreen: {
       screen: SignMessageScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AppAnalyticScreen: {
+      screen: AppAnalyticScreen,
       navigationOptions: {
         header: null
       }

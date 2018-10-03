@@ -33,6 +33,7 @@ class AppState {
     standard: 10,
     fast: 60
   }
+  @observable allowDailyUsage = null
 
   @observable currentCardIndex = 0
   lastestVersionRead = ''
@@ -116,8 +117,14 @@ class AppState {
     this.currentWalletIndex = index
   }
 
+  @action setAllowDailyUsage(isEnable) {
+    this.allowDailyUsage = isEnable
+    this.save()
+  }
+
   @action setCurrentBTCWalletIndex(index) {
     this.currentBTCWalletIndex = index
+    this.save()
   }
 
   @action async getRateETHDollar() {
@@ -187,6 +194,7 @@ class AppState {
     this.addressBooks = addressBooks
     this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
     this.lastestVersionRead = data.lastestVersionRead
+    this.allowDailyUsage = data.allowDailyUsage
 
     await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
@@ -260,7 +268,8 @@ class AppState {
       gasPriceEstimate: this.gasPriceEstimate,
       enableNotification: this.enableNotification,
       lastestVersionRead: this.lastestVersionRead,
-      shouldShowUpdatePopup: this.shouldShowUpdatePopup
+      shouldShowUpdatePopup: this.shouldShowUpdatePopup,
+      allowDailyUsage: this.allowDailyUsage
     }
   }
 }

@@ -1,5 +1,7 @@
 import Mixpanel from 'react-native-mixpanel'
+import MainStore from '../AppStores/MainStore'
 
+const TOKEN_API = '227467372e7fe53dac6fea17eba63718'
 export default class MixpanelHandler {
   static eventName = {
     ACTION_SEND: 'Action Send', // amount, token, inputType, fee
@@ -43,17 +45,19 @@ export default class MixpanelHandler {
 
   constructor() {
     if (!__DEV__) {
-      Mixpanel.sharedInstanceWithToken('227467372e7fe53dac6fea17eba63718')
+      Mixpanel.sharedInstanceWithToken(TOKEN_API)
     }
   }
 
   track(eventName) {
     if (__DEV__) return
-    Mixpanel.track(eventName)
+    if (!MainStore.appState.allowDailyUsage) return
+    Mixpanel.track(eventName, TOKEN_API)
   }
 
   trackWithProperties(eventName, props) {
     if (__DEV__) return
-    Mixpanel.trackWithProperties(eventName, props)
+    if (!MainStore.appState.allowDailyUsage) return
+    Mixpanel.trackWithProperties(eventName, props, TOKEN_API)
   }
 }

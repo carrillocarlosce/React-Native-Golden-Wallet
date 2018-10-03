@@ -2,18 +2,25 @@ import React, { Component } from 'react'
 import {
   View,
   Dimensions,
-  ScrollView
+  ScrollView,
+  StyleSheet,
+  Text
 } from 'react-native'
+import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import SettingItem from '../elements/SettingItem'
 import URL from '../../../api/url'
+import MainStore from '../../../AppStores/MainStore'
+import AppStyle from '../../../commons/AppStyle'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
+const contentDailyUsage = 'Help Golden improve user experience by sharing app daily diagnostic.'
 
+@observer
 export default class PrivacyTermsScreen extends Component {
   static propTypes = {
     navigation: PropTypes.object
@@ -37,6 +44,10 @@ export default class PrivacyTermsScreen extends Component {
       url: URL.Skylab.termsURL(),
       title: 'Terms'
     })
+  }
+
+  onSwitch = (isEnable) => {
+    MainStore.appState.setAllowDailyUsage(isEnable)
   }
 
   goBack = () => {
@@ -65,8 +76,27 @@ export default class PrivacyTermsScreen extends Component {
             mainText="Terms"
             onPress={this.onTermsPress}
           />
+          <SettingItem
+            style={{ marginTop: 30 }}
+            mainText="Daily Usage"
+            disable
+            type="switch"
+            enableSwitch={MainStore.appState.allowDailyUsage}
+            onSwitch={this.onSwitch}
+          />
+          <Text style={styles.contentDailyUsage}>{contentDailyUsage}</Text>
         </ScrollView>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  contentDailyUsage: {
+    paddingHorizontal: 15,
+    marginTop: 20,
+    color: AppStyle.secondaryTextColor,
+    fontSize: 12,
+    fontFamily: 'OpenSans-Semibold'
+  }
+})
