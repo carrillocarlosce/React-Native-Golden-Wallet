@@ -63,25 +63,19 @@ export default class FadeText extends Component {
 
     return (
       <View>
-        <View
-          style={[styles.container, style]}
-        >
+        <View style={[styles.container, style]}>
           {text !== null &&
-            <Animated.Text
-              style={[styles.text, textStyle, { opacity: opacity1 }]}
-            >
+            <Animated.Text style={[styles.text, textStyle, { opacity: opacity1 }]}>
               {text}
-            </Animated.Text>}
+            </Animated.Text>
+          }
         </View>
-        <View
-          style={[styles.container, style, { position: 'absolute' }]}
-        >
+        <View style={[styles.container, style, { position: 'absolute' }]}>
           {text !== null &&
-            <Animated.Text
-              style={[styles.text, textStyle, { opacity: opacity2 }]}
-            >
+            <Animated.Text style={[styles.text, textStyle, { opacity: opacity2 }]}>
               {securityText}
-            </Animated.Text>}
+            </Animated.Text>
+          }
         </View>
       </View >
     )

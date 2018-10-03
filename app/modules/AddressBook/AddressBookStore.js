@@ -4,6 +4,7 @@ import MainStore from '../../AppStores/MainStore'
 import Checker from '../../Handler/Checker'
 import NavStore from '../../AppStores/NavStore'
 import constant from '../../commons/constant'
+import { chainNames } from '../../Utils/WalletAddresses'
 
 export default class AddressBookStore {
   @observable title = ''
@@ -16,12 +17,7 @@ export default class AddressBookStore {
   @action setFieldFocus = (ff) => { this.fieldFocus = ff }
 
   @action async saveAddressBook() {
-    const validate = Checker.checkAddress(this.address)
-    if (!validate) {
-      NavStore.popupCustom.show('Invalid Address')
-      return
-    }
-    const ab = AddressBook.createNew(this.title, this.address)
+    const ab = AddressBook.createNew(this.title, this.address, this.coin.toLowerCase())
     this.finished = true
     await ab.save()
     MainStore.appState.syncAddressBooks()
@@ -29,7 +25,12 @@ export default class AddressBookStore {
   }
 
   get addressBookIsExisted() {
-    return MainStore.appState.addressBooks.find(ab => ab.address === this.address.toLowerCase())
+    return MainStore.appState.addressBooks.find((ab) => {
+      if (ab.type === 'ethereum') {
+        return ab.address === this.address.toLowerCase()
+      }
+      return ab.address === this.address
+    })
   }
 
   get titleIsExisted() {
@@ -48,11 +49,18 @@ export default class AddressBookStore {
     return !this.finished && this.titleIsExisted
   }
 
+  get coin() {
+    if (this.address.length === 34 && this.address.startsWith('3')) {
+      return chainNames.BTC
+    }
+    return chainNames.ETH
+  }
+
   @computed get errorAddressBook() {
     if (this.addressBookIsExisted && !this.finished) {
       return constant.ADDRESS_BOOK_EXISTED
     }
-    if (!this.finished && this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
+    if (!this.finished && this.address !== '' && !this.finished && !Checker.checkAddress(this.address, this.coin)) {
       return constant.INVALID_ADDRESS
     }
     return ''

@@ -19,7 +19,7 @@ import { opensansRegular } from '../../../commons/commonStyles'
 
 const { height } = Dimensions.get('window')
 const isSmallScreen = height < 569
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 const marginTop = LayoutUtils.getExtraTop()
 const content = 'Verify your Recovery Phrase. Choose each word in the correct order.'
@@ -72,7 +72,6 @@ export default class BackupThirdStepScreen extends Component {
     const { listKeyWordChoose } = obj
     return (
       <TagList
-        isCenter
         isShowOrder
         arrayMnemonic={listKeyWordChoose.slice()}
         onItemPress={this.onRemoveWord}

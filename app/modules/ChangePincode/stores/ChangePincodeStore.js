@@ -2,10 +2,11 @@ import { observable, computed, action } from 'mobx'
 import { AsyncStorage, Animated } from 'react-native'
 import * as Keychain from 'react-native-keychain'
 import HapticHandler from '../../../Handler/HapticHandler'
-import MainStore from '../../../AppStores/MainStore'
 import SecureDS from '../../../AppStores/DataSource/SecureDS'
 import NavStore from '../../../AppStores/NavStore'
 import { decryptString } from '../../../Utils/DataCrypto'
+import MainStore from '../../../AppStores/MainStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const IVKey = `IVKey`
 
@@ -99,6 +100,7 @@ export default class ChangePincodeStore {
       this.newPincode = this.pinCode
       NavStore.showLoading()
       this._encriptDataWithNewPincode()
+      MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_CHANGE_PINCODE)
     } else {
       this._handleErrorPin()
     }
@@ -161,7 +163,6 @@ export default class ChangePincodeStore {
       const password = this.decryptData(encryptPassword, this.oldPincode, iv)
       if (password && password.length === 16) {
         SecureDS.forceSavePassword(password, iv, this.newPincode)
-        MainStore.setSecureStorage(this.newPincode)
         HapticHandler.NotificationSuccess()
         NavStore.goBack()
         NavStore.hideLoading()

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Clipboard
 } from 'react-native'
+import Share from 'react-native-share'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react/native'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
@@ -19,9 +20,12 @@ import NavStore from '../../../AppStores/NavStore'
 import LayoutUtils from '../../../commons/LayoutUtils'
 import Spinner from '../../../components/elements/Spinner'
 import NotificationStore from '../../../AppStores/stores/Notification'
+import URL from '../../../api/url'
+import AppState from '../../../AppStores/AppState'
+import commonStyle from '../../../commons/commonStyles'
 
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 const marginTop = LayoutUtils.getExtraTop()
 
 @observer
@@ -43,6 +47,16 @@ export default class TransactionDetailScreen extends Component {
     }
   }
 
+  onShareLink = () => {
+    NavStore.preventOpenUnlockScreen = true
+    const shareOptions = {
+      title: 'Golden',
+      message: 'My Etherscan link',
+      url: this.checkURL
+    }
+    Share.open(shareOptions).catch(() => { })
+  }
+
   get selectedTransaction() {
     return MainStore.appState.selectedTransaction
   }
@@ -62,17 +76,45 @@ export default class TransactionDetailScreen extends Component {
     return '+'
   }
 
+  get symbol() {
+    if (this.selectedTransaction.tokenSymbol) {
+      return this.selectedTransaction.tokenSymbol
+    }
+    return this.selectedToken.symbol
+  }
+
   get value() {
     const { operator } = this
-    let symbol = ''
+    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${this.symbol}`
+  }
 
-    if (this.selectedTransaction.tokenSymbol) {
-      symbol = this.selectedTransaction.tokenSymbol
-    } else {
-      symbol = this.selectedToken.symbol
+  get checkURL() {
+    const { hash } = this.selectedTransaction
+    const { networkName } = AppState
+    if (this.symbol === 'BTC') {
+      return `${URL.BlockChainInfo.webURL()}/en/btc/tx/${hash}`
     }
+    return `${URL.EtherScan.webURL(networkName)}/tx/${hash}`
+  }
 
-    return `${operator} ${this.selectedTransaction.balance.toString(10)} ${symbol}`
+  get textViewDetail() {
+    if (this.symbol === 'BTC') {
+      return constant.TEXT_VIEW_DETAIL_BTC
+    }
+    return constant.TEXT_VIEW_DETAIL_ETH
+  }
+
+  get jsCode() {
+    if (this.symbol === 'BTC') {
+      return `
+        document.getElementsByTagName('NAV')[0].style.display = 'none';
+        document.querySelector('.container').style.paddingTop = '0px';
+      `
+    }
+    return `
+      document.querySelector('.header').style.display = 'none';
+      document.querySelector('.tibrr-cookie-consent-container').style.display = 'none';
+    `
   }
 
   _onPress = (message, title) => {
@@ -83,7 +125,7 @@ export default class TransactionDetailScreen extends Component {
   _onClose = () => NavStore.goBack()
 
   _onCheck = () => {
-    NavStore.pushToScreen('TxHashWebViewScreen', { txHash: this.selectedTransaction.hash })
+    NavStore.pushToScreen('TxHashWebViewScreen', { url: this.checkURL, jsCode: this.jsCode })
   }
 
   renderValue = () => {
@@ -121,8 +163,10 @@ export default class TransactionDetailScreen extends Component {
         style={{ marginTop: 15 }}
         data={{
           title: 'Transaction Hash',
-          subtitle: this.selectedTransaction.hash
+          subtitle: this.selectedTransaction.hash,
+          type: 'address'
         }}
+        textStyle={[commonStyle.fontAddress, { marginTop: 10 }]}
         action={() => this._onPress(this.selectedTransaction.hash, 'Transaction Hash')}
       />
     )
@@ -134,9 +178,11 @@ export default class TransactionDetailScreen extends Component {
     return (
       <TransactionDetailItem
         style={{ marginTop: 15 }}
+        typeAddressElement={true}
         data={{
           title,
-          subtitle
+          subtitle,
+          type: 'address'
         }}
         action={() => this._onPress(subtitle, 'Address')}
       />
@@ -148,7 +194,7 @@ export default class TransactionDetailScreen extends Component {
       <TransactionDetailItem
         style={{ marginTop: 15 }}
         data={{
-          title: 'Fee',
+          title: 'Estimate Fee',
           subtitle: this.selectedTransaction.feeFormat
         }}
         action={() => { this._onPress(this.selectedTransaction.fee.toString(10), 'Fee') }}
@@ -167,6 +213,17 @@ export default class TransactionDetailScreen extends Component {
             icon: null,
             button: images.backButton
           }}
+          rightView={{
+            rightViewIcon: images.iconShare,
+            rightViewAction: this.onShareLink,
+            styleContainer: {
+              bottom: 10,
+              width: 40,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }
+          }}
           action={this._onClose}
         />
         {selectedTransaction &&
@@ -181,7 +238,7 @@ export default class TransactionDetailScreen extends Component {
                 style={styles.imageCheck}
                 onPress={this._onCheck}
               >
-                <Text style={styles.check}>{constant.TEXT_VIEW_DETAIL}</Text>
+                <Text style={styles.check}>{this.textViewDetail}</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -52,8 +52,25 @@ export default class NotificationInApp extends Component {
     if (!notif) {
       return {}
     }
-    if (notif.address.toLowerCase() === notif.from.toLowerCase()) return { color: AppStyle.colorDown }
+    if (notif.from) {
+      if (notif.address.toLowerCase() === notif.from.toLowerCase()) return { color: AppStyle.colorDown }
+    } else if (notif.inputs) {
+      return this.isSentBTC
+    }
     return { color: AppStyle.colorUp }
+  }
+
+  get isSentBTC() {
+    const { notif } = NotificationStore
+    const { address, inputs } = notif
+    let sent = true
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].prev_out.addr !== address) {
+        sent = false
+        break
+      }
+    }
+    return sent
   }
 
   get shouldShowNotifInApp() {
@@ -69,7 +86,7 @@ export default class NotificationInApp extends Component {
       return false
     }
     if (appState === 'active') {
-      return true
+      return notif.from || notif.inputs
     }
     return false
   }

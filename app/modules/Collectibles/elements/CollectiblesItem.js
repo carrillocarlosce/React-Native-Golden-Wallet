@@ -12,6 +12,7 @@ import MainStore from '../../../AppStores/MainStore'
 import AppStyle from '../../../commons/AppStyle'
 import { opensansRegular } from '../../../commons/commonStyles'
 import NavStore from '../../../AppStores/NavStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width } = Dimensions.get('window')
 
@@ -27,6 +28,7 @@ export default class CollectibleItem extends Component {
 
   onItemPress = () => {
     const { index } = this.props
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.VIEW_COLLETIBLES_DETAIL)
     NavStore.pushToScreen('CollectibleDetailScreen', { index })
   }
 

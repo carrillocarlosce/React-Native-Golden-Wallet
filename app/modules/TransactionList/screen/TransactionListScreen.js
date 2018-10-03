@@ -40,7 +40,11 @@ export default class TransactionListScreen extends Component {
 
   onPressTxItem = (item) => {
     MainStore.appState.setSelectedTransaction(item)
-    NavStore.pushToScreen('TransactionDetailScreen')
+    if (item.walletType === 'ethereum') {
+      NavStore.pushToScreen('TransactionDetailScreen')
+    } else if (item.walletType === 'bitcoin') {
+      NavStore.pushToScreen('TransactionBTCDetailScreen')
+    }
   }
 
   onRefresh = async () => {
@@ -68,6 +72,14 @@ export default class TransactionListScreen extends Component {
     return <View />
   }
 
+  _renderItem = ({ item, index }) => (
+    <TransactionItem
+      index={index}
+      transactionItem={item}
+      action={() => { this.onPressTxItem(item) }}
+    />
+  )
+
   render() {
     const defaultToken = {
       allTransactions: [], isRefreshing: false, isLoading: true, successTransactions: []
@@ -89,21 +101,15 @@ export default class TransactionListScreen extends Component {
         />
         <FlatList
           data={transactions}
-          contentContainerStyle={[{}, transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
+          contentContainerStyle={[transactions.length ? { width } : { flexGrow: 1, justifyContent: 'center' }]}
           ListEmptyComponent={this._renderEmptyList(selectedToken)}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${item.hash}-${item.from}-${index}`}
           refreshing={isRefreshing}
           onRefresh={this.onRefresh}
           onEndReached={this.onEndReached}
-          onEndReachedThreshold={30}
-          renderItem={({ item, index }) => (
-            <TransactionItem
-              index={index}
-              transactionItem={item}
-              action={() => { this.onPressTxItem(item) }}
-            />
-          )}
+          onEndReachedThreshold={0.5}
+          renderItem={this._renderItem}
         />
         {successTransactions.length === 0 && isLoading && <Spinner />}
       </View>

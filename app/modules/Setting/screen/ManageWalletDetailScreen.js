@@ -5,7 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropsType from 'prop-types'
@@ -20,8 +21,10 @@ import NavStore from '../../../AppStores/NavStore'
 import AddressElement from '../../../components/elements/AddressElement'
 import Helper from '../../../commons/Helper'
 import ManageWalletStore from '../stores/ManageWalletStore'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
+const { width } = Dimensions.get('window')
 
 @observer
 export default class ManageWalletDetailScreen extends Component {
@@ -36,33 +39,58 @@ export default class ManageWalletDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.manageWalletStore = new ManageWalletStore()
-    this.wallet = this.props.navigation ? this.props.navigation.state.params.wallet : {}
+    const { navigation } = this.props
+    this.wallet = navigation ? navigation.state.params.wallet : {}
+    this.isFromHomeScreen = navigation && navigation.state.params.fromHomeScreen
+      ? navigation.state.params.fromHomeScreen
+      : false
+  }
+
+  componentDidMount() {
+    this.manageWalletStore.setIsFromHome(this.isFromHomeScreen)
   }
 
   onNotificationSwitch(isEnable, wallet) {
     this.manageWalletStore.switchEnableNotification(isEnable, wallet)
   }
 
+  onDoneAction = () => {
+    let screen = 'ManageWalletScreen'
+    if (this.isFromHomeScreen) {
+      screen = 'HomeScreen'
+    }
+    NavStore.pushToScreen(screen)
+  }
+
   get currentStateEnableNotification() {
     return this.wallet.enableNotification
   }
 
-  get shouldShowExportPrivateKey() {
-    if (!this.wallet.importType) {
-      return MainStore.appState.didBackup
+  get symbol() {
+    const { type } = this.wallet
+    if (type === 'ethereum') {
+      return 'ETH'
     }
-    return this.wallet.importType !== 'Address'
+    return 'BTC'
   }
 
   handleRemovePressed = (pincode) => {
     NavStore.pushToScreen('RemoveWalletScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onRemoved: () => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_REMOVE)
+        this.onDoneAction()
+      }
     })
   }
 
   handleAddPrivKeyPressed = () => {
     NavStore.pushToScreen('AddPrivateKeyScreen', {
-      wallet: this.wallet
+      wallet: this.wallet,
+      onAdded: () => {
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_ADD_PRIVATE_KEY)
+        this.onDoneAction()
+      }
     })
   }
 
@@ -73,11 +101,7 @@ export default class ManageWalletDetailScreen extends Component {
   _renderRemoveWallet = () => {
     return (
       <TouchableOpacity
-        onPress={() => {
-          NavStore.lockScreen({
-            onUnlock: this.handleRemovePressed
-          }, true)
-        }}
+        onPress={this.handleRemovePressed}
       >
         <View style={styles.removeField}>
           <Text style={styles.text}>Remove Wallet</Text>
@@ -93,9 +117,9 @@ export default class ManageWalletDetailScreen extends Component {
         marginHorizontal: 20
       }}
       >
-        <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ETH`}</Text>
+        <Text style={styles.ethValue}>{`${Helper.formatETH(this.wallet.totalBalance)} ${this.symbol}`}</Text>
         <AddressElement
-          style={{ marginTop: 15, width: 328 }}
+          style={{ marginTop: 15, width: width * 0.8 }}
           textStyle={{ fontSize: 16 }}
           address={this.wallet.address}
         />
@@ -103,43 +127,8 @@ export default class ManageWalletDetailScreen extends Component {
     )
   }
 
-  _renderOptionItem = ({ item, index }) => {
-    const enableNotif = this.currentStateEnableNotification
-    if (index == this.manageWalletStore.options.length - 1) {
-      return (
-        <SettingItem
-          mainText={item.mainText}
-          disable
-          type="switch"
-          enableSwitch={enableNotif}
-          onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
-        />
-      )
-    }
-    if (index == 1 && !this.shouldShowExportPrivateKey) {
-      return (
-        <SettingItem
-          style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-          mainText="Add Private Key"
-          onPress={this.handleAddPrivKeyPressed}
-          iconRight={item.iconRight}
-        />
-      )
-    }
-    return (
-      <SettingItem
-        style={{ borderTopWidth: index === 0 ? 0 : 1 }}
-        mainText={item.mainText}
-        onPress={() => {
-          this.manageWalletStore.selectedWallet = this.wallet
-          item.onPress()
-        }}
-        iconRight={item.iconRight}
-      />
-    )
-  }
-
   _renderOptions = () => {
+    const enableNotif = this.currentStateEnableNotification
     return (
       <View>
         <FlatList
@@ -147,7 +136,44 @@ export default class ManageWalletDetailScreen extends Component {
           data={this.manageWalletStore.options}
           keyExtractor={v => v.mainText}
           scrollEnabled={false}
-          renderItem={this._renderOptionItem}
+          renderItem={({ item, index }) => {
+            if (index == this.manageWalletStore.options.length - 1) {
+              return (
+                <SettingItem
+                  mainText={item.mainText}
+                  disable
+                  type="switch"
+                  enableSwitch={enableNotif}
+                  onSwitch={() => this.onNotificationSwitch(!enableNotif, this.wallet)}
+                />
+              )
+            }
+            if (index == 1) {
+              if (!this.wallet.importType && !MainStore.appState.didBackup) {
+                return <View />
+              } else if (this.wallet.importType === 'Address') {
+                return (
+                  <SettingItem
+                    style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+                    mainText="Add Private Key"
+                    onPress={this.handleAddPrivKeyPressed}
+                    iconRight={item.iconRight}
+                  />
+                )
+              }
+            }
+            return (
+              <SettingItem
+                style={{ borderTopWidth: index === 0 ? 0 : 1 }}
+                mainText={item.mainText}
+                onPress={() => {
+                  this.manageWalletStore.selectedWallet = this.wallet
+                  item.onPress()
+                }}
+                iconRight={item.iconRight}
+              />
+            )
+          }}
         />
       </View>
     )

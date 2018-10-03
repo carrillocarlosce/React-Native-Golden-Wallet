@@ -15,9 +15,10 @@ import constant from '../../../commons/constant'
 import HapticHandler from '../../../Handler/HapticHandler'
 import MainStore from '../../../AppStores/MainStore'
 import LayoutUtils from '../../../commons/LayoutUtils'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 const marginTop = LayoutUtils.getExtraTop()
 
 const subtext = 'Make sure to keep your Recovery Phrase safely. Be your own bank and take security seriously.'
@@ -29,6 +30,7 @@ export default class CreateWalletScreen extends Component {
   }
 
   gotoHome = () => {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.BACKUP_SUCCESS)
     MainStore.backupStore.gotoHome()
   }
 

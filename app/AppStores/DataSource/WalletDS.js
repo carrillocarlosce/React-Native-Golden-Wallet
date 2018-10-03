@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native'
-import Wallet from '../stores/Wallet'
-import MainStore from '../MainStore'
+import { ETHWallet, BTCWallet } from '../stores/Wallet'
+import NavStore from '../NavStore'
+import SecureDS from './SecureDS'
 
 const dataKey = 'WALLETS_STORAGE'
 
@@ -11,7 +12,10 @@ class WalletDataSource {
     const walletsStr = await AsyncStorage.getItem(dataKey)
     if (!walletsStr) return []
 
-    this.wallets = JSON.parse(walletsStr).map(js => new Wallet(js))
+    this.wallets = JSON.parse(walletsStr).map((js) => {
+      if (js.type === 'ethereum') return new ETHWallet(js)
+      return new BTCWallet(js)
+    })
     return this.wallets
   }
 
@@ -51,10 +55,14 @@ class WalletDataSource {
   }
 
   async deleteWallet(address) {
-    const wallets = await this.getWallets()
-    const result = wallets.filter(w => w.address != address)
-    MainStore.secureStorage.removePrivateKey(address)
-    return this.saveWallets(result)
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        const wallets = await this.getWallets()
+        const result = wallets.filter(w => w.address != address)
+        new SecureDS(pincode).removePrivateKey(address)
+        return this.saveWallets(result)
+      }
+    }, true)
   }
 }
 

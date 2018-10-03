@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native'
 import { observer } from 'mobx-react/native'
 import PropTypes from 'prop-types'
@@ -11,13 +12,13 @@ import AppStyle from '../../../commons/AppStyle'
 import MainStore from '../../../AppStores/MainStore'
 import AddressElement from '../../../components/elements/AddressElement'
 import Helper from '../../../commons/Helper'
+import images from '../../../commons/images'
 
 @observer
 export default class ManageWalletItem extends Component {
   static propTypes = {
     style: PropTypes.object,
     index: PropTypes.number.isRequired,
-    action: PropTypes.func,
     onPress: PropTypes.func
     // onDeletePress: PropTypes.func,
     // onEditPress: PropTypes.func
@@ -25,7 +26,6 @@ export default class ManageWalletItem extends Component {
 
   static defaultProps = {
     style: {},
-    action: () => { },
     onPress: () => { }
     // onEditPress: () => { },
     // onDeletePress: () => { }
@@ -38,10 +38,14 @@ export default class ManageWalletItem extends Component {
 
   render() {
     const {
-      style, action, index, onPress = () => { }
+      style, index, onPress = () => { }
     } = this.props
-
-    const { title, address, totalBalanceETH } = this.wallet
+    const {
+      title,
+      address,
+      totalBalanceETH,
+      type
+    } = this.wallet
     const borderBottomWidth = {
       borderBottomWidth: index == 9 ? 0 : 1
     }
@@ -50,23 +54,21 @@ export default class ManageWalletItem extends Component {
         onPress={onPress}
       >
         <View style={[styles.container, borderBottomWidth, style]}>
-          <View style={{}}>
-            <Text style={styles.name}>{title}</Text>
-            <AddressElement
-              address={address}
-              style={{ marginTop: 10 }}
+          <View style={{ flexDirection: 'row' }}>
+            <Image
+              source={type === 'ethereum' ? images.logoETH : images.logoBTC}
+              style={{ marginRight: 10 }}
             />
-            {/* <Text
-              style={[styles.address, commonStyle.fontAddress]}
-              numberOfLines={1}
-              ellipsizeMode="middle"
-            >
-            {address}
-            </Text> */}
+            <View>
+              <Text style={styles.name}>{title}</Text>
+              <AddressElement
+                address={address}
+                style={{ marginTop: 10 }}
+              />
+            </View>
           </View>
-          {/* <MoreButton onPress={action} /> */}
           <Text style={styles.balance}>
-            {`${Helper.formatETH(totalBalanceETH)} ETH`}
+            {`${Helper.formatETH(totalBalanceETH)}`}
           </Text>
         </View>
       </TouchableWithoutFeedback >

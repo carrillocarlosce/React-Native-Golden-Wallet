@@ -1,5 +1,4 @@
 import { observable, action } from 'mobx'
-import SecureDS from './DataSource/SecureDS'
 import AppDS from './DataSource/AppDS'
 import appState from './AppState'
 import PushNotificationHelper from '../commons/PushNotificationHelper'
@@ -20,17 +19,17 @@ class MainStore {
   dapp = null
   addressBookStore = null
   importMnemonicStore = null
-
-  setSecureStorage(pincode) {
-    this.secureStorage = new SecureDS(pincode)
-  }
+  importPrivateKeyStore = null
+  importAddressStore = null
 
   // Start
   @action async startApp() {
     await AppDS.readAppData()
-    PushNotificationHelper.init()
+    await PushNotificationHelper.init()
+    appState.syncWalletAddresses()
+    appState.initMixpanel()
     appState.startAllServices()
   }
 }
 
-export default new MainStore()
+export default new MainStore

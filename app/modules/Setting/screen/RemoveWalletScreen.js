@@ -18,8 +18,10 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import MainStore from '../../../AppStores/MainStore'
 import ManageWalletStore from '../stores/ManageWalletStore'
-import NavStore from '../../../AppStores/NavStore'
 import TouchOutSideDismissKeyboard from '../../../components/elements/TouchOutSideDismissKeyboard'
+import NavStore from '../../../AppStores/NavStore'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width } = Dimensions.get('window')
 const marginTop = LayoutUtils.getExtraTop()
@@ -50,22 +52,27 @@ export default class RemoveWalletScreen extends Component {
   }
 
   handleRemove = async () => {
-    const { wallets, selectedWallet } = MainStore.appState
-    const index = wallets.indexOf(selectedWallet)
-    if (index === wallets.length - 1) {
-      MainStore.appState.setSelectedWallet(null)
-    }
-    this.setState({ allowShowErr: false })
-    await this.manageWalletStore.removeWallet(this.wallet)
-    if (MainStore.appState.wallets.length === 0) {
-      MainStore.appState.setSelectedWallet(null)
-    }
-    this.backToManageScreen()
-  }
-
-  backToManageScreen() {
-    this.hideKeyboard()
-    NavStore.pushToScreen('ManageWalletScreen')
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        const { wallets, selectedWallet } = MainStore.appState
+        const index = wallets.indexOf(selectedWallet)
+        if (index === wallets.length - 1) {
+          MainStore.appState.setSelectedWallet(null)
+        }
+        this.setState({ allowShowErr: false })
+        await this.manageWalletStore.removeWallet(this.wallet)
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_MANAGE_WALLET_EXPORT_PRIVATE_KEY)
+        if (MainStore.appState.wallets.length === 0) {
+          MainStore.appState.setSelectedWallet(null)
+        }
+        if (index < MainStore.appState.wallets.length) {
+          MainStore.appState.setSelectedWallet(MainStore.appState.wallets[index])
+        }
+        new SecureDS(pincode).removePrivateKey(selectedWallet.address)
+        this.hideKeyboard()
+        this.props.navigation.state.params.onRemoved()
+      }
+    }, true)
   }
 
   handleBack = () => {

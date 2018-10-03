@@ -5,8 +5,7 @@ import NavigationHeader from '../../../components/elements/NavigationHeader'
 import Spinner from '../../../components/elements/Spinner'
 import images from '../../../commons/images'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import AppState from '../../../AppStores/AppState'
-import URL from '../../../api/url'
+import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -26,21 +25,18 @@ export default class TxHashWebViewScreen extends Component {
   static defaultProps = {
     navigation: {}
   }
+
   state = {
     isShow: false
   }
 
+  onBack = () => {
+    NavStore.goBack()
+  }
+
   render() {
     const { navigation } = this.props
-    const jsCode = `
-       document.querySelector('.header').style.display = 'none';
-       document.querySelector('.tibrr-cookie-consent-container').style.display = 'none';
-    `
-    const { txHash } = navigation.state.params
-
-    const { networkName } = AppState
-
-    const url = `${URL.EtherScan.webURL(networkName)}/tx/${txHash}`
+    const { url, jsCode } = navigation.state.params
 
     const style = this.state.isShow ? { flex: 1 } : { width: 0 }
     return (
@@ -52,9 +48,7 @@ export default class TxHashWebViewScreen extends Component {
             icon: null,
             button: images.backButton
           }}
-          action={() => {
-            navigation.goBack()
-          }}
+          action={this.onBack}
         />
         <WebView
           style={style}

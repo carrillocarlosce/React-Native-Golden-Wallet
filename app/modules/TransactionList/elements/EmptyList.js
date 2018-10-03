@@ -21,7 +21,7 @@ export default class EmptyList extends PureComponent {
           source={images.imgEmptyTransaction}
         />
         <Text style={styles.titleEmptyTransaction}>Nothing here</Text>
-        <Text style={styles.subtitleEmptyTransaction}>You don’t have any transactions.</Text>
+        <Text style={styles.subtitleEmptyTransaction}>You don’t have any pending transactions.</Text>
       </View>
     )
   }

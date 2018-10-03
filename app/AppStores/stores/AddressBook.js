@@ -1,5 +1,7 @@
 import { observable } from 'mobx'
 import AddressBookDS from '../DataSource/AddressBookDS'
+import MainStore from '../MainStore'
+import MixpanelHandler from '../../Handler/MixpanelHandler'
 
 const defaultObjWallet = {
   title: '',
@@ -11,8 +13,9 @@ export default class AddressBook {
   @observable title = ''
   @observable address = ''
 
-  static createNew(title, address) {
-    return new AddressBook({ title, address })
+  static createNew(title, address, type = 'ethereum') {
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.ACTION_ADD_ADDRESS_BOOK)
+    return new AddressBook({ title, address, type })
   }
 
   constructor(obj) {

@@ -1,9 +1,13 @@
+import { Keyboard } from 'react-native'
 import { observable, action, computed } from 'mobx'
 import BigNumber from 'bignumber.js'
+import bitcoin from 'react-native-bitcoinjs-lib'
+import bigi from 'bigi'
 import { NavigationActions } from 'react-navigation'
 import AmountStore from './AmountStore'
 import AddressInputStore from './AddressInputStore'
 import ConfirmStore from './ConfirmStore'
+import ConfirmStoreBTC from './ConfirmStore.btc'
 import AdvanceStore from './AdvanceStore'
 import MainStore from '../../../AppStores/MainStore'
 import NavStore from '../../../AppStores/NavStore'
@@ -12,6 +16,8 @@ import HapticHandler from '../../../Handler/HapticHandler'
 import AppStyle from '../../../commons/AppStyle'
 import { sendTransaction } from '../../../api/ether-json-rpc'
 import Interface from '../../../Utils/Ethererum/Contract/interface'
+import api from '../../../api'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const BN = require('bn.js')
 
@@ -20,6 +26,8 @@ class SendStore {
   amountStore = null
   addressInputStore = null
   confirmStore = null
+  txIDData = []
+  completeStep = 0
 
   @observable transaction = {
     gasLimit: new BN('21000'),
@@ -27,11 +35,14 @@ class SendStore {
   }
 
   constructor() {
+    const { type } = MainStore.appState.selectedWallet
     this.amountStore = new AmountStore()
     this.addressInputStore = new AddressInputStore()
-    this.confirmStore = new ConfirmStore()
+    this.confirmStore = type === 'ethereum' ? new ConfirmStore() : new ConfirmStoreBTC()
     this.advanceStore = new AdvanceStore()
   }
+
+  @action setCompleteStep = (cs) => { this.completeStep = cs }
 
   @computed get address() {
     return this.addressInputStore.address
@@ -58,14 +69,31 @@ class SendStore {
     this.isToken = bool
   }
 
-  sendTx() {
-    const transaction = {
-      value: this.confirmStore.value,
-      to: this.address,
-      gasLimit: `0x${this.confirmStore.gasLimit.toString(16)}`,
-      gasPrice: `0x${this.confirmStore.gasPrice.toString(16)}`
-    }
+  @action setTxIDData(data) {
+    this.txIDData = data
+  }
 
+  @action goToConfirm() {
+    const { selectedWallet } = MainStore.appState
+    Keyboard.dismiss()
+    if (selectedWallet.type === 'ethereum') {
+      NavStore.pushToScreen('ConfirmScreen')
+    } else {
+      NavStore.showLoading()
+      api.getTxID(MainStore.appState.selectedWallet.address).then((res) => {
+        if (res && res.data && res.data.unspent_outputs && res.data.unspent_outputs.length > 0) {
+          MainStore.sendTransaction.setTxIDData(res.data.unspent_outputs)
+          MainStore.sendTransaction.confirmStore.setFee(this.estimateFeeBTC(res.data.unspent_outputs.length, 2))
+          NavStore.hideLoading()
+          NavStore.pushToScreen('ConfirmScreen')
+        } else {
+          NavStore.hideLoading()
+        }
+      })
+    }
+  }
+
+  sendTx() {
     if (MainStore.appState.internetConnection === 'offline') {
       NavStore.popupCustom.show('No internet connection')
       return
@@ -74,6 +102,17 @@ class SendStore {
       onUnlock: (pincode) => {
         NavStore.showLoading()
         const ds = new SecureDS(pincode)
+        if (MainStore.appState.selectedWallet.type === 'bitcoin') {
+          return this.sendBTC(ds)
+            .then(res => this._onSendSuccess(res))
+            .catch(err => this._onSendFail(err))
+        }
+        const transaction = {
+          value: this.confirmStore.value,
+          to: this.address,
+          gasLimit: `0x${this.confirmStore.gasLimit.toString(16)}`,
+          gasPrice: `0x${this.confirmStore.gasPrice.toString(16)}`
+        }
         if (!this.isToken) {
           return this.sendETH(transaction, ds)
             .then(res => this._onSendSuccess(res))
@@ -100,6 +139,68 @@ class SendStore {
     NavStore.popupCustom.show(err.message)
   }
 
+  estimateFeeBTC(m, n) {
+    return 93 * m + 102 * n + 200
+  }
+
+  sendBTC(ds) {
+    let amount = parseInt(MainStore.sendTransaction.confirmStore.value.times(new BigNumber(1e+8)).toFixed(0))
+    const toAddress = MainStore.sendTransaction.addressInputStore.address
+    let balance = 0
+    for (let s = 0; s < this.txIDData.length; s++) {
+      balance += this.txIDData[s].value
+    }
+
+    const fee = this.estimateFeeBTC(this.txIDData.length, 2)
+    this.event(MixpanelHandler.eventName.ACTION_SEND, amount, fee, 'BTC')
+
+    return new Promise((resolve, reject) => {
+
+      this.getPrivateKey(ds)
+        .then((privateKey) => {
+          const { address: myAddress } = MainStore.appState.selectedWallet
+
+          const mainnet = bitcoin.networks.bitcoin
+          const keyPair = new bitcoin.ECPair(bigi.fromHex(privateKey), undefined, { network: mainnet })
+
+          const p2wpkh = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey, network: mainnet })
+          const p2sh = bitcoin.payments.p2sh({ redeem: p2wpkh, network: mainnet })
+          const txb = new bitcoin.TransactionBuilder(mainnet)
+
+          for (let ip = 0; ip < this.txIDData.length; ip++) {
+            txb.addInput(this.txIDData[ip].tx_hash_big_endian, this.txIDData[ip].tx_output_n)
+          }
+
+          const noNeedBack = amount > balance - fee
+          if (noNeedBack) {
+            amount = balance - fee
+          }
+
+          txb.addOutput(toAddress, amount)
+          !noNeedBack && txb.addOutput(myAddress, balance - amount - fee)
+
+          for (let ip = 0; ip < this.txIDData.length; ip++) {
+            txb.sign(ip, keyPair, p2sh.redeem.output, null, this.txIDData[ip].value)
+          }
+
+          const tx = txb.build()
+
+          return api.pushTxBTC(tx.toHex()).then((res) => {
+            if (res.status === 200) {
+              resolve(tx.getId())
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, amount, fee, 'BTC')
+            } else {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, amount, fee, 'BTC')
+              reject(res.data)
+            }
+          })
+        }).catch((err) => {
+          this.event(MixpanelHandler.eventName.SEND_FAIL, amount, fee, 'BTC')
+          reject(err)
+        })
+    })
+  }
+
   sendETH(transaction, ds) {
     if (!this.confirmStore.validateAmount()) {
       const err = { message: 'Not enough gas to send this transaction' }
@@ -110,24 +211,38 @@ class SendStore {
       : transaction.value
 
     const transactionSend = { ...transaction, value: `0x${valueFormat}` }
+    this.event(MixpanelHandler.eventName.ACTION_SEND, transaction.value, this.confirmStore.fee.toString(), 'ETH')
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
           sendTransaction(this.rpcURL, transactionSend, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, transaction.value, this.confirmStore.fee.toString(), 'ETH')
               return resolve(tx)
             })
             .catch((err) => {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
               return reject(err)
             })
         }).catch((err) => {
+          this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
           return reject(err)
         })
       } catch (e) {
+        this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), 'ETH')
         return reject(e)
       }
     })
+  }
+
+  event(eventName, amount, fee, token) {
+    MainStore.appState.mixpanleHandler.track(eventName)
+    // MainStore.appState.mixpanleHandler.trackWithProperties(eventName, {
+    //   amount: `${amount}`,
+    //   fee,
+    //   token
+    // })
   }
 
   sendToken(transaction, ds) {
@@ -140,6 +255,7 @@ class SendStore {
       to,
       value
     } = transaction
+    this.event(MixpanelHandler.eventName.ACTION_SEND, transaction.value, this.confirmStore.fee.toString(), token.symbol)
     return new Promise((resolve, reject) => {
       try {
         this.getPrivateKey(ds).then((privateKey) => {
@@ -157,10 +273,15 @@ class SendStore {
           return sendTransaction(this.rpcURL, unspentTransaction, this.fromAddress, this.chainId, privateKey)
             .then((tx) => {
               this.addAndUpdateGlobalUnpendTransactionInApp(tx, transaction, this.isToken)
+              this.event(MixpanelHandler.eventName.SEND_SUCCESS, transaction.value, this.confirmStore.fee.toString(), token.symbol)
               return resolve(tx)
-            }).catch(e => reject(e))
+            }).catch((e) => {
+              this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), token.symbol)
+              reject(e)
+            })
         })
       } catch (e) {
+        this.event(MixpanelHandler.eventName.SEND_FAIL, transaction.value, this.confirmStore.fee.toString(), token.symbol)
         return reject(e)
       }
     })

@@ -18,6 +18,7 @@ import { opensansRegular } from '../../../commons/commonStyles'
 import AppStyle from '../../../commons/AppStyle'
 import BottomButton from '../../../components/elements/BottomButton'
 import Router from '../../../AppStores/Router'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const marginTop = LayoutUtils.getExtraTop()
 const { width } = Dimensions.get('window')
@@ -36,6 +37,7 @@ export default class CollectibleDetailScreen extends Component {
 
   onPress = () => {
     const { assetContractName } = this.collectible
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.OPEN_COLLETIBLES_DAPP)
     Router.DAppBrowser.goToDApp()
     let url = ''
     if (assetContractName === 'Etheremon') {

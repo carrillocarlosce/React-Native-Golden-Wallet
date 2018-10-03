@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx'
 import { AsyncStorage } from 'react-native'
-import axios from 'axios'
+import API from '../api'
 
 class ObservableCurrencyStore {
   @observable currencyETH = null
@@ -26,7 +26,7 @@ class ObservableCurrencyStore {
   }
 
   @action getCurrencyAPI() {
-    return this.callApi().then((res) => {
+    return API.fetchRateETHDollar().then((res) => {
       this.currencyETH = res.data.RAW.ETH
       this.saveCurrency(this.currencyETH)
       return this.currencyETH
@@ -35,21 +35,6 @@ class ObservableCurrencyStore {
 
   @computed get currencyUSD() {
     return this.currencyETH ? this.currencyETH.USD.PRICE : 0
-  }
-
-  callApi() {
-    const data = {
-      fsyms: 'ETH',
-      tsyms: 'BTC,USD,EUR,GBP,AUD,CAD,CNY,JPY,RUB'
-    }
-    return axios({
-      url: `https://min-api.cryptocompare.com/data/pricemultifull`,
-      params: data,
-      method: 'get',
-      validateStatus: (status) => {
-        return true
-      }
-    })
   }
 }
 

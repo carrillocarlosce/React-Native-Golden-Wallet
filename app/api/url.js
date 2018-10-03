@@ -24,5 +24,12 @@ export default {
   },
   OpenSea: {
     apiURL: () => `https://opensea-api.herokuapp.com`
+  },
+  BlockExplorer: {
+    apiURL: () => `https://blockexplorer.com`
+  },
+  BlockChainInfo: {
+    apiURL: () => `https://blockchain.info`,
+    webURL: () => `https://www.blockchain.com`
   }
 }

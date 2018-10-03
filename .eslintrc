@@ -65,7 +65,8 @@
     ],
     "eqeqeq": 0,
     "no-return-await": 0,
-    "camelcase": 0
+    "camelcase": 0,
+    "no-restricted-globals": 0
   },
   "env": {
     "react-native/react-native": true

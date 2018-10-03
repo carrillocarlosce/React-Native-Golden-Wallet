@@ -8,13 +8,13 @@ import PropTypes from 'prop-types'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import SmallCard from '../../../components/elements/SmallCard'
 import LayoutUtils from '../../../commons/LayoutUtils'
-import constant from '../../../commons/constant'
 import images from '../../../commons/images'
 import AppStyle from '../../../commons/AppStyle'
+import { chainNames } from '../../../Utils/WalletAddresses'
 
 const marginTop = LayoutUtils.getExtraTop()
 const contentPrivateKey = 'Scan or enter your Private Key to restore your wallet. Make sure to keep your Private Key safe after you are done.'
-const contentMnemonicPhrase = 'Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phase safe after you are done.'
+const contentMnemonicPhrase = 'Enter your Mnemonic Phrase to recover your wallet. Make sure to keep your Mnemonic Phrase safe after you are done.'
 const contentAddressOnly = 'Scan or enter your wallet address to monitor it. This is a view only wallet and transaction cannot be sent without a Private Key.'
 
 export default class ImportWalletScreen extends Component {
@@ -26,19 +26,35 @@ export default class ImportWalletScreen extends Component {
     navigation: {}
   }
 
+  get title() {
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    return coin
+  }
+
+  get logo() {
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    if (coin === chainNames.ETH) return images.logoETH
+    return images.logoBTC
+  }
+
   gotoImportAddress = () => {
     const { navigation } = this.props
-    navigation.navigate('ImportViaAddressScreen')
+    const { coin } = navigation.state.params
+    navigation.navigate('ImportViaAddressScreen', { coin })
   }
 
   gotoImportPrivateKey = () => {
     const { navigation } = this.props
-    navigation.navigate('ImportViaPrivateKeyScreen')
+    const { coin } = navigation.state.params
+    navigation.navigate('ImportViaPrivateKeyScreen', { coin })
   }
 
   gotoImportMnemonic = () => {
     const { navigation } = this.props
-    navigation.navigate('ImportViaMnemonicScreen')
+    const { coin } = navigation.state.params
+    navigation.navigate('ImportViaMnemonicScreen', { coin })
   }
 
   goBack = () => {
@@ -47,13 +63,14 @@ export default class ImportWalletScreen extends Component {
   }
 
   render() {
+    const { title, logo } = this
     return (
       <View style={styles.container}>
         <NavigationHeader
           style={{ marginTop: marginTop + 20 }}
           headerItem={{
-            title: constant.ETHEREUM,
-            icon: images.iconETH,
+            title,
+            icon: logo,
             button: images.backButton
           }}
           action={this.goBack}

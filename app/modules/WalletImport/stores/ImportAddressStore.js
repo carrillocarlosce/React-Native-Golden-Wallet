@@ -1,11 +1,14 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
-import Wallet from '../../../AppStores/stores/Wallet'
+import { importAddress } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
 import Checker from '../../../Handler/Checker'
 import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
+import { chainNames } from '../../../Utils/WalletAddresses'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 export default class ImportAddressStore {
   @observable customTitle = ``
@@ -13,9 +16,10 @@ export default class ImportAddressStore {
   @observable loading = false
   @observable finished = false
   @observable focusField = ''
+  coin = chainNames.ETH
 
   @action setFocusField = (ff) => { this.focusField = ff }
-
+  @action setCoin = (c) => { this.coin = c }
   @action setTitle(title) {
     this.customTitle = title
   }
@@ -24,20 +28,27 @@ export default class ImportAddressStore {
     this.addessWallet = address
   }
 
-  @action async create(title) {
-    this.loading = true
-    this.finished = true
-    const ds = MainStore.secureStorage
-    const { address } = this
-    const w = Wallet.importAddress(address, title, ds)
-    NotificationStore.addWallet(title, w.address)
-    NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
-    await MainStore.appState.appWalletsStore.addOne(w)
-    MainStore.appState.autoSetSelectedWallet()
-    MainStore.appState.selectedWallet.fetchingBalance()
-    this.loading = false
-    NavStore.reset()
-    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+  @action async create(title, coin = chainNames.ETH) {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        this.loading = true
+        this.finished = true
+        const ds = new SecureDS(pincode)
+        const { address } = this
+        const w = importAddress(address, title, ds, coin)
+        NotificationStore.addWallet(title, w.address, w.type === 'ethereum' ? 'ETH' : 'BTC')
+        NavStore.showToastTop(`${title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+        await MainStore.appState.appWalletsStore.addOne(w)
+        MainStore.appState.autoSetSelectedWallet()
+        MainStore.appState.selectedWallet.fetchingBalance()
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.IMPORT_WALLET)
+        this.loading = false
+        NavStore.reset()
+        if (w.type === 'ethereum') {
+          NavStore.pushToScreen('TokenScreen')
+        }
+      }
+    }, true)
   }
 
   @computed get isNameFocus() {
@@ -84,13 +95,18 @@ export default class ImportAddressStore {
   }
 
   @computed get errorAddress() {
-    if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address)) {
+    if (this.address !== '' && !this.finished && !Checker.checkAddress(this.address, this.coin)) {
       return constant.INVALID_ADDRESS
     }
 
-    if (!this.finished && this.addressMap[this.address.toLowerCase()]) {
+    if (this.coin === chainNames.ETH && !this.finished && this.addressMap[this.address.toLowerCase()]) {
       return constant.EXISTED_WALLET
     }
+
+    if (this.coin === chainNames.BTC && !this.finished && this.addressMap[this.address]) {
+      return constant.EXISTED_WALLET
+    }
+
     return ''
   }
 
@@ -98,5 +114,9 @@ export default class ImportAddressStore {
     return this.address !== '' && this.title !== '' &&
       this.errorAddress === '' && !this.isErrorTitle &&
       !this.titleIsEmpty
+  }
+
+  @computed get isValidAddress() {
+    return this.address !== '' && this.errorAddress === ''
   }
 }

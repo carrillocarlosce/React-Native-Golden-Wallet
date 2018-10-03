@@ -8,6 +8,7 @@ import {
   Text
 } from 'react-native'
 import { observer } from 'mobx-react/native'
+import PropTypes from 'prop-types'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import InputWithAction from '../../../components/elements/InputWithActionItem'
 import BottomButton from '../../../components/elements/BottomButton'
@@ -25,6 +26,14 @@ const marginTop = LayoutUtils.getExtraTop()
 
 @observer
 export default class EnterNameViaMnemonic extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+
+  static defaultProps = {
+    navigation: {}
+  }
+
   constructor(props) {
     super(props)
     this.importMnemonicStore = MainStore.importMnemonicStore
@@ -40,7 +49,9 @@ export default class EnterNameViaMnemonic extends Component {
   }
 
   handleCreate = () => {
-    this.importMnemonicStore.unlockWallet()
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    this.importMnemonicStore.unlockWallet(coin)
   }
 
   renderErrorField = () => {

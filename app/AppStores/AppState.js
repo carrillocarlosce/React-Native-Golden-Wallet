@@ -9,20 +9,8 @@ import AddressBookDS from './DataSource/AddressBookDS'
 import UnspendTransactionDS from './DataSource/UnspendTransactionDS'
 import BgJobs from './BackgroundJobs'
 import api from '../api'
-import NavStore from './NavStore'
-
-// const defaultAppData = {
-//   config: new Config('mainnet', Constants.INFURA_API_KEY),
-//   defaultWallet: null, // for web3 dapp
-//   selectedWallet: null, // for sending transaction
-//   selectedToken: null, // for sending transaction
-//   wallets: [],
-//   addressBooks: [],
-//   rateETHDollar: 412.0,
-//   hasPassword: false
-// }
-
-// Current app state
+import MixpanelHandler from '../Handler/MixpanelHandler'
+import NotificationStore from './stores/Notification'
 
 class AppState {
   dataVersion = '1'
@@ -33,9 +21,11 @@ class AppState {
   @observable selectedTransaction = null
   @observable addressBooks = []
   @observable rateETHDollar = new BigNumber(0)
+  @observable rateBTCDollar = new BigNumber(0)
   @observable hasPassword = false
   @observable didBackup = false
   currentWalletIndex = 0
+  currentBTCWalletIndex = 0
   @observable internetConnection = 'online' // online || offline
   @observable unpendTransactions = []
   @observable gasPriceEstimate = {
@@ -43,10 +33,13 @@ class AppState {
     standard: 10,
     fast: 60
   }
-  // @observable enableNotification = true
+  @observable allowDailyUsage = null
+
   @observable currentCardIndex = 0
   lastestVersionRead = ''
   shouldShowUpdatePopup = true
+  homeCarousel = null
+  mixpanleHandler = null
 
   static TIME_INTERVAL = 20000
 
@@ -62,6 +55,7 @@ class AppState {
     Reactions.auto.listenConfig(this)
     Reactions.auto.listenConnection(this)
     this.getRateETHDollar()
+    this.getRateBTCDollar()
     this.getGasPriceEstimate()
   }
 
@@ -72,6 +66,14 @@ class AppState {
     this.BgJobs.CheckPendingTransaction.start()
   }
 
+  initMixpanel() {
+    this.mixpanleHandler = new MixpanelHandler()
+  }
+
+  syncWalletAddresses() {
+    NotificationStore.addWallets()
+  }
+
   @action setConfig = (cf) => { this.config = cf }
   @action setBackup = (isBackup) => { this.didBackup = isBackup }
   @action setSelectedWallet = (w) => { this.selectedWallet = w }
@@ -79,18 +81,6 @@ class AppState {
   @action setselectedToken = (t) => { this.selectedToken = t }
   @action setSelectedTransaction = (tx) => { this.selectedTransaction = tx }
   @action setUnpendTransactions = (ut) => { this.unpendTransactions = ut }
-  // @action setEnableNotification = (isEnable) => {
-  //   if (this.wallets.length == 0) {
-  //     NavStore.popupCustom.show('You have no wallet')
-  //     return
-  //   }
-  //   this.wallets.map((wallet) => {
-  //     wallet.setEnableNotification(isEnable)
-  //     return wallet.update()
-  //   })
-  //   this.save()
-  // }
-
   @action setLastestVersionRead = (lvr) => { this.lastestVersionRead = lvr }
   @action setShouldShowUpdatePopup = (isShow) => { this.shouldShowUpdatePopup = isShow }
 
@@ -127,6 +117,16 @@ class AppState {
     this.currentWalletIndex = index
   }
 
+  @action setAllowDailyUsage(isEnable) {
+    this.allowDailyUsage = isEnable
+    this.save()
+  }
+
+  @action setCurrentBTCWalletIndex(index) {
+    this.currentBTCWalletIndex = index
+    this.save()
+  }
+
   @action async getRateETHDollar() {
     setTimeout(async () => {
       if (this.internetConnection === 'online') {
@@ -136,6 +136,17 @@ class AppState {
         if (rate.PRICE != this.rateETHDollar) {
           this.rateETHDollar = new BigNumber(rate.PRICE)
         }
+      }
+    }, 100)
+  }
+
+  @action async getRateBTCDollar() {
+    setTimeout(async () => {
+      const rs = await api.fetchRateBTCDollar()
+      const rate = rs.data && rs.data.RAW && rs.data.RAW.BTC && rs.data.RAW.BTC.USD
+
+      if (rate.PRICE != this.rateBTCDollar) {
+        this.rateBTCDollar = new BigNumber(rate.PRICE)
       }
     }, 100)
   }
@@ -177,12 +188,13 @@ class AppState {
     this.config = new Config(data.config.network, data.config.infuraKey)
     this.hasPassword = data.hasPassword
     this.didBackup = data.didBackup
-    // this.enableNotification = data.enableNotification !== undefined ? data.enableNotification : true
-    this.currentWalletIndex = data.currentWalletIndex
+    this.currentWalletIndex = data.currentWalletIndex || 0
+    this.currentBTCWalletIndex = data.currentBTCWalletIndex || 0
     const addressBooks = await AddressBookDS.getAddressBooks()
     this.addressBooks = addressBooks
     this.shouldShowUpdatePopup = data.shouldShowUpdatePopup !== undefined ? data.shouldShowUpdatePopup : true
     this.lastestVersionRead = data.lastestVersionRead
+    this.allowDailyUsage = data.allowDailyUsage
 
     await this.loadPendingTxs()
     await this.appWalletsStore.getWalletFromDS()
@@ -190,17 +202,10 @@ class AppState {
     if (this.wallets.length > 0) {
       this.setSelectedWallet(this.wallets[0])
     }
-    // if (data.defaultWallet) {
-    //   this.defaultWallet = wallets.find(w => w.address === data.defaultWallet)
-    // }
-
-    // if (data.selectedWallet) {
-    //   this.selectedWallet = wallets.find(w => w.address === data.selectedWallet)
-    // }
 
     this.rateETHDollar = new BigNumber(data.rateETHDollar || 0)
+    this.rateBTCDollar = new BigNumber(data.rateBTCDollar || 0)
     this.gasPriceEstimate = data.gasPriceEstimate
-    // this.BgJobs.CheckBalance.doOnce(false)
   }
 
   @computed get isShowSendButton() {
@@ -217,6 +222,10 @@ class AppState {
   }
 
   @computed get wallets() {
+    if (this.networkName !== Config.networks.mainnet) {
+      const ethWallets = this.appWalletsStore.wallets.filter(w => w.type === 'ethereum')
+      return ethWallets
+    }
     return this.appWalletsStore.wallets
   }
 
@@ -232,7 +241,6 @@ class AppState {
     this.config = new Config('mainnet', Constants.INFURA_API_KEY)
     this.setHasPassword(false)
     this.setBackup(false)
-    // this.setEnableNotification(true)
     this.currentWalletIndex = 0
     this.setUnpendTransactions([])
     this.addressBooks = []
@@ -245,23 +253,23 @@ class AppState {
 
   // for local storage: be careful with MobX observable
   toJSON() {
-    // const addressBooksJS = this.addressBooks.map(adr => adr.toJSON())
-
     return {
       dataVersion: this.dataVersion,
       config: this.config.toJSON(),
       defaultWallet: this.defaultWallet ? this.defaultWallet.address : null,
       selectedWallet: this.selectedWallet ? this.selectedWallet.address : null,
       selectedToken: this.selectedToken ? this.selectedToken.address : null,
-      // addressBooks: addressBooksJS,
       hasPassword: this.hasPassword,
       rateETHDollar: this.rateETHDollar.toString(10),
+      rateBTCDollar: this.rateBTCDollar.toString(10),
       currentWalletIndex: this.currentWalletIndex,
+      currentBTCWalletIndex: this.currentBTCWalletIndex,
       didBackup: this.didBackup,
       gasPriceEstimate: this.gasPriceEstimate,
       enableNotification: this.enableNotification,
       lastestVersionRead: this.lastestVersionRead,
-      shouldShowUpdatePopup: this.shouldShowUpdatePopup
+      shouldShowUpdatePopup: this.shouldShowUpdatePopup,
+      allowDailyUsage: this.allowDailyUsage
     }
   }
 }

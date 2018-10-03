@@ -17,6 +17,7 @@ class AmountStore {
 
   @computed get amountCrypto() {
     const { selectedWallet, selectedToken } = MainStore.appState
+    if (selectedWallet.type === 'bitcoin') return (selectedWallet.balance.dividedBy(new BigNumber('1.0e+8')))
     return MainStore.sendTransaction.isToken
       ? (selectedToken.balance.dividedBy(new BigNumber(`1.0e+${selectedToken.decimals}`)))
       : (selectedWallet.balance.dividedBy(new BigNumber('1.0e+18'))) // Big Num
@@ -24,12 +25,19 @@ class AmountStore {
 
   @computed get rate() {
     const { selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar // Big Num
+    const { selectedWallet } = MainStore.appState
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.rate : MainStore.appState.rateETHDollar
+      : MainStore.appState.rateBTCDollar // Big Num
   }
 
   @computed get postfix() {
     const { selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.symbol : 'ETH' // String
+    const { selectedWallet } = MainStore.appState
+
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.symbol
+        : 'ETH' : 'BTC' // String
   }
 
   @computed get walletName() {
@@ -39,7 +47,9 @@ class AmountStore {
 
   @computed get amountUSD() {
     const { selectedWallet, selectedToken } = MainStore.appState
-    return MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar // Big num
+    return selectedWallet.type === 'ethereum'
+      ? MainStore.sendTransaction.isToken ? selectedToken.balanceInDollar : selectedWallet.totalBalanceDollar
+      : selectedWallet.totalBalanceDollar // Big num
   }
 
   @computed get amountTextBigNum() {
@@ -59,6 +69,7 @@ class AmountStore {
   }
 
   @computed get fee() {
+    const { selectedWallet } = MainStore.appState
     const gasLimt = MainStore.sendTransaction.isToken ? new BigNumber(150000) : new BigNumber(21000)
     const gasPriceStandard = new BigNumber(`${MainStore.appState.gasPriceEstimate.standard}e+9`)
     const fee = gasLimt.times(gasPriceStandard).div(new BigNumber(1e+18))
@@ -66,7 +77,9 @@ class AmountStore {
     if (MainStore.sendTransaction.isToken) {
       return 0
     }
-    return isUSD ? fee.times(this.rate) : fee
+    return selectedWallet.type === 'ethereum'
+      ? isUSD ? fee.times(this.rate) : fee
+      : new BigNumber('400e-8')
   }
 
   @computed get amountTextString() {
@@ -191,22 +204,23 @@ class AmountStore {
     } else if (decimal.split('').length == 1) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = isUSD ? [{ text: '0' }] : [{ text: '0' }, { text: '' }, { text: '' }]
+      const subData = isUSD ? [{ text: '0' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 2) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = isUSD ? [] : [{ text: '0' }, { text: '' }]
+      const subData = isUSD ? [] : [{ text: '0' }, { text: '' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 3) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      const subData = [{ text: '0' }]
+      const subData = [{ text: '0' }, { text: '' }]
       this.setAmountText({ data, subData, isHadPoint: true })
     } else if (decimal.split('').length == 4) {
       const string = `${Helper.numberWithCommas(integer)}.${decimal}`
       const data = string.split('').map((item) => { return { text: item } })
-      this.setAmountText({ data, subData: [], isHadPoint: true })
+      const subData = [{ text: '0' }]
+      this.setAmountText({ data, subData, isHadPoint: true })
     }
     HapticHandler.ImpactLight()
   }
@@ -221,7 +235,7 @@ class AmountStore {
     if (data.length == (isUSD ? 9 : 6) && item.text !== '.' && !isHadPoint) return
     else if (data.length == 0 && item.text == '.') {
       const newData = [{ text: '0' }, item]
-      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]
+      const newSubData = isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]
       this.setAmountText({ data: newData, subData: newSubData, isHadPoint: true })
       return
     } else if (data.length == 1 && item.text !== '.' && data[0].text == '0') {
@@ -236,7 +250,7 @@ class AmountStore {
       this.setAmountText({ subData, data })
       return
     } else if (subData.length == 0 && isHadPoint) return
-    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }]) : []
+    const zeroAfterPoint = item.text === '.' ? (isUSD ? [{ text: '0' }, { text: '' }] : [{ text: '0' }, { text: '' }, { text: '' }, { text: '' }, { text: '' }]) : []
     if (data.length == 3 && item.text !== '.') data.splice(1, 0, { text: ',' })
     else if (data.length == 5 && item.text !== '.') {
       data.splice(1, 1)
@@ -263,7 +277,7 @@ class AmountStore {
       isUSD,
       isHadPoint
     } = this.amountText
-    if (subData.length == (isUSD ? 2 : 4)) {
+    if (subData.length == (isUSD ? 2 : 5)) {
       data.pop()
       this.setAmountText({ data, subData: [], isHadPoint: false })
       return

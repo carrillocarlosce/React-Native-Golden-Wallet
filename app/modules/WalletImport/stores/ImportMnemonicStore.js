@@ -1,11 +1,14 @@
 import { observable, action, computed } from 'mobx'
 import MainStore from '../../../AppStores/MainStore'
-import Wallet from '../../../AppStores/stores/Wallet'
+import { getWalletsFromMnemonic, unlockFromMnemonic } from '../../../AppStores/stores/Wallet'
 import NavStore from '../../../AppStores/NavStore'
 import KeyStore from '../../../../Libs/react-native-golden-keystore'
 import constant from '../../../commons/constant'
 import NotificationStore from '../../../AppStores/stores/Notification'
 import AppStyle from '../../../commons/AppStyle'
+import { chainNames } from '../../../Utils/WalletAddresses'
+import SecureDS from '../../../AppStores/DataSource/SecureDS'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 export default class ImportMnemonicStore {
   @observable customTitle = ``
@@ -34,9 +37,15 @@ export default class ImportMnemonicStore {
     return this.customTitle
   }
 
-  @action async generateWallets() {
+  @action async generateWallets(coin = chainNames.ETH) {
+    let coinPath = ''
+    if (coin === chainNames.ETH) {
+      coinPath = KeyStore.CoinType.ETH.path
+    } else if (coin === chainNames.BTC) {
+      coinPath = KeyStore.CoinType.BTC.path
+    }
     this.loading = true
-    this.mnemonicWallets = await Wallet.getWalletsFromMnemonic(this.mnemonic, undefined, 0, 9)
+    this.mnemonicWallets = await getWalletsFromMnemonic(this.mnemonic, coinPath, 0, 20, coin)
     this.loading = false
     return this.mnemonicWallets
   }
@@ -45,7 +54,7 @@ export default class ImportMnemonicStore {
     return MainStore.appState.wallets.find(w => w.address === this.selectedWallet.address)
   }
 
-  @action gotoEnterName() {
+  @action gotoEnterName(coin) {
     this.stopCheckTitle = false
     this.customTitle = ''
 
@@ -58,26 +67,42 @@ export default class ImportMnemonicStore {
       NavStore.popupCustom.show(constant.EXISTED_WALLET)
       return
     }
-    NavStore.pushToScreen('EnterNameViaMnemonic')
+    NavStore.pushToScreen('EnterNameViaMnemonic', { coin })
   }
 
-  @action async unlockWallet() {
-    this.stopCheckTitle = true
+  @action async unlockWallet(coin = chainNames.ETH) {
+    NavStore.lockScreen({
+      onUnlock: async (pincode) => {
+        this.stopCheckTitle = true
+        let coinPath = ''
+        if (coin === chainNames.ETH) {
+          coinPath = KeyStore.CoinType.ETH.path
+        } else if (coin === chainNames.BTC) {
+          coinPath = KeyStore.CoinType.BTC.path
+        }
 
-    const index = this.mnemonicWallets
-      .findIndex(w => w.address.toLowerCase() === this.selectedWallet.address.toLowerCase())
-    const title = this.customTitle
+        const index = this.mnemonicWallets
+          .findIndex((w) => {
+            if (w.type === 'ethereum') return w.address.toLowerCase() === this.selectedWallet.address.toLowerCase()
+            return w.address === this.selectedWallet.address
+          })
+        const title = this.customTitle
 
-    const ds = MainStore.secureStorage
-    const wallet = await Wallet.unlockFromMnemonic(this.mnemonic, title, index, ds)
-    NotificationStore.addWallet(title, wallet.address)
-    NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
+        const ds = new SecureDS(pincode)
+        const wallet = await unlockFromMnemonic(this.mnemonic, title, index, ds, coinPath, coin)
+        NotificationStore.addWallet(title, wallet.address, wallet.type === 'ethereum' ? 'ETH' : 'BTC')
+        NavStore.showToastTop(`${this.title} was successfully imported!`, {}, { color: AppStyle.colorUp })
 
-    await MainStore.appState.appWalletsStore.addOne(wallet)
-    MainStore.appState.autoSetSelectedWallet()
-    MainStore.appState.selectedWallet.fetchingBalance()
-    NavStore.reset()
-    NavStore.pushToScreen('TokenScreen', { shouldShowAlertBackup: false })
+        await MainStore.appState.appWalletsStore.addOne(wallet)
+        MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.IMPORT_WALLET)
+        MainStore.appState.autoSetSelectedWallet()
+        MainStore.appState.selectedWallet.fetchingBalance()
+        NavStore.reset()
+        if (wallet.type === 'ethereum') {
+          NavStore.pushToScreen('TokenScreen')
+        }
+      }
+    }, true)
   }
 
   @computed get isLoading() {

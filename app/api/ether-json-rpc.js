@@ -180,7 +180,6 @@ export const sendTransaction = (url, transaction, fromAddress, chainId, privateK
   const value = utils.hexlify(transaction.value || 0)
 
   return Promise.all([gasPricePromise, noncePromise]).then((results) => {
-
     const signedTransaction = signTransaction({
       to: transaction.to,
       data,
@@ -206,7 +205,8 @@ export const signDigest = (digest, privateKey) => {
   }
 }
 
-export const signTransaction = (transaction, _chainId, privateKey) => {
+export const signTransaction = (_transaction, _chainId, privateKey) => {
+  const transaction = _transaction
   const raw = []
 
   if (transaction.gas) {

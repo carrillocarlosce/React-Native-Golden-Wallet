@@ -23,10 +23,12 @@ import MainStore from '../../../AppStores/MainStore'
 import Config from '../../../AppStores/stores/Config'
 import NavStore from '../../../AppStores/NavStore'
 import KeyBoard from '../elements/Keyboard'
+import LayoutUtils from '../../../commons/LayoutUtils'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class SendTransactionScreen extends Component {
@@ -55,6 +57,10 @@ export default class SendTransactionScreen extends Component {
   _onSendPress = () => {
     this.props.navigation.navigate('AddressInputScreen')
     this.amountStore.send()
+    if (MainStore.sendTransaction.completeStep === 0) {
+      MainStore.sendTransaction.setCompleteStep(1)
+      MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.COMPLETE_SEND_AMOUNT)
+    }
   }
 
   _onOpenModal = () => {
@@ -96,6 +102,7 @@ export default class SendTransactionScreen extends Component {
           <Image style={styles.exitBtn} source={images.closeButton} resizeMode="contain" />
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={MainStore.appState.selectedWallet.type === 'bitcoin'}
           style={styles.headerTitle}
           onPress={this._onOpenModal}
         >

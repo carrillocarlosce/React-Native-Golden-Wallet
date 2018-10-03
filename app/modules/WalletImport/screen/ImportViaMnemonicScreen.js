@@ -13,6 +13,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer } from 'mobx-react/native'
+import PropTypes from 'prop-types'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import Spinner from '../../../components/elements/Spinner'
 import BottomButton from '../../../components/elements/BottomButton'
@@ -32,6 +33,14 @@ const { width } = Dimensions.get('window')
 
 @observer
 export default class ImportViaMnemonicScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+
+  static defaultProps = {
+    navigation: {}
+  }
+
   constructor(props) {
     super(props)
     MainStore.importMnemonicStore = new ImportMnemonicStore()
@@ -87,9 +96,11 @@ export default class ImportViaMnemonicScreen extends Component {
 
   _handleConfirm = () => {
     Keyboard.dismiss()
-    this.importMnemonicStore.generateWallets()
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    this.importMnemonicStore.generateWallets(coin)
       .then((res) => {
-        NavStore.pushToScreen('ChooseAddressScreen')
+        NavStore.pushToScreen('ChooseAddressScreen', { coin })
       })
   }
 
@@ -116,7 +127,7 @@ export default class ImportViaMnemonicScreen extends Component {
               <NavigationHeader
                 style={{ marginTop: marginTop + 20, width }}
                 headerItem={{
-                  title: 'Add Mnemonic Phrases',
+                  title: 'Add Mnemonic Phrase',
                   icon: null,
                   button: images.backButton
                 }}

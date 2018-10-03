@@ -6,6 +6,7 @@ import NavStore from '../../AppStores/NavStore'
 import NotificationDS from '../DataSource/NotificationDS'
 import API from '../../api'
 import Transaction from '../../AppStores/stores/Transaction'
+import TransactionBTC from '../../AppStores/stores/Transaction.btc'
 
 class Notification {
   @observable currentNotif = null
@@ -25,12 +26,12 @@ class Notification {
     return await NotificationDS.getNotifID(address)
   }
 
-  addWallet(name, address) {
+  addWallet(name, address, type) {
     if (!this.deviceToken) {
       return null
     }
 
-    return API.addWallet(name, address, this.deviceToken).then((res) => {
+    return API.addWallet(name, address, this.deviceToken, type).then((res) => {
       const { data, success } = res.data
       if (success) {
         this.saveNotifID(address, data.id)
@@ -43,10 +44,11 @@ class Notification {
     if (!this.deviceToken) {
       return null
     }
-    const wallets = MainStore.appState.wallets.map((w) => {
+    const wallets = MainStore.appState.wallets.filter(w => w.enableNotification).map((w) => {
       return {
         name: w.title,
-        address: w.address
+        address: w.address,
+        type: w.type === 'ethereum' ? 'ETH' : 'BTC'
       }
     })
     return API.addWallets(wallets, this.deviceToken).then((res) => {
@@ -101,17 +103,22 @@ class Notification {
       return
     }
 
-    const { address, contract } = this.notif
     MainStore.appState.setSelectedTransaction(null)
-    WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
-      const wallet = MainStore.appState.wallets
-        .find(w => w.address.toLowerCase() === address.toLowerCase())
-      if (!wallet) {
-        return
-      }
-      const transaction = new Transaction(this.notif, token, this.notif.status)
+    if (this.notif.from) {
+      const { address, contract } = this.notif
+      WalletToken.fetchTokenDetail(address, contract).then(async (token) => {
+        const wallet = MainStore.appState.wallets
+          .find(w => w.address.toLowerCase() === address.toLowerCase())
+        if (!wallet) {
+          return
+        }
+        const transaction = new Transaction(this.notif, token, this.notif.status)
+        MainStore.appState.setSelectedTransaction(transaction)
+      })
+    } else if (this.notif.inputs) {
+      const transaction = new TransactionBTC(this.notif)
       MainStore.appState.setSelectedTransaction(transaction)
-    })
+    }
   }
 
   @action gotoTransaction() {
@@ -121,7 +128,11 @@ class Notification {
       NavStore.popupCustom.show('Wallet not Found')
       return
     }
-    NavStore.pushToScreen('TransactionDetailScreen', { fromNotif: true })
+    if (this.notif.from) {
+      NavStore.pushToScreen('TransactionDetailScreen', { fromNotif: true })
+    } else if (this.notif.inputs) {
+      NavStore.pushToScreen('TransactionBTCDetailScreen', { fromNotif: true })
+    }
   }
 
   @computed get notif() {

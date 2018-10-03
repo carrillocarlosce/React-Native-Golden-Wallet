@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Text,
   ScrollView,
@@ -21,8 +20,7 @@ import AppVersion from '../../../AppStores/stores/AppVersion'
 import MainStore from '../../../AppStores/MainStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { height } = Dimensions.get('window')
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 // const string = 'Hi all, Golden Wallet 1.0.4 is ready on AppStore/Google Store.\r\n\r\nWe will update Golden as soon as possible to make it better experience for the community. Here are the improvements you will find in this latest update:\r\n\r\nADDED\r\n- Header Pricing of top 10 coins on Coinmarket Cap.\r\n- Quick action to adjust gas price Slow/Standard/Fast.\r\n\r\nCHANGED\r\n- New UI of Send/Receive button on Home Screen.\r\n- New UI for QR Scanner.\r\n- Refactor source code prepare for Open Source.\r\n\r\nFIXED\r\n- Minor UI bugs.\r\n- Missing incoming and outgoing transactions.\r\n- Missing pending transaction.\r\n\r\nREMOVED\r\n- Send/Receive function in Transaction list.'
 
 @observer

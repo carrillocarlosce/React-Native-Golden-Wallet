@@ -8,6 +8,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer } from 'mobx-react/native'
+import PropTypes from 'prop-types'
 import NavigationHeader from '../../../components/elements/NavigationHeader'
 import ChooseAddressItem from '../elements/ChooseAddressItem'
 import LayoutUtils from '../../../commons/LayoutUtils'
@@ -18,11 +19,19 @@ import BottomButton from '../../../components/elements/BottomButton'
 import NavStore from '../../../AppStores/NavStore'
 
 const marginTop = LayoutUtils.getExtraTop()
-const { width, height } = Dimensions.get('window')
-const isIPX = height === 812
+const { width } = Dimensions.get('window')
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class ChooseAddressScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+
+  static defaultProps = {
+    navigation: {}
+  }
+
   constructor(props) {
     super(props)
     this.importMnemonicStore = MainStore.importMnemonicStore
@@ -37,7 +46,9 @@ export default class ChooseAddressScreen extends Component {
   }
 
   handleUnlock = () => {
-    this.importMnemonicStore.gotoEnterName()
+    const { navigation } = this.props
+    const { coin } = navigation.state.params
+    this.importMnemonicStore.gotoEnterName(coin)
   }
 
   renderItem = ({ item, index }) =>

@@ -1,7 +1,7 @@
 const networks = {
   BTC: {
     name: 'bitcoin',
-    path: "m/44'/0'/0'/0/index"
+    path: "m/49'/0'/0'/0/index"
   },
   ETH: {
     name: 'ethereum',

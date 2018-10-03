@@ -27,18 +27,10 @@ export default class InformationCard extends Component {
       mainSubTitleText: 'MainText',
       viceSubTitleText: 'ViceText'
     },
-    style: {
-
-    },
-    titleStyle: {
-
-    },
-    mainSubTitleStyle: {
-
-    },
-    viceSubTitleStyle: {
-
-    }
+    style: {},
+    titleStyle: {},
+    mainSubTitleStyle: {},
+    viceSubTitleStyle: {}
   }
 
   onSecretPress = () => {
@@ -78,15 +70,8 @@ export default class InformationCard extends Component {
 
     return (
       <View style={[style]}>
-        <View style={{
-          flexDirection: 'row'
-        }}
-        >
-          <Text style={[
-            titleStyle
-          ]}
-          >{titleText}
-          </Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[titleStyle]}>{titleText}</Text>
           <TouchableOpacity
             style={{
               marginLeft: 10,
@@ -103,25 +88,22 @@ export default class InformationCard extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={{
-          flexDirection: 'row',
-          marginTop: 20,
-          alignItems: 'center'
-        }}
+        <View
+          style={{
+            flexDirection: 'row',
+            marginTop: 20,
+            alignItems: 'center'
+          }}
         >
           <FadeText
             text={mainSubTitleText}
             isShow={isHideValue}
-            textStyle={[
-              mainSubTitleStyle
-            ]}
+            textStyle={[mainSubTitleStyle]}
           />
           <FadeText
             text={viceSubTitleText}
             isShow={isHideValue}
-            textStyle={[
-              viceSubTitleStyle
-            ]}
+            textStyle={[viceSubTitleStyle]}
             securityText=" "
           />
         </View>

@@ -23,11 +23,12 @@ import ChooseAddressScreen from './ChooseAddressScreen'
 import Checker from '../../../Handler/Checker'
 import MainStore from '../../../AppStores/MainStore'
 import BottomButton from '../../../components/elements/BottomButton'
-import NavStore from '../../../AppStores/NavStore'
+import LayoutUtils from '../../../commons/LayoutUtils'
+import MixpanelHandler from '../../../Handler/MixpanelHandler'
 
 const { width, height } = Dimensions.get('window')
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() : 20
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 
 @observer
 export default class AdressInputScreen extends Component {
@@ -112,8 +113,11 @@ export default class AdressInputScreen extends Component {
   }
 
   handleConfirm = () => {
-    Keyboard.dismiss()
-    NavStore.pushToScreen('ConfirmScreen')
+    MainStore.sendTransaction.goToConfirm()
+    if (MainStore.sendTransaction.completeStep === 1) {
+      MainStore.sendTransaction.setCompleteStep(2)
+      MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.COMPLETE_SEND_TO)
+    }
   }
 
   gotoScan = () => {
@@ -130,6 +134,7 @@ export default class AdressInputScreen extends Component {
   clearText = () => {
     const { addressInputStore } = MainStore.sendTransaction
     addressInputStore.setAddress('')
+    addressInputStore.setCount(0)
     addressInputStore.setDisableSend(true)
   }
 
@@ -215,14 +220,52 @@ export default class AdressInputScreen extends Component {
 
   returnData = (address) => {
     const { addressInputStore } = MainStore.sendTransaction
-    const resChecker = Checker.checkAddressQR(address)
+    const { selectedWallet } = MainStore.appState
+    const resChecker = selectedWallet.type === 'ethereum'
+      ? Checker.checkAddressQR(address)
+      : Checker.checkAddressQRBTC(address)
     if (!resChecker || resChecker.length === 0) {
       addressInputStore.setAddress(address)
       addressInputStore.validateAddress()
     } else {
       addressInputStore.setAddress(resChecker[0])
+      addressInputStore.checkSentTime()
       addressInputStore.setDisableSend(!resChecker)
     }
+  }
+
+  renderAlert = () => {
+    const { addressInputStore } = MainStore.sendTransaction
+    const {
+      address,
+      disableSend,
+      countSentTime
+    } = addressInputStore
+    let transactionText = 'transactions'
+    if (countSentTime == 1) {
+      transactionText = 'transaction'
+    }
+
+    if (disableSend && address !== '') {
+      return (
+        <View
+          style={styles.invalidContainer}
+        >
+          <Text style={styles.invalidText}>Invalid Address</Text>
+        </View>
+      )
+    } else if (countSentTime && countSentTime > 0) {
+      return (
+        <View
+          style={styles.invalidContainer}
+        >
+          <Text style={[styles.invalidText, { color: AppStyle.colorUp }]}>
+            {`You have ${countSentTime} successful ${transactionText} with this address`}
+          </Text>
+        </View>
+      )
+    }
+    return null
   }
 
   renderHeader = (value) => {
@@ -295,13 +338,7 @@ export default class AdressInputScreen extends Component {
                 {address === '' && this._renderPasteButton(addressInputStore)}
                 {address !== '' && this._renderClearButton()}
               </View>
-              {disableSend && address !== '' &&
-                <View
-                  style={styles.invalidContainer}
-                >
-                  <Text style={styles.invalidText}>Invalid Address</Text>
-                </View>
-              }
+              {this.renderAlert()}
               {this._renderButton()}
             </Animated.View>
             <BottomButton

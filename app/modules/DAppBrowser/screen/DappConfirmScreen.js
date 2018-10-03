@@ -27,7 +27,7 @@ import AddressElement from '../../../components/elements/AddressElement'
 
 const { height } = Dimensions.get('window')
 const extraBottom = LayoutUtils.getExtraBottom()
-const isIPX = height === 812
+const isIPX = LayoutUtils.getIsIPX()
 const marginTop = Platform.OS === 'ios' ? getStatusBarHeight() + 20 : 40
 
 @observer

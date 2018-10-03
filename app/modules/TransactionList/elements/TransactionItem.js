@@ -11,7 +11,7 @@ import AppStyle from '../../../commons/AppStyle'
 import constant from '../../../commons/constant'
 import Helper from '../../../commons/Helper'
 import PendingTransaction from './PendingTransaction'
-import MainStore from '../../../AppStores/MainStore';
+import MainStore from '../../../AppStores/MainStore'
 
 export default class TransactionsItem extends Component {
   static propTypes = {

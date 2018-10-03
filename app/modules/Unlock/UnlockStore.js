@@ -11,6 +11,7 @@ import AppDS from '../../AppStores/DataSource/AppDS'
 import api from '../../api'
 import NotificationStore from '../../AppStores/stores/Notification'
 import PushNotificationHelper from '../../commons/PushNotificationHelper'
+import MixpanelHandler from '../../Handler/MixpanelHandler'
 
 const minute = 60000
 class UnlockStore {
@@ -186,7 +187,6 @@ class UnlockStore {
         await SecureDS.forceSavePassword(password, iv, pincode)
         await SecureDS.forceSaveIV(iv)
         HapticHandler.NotificationSuccess()
-        MainStore.setSecureStorage(pincode)
         await MigrateData.migrateOldData(pincode, iv, decriptData, password)
         NavStore.goBack()
         NavStore.hideLoading()
@@ -204,7 +204,6 @@ class UnlockStore {
         this._handleErrorPin()
       } else {
         HapticHandler.NotificationSuccess()
-        MainStore.setSecureStorage(pincode)
         NavStore.goBack()
         this.resetDisable()
         resolve(pincode)
@@ -239,7 +238,6 @@ class UnlockStore {
       await Keychain.resetGenericPassword()
       ds.derivePass()
       HapticHandler.NotificationSuccess()
-      MainStore.setSecureStorage(pincode)
       NavStore.goBack()
       this.resetDisable()
       resolve(pincode)
@@ -249,6 +247,7 @@ class UnlockStore {
   _handleErrorPin(e) {
     const { animatedValue, isShake } = this
     HapticHandler.NotificationError()
+    MainStore.appState.mixpanleHandler.track(MixpanelHandler.eventName.UNLOCK_PIN_FAIL)
     this.upWrongPincodeCount()
     this.setTimeRemaining()
     this.saveDisableData()
@@ -268,6 +267,7 @@ class UnlockStore {
       }
     ).start()
     setTimeout(() => {
+      if (!this || !this.setData) return
       this.isShake = !isShake
       this.setData({
         pinTyped: 0,
