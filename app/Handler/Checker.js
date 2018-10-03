@@ -2,25 +2,29 @@ import { chainNames } from '../Utils/WalletAddresses'
 
 class Checker {
   static checkAddress(address, coin) {
-    let regx = ''
-    let validateLength = 0
     if (coin === chainNames.ETH) {
-      validateLength = 42
-      regx = /^0x[0-9A-Fa-f]{40}$/
+      return this.checkAddressETH(address)
     } else if (coin === chainNames.BTC) {
-      validateLength = 34
-      regx = /^[0-9A-Za-z]{34}$/
+      return this.checkAddressBTC(address)
     }
-    if (address.length !== validateLength) {
-      return false
-    }
-    return address.match(regx)
+    // if (address.length !== validateLength) {
+    //   return false
+    // }
+    // return address.match(regx)
   }
   static checkAddressBTC(address) {
-    if (address.length !== 34) {
+    if (address.length < 25 || address.length > 34) {
       return false
     }
-    const regx = /^[0-9A-Za-z]{34}$/
+    const regx = /^[0-9A-Za-z]{25,34}$/
+    return address.match(regx)
+  }
+
+  static checkAddressETH(address) {
+    const regx = /^0x[0-9A-Fa-f]{40}$/
+    if (address.length != 42) {
+      return false
+    }
     return address.match(regx)
   }
 
